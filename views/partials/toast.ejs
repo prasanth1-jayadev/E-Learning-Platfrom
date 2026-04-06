@@ -1,0 +1,43 @@
+<!-- Toast + Loader -->
+<div id="toast" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+<div id="pageLoader" class="fixed inset-0 z-[9998] bg-white/70 backdrop-blur-sm flex items-center justify-center hidden">
+  <div class="flex flex-col items-center gap-3">
+    <div class="w-10 h-10 border-4 border-[#2beead] border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-sm font-semibold text-gray-600" id="loaderText">Please wait...</p>
+  </div>
+</div>
+
+<script>
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const el = document.createElement('div');
+    const colors = {
+      success: 'bg-[#0d1b17] text-[#2beead] border border-[#2beead]/30',
+      error:   'bg-red-50 text-red-700 border border-red-200',
+      info:    'bg-blue-50 text-blue-700 border border-blue-200'
+    };
+    el.className = `pointer-events-auto px-5 py-3 rounded-xl shadow-lg text-sm font-semibold flex items-center gap-2 transition-all duration-300 opacity-0 translate-y-2 ${colors[type] || colors.success}`;
+    const icons = {
+      success: '✓',
+      error:   '✕',
+      info:    'ℹ'
+    };
+    el.innerHTML = `<span class="text-base">${icons[type]}</span> ${message}`;
+    toast.appendChild(el);
+    setTimeout(() => { el.classList.remove('opacity-0', 'translate-y-2'); }, 10);
+    setTimeout(() => {
+      el.classList.add('opacity-0', 'translate-y-2');
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  }
+
+  function showLoader(text = 'Please wait...') {
+    document.getElementById('loaderText').textContent = text;
+    document.getElementById('pageLoader').classList.remove('hidden');
+  }
+
+  function hideLoader() {
+    document.getElementById('pageLoader').classList.add('hidden');
+  }
+</script>

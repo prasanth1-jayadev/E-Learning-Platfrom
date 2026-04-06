@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tutor Login - Organic Learn</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#2beead",
+          "background-light": "#f6f8f7",
+          "background-dark": "#10221c",
+          "deep-forest": "#0d1b17",
+        },
+        fontFamily: { "display": ["Be Vietnam Pro", "sans-serif"] },
+        borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+
+      },
+    },
+  }
+</script>
+<style>
+  .auth-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: #f0f4f2;
+    border: none;
+    border-radius: 9999px !important;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+  }
+  .auth-input:focus { box-shadow: 0 0 0 2px rgba(43,238,173,0.5); }
+  .auth-input::placeholder { color: #9ca3af; }
+</style>
+<script>
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', function() {
+      window.history.pushState(null, '', window.location.href);
+    });
+  }
+</script>
+</head>
+<body class="bg-[#f6f8f7] font-display text-[#0d1b17] h-screen overflow-hidden">
+<main class="grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
+
+  <!-- Left Panel -->
+  <section class="hidden lg:flex flex-col justify-between w-full relative overflow-hidden bg-[#0d1b17] p-16 h-full">
+    <img alt="Mentor" class="absolute inset-0 w-full h-full object-cover"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17]/90 via-[#0d1b17]/40 to-transparent"></div>
+    <div class="absolute bottom-16 left-16 right-16">
+      <div class="flex items-center gap-2 mb-8">
+        <div class="text-[#2beead]">
+          <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 48 48">
+            <path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"/>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold tracking-tight text-white">Organic Learn</h2>
+      </div>
+      <h1 class="text-5xl font-black text-white leading-tight mb-6">
+        Master your craft<br/>with <span class="text-[#2beead] italic">industry leaders.</span>
+      </h1>
+      <p class="text-lg text-[#2beead]/80 max-w-md font-medium">
+        Join over 50k+ professionals who are advancing their careers through expert-led certified paths.
+      </p>
+      <div class="mt-12 flex items-center gap-6">
+        <div class="flex -space-x-3">
+          <img alt="User" class="w-12 h-12 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs"/>
+          <img alt="User" class="w-12 h-12 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY"/>
+          <img alt="User" class="w-12 h-12 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE"/>
+        </div>
+        <div class="text-white/80 text-sm">
+          <span class="block font-bold text-white text-base">Top Rated Mentors</span>
+          Access to the top 1% of instructors
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Right Panel -->
+  <section class="flex flex-col h-full overflow-y-auto bg-white">
+    <div class="flex-1 flex flex-col justify-center px-6 py-8 md:px-16 lg:px-20">
+      <div class="max-w-sm sm:max-w-md w-full mx-auto">
+
+        <div class="mb-10">
+          <h2 class="text-3xl font-black mb-2">Welcome Back</h2>
+          <p class="text-[#4c9a80]">Continue your journey towards mastery.</p>
+        </div>
+
+        <!-- Toggle — Tutor active -->
+        <div class="bg-[#f0f4f2] p-1.5 rounded-2xl flex mb-10">
+          <button onclick="window.location.href='/user/login'"
+            class="flex-1 py-3 text-sm font-bold rounded-xl transition-all text-[#4c9a80] hover:text-[#0d1b17]">
+            Student
+          </button>
+          <button class="flex-1 py-3 text-sm font-bold rounded-xl transition-all bg-white shadow-sm text-[#0d1b17]">
+            Tutor
+          </button>
+        </div>
+
+        <form class="space-y-6" id="loginForm">
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase tracking-widest text-[#4c9a80]" for="email">Email Address</label>
+            <input class="auth-input" id="email" placeholder="name@company.com" type="email"/>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold uppercase tracking-widest text-[#4c9a80]" for="password">Password</label>
+              <a class="text-xs font-bold text-[#2beead] hover:underline" href="/tutor/forgot-password">Forgot Password?</a>
+            </div>
+            <div class="relative">
+              <input class="auth-input" style="padding-right:3rem" id="password" placeholder="••••••••" type="password"/>
+              <button class="absolute right-4 top-1/2 -translate-y-1/2 text-[#4c9a80] hover:text-primary focus:outline-none" type="button" onclick="togglePass()">
+                <svg id="tEyeOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <svg id="tEyeClosed" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.477 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+              </button>
+            </div>
+          </div>
+          <p id="formError" class="text-red-500 text-sm hidden"></p>
+          <button class="w-full bg-[#2beead] text-[#0d1b17] py-4 rounded-xl font-black text-base shadow-xl shadow-[#2beead]/20 hover:scale-[1.02] active:scale-[0.98] transition-all" type="submit">
+            Sign In
+          </button>
+        </form>
+
+        <div class="relative my-10 text-center">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[#e7f3ef]"></div>
+          </div>
+          <span class="relative px-4 bg-white text-xs font-bold text-[#4c9a80] uppercase tracking-widest">Or login with</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button class="flex items-center justify-center gap-3 py-3.5 border border-[#e7f3ef] rounded-xl hover:bg-[#f6f8f7] transition-colors">
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1 .67-2.28 1.07-3.71 1.07-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.67-.35-1.39-.35-2.09s.13-1.42.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span class="text-sm font-bold">Google</span>
+          </button>
+        </div>
+
+        <div class="mt-12 text-center">
+          <p class="text-sm text-[#4c9a80]">
+            New here? <a class="text-[#2beead] font-bold hover:underline" href="/tutor/signup">Create an account</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="px-6 py-6 md:px-16 border-t border-[#e7f3ef] flex justify-between items-center text-[10px] opacity-50 font-bold uppercase tracking-widest mt-auto">
+      <p>Architected for the ambitious professional</p>
+    </footer>
+  </section>
+</main>
+
+<script>
+  function togglePass() {
+    const input = document.getElementById('password');
+    const open   = document.getElementById('tEyeOpen');
+    const closed = document.getElementById('tEyeClosed');
+    if (input.type === 'password') {
+      input.type = 'text';
+      open.classList.add('hidden');
+      closed.classList.remove('hidden');
+    } else {
+      input.type = 'password';
+      open.classList.remove('hidden');
+      closed.classList.add('hidden');
+    }
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const errorEl = document.getElementById('formError');
+    errorEl.classList.add('hidden');
+
+    showLoader('Signing you in...');
+    const res = await fetch('/tutor/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      })
+    });
+    const data = await res.json();
+    hideLoader();
+    if (res.ok) {
+      showToast('Welcome back, Mentor!', 'success');
+      setTimeout(() => window.location.href = data.redirect || '/tutor/dashboard', 1200);
+    } else {
+      showToast(data.message || 'Login failed.', 'error');
+      errorEl.textContent = data.message || 'Login failed.';
+      errorEl.classList.remove('hidden');
+    }
+  });
+</script>
+<%- include('../partials/toast') %>
+</body>
+</html>

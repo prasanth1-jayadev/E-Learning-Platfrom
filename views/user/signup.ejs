@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Student Registration - Organic Learn</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2beead",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#10221c",
+                        "deep-forest": "#0d1b17",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .mesh-gradient {
+            background-image: radial-gradient(at 0% 0%, #2beead33 0, transparent 50%), 
+                              radial-gradient(at 100% 100%, #2beead22 0, transparent 50%);
+        }
+    </style>
+<script>
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', function() {
+      window.history.pushState(null, '', window.location.href);
+    });
+  }
+</script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa] h-screen overflow-hidden">
+    <main class="grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
+        <section class="hidden lg:flex relative overflow-hidden bg-deep-forest p-16 flex-col justify-between h-full">
+            <div class="absolute inset-0 z-0">
+                <img alt="Academic Success" class="w-full h-full object-cover opacity-40"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                <div class="absolute inset-0 bg-gradient-to-t from-deep-forest via-deep-forest/40 to-transparent"></div>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-12">
+                    <div class="text-primary">
+                        <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 48 48"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold tracking-tight text-white">Organic Learn</h2>
+                </div>
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-black text-white leading-tight mb-6">Master your craft with <span
+                            class="text-primary italic">purpose.</span></h1>
+                    <p class="text-xl text-[#a0c5ba] leading-relaxed">Join a community of 50k+ professionals dedicated
+                        to depth, architectural excellence, and career mastery.</p>
+                </div>
+            </div>
+            <div class="relative z-10">
+                <div class="flex -space-x-3 mb-4">
+                    <img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                    <img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" />
+                    <img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" />
+                    <div
+                        class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-xs font-bold border-2 border-deep-forest text-deep-forest">
+                        +50k</div>
+                </div>
+                <p class="text-sm font-medium text-white/60 italic">"The transition from senior to lead happened here."
+                    — Design Lead at TechCorp</p>
+            </div>
+        </section>
+        <section class="flex flex-col h-full overflow-y-auto bg-white dark:bg-background-dark">
+            <div class="flex-1 flex flex-col justify-center px-6 py-8 md:px-16 lg:px-20">
+                <div class="max-w-md mx-auto w-full">
+                    <div class="mb-10">
+                        <h2 class="text-3xl font-black mb-2">Create Student Account</h2>
+                        <p class="text-[#4c9a80] dark:text-[#a0c5ba]">Start your journey toward professional excellence
+                            today.</p>
+                    </div>
+                    <form class="flex flex-col gap-6 mb-8" id="signupForm">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-bold opacity-70" for="fullName">Full Name</label>
+                            <input
+                                class="w-full bg-background-light dark:bg-[#1a3a30] border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl px-4 py-3 focus:ring-primary focus:border-primary"
+                                id="fullName" placeholder="Enter your full name" type="text" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-bold opacity-70" for="email">Email Address</label>
+                            <input
+                                class="w-full bg-background-light dark:bg-[#1a3a30] border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl px-4 py-3 focus:ring-primary focus:border-primary"
+                                id="email" placeholder="name@company.com" type="email" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-bold opacity-70" for="password">Create Password</label>
+                            <div class="relative">
+                            <input
+                                class="w-full bg-background-light dark:bg-[#1a3a30] border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl px-4 py-3 focus:ring-primary focus:border-primary pr-12"
+                                id="password" placeholder="Minimum 8 characters" type="password" />
+                            <button type="button" onclick="toggleVis('password','eye1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4c9a80]">
+                                <span id="eye1" class="material-symbols-outlined text-xl">visibility</span>
+                            </button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-bold opacity-70" for="confirmPassword">Confirm Password</label>
+                            <div class="relative">
+                            <input
+                                class="w-full bg-background-light dark:bg-[#1a3a30] border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl px-4 py-3 focus:ring-primary focus:border-primary pr-12"
+                                id="confirmPassword" placeholder="Repeat your password" type="password" />
+                            <button type="button" onclick="toggleVis('confirmPassword','eye2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4c9a80]">
+                                <span id="eye2" class="material-symbols-outlined text-xl">visibility</span>
+                            </button>
+                            </div>
+                        </div>
+                        <p id="formError" class="text-red-500 text-sm hidden"></p>
+                        <button
+                            class="bg-primary text-[#0d1b17] py-4 rounded-xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.01] transition-transform mt-4"
+                            type="submit">
+                            Join as Student
+                        </button>
+                    </form>
+                    <p class="text-center text-sm">
+                        Already have an account?
+                        <a class="text-primary font-bold hover:underline" href="/user/login">Log in as Student</a>
+                    </p>
+                    <script>
+                        function toggleVis(id, iconId) {
+                            const input = document.getElementById(id);
+                            const icon  = document.getElementById(iconId);
+                            if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; }
+                            else { input.type = 'password'; icon.textContent = 'visibility'; }
+                        }
+                        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+                            e.preventDefault();
+
+                            const fullName        = document.getElementById('fullName').value.trim();
+                            const email           = document.getElementById('email').value.trim();
+                            const password        = document.getElementById('password').value;
+                            const confirmPassword = document.getElementById('confirmPassword').value;
+                            const errorEl         = document.getElementById('formError');
+
+                            if (!fullName || !email || !password || !confirmPassword) {
+                                errorEl.textContent = 'All fields are required.';
+                                errorEl.classList.remove('hidden');
+                                return;
+                            }
+                            if (password !== confirmPassword) {
+                                errorEl.textContent = 'Passwords do not match.';
+                                errorEl.classList.remove('hidden');
+                                return;
+                            }
+                            if (password.length < 8) {
+                                errorEl.textContent = 'Password must be at least 8 characters.';
+                                errorEl.classList.remove('hidden');
+                                return;
+                            }
+                            errorEl.classList.add('hidden');
+
+                            showLoader('Creating your account...');
+                            const res = await fetch('/user/signup', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ fullName, email, password })
+                            });
+                            const data = await res.json();
+                            hideLoader();
+                            if (res.ok) {
+                                showToast('Account created! Check your email for OTP.', 'success');
+                                setTimeout(() => window.location.href = data.redirect, 1500);
+                            } else {
+                                showToast(data.message || 'Signup failed.', 'error');
+                                errorEl.textContent = data.message || 'Signup failed.';
+                                errorEl.classList.remove('hidden');
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+            <footer
+                class="px-6 py-6 md:px-16 border-t border-[#e7f3ef] flex justify-between items-center text-[10px] opacity-50 font-bold uppercase tracking-widest mt-auto">
+                <p>© 2024 Organic Learn</p>
+                <div class="flex gap-4">
+                    <a class="hover:text-primary" href="#">Privacy</a>
+                    <a class="hover:text-primary" href="#">Terms</a>
+                    <a class="hover:text-primary" href="#">Contact</a>
+                </div>
+            </footer>
+        </section>
+    </main>
+
+<%- include('../partials/toast') %>
+</body>
+
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Organic Professional E-Learning Home v2 - Expert Edition</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2beead",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#10221c",
+                        "deep-forest": "#0d1b17",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        .course-card:hover .quick-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .quick-view {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease-in-out;
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(8px);
+        }
+        .abstract-mesh {
+            background-color: #f6f8f7;
+            background-image: radial-gradient(at 0% 0%, #2beead33 0, transparent 50%), 
+                              radial-gradient(at 100% 100%, #2beead22 0, transparent 50%),
+                              linear-gradient(135deg, transparent 0%, rgba(43, 238, 173, 0.05) 100%);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa]">
+    <header
+        class="sticky-nav bg-white/80 dark:bg-background-dark/80 border-b border-[#e7f3ef] dark:border-[#1a3a30] px-4 md:px-20 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-2">
+                <div class="text-primary">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight">Organic Learn</h2>
+            </div>
+            <nav class="hidden lg:flex items-center gap-8 ml-8">
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Courses</a>
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Categories</a>
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Mentors</a>
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Expert Insights</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/tutor/signup"
+                class="hidden sm:flex bg-primary text-[#0d1b17] px-6 py-2 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity">
+                Become a Tutor
+            </a>
+            <a href="/user/login"
+                class="bg-[#e7f3ef] dark:bg-[#1a3a30] text-[#0d1b17] dark:text-[#f8fcfa] px-6 py-2 rounded-xl font-bold text-sm hover:opacity-80 transition-opacity">
+                Log In
+            </a>
+        </div>
+    </header>
+    <main class="max-w-[1440px] mx-auto">
+        <section class="px-6 md:px-20 py-16 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 flex flex-col gap-10">
+                <div class="flex flex-col gap-6">
+                    <div
+                        class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full w-fit">
+                        <span class="material-symbols-outlined text-sm">workspace_premium</span>
+                        <span class="text-xs font-bold uppercase tracking-widest">Designed for Mastery</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black leading-[1.1] tracking-[-0.04em]">
+                        The art of <span class="text-primary italic">deep work</span> starts here.
+                    </h1>
+                    <p class="text-xl text-[#4c9a80] dark:text-[#a0c5ba] max-w-2xl leading-relaxed">
+                        Beyond simple tutorials. We provide the architectural blueprints for professional excellence
+                        through rigorous, expert-led curriculums.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 max-w-2xl">
+                    <div
+                        class="flex-1 flex items-center bg-white dark:bg-[#1a3a30] rounded-2xl border border-[#e7f3ef] dark:border-[#1a3a30] px-6 h-16 shadow-sm">
+                        <span class="material-symbols-outlined text-[#4c9a80]">search</span>
+                        <input
+                            class="bg-transparent border-none focus:ring-0 w-full text-base placeholder:text-[#4c9a80] ml-2"
+                            placeholder="Explore advanced learning paths..." type="text" />
+                    </div>
+                    <button
+                        class="bg-primary text-[#0d1b17] px-10 py-4 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
+                        Start Learning
+                    </button>
+                </div>
+                <div class="flex items-center gap-8 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
+                    <div class="flex -space-x-3">
+                        <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                        <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" />
+                        <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" />
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold border-2 border-white dark:border-[#0d1b17]">
+                            50k+</div>
+                    </div>
+                    <p class="text-sm font-medium opacity-60">Professional learners achieving mastery daily</p>
+                </div>
+            </div>
+            <div class="lg:col-span-5 relative flex justify-center items-center h-[500px]">
+                <div class="absolute w-[120%] h-[120%] abstract-mesh -z-10 rounded-[4rem] opacity-50 blur-3xl"></div>
+                <div class="relative w-full aspect-square max-w-[450px]">
+                    <div class="absolute inset-0 bg-primary/20 rounded-[3rem] rotate-6 border border-primary/30"></div>
+                    <div
+                        class="absolute inset-0 bg-deep-forest rounded-[3rem] -rotate-3 overflow-hidden shadow-2xl flex items-center justify-center">
+                        <div class="w-full h-full relative p-12">
+                            <div class="grid grid-cols-4 gap-4 h-full">
+                                <div
+                                    class="col-span-2 bg-primary/10 rounded-2xl border border-primary/20 flex items-center justify-center overflow-hidden relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent">
+                                    </div>
+                                </div>
+                                <div class="col-span-2 bg-primary/40 rounded-2xl flex items-center justify-center">
+                                    <span
+                                        class="material-symbols-outlined text-white text-5xl opacity-40">grid_guides</span>
+                                </div>
+                                <div class="col-span-1 bg-primary/20 rounded-2xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary/60">architecture</span>
+                                </div>
+                                <div
+                                    class="col-span-3 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center">
+                                    <span
+                                        class="material-symbols-outlined text-primary text-6xl opacity-40">blur_on</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute -bottom-6 -right-6 bg-white dark:bg-[#1a3a30] p-6 rounded-2xl shadow-2xl border border-[#e7f3ef] dark:border-[#1a3a30] max-w-[240px]">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary">psychology</span>
+                            </div>
+                            <span class="text-sm font-bold">Expert Authority</span>
+                        </div>
+                        <p class="text-xs leading-relaxed opacity-70">Curated by 1% of industry experts who prioritize
+                            depth over breadth.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="px-6 md:px-20 py-24 bg-white dark:bg-[#0d1b17] border-y border-[#e7f3ef] dark:border-[#1a3a30]">
+            <div class="mb-16">
+                <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full mb-4">
+                    <span class="material-symbols-outlined text-sm">route</span>
+                    <span class="text-xs font-bold uppercase tracking-widest">Career Progression</span>
+                </div>
+                <h2 class="text-4xl font-black mb-4">Curated Learning Paths</h2>
+                <p class="text-[#4c9a80] max-w-2xl">Tailored tracks designed to bridge the gap between intermediate
+                    skillsets and senior professional mastery.</p>
+            </div>
+            <div class="flex flex-col gap-16">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="group relative p-8 rounded-[2rem] bg-background-light dark:bg-[#1a3a30] border border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                        <div
+                            class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 group-hover:opacity-20 transition-transform">
+                            <span class="material-symbols-outlined text-8xl">design_services</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-black mb-2">UI/UX Mastery</h3>
+                            <p class="text-sm text-[#4c9a80] mb-6">Advanced system design, behavioral psychology, and
+                                high-fidelity prototyping.</p>
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
+                                    Senior</span>
+                                <span class="text-primary material-symbols-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="group relative p-8 rounded-[2rem] bg-background-light dark:bg-[#1a3a30] border border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                        <div
+                            class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 group-hover:opacity-20 transition-transform">
+                            <span class="material-symbols-outlined text-8xl">cloud_done</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-black mb-2">Cloud Architecture</h3>
+                            <p class="text-sm text-[#4c9a80] mb-6">Scalable infrastructure, serverless patterns, and
+                                cloud-native security protocols.</p>
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
+                                    Specialist</span>
+                                <span class="text-primary material-symbols-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="group relative p-8 rounded-[2rem] bg-background-light dark:bg-[#1a3a30] border border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                        <div
+                            class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 group-hover:opacity-20 transition-transform">
+                            <span class="material-symbols-outlined text-8xl">terminal</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-black mb-2">Full-Stack Lead</h3>
+                            <p class="text-sm text-[#4c9a80] mb-6">Enterprise-grade architecture, CI/CD mastery, and
+                                technical team leadership.</p>
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
+                                    Principal</span>
+                                <span class="text-primary material-symbols-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-8">
+                        <h4 class="text-xl font-bold">Top Courses in UI/UX Mastery</h4>
+                        <div class="flex gap-2">
+                            <button
+                                class="w-10 h-10 rounded-full border border-[#e7f3ef] dark:border-[#1a3a30] flex items-center justify-center hover:bg-primary/10 transition-colors">
+                                <span class="material-symbols-outlined">chevron_left</span>
+                            </button>
+                            <button
+                                class="w-10 h-10 rounded-full border border-[#e7f3ef] dark:border-[#1a3a30] flex items-center justify-center hover:bg-primary/10 transition-colors">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 overflow-x-auto hide-scrollbar pb-6">
+                        <div
+                            class="min-w-[320px] bg-background-light dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef] dark:border-[#1a3a30] group">
+                            <div class="bg-primary/20 rounded-2xl h-40 mb-6 overflow-hidden">
+                                <img alt="Course"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                            </div>
+                            <h5 class="text-lg font-black mb-2">Design System Architecture</h5>
+                            <p class="text-sm opacity-70 mb-4">Build scalable, accessible, and high-performance design
+                                systems for enterprise scale.</p>
+                            <div class="flex items-center gap-4 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
+                                <div class="flex items-center gap-1 text-primary">
+                                    <span class="material-symbols-outlined text-sm fill-current">star</span>
+                                    <span class="text-xs font-bold">4.9</span>
+                                </div>
+                                <span class="text-xs opacity-60">12 Modules</span>
+                                <span class="text-xs font-black text-primary ml-auto">$199</span>
+                            </div>
+                        </div>
+                        <div
+                            class="min-w-[320px] bg-background-light dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef] dark:border-[#1a3a30] group">
+                            <div class="bg-primary/20 rounded-2xl h-40 mb-6 overflow-hidden">
+                                <img alt="Course"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" />
+                            </div>
+                            <h5 class="text-lg font-black mb-2">Psychology of Conversion</h5>
+                            <p class="text-sm opacity-70 mb-4">Master behavioral principles that drive user action and
+                                increase business metrics.</p>
+                            <div class="flex items-center gap-4 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
+                                <div class="flex items-center gap-1 text-primary">
+                                    <span class="material-symbols-outlined text-sm fill-current">star</span>
+                                    <span class="text-xs font-bold">4.8</span>
+                                </div>
+                                <span class="text-xs opacity-60">8 Modules</span>
+                                <span class="text-xs font-black text-primary ml-auto">$149</span>
+                            </div>
+                        </div>
+                        <div
+                            class="min-w-[320px] bg-background-light dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef] dark:border-[#1a3a30] group">
+                            <div class="bg-primary/20 rounded-2xl h-40 mb-6 overflow-hidden">
+                                <img alt="Course"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" />
+                            </div>
+                            <h5 class="text-lg font-black mb-2">Data-Driven UX Strategy</h5>
+                            <p class="text-sm opacity-70 mb-4">Leveraging analytics and A/B testing to inform product
+                                design decisions.</p>
+                            <div class="flex items-center gap-4 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
+                                <div class="flex items-center gap-1 text-primary">
+                                    <span class="material-symbols-outlined text-sm fill-current">star</span>
+                                    <span class="text-xs font-bold">5.0</span>
+                                </div>
+                                <span class="text-xs opacity-60">15 Modules</span>
+                                <span class="text-xs font-black text-primary ml-auto">$249</span>
+                            </div>
+                        </div>
+                        <div
+                            class="min-w-[320px] bg-background-light dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef] dark:border-[#1a3a30] group">
+                            <div class="bg-primary/20 rounded-2xl h-40 mb-6 overflow-hidden">
+                                <img alt="Course"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                            </div>
+                            <h5 class="text-lg font-black mb-2">Micro-Interactions Mastery</h5>
+                            <p class="text-sm opacity-70 mb-4">The art of delightful feedback loops using modern
+                                animation principles.</p>
+                            <div class="flex items-center gap-4 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
+                                <div class="flex items-center gap-1 text-primary">
+                                    <span class="material-symbols-outlined text-sm fill-current">star</span>
+                                    <span class="text-xs font-bold">4.7</span>
+                                </div>
+                                <span class="text-xs opacity-60">6 Modules</span>
+                                <span class="text-xs font-black text-primary ml-auto">$99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="px-6 md:px-20 py-16">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight mb-2">Advanced Curriculums</h2>
+                    <p class="text-[#4c9a80]">Systematic learning paths designed for professional depth.</p>
+                </div>
+                <button class="text-sm font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all">
+                    View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div
+                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                    <div
+                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">palette</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Design</h3>
+                        <p class="text-sm text-[#4c9a80]">120+ Courses</p>
+                    </div>
+                </div>
+                <div
+                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                    <div
+                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">code</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Development</h3>
+                        <p class="text-sm text-[#4c9a80]">150+ Courses</p>
+                    </div>
+                </div>
+                <div
+                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                    <div
+                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">analytics</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Business</h3>
+                        <p class="text-sm text-[#4c9a80]">85+ Courses</p>
+                    </div>
+                </div>
+                <div
+                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                    <div
+                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">trending_up</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Marketing</h3>
+                        <p class="text-sm text-[#4c9a80]">60+ Courses</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="px-6 md:px-20 py-16 bg-[#F0FFF9] dark:bg-[#0d1b17]/40 rounded-[3rem] mx-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-4xl font-black tracking-tight mb-2">Certified Tutor Showcase</h2>
+                    <p class="text-sm opacity-60">Learn directly from verified industry leaders with proven success
+                        records.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        class="w-12 h-12 rounded-full border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button
+                        class="w-12 h-12 rounded-full border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="group relative bg-white dark:bg-[#1a3a30] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all cursor-pointer">
+                    <div class="relative h-[420px] w-full overflow-hidden">
+                        <img alt="Alex Rivera"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-[#0d1b17]/90 via-[#0d1b17]/20 to-transparent">
+                        </div>
+                        <div
+                            class="absolute top-6 right-6 bg-deep-forest/80 backdrop-blur-md border border-white/20 text-white p-4 rounded-2xl shadow-2xl flex flex-col items-center">
+                            <div class="flex items-center gap-1.5 mb-1.5">
+                                <span
+                                    class="material-symbols-outlined text-primary text-xl fill-current">verified</span>
+                                <span class="text-[11px] font-black uppercase tracking-widest text-primary">Verified
+                                    Expert</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-lg font-black">4.9 ★</span>
+                                <div class="w-[1px] h-4 bg-white/20"></div>
+                                <span class="text-[11px] font-bold opacity-80">1.2k Certified</span>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-8 left-8 right-8 text-white">
+                            <span
+                                class="bg-primary text-[#0d1b17] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg mb-3 inline-block">Architecture</span>
+                            <h3 class="text-3xl font-black mb-2">Alex Rivera</h3>
+                            <p class="text-sm text-primary font-medium italic opacity-90 mb-4 line-clamp-1">
+                                "Precision-grade React architecture for senior engineers."</p>
+                            <button
+                                class="text-xs font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-white">
+                                View Expert Profile <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="group relative bg-white dark:bg-[#1a3a30] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all cursor-pointer">
+                    <div class="relative h-[420px] w-full overflow-hidden">
+                        <img alt="Sarah Chen"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-[#0d1b17]/90 via-[#0d1b17]/20 to-transparent">
+                        </div>
+                        <div
+                            class="absolute top-6 right-6 bg-deep-forest/80 backdrop-blur-md border border-white/20 text-white p-4 rounded-2xl shadow-2xl flex flex-col items-center">
+                            <div class="flex items-center gap-1.5 mb-1.5">
+                                <span
+                                    class="material-symbols-outlined text-primary text-xl fill-current">verified</span>
+                                <span class="text-[11px] font-black uppercase tracking-widest text-primary">Verified
+                                    Expert</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-lg font-black">4.7 ★</span>
+                                <div class="w-[1px] h-4 bg-white/20"></div>
+                                <span class="text-[11px] font-bold opacity-80">850 Certified</span>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-8 left-8 right-8 text-white">
+                            <span
+                                class="bg-primary text-[#0d1b17] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg mb-3 inline-block">Strategy</span>
+                            <h3 class="text-3xl font-black mb-2">Sarah Chen</h3>
+                            <p class="text-sm text-primary font-medium italic opacity-90 mb-4 line-clamp-1">
+                                "Analytics-driven growth for modern SaaS platforms."</p>
+                            <button
+                                class="text-xs font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-white">
+                                View Expert Profile <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="group relative bg-white dark:bg-[#1a3a30] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all cursor-pointer">
+                    <div class="relative h-[420px] w-full overflow-hidden">
+                        <img alt="Marcus Thorne"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-[#0d1b17]/90 via-[#0d1b17]/20 to-transparent">
+                        </div>
+                        <div
+                            class="absolute top-6 right-6 bg-deep-forest/80 backdrop-blur-md border border-white/20 text-white p-4 rounded-2xl shadow-2xl flex flex-col items-center">
+                            <div class="flex items-center gap-1.5 mb-1.5">
+                                <span
+                                    class="material-symbols-outlined text-primary text-xl fill-current">verified</span>
+                                <span class="text-[11px] font-black uppercase tracking-widest text-primary">Verified
+                                    Expert</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-lg font-black">5.0 ★</span>
+                                <div class="w-[1px] h-4 bg-white/20"></div>
+                                <span class="text-[11px] font-bold opacity-80">2.1k Certified</span>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-8 left-8 right-8 text-white">
+                            <span
+                                class="bg-primary text-[#0d1b17] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg mb-3 inline-block">Design</span>
+                            <h3 class="text-3xl font-black mb-2">Marcus Thorne</h3>
+                            <p class="text-sm text-primary font-medium italic opacity-90 mb-4 line-clamp-1">"Visual
+                                identity construction for elite agencies."</p>
+                            <button
+                                class="text-xs font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-white">
+                                View Expert Profile <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="px-6 md:px-20 py-24">
+            <div
+                class="bg-deep-forest text-white rounded-[2.5rem] p-12 md:p-20 flex flex-col items-center text-center gap-8 relative overflow-hidden border border-primary/20">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full"></div>
+                <h2 class="text-4xl md:text-5xl font-black max-w-2xl leading-tight">Elevate the next generation of
+                    professionals</h2>
+                <p class="text-[#a0c5ba] text-lg max-w-xl">
+                    We are looking for authority figures. If you have 10+ years of domain expertise, our platform offers
+                    the highest tier for specialized instruction.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 relative z-10">
+                    <button
+                        class="bg-primary text-[#0d1b17] px-10 py-4 rounded-xl font-bold text-lg hover:scale-[1.05] transition-transform">
+                        Apply as Master Mentor
+                    </button>
+                    <button
+                        class="bg-white/10 backdrop-blur-md text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-colors">
+                        Partnership Programs
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-white dark:bg-[#0d1b17] border-t border-[#e7f3ef] dark:border-[#1a3a30] pt-16 pb-8 px-6 md:px-20">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div class="flex flex-col gap-6">
+                <div class="flex items-center gap-2">
+                    <div class="text-primary">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold tracking-tight">Organic Learn</h2>
+                </div>
+                <p class="text-sm opacity-60 leading-relaxed">
+                    A premium repository for professional wisdom. Focused on mastery, longevity, and high-impact
+                    educational design.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Mastery Tracks</h4>
+                <ul class="flex flex-col gap-4 text-sm opacity-70">
+                    <li><a class="hover:text-primary transition-colors" href="#">Expert Index</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Technical Blueprints</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Corporate Training</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Global Certifications</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Academic Support</h4>
+                <ul class="flex flex-col gap-4 text-sm opacity-70">
+                    <li><a class="hover:text-primary transition-colors" href="#">Scholarships</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Research Ethics</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Privacy Hub</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Mentorship Terms</a></li>
+                </ul>
+            </div>
+            <div class="flex flex-col gap-6">
+                <h4 class="font-bold">Ready to teach?</h4>
+                <button class="bg-primary text-[#0d1b17] w-full py-3 rounded-xl font-bold text-sm">
+                    Apply to Mentor
+                </button>
+                <div class="flex gap-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-background-light dark:bg-[#1a3a30] flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                        <span class="material-symbols-outlined text-lg">public</span>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-full bg-background-light dark:bg-[#1a3a30] flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                        <span class="material-symbols-outlined text-lg">share</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="max-w-[1440px] mx-auto border-t border-[#e7f3ef] dark:border-[#1a3a30] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
+            <p>© 2024 Organic Learn Mastery Edition. All rights reserved.</p>
+            <p>Architected for the ambitious professional.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

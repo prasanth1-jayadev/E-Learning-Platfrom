@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Organic Learn - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: '#2beead' },
+          fontFamily: { display: ['Be Vietnam Pro', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-display bg-white text-gray-900">
+
+<!-- NAVBAR -->
+<nav class="sticky top-0 z-50 bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+  <div class="flex items-center gap-8">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 bg-brand rounded-sm flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 48 48"><path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"/></svg>
+      </div>
+      <span class="font-bold text-sm text-gray-800">Organic Learn</span>
+    </div>
+    <div class="hidden md:flex items-center gap-6 text-sm text-gray-500 font-medium">
+      <a href="#" class="hover:text-gray-900 transition">Courses</a>
+      <a href="#" class="hover:text-gray-900 transition">Tutors</a>
+      <a href="#" class="hover:text-gray-900 transition">Mentors</a>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <a href="/tutor/signup" class="px-4 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">
+  Become a Tutor
+</a>
+    <button class="p-2 text-gray-400 hover:text-gray-600"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
+    <button class="p-2 text-gray-400 hover:text-gray-600"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></button>
+    <a href="/user/profile" class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center hover:ring-2 hover:ring-brand transition">
+      <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="bg-[#f6f8f7] px-6 py-16 md:py-20">
+  <div class="max-w-6xl mx-auto flex items-center justify-between gap-12">
+    <div class="max-w-lg">
+      <span class="text-brand text-xs font-bold uppercase tracking-widest mb-3 block">— Redefine how you learn</span>
+      <h1 class="text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-4">
+        The art of <span class="text-brand italic">deep work</span><br/>starts here.
+      </h1>
+      <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm">
+        Beyond simple tutorials. We provide the workflows and blueprints for professional excellence through rigorous, expert-led curricula.
+      </p>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex-1 max-w-xs">
+          <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" placeholder="Explore what you want to learn..." class="text-xs text-gray-500 bg-transparent focus:outline-none w-full"/>
+        </div>
+        <button class="px-5 py-2.5 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition whitespace-nowrap">Start Learning</button>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex -space-x-2">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+        </div>
+        <span class="text-xs text-gray-500">Professional learners who started with us today</span>
+      </div>
+    </div>
+    <!-- Hero visual -->
+    <div class="hidden md:flex flex-col gap-3 flex-shrink-0">
+      <div class="w-64 h-48 bg-[#0d1b17] rounded-2xl grid grid-cols-2 gap-2 p-4">
+        <div class="bg-[#1a3a2e] rounded-xl"></div>
+        <div class="bg-[#1a3a2e] rounded-xl"></div>
+        <div class="bg-brand/20 rounded-xl col-span-2 flex items-center justify-center">
+          <div class="w-8 h-8 bg-brand/30 rounded-lg"></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-3 w-48 ml-auto">
+        <p class="text-[10px] font-bold text-gray-800 mb-1">Expert Academy</p>
+        <p class="text-[9px] text-gray-400 mb-2">Launching 12 of 24 courses<br/>for certified instructors</p>
+        <div class="w-full h-1.5 bg-gray-100 rounded-full"><div class="h-1.5 bg-brand rounded-full w-1/2"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURATED LEARNING PATHS -->
+<section class="px-6 py-14 max-w-6xl mx-auto">
+  <span class="text-brand text-xs font-bold uppercase tracking-widest mb-2 block">— Structured for mastery</span>
+  <div class="flex items-end justify-between mb-6">
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Curated Learning Paths</h2>
+      <p class="text-gray-400 text-sm mt-1 max-w-md">Seriously designed to help you learn the technical and business skills demanded by industry.</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <h3 class="font-bold text-gray-900 text-sm">UI/UX Mastery</h3>
+          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Learn user-centered design methodology, prototyping, and design systems.</p>
+        </div>
+        <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+          <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+        </div>
+      </div>
+      <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
+    </div>
+    <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <h3 class="font-bold text-gray-900 text-sm">Cloud Architecture</h3>
+          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Master AWS, GCP and Azure infrastructure design for scalable systems.</p>
+        </div>
+        <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+          <svg class="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+        </div>
+      </div>
+      <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
+    </div>
+    <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <h3 class="font-bold text-gray-900 text-sm">Full-Stack Lead</h3>
+          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Go from developer to technical lead with system design and team skills.</p>
+        </div>
+        <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+          <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        </div>
+      </div>
+      <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TOP COURSES -->
+<style>
+  .course-card { position: relative; overflow: hidden; }
+  .course-card .ribbon { position: absolute; overflow: hidden; width: 120px; height: 120px; top: -6px; left: -6px; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .course-card .ribbon::before { content: attr(data-label); position: absolute; width: 150%; height: 34px; background-image: linear-gradient(45deg, #ff6547 0%, #ffb144 51%, #ff7053 100%); transform: rotate(-45deg) translateY(-18px); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+  .course-card .ribbon::after { content: ''; position: absolute; width: 8px; bottom: 0; left: 0; height: 8px; z-index: -1; box-shadow: 112px -112px #cc3f47; background-image: linear-gradient(45deg, #FF512F 0%, #F09819 51%, #FF512F 100%); }
+  .course-card .ribbon-free::before { background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%); content: 'FREE'; }
+  .course-card .ribbon-free::after { box-shadow: 112px -112px #059669; background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%); }
+  .course-card { transition: transform .3s, box-shadow .3s; }
+  .course-card:hover { transform: scale(0.97); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+</style>
+
+<section class="px-6 py-10 max-w-6xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-black text-gray-900">Top Courses in UI/UX Mastery</h2>
+    <div class="flex gap-2">
+      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
+      <span class="ribbon ribbon-free"></span>
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-28 object-cover" alt="course"/>
+      <div class="p-3">
+        <h4 class="text-xs font-bold text-gray-900 mb-1">Design System Architecture</h4>
+        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Build scalable, consistent design systems for enterprise products.</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.9</span></div>
+          <span class="text-xs font-bold text-brand">Free</span>
+        </div>
+      </div>
+    </div>
+    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
+      <span class="ribbon" data-label="Premium"></span>
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-full h-28 object-cover" alt="course"/>
+      <div class="p-3">
+        <h4 class="text-xs font-bold text-gray-900 mb-1">Psychology of Conversion</h4>
+        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Master behavioral design principles that drive user decisions.</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.8</span></div>
+          <span class="text-xs font-bold text-gray-900">₹499</span>
+        </div>
+      </div>
+    </div>
+    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
+      <span class="ribbon" data-label="Premium"></span>
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-full h-28 object-cover" alt="course"/>
+      <div class="p-3">
+        <h4 class="text-xs font-bold text-gray-900 mb-1">Data-Driven UX Strategy</h4>
+        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Leverage analytics and testing to inform design decisions.</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.7</span></div>
+          <span class="text-xs font-bold text-gray-900">₹799</span>
+        </div>
+      </div>
+    </div>
+    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
+      <span class="ribbon" data-label="Premium"></span>
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-28 object-cover" alt="course"/>
+      <div class="p-3">
+        <h4 class="text-xs font-bold text-gray-900 mb-1">Micro-Interaction Mastery</h4>
+        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Top-tier delightful feedback design using modern animation.</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.9</span></div>
+          <span class="text-xs font-bold text-gray-900">₹999</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANCED CURRICULUMS -->
+<section class="bg-[#f6f8f7] px-6 py-14">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-black text-gray-900">Advanced Curriculums</h2>
+        <p class="text-gray-400 text-sm mt-1">Continuously evolving, intelligently designed for serious learners.</p>
+      </div>
+      <a href="#" class="text-brand text-xs font-bold hover:underline">See All</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+        </div>
+        <p class="text-sm font-bold text-gray-900">Design</p>
+        <p class="text-[10px] text-gray-400 mt-1">48+ Courses</p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        </div>
+        <p class="text-sm font-bold text-gray-900">Development</p>
+        <p class="text-[10px] text-gray-400 mt-1">72+ Courses</p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+        <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <p class="text-sm font-bold text-gray-900">Business</p>
+        <p class="text-[10px] text-gray-400 mt-1">36+ Courses</p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+        <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+        </div>
+        <p class="text-sm font-bold text-gray-900">Marketing</p>
+        <p class="text-[10px] text-gray-400 mt-1">29+ Courses</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFIED TUTOR SHOWCASE -->
+<style>
+  .tutor-card { position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s; }
+  .tutor-card:hover { transform: scale(0.97); box-shadow: 0 16px 40px rgba(0,0,0,0.25); }
+  .tutor-card .t-ribbon { position: absolute; overflow: hidden; width: 140px; height: 140px; top: -8px; left: -8px; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .tutor-card .t-ribbon::before { content: 'Expert Certified'; position: absolute; width: 150%; height: 34px; background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%); transform: rotate(-45deg) translateY(-18px); display: flex; align-items: center; justify-content: center; color: #0d1b17; font-weight: 700; font-size: 8px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+  .tutor-card .t-ribbon::after { content: ''; position: absolute; width: 8px; bottom: 0; left: 0; height: 8px; z-index: -1; box-shadow: 124px -124px #059669; background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%); }
+</style>
+<section class="px-6 py-14 max-w-6xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Certified Tutor Showcase</h2>
+      <p class="text-gray-400 text-sm mt-1">Learn directly from verified experts who offer the highest bar for professional instruction.</p>
+    </div>
+    <div class="flex gap-2">
+      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-full object-cover" alt="Alex Rivera"/>
+      <span class="t-ribbon"></span>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
+      <div class="absolute bottom-4 left-4 right-4">
+        <div class="flex items-center gap-1 mb-1"><span class="text-yellow-400 text-xs">★</span><span class="text-white text-xs font-bold">4.9</span><span class="text-gray-300 text-[10px] ml-1">124 reviews</span></div>
+        <p class="text-white font-bold text-sm">Alex Rivera</p>
+        <p class="text-gray-300 text-[10px]">Senior UX Lead at Google</p>
+        <a href="#" class="text-brand text-[10px] font-bold hover:underline">View Tutor Profile →</a>
+      </div>
+    </div>
+    <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-full h-full object-cover" alt="Sarah Chen"/>
+      <span class="t-ribbon"></span>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
+      <div class="absolute bottom-4 left-4 right-4">
+        <div class="flex items-center gap-1 mb-1"><span class="text-yellow-400 text-xs">★</span><span class="text-white text-xs font-bold">4.8</span><span class="text-gray-300 text-[10px] ml-1">98 reviews</span></div>
+        <p class="text-white font-bold text-sm">Sarah Chen</p>
+        <p class="text-gray-300 text-[10px]">Product Designer at Figma</p>
+        <a href="#" class="text-brand text-[10px] font-bold hover:underline">View Tutor Profile →</a>
+      </div>
+    </div>
+    <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-full h-full object-cover" alt="Marcus Thorne"/>
+      <span class="t-ribbon"></span>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
+      <div class="absolute bottom-4 left-4 right-4">
+        <div class="flex items-center gap-1 mb-1"><span class="text-yellow-400 text-xs">★</span><span class="text-white text-xs font-bold">5.0</span><span class="text-gray-300 text-[10px] ml-1">1 review</span></div>
+        <p class="text-white font-bold text-sm">Marcus Thorne</p>
+        <p class="text-gray-300 text-[10px]">Engineering Lead at Stripe</p>
+        <a href="#" class="text-brand text-[10px] font-bold hover:underline">View Tutor Profile →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="px-6 py-6 max-w-6xl mx-auto">
+  <div class="bg-[#0d1b17] rounded-3xl px-10 py-14 text-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20" style="background: radial-gradient(ellipse at 50% 0%, #2beead 0%, transparent 70%)"></div>
+    <div class="relative z-10">
+      <h2 class="text-3xl font-black text-white leading-tight mb-4">Elevate the next<br/>generation of<br/>professionals</h2>
+      <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8 leading-relaxed">We're looking for ambitious figures of tomorrow. 10+ years of domain expertise, our platform only offers the highest bar for specialized instruction.</p>
+      <div class="flex items-center justify-center gap-4 flex-wrap">
+        <a href="/tutor/signup" class="px-6 py-3 bg-brand text-gray-900 font-bold text-sm rounded-full hover:brightness-110 transition">Apply as Master Mentor</a>
+        <a href="#" class="px-6 py-3 border border-brand/40 text-brand font-bold text-sm rounded-full hover:bg-brand/10 transition">Partnership Programs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="px-6 py-12 border-t border-gray-100 mt-6">
+  <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-6 h-6 bg-brand rounded-sm"></div>
+        <span class="font-bold text-sm text-gray-800">Organic Learn</span>
+      </div>
+      <p class="text-xs text-gray-400 leading-relaxed">A professional learning platform dedicated to depth, architectural excellence, and career mastery.</p>
+    </div>
+    <div>
+      <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Mastery Tracks</p>
+      <ul class="space-y-2 text-xs text-gray-400">
+        <li><a href="#" class="hover:text-brand transition">Course Library</a></li>
+        <li><a href="#" class="hover:text-brand transition">Tutor at Organiclearn</a></li>
+        <li><a href="#" class="hover:text-brand transition">Certified Courses</a></li>
+        <li><a href="#" class="hover:text-brand transition">Curriculum Paths</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Academic Support</p>
+      <ul class="space-y-2 text-xs text-gray-400">
+        <li><a href="#" class="hover:text-brand transition">About Us</a></li>
+        <li><a href="#" class="hover:text-brand transition">Become a Tutor</a></li>
+        <li><a href="#" class="hover:text-brand transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-brand transition">Whitepapers</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Ready to Learn?</p>
+      <div class="flex gap-2">
+        <input type="email" placeholder="your@email.com" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand/40"/>
+        <button class="px-3 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">Apply</button>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+    © 2024 Organic Learn — All Rights Reserved
+  </div>
+</footer>
+
+</body>
+</html>

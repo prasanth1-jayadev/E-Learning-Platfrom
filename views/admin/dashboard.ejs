@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organic Learn - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#34D399", // Mint Green
+              "background-light": "#F9FAFB",
+              "background-dark": "#111827",
+              "surface-light": "#FFFFFF",
+              "surface-dark": "#1F2937",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-item-active {
+            background-color: #34D399;
+            color: white;
+        }::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4B5563;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex">
+<aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-20 overflow-y-auto">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-icons-outlined text-white text-xl">eco</span>
+</div>
+<h1 class="text-xl font-bold text-slate-800 dark:text-white">Organic Learn</h1>
+</div>
+<div class="flex items-center gap-3 p-3 mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+<img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBy6t6x3XGeEVMdPCe838zH-7i5En9rlh7PgpHDzjRbXKymzOygzOL20JRpmUuUbvDJEicb7rfsXsrhNyQYh7ZtAz2UEUwmKBCcIRyCt0f-8-f3t4DJxdXPg0lBmYym9EqunFZR9lVzTojicJ4sE6P_5uLhYBc5e43yHbis4ChXGJfwRGodVos9mVN01vJ8nEHzYF_F0MA5JMLw2c1K70mlUEtnxpFtUkFi68NwNWTfHjS-pcePdUJpSd6Zi30gqtAb3tODFE4Nwk"/>
+<div class="overflow-hidden">
+<p class="text-sm font-semibold truncate">Avirag Admin</p>
+<a class="text-xs text-primary hover:underline" href="#">View Profile</a>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">category</span>
+<span class="font-medium">Categories</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">school</span>
+<span class="font-medium">Students</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">co_present</span>
+<span class="font-medium">Tutors</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">shopping_cart</span>
+<span class="font-medium">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">account_balance_wallet</span>
+<span class="font-medium">Wallet</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">menu_book</span>
+<span class="font-medium">Courses</span>
+</a><a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all" href="#">
+<span class="material-icons-outlined text-[20px]">local_offer</span>
+<span class="font-medium">Coupons</span>
+</a>
+</nav>
+</div>
+
+  <!-- Admin Dashboard Sidebar or Footer -->
+<div class="mt-auto p-6 border-t border-slate-200 dark:border-slate-800">
+  <a href="/admin/logout" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 font-medium transition">
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+    </svg>
+    Logout
+  </a>
+</div>
+<!-- <div class="mt-auto p-6 border-t border-slate-200 dark:border-slate-800">
+<button class="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 w-full rounded-xl transition-all">
+<span class="material-icons-outlined text-[20px]">logout</span>
+<span class="font-medium">Logout</span>
+</button>
+</div> -->
+</aside>
+<main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
+<header class="flex justify-between items-center mb-10">
+<div>
+<h2 class="text-3xl font-bold text-slate-800 dark:text-white">Dashboard</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Welcome to your admin dashboard</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg relative">
+<span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
+<span class="absolute top-2 right-2 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-surface-light dark:border-surface-dark">7</span>
+</button>
+</div>
+<button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
+</button>
+</div>
+</header>
+<section>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+<h3 class="text-xl font-semibold text-slate-800 dark:text-white">Analytics Overview</h3>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg flex items-center gap-2 transition-colors">
+<span class="material-icons-outlined text-base">picture_as_pdf</span> PDF
+                    </button>
+<button class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg flex items-center gap-2 transition-colors">
+<span class="material-icons-outlined text-base">file_download</span> Excel
+                    </button>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-8">
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+<button class="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-sm">This Month</button>
+<button class="px-6 py-2 text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-slate-900 dark:hover:text-slate-200">Last Month</button>
+<button class="px-6 py-2 text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-slate-900 dark:hover:text-slate-200">This Year</button>
+</div>
+<div class="flex items-center gap-3 ml-auto">
+<div class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+<span class="material-icons-outlined text-sm">calendar_today</span>
+<span>Custom Range:</span>
+</div>
+<div class="flex items-center gap-2">
+<input class="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary focus:border-primary px-3 py-2 w-40" type="date"/>
+<span class="text-slate-400 italic">to</span>
+<input class="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary focus:border-primary px-3 py-2 w-40" type="date"/>
+<button class="px-5 py-2 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Apply</button>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-start">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Active Students</p>
+<h4 class="text-3xl font-bold text-slate-800 dark:text-white mt-1">84</h4>
+<p class="text-xs text-slate-400 dark:text-slate-500 mt-2">Total: 86</p>
+</div>
+<div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-blue-500">
+<span class="material-icons-outlined">group</span>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-start">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Tutors</p>
+<h4 class="text-3xl font-bold text-slate-800 dark:text-white mt-1">24</h4>
+<p class="text-xs text-slate-400 dark:text-slate-500 mt-2">Verified: 22</p>
+</div>
+<div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl flex items-center justify-center text-emerald-500">
+<span class="material-icons-outlined">school</span>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-start">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Courses</p>
+<h4 class="text-3xl font-bold text-slate-800 dark:text-white mt-1">14</h4>
+<p class="text-xs text-slate-400 dark:text-slate-500 mt-2">Active: 13</p>
+</div>
+<div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center justify-center text-purple-500">
+<span class="material-icons-outlined">menu_book</span>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-start">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Revenue</p>
+<h4 class="text-3xl font-bold text-slate-800 dark:text-white mt-1">Rs.27.6K</h4>
+<p class="text-xs text-slate-400 dark:text-slate-500 mt-2">Orders: 73</p>
+</div>
+<div class="w-12 h-12 bg-amber-50 dark:bg-amber-900/20 rounded-xl flex items-center justify-center text-amber-500">
+<span class="material-icons-outlined">payments</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-8">
+<h4 class="text-lg font-bold text-slate-800 dark:text-white">Revenue &amp; Profit Overview</h4>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-blue-500"></span>
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Revenue</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Profit</span>
+</div>
+</div>
+</div>
+<div class="relative h-[300px] w-full mt-4 flex items-end justify-between gap-4 px-2">
+<div class="flex-1 flex flex-col justify-end gap-1 h-full">
+<div class="w-full bg-blue-100 dark:bg-blue-900/20 rounded-t-md relative group h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-blue-500 rounded-t-md h-3/4 transition-all duration-500"></div>
+</div>
+<div class="w-full bg-emerald-100 dark:bg-emerald-900/20 rounded-t-md relative group h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-primary rounded-t-md h-2/4 transition-all duration-500"></div>
+</div>
+<span class="text-[10px] text-slate-400 text-center mt-2">Jan</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-1 h-full">
+<div class="w-full bg-blue-100 dark:bg-blue-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-blue-500 rounded-t-md h-4/5"></div>
+</div>
+<div class="w-full bg-emerald-100 dark:bg-emerald-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-primary rounded-t-md h-3/5"></div>
+</div>
+<span class="text-[10px] text-slate-400 text-center mt-2">Feb</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-1 h-full">
+<div class="w-full bg-blue-100 dark:bg-blue-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-blue-500 rounded-t-md h-5/6"></div>
+</div>
+<div class="w-full bg-emerald-100 dark:bg-emerald-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-primary rounded-t-md h-4/6"></div>
+</div>
+<span class="text-[10px] text-slate-400 text-center mt-2">Mar</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-1 h-full">
+<div class="w-full bg-blue-100 dark:bg-blue-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-blue-500 rounded-t-md h-2/3"></div>
+</div>
+<div class="w-full bg-emerald-100 dark:bg-emerald-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-primary rounded-t-md h-1/3"></div>
+</div>
+<span class="text-[10px] text-slate-400 text-center mt-2">Apr</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-1 h-full">
+<div class="w-full bg-blue-100 dark:bg-blue-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-blue-500 rounded-t-md h-full"></div>
+</div>
+<div class="w-full bg-emerald-100 dark:bg-emerald-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-primary rounded-t-md h-4/5"></div>
+</div>
+<span class="text-[10px] text-slate-400 text-center mt-2">May</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-1 h-full">
+<div class="w-full bg-blue-100 dark:bg-blue-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-blue-500 rounded-t-md h-3/4"></div>
+</div>
+<div class="w-full bg-emerald-100 dark:bg-emerald-900/20 rounded-t-md relative h-1/2">
+<div class="absolute bottom-0 left-0 w-full bg-primary rounded-t-md h-1/2"></div>
+</div>
+<span class="text-[10px] text-slate-400 text-center mt-2">Jun</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

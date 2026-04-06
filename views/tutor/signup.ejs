@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Scholara | Registration & Verification</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#109D89",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#11211f",
+                    },
+                    fontFamily: { "display": ["Inter"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; }
+        .form-scrollbar::-webkit-scrollbar { width: 6px; }
+        .form-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .form-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+    <script>
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, '', window.location.href);
+            window.addEventListener('popstate', function() { window.history.pushState(null, '', window.location.href); });
+        }
+    </script>
+</head>
+
+<body class="h-screen overflow-hidden font-sans">
+    <div class="flex flex-col md:flex-row h-screen overflow-hidden">
+        <!-- LEFT PANEL -->
+        <div class="hidden md:flex md:w-1/2 relative overflow-hidden bg-primary h-full">
+            <div class="absolute inset-0 z-0 opacity-40">
+                <img alt="Student learning" class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuphaCAe4M3iKbJb2HSoSptPgk0DSo3VN9Emj5ZDWlpNgXFZD410pjGue0hyV0TxBJtfDn4x6winceKsYuWwuDCuHzxfDIt30IEg3vAMlzGHey1i7nN0yCKZMCAXB3MNNwIZGtORSWXqSHQjfDy-CZ5ll8wNOOlHw3Hb0wyu1-SlpSrnQyMae68QzznCbXyS9ReMDR1_jZEjtW0ZgswumspPcD5V4PMfabXH_JCHK3DQRQyWWA0_rSESxphaI2bq5UHQRGj86vJEI" />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-transparent to-background-dark/20 z-10"></div>
+            <div class="relative z-20 flex flex-col justify-end p-12 lg:p-20 text-white">
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                            <span class="material-icons text-primary text-2xl">school</span>
+                        </div>
+                        <span class="text-2xl font-bold tracking-tight">Scholara</span>
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-bold leading-tight mb-6">
+                        Empower the <br />Next Generation <br />of Experts
+                    </h1>
+                    <p class="text-lg text-slate-200 max-w-md">
+                        Join our global community of learners and get access to elite educators to help you grow and
+                        succeed in your academic journey.
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 text-sm text-slate-300">
+                    <div class="flex -space-x-2">
+                        <img alt="Avatar" class="w-8 h-8 rounded-full border-2 border-primary bg-slate-400"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZgpouqHzzs7yq92HDfrWZUqSqAjhtbJtICcHsDYwAGq2Utxq5LDYbNExQ3cligbcX2dnhHjKA3dw9_3N5C9bgoL5JXmLyrQh24KGykIt91mKT3H6NnVGZKtma_VtFTK-b4aAU_PeFPoAJekx7ushacY1uO570qPJ9FhMqRNvJAhS4X1JnE-NqzmRTfHEzckIXqYDn0T-wfWw4lNqlwDosmVaSHRpwgS9q4W6OQ5WRze6ac9ruo1UirHw8QZPmmUVAx9mIDbX3La0" />
+                        <img alt="Avatar" class="w-8 h-8 rounded-full border-2 border-primary bg-slate-400"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEVeKqEIrp8rQOZe-4LV0EIjlwU5XcpTOwm9lxgf9kLzzptuy-S6ftxK_pSsSePg1mSuCY_72iGBlcPO8wx0S21kF5zK0zgKpxLLVYaQ8aCe-IIHf76cEBpyGeqUfxEGQW9Ow2Cs50wgddbKRYaF2DreQ4MTyBMoILdBG6FoNTSgeCxXOafE7urT_ngF48-BS7KyGZAlC_pVbAYmC_k1A1-XgoCY9PyWBUzTW3Uduq9lW09ey7vd5MueqLOjQ-SV7SqdhyX09GL7g" />
+                        <img alt="Avatar" class="w-8 h-8 rounded-full border-2 border-primary bg-slate-400"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqdjCL5p2Iv8Johq9dsjort2GllShDrvZtOHsbeyKIgYFahUqgXfVVB467ML6pLfqD41YH6PBoMr2E0j88f4p38BdqoTowlJYFKWvK6jDB9Til5k0ukEUsmpjJdfN7tjS5BZ2gH-jp2OBuFygfP94JM710GhBcHKn-FSxVIJ7xi7MW_Tk39M4zjeUX8YpIXCxePWbJJqQejdusMp2hZLTkpxiofGP5Hmd6nrjtYgGiPRx7F9vsCy-dxBwv66cWfk9dHF-gHJkpX4E" />
+                    </div>
+                    <span>Joined by 50,000+ students worldwide</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="w-full md:w-1/2 bg-white dark:bg-background-dark flex flex-col h-full overflow-y-auto">
+            <div class="flex-1 flex flex-col justify-center items-center px-6 py-8 md:px-16 lg:px-20">
+                <div class="w-full max-w-md my-8">
+                    <div class="md:hidden flex items-center gap-2 mb-8 justify-center">
+                        <span class="material-icons text-primary text-3xl">school</span>
+                        <span class="text-2xl font-bold dark:text-white">Scholara</span>
+                    </div>
+                    <div class="mb-10 text-center md:text-left">
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Create Account</h2>
+                        <p class="text-slate-500 dark:text-slate-400">Please provide your details and professional
+                            documents for verification.</p>
+                    </div>
+
+                    <form class="space-y-6" id="tutorSignupForm">
+                        <div class="grid grid-cols-1 gap-5">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-800 mb-2">Full Name</label>
+                                <input class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
+                                    id="fullName" placeholder="John Doe" type="text" required />
+                                <p class="text-red-500 text-xs mt-1 hidden" id="fullNameError">Full Name is required</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-800 mb-2">Email Address</label>
+                                <input class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
+                                    id="email" placeholder="john@example.com" type="email" required />
+                                <p class="text-red-500 text-xs mt-1 hidden" id="emailError">Valid Email is required</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-800 mb-2">Create Password</label>
+                                <div class="relative">
+                                    <input class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition pr-12"
+                                        id="password" placeholder="••••••••" type="password" required />
+                                    <button type="button"
+                                        onclick="this.previousElementSibling.type=this.previousElementSibling.type==='password'?'text':'password'"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </button>
+                                    <p class="text-red-500 text-xs mt-1 hidden" id="passwordError">Password must be at least 8 characters</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-800 mb-2">Confirm Password</label>
+                                <div class="relative">
+                                    <input class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition pr-12"
+                                        id="confirmPassword" placeholder="Repeat your password" type="password" required />
+                                    <button type="button"
+                                        onclick="this.previousElementSibling.type=this.previousElementSibling.type==='password'?'text':'password'"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </button>
+                                    <p class="text-red-500 text-xs mt-1 hidden" id="confirmPasswordError">Passwords must match</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Verification -->
+                        <div class="pt-2">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wider">
+                                Professional Verification
+                            </h3>
+                            <div class="relative group">
+                                <!-- Default Upload Area -->
+                                <label id="uploadArea" class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:border-primary/50 transition-all cursor-pointer group-hover:scale-[1.02] active:scale-[0.98]">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6" id="uploadContent">
+                                        <span class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500 mb-3 group-hover:text-primary transition-colors">cloud_upload</span>
+                                        <p class="text-sm text-slate-600 dark:text-slate-400 font-medium group-hover:text-slate-800 transition-colors">Upload ID or Professional Certificate</p>
+                                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">(PDF, PNG, JPG - Max 5MB)</p>
+                                    </div>
+                                    <input accept=".pdf,.png,.jpg,.jpeg" id="certificateFile" class="hidden" type="file" />
+                                </label>
+
+                                <!-- File Selected State (Hidden by default) -->
+                                <div id="fileSelectedArea" class="hidden w-full border-2 border-green-300 bg-green-50 rounded-xl p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-green-600" id="fileIcon">description</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-green-800" id="fileName">document.pdf</p>
+                                                <p class="text-xs text-green-600" id="fileSize">2.3 MB</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-green-600 text-lg">check_circle</span>
+                                            <button type="button" id="removeFile" class="text-red-500 hover:text-red-700 transition-colors">
+                                                <span class="material-symbols-outlined text-lg">close</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-green-600 mt-2 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">check</span>
+                                        File uploaded successfully
+                                    </p>
+                                </div>
+
+                                <p class="text-red-500 text-xs mt-1 hidden" id="fileError">Please upload a certificate</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-primary hover:bg-[#0E8A78] text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                            Create Account
+                            <span class="material-icons text-lg">arrow_forward</span>
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center">
+                        <p class="text-slate-600 dark:text-slate-400">
+                            Already have an account?
+                            <a class="text-primary font-semibold hover:underline ml-1" href="/tutor/login">Sign In</a>
+                        </p>
+                    </div>
+
+                    <div class="mt-12 text-center text-[10px] text-slate-400 uppercase tracking-[2px]">
+                        © 2024 Scholara E-Learning Inc. All Rights Reserved.
+                    </div>
+                </div>
+            </div>
+
+            <footer class="px-6 py-6 md:px-16 border-t border-[#e7f3ef] flex justify-between items-center text-[10px] opacity-50 font-bold uppercase tracking-widest mt-auto">
+                <p>© 2024 Scholara</p>
+                <div class="flex gap-4">
+                    <a class="hover:text-primary" href="#">Privacy</a>
+                    <a class="hover:text-primary" href="#">Terms</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+  
+     <script>
+const form = document.getElementById('tutorSignupForm');
+const file = document.getElementById('certificateFile');
+
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById('fullName');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirmPassword');
+
+    const fullNameError = document.getElementById('fullNameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const fileError = document.getElementById('fileError');
+
+    // Reset errors
+    [fullNameError, emailError, passwordError, confirmPasswordError, fileError]
+        .forEach(el => el.classList.add('hidden'));
+
+    let valid = true;
+
+    // Full Name
+    if (!fullName.value.trim()) {
+        fullNameError.classList.remove('hidden');
+        valid = false;
+    }
+
+    // Email
+    if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)) {
+        emailError.classList.remove('hidden');
+        valid = false;
+    }
+
+    // Password
+    if (!password.value || password.value.length < 8) {
+        passwordError.classList.remove('hidden');
+        valid = false;
+    }
+
+    // Confirm Password (FIXED)
+    if (!confirm.value) {
+        confirmPasswordError.textContent = 'Please confirm your password';
+        confirmPasswordError.classList.remove('hidden');
+        valid = false;
+    } else if (password.value !== confirm.value) {
+        confirmPasswordError.textContent = 'Passwords do not match';
+        confirmPasswordError.classList.remove('hidden');
+        valid = false;
+    }
+
+    // File validation (FIXED)
+    const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
+
+    if (file.files.length === 0) {
+        fileError.textContent = 'Please upload your certificate';
+        fileError.classList.remove('hidden');
+        valid = false;
+    } else if (!allowedTypes.includes(file.files[0].type)) {
+        fileError.textContent = 'Only PDF, PNG, JPG allowed';
+        fileError.classList.remove('hidden');
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    try {
+        const formData = new FormData();
+        formData.append('fullName', fullName.value.trim());
+        formData.append('email', email.value.trim());
+        formData.append('password', password.value);
+        formData.append('certificateFile', file.files[0]);
+
+        const response = await fetch('/tutor/signup', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            window.location.href = data.redirect || '/tutor/verify-otp';
+        } else {
+            emailError.textContent = data.message || 'Error';
+            emailError.classList.remove('hidden');
+        }
+
+    } catch (error) {
+        console.error(error);
+        fullNameError.textContent = 'Something went wrong';
+        fullNameError.classList.remove('hidden');
+    }
+});
+
+// Enhanced file upload handling
+file.addEventListener('change', function() {
+    const error = document.getElementById('fileError');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileSelectedArea = document.getElementById('fileSelectedArea');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileIcon = document.getElementById('fileIcon');
+    
+    if (this.files.length > 0) {
+        const selectedFile = this.files[0];
+        const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        
+        // Validate file type
+        if (!allowedTypes.includes(selectedFile.type)) {
+            error.textContent = 'Please upload a valid file (PDF, PNG, JPG only)';
+            error.classList.remove('hidden');
+            this.value = ''; // Clear the input
+            return;
+        }
+        
+        // Validate file size
+        if (selectedFile.size > maxSize) {
+            error.textContent = 'File size must be less than 5MB';
+            error.classList.remove('hidden');
+            this.value = ''; // Clear the input
+            return;
+        }
+        
+        // File is valid - show success state
+        error.classList.add('hidden');
+        uploadArea.classList.add('hidden');
+        fileSelectedArea.classList.remove('hidden');
+        
+        // Update file details
+        fileName.textContent = selectedFile.name;
+        fileSize.textContent = formatFileSize(selectedFile.size);
+        
+        // Set appropriate icon based on file type
+        if (selectedFile.type === 'application/pdf') {
+            fileIcon.textContent = 'picture_as_pdf';
+        } else {
+            fileIcon.textContent = 'image';
+        }
+        
+    } else {
+        // No file selected - show upload area
+        uploadArea.classList.remove('hidden');
+        fileSelectedArea.classList.add('hidden');
+        error.classList.add('hidden');
+    }
+});
+
+// Remove file functionality
+document.getElementById('removeFile').addEventListener('click', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileSelectedArea = document.getElementById('fileSelectedArea');
+    const error = document.getElementById('fileError');
+    
+    // Clear the file input
+    file.value = '';
+    
+    // Show upload area, hide selected area
+    uploadArea.classList.remove('hidden');
+    fileSelectedArea.classList.add('hidden');
+    error.classList.add('hidden');
+});
+
+// Helper function to format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Drag and drop functionality
+const uploadArea = document.getElementById('uploadArea');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight(e) {
+    uploadArea.classList.add('border-primary', 'bg-primary/5');
+}
+
+function unhighlight(e) {
+    uploadArea.classList.remove('border-primary', 'bg-primary/5');
+}
+
+uploadArea.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    if (files.length > 0) {
+        file.files = files;
+        // Trigger change event
+        const event = new Event('change', { bubbles: true });
+        file.dispatchEvent(event);
+    }
+}
+</script>
+
+    
+</body>
+</html>
