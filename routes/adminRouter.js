@@ -17,22 +17,8 @@ router.post('/toggle-block/:tutorId', isAdmin, adminController.toggleTutorBlock)
 
 
 router.get('/students', isAdmin, adminController.getStudents);
+router.post('/toggle-student-block/:studentId', isAdmin, adminController.toggleStudentBlock);
 
 
-router.get('/categories', isAdmin, (req, res) => 
-  res.render('admin/categories', { currentPage: 'categories' })
-);
-
-router.get('/courses', isAdmin, (req, res) => 
-  res.render('admin/courses', { currentPage: 'courses' })
-);
-
-router.get('/coupons', isAdmin, (req, res) => 
-  res.render('admin/coupons', { currentPage: 'coupons' })
-);
-
-router.get('/sales-report', isAdmin, (req, res) => 
-  res.render('admin/sales-report', { currentPage: 'sales-report' })
-);
 
 module.exports = router;

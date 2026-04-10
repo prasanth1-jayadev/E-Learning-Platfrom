@@ -14,9 +14,45 @@ const getProfile = (req, res) => res.render('user/profile');
 const postSignup = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
-    await userService.registerUser({ fullName, email, password });
 
-    req.session.otpEmail   = email;
+    // Server-side validation
+    if (!fullName || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Validate full name (only letters and single spaces between words)
+    const nameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
+    if (!nameRegex.test(fullName.trim())) {
+      return res.status(400).json({ message: 'Full name can only contain letters and single spaces between words' });
+    }
+
+    // Validate name length
+    if (fullName.trim().length < 2 || fullName.trim().length > 50) {
+      return res.status(400).json({ message: 'Full name must be between 2 and 50 characters' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({ message: 'Please enter a valid email address' });
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+      return res.status(400).json({ message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' });
+    }
+
+    await userService.registerUser({ fullName: fullName.trim(), email: email.trim(), password });
+
+    req.session.otpEmail   = email.trim();
     req.session.otpPurpose = 'signup';
 
     res.json({ redirect: '/user/verify-otp' });

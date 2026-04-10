@@ -3,153 +3,259 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Students - Admin Dashboard</title>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <title>Students Management - Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
-
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        primary: "#34D399",
+                        "primary": "#34D399",
                         "background-light": "#F9FAFB",
                         "background-dark": "#111827",
                         "surface-light": "#FFFFFF",
                         "surface-dark": "#1F2937",
                     },
-                    fontFamily: {
-                        display: ["Inter", "sans-serif"],
+                    fontFamily: { 
+                        "display": ["Be Vietnam Pro", "sans-serif"] 
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem", 
+                        "lg": "1rem", 
+                        "xl": "1.5rem", 
+                        "2xl": "2rem", 
+                        "full": "9999px"
                     },
                 },
             },
-        };
+        }
     </script>
 </head>
 
 <body class="font-display bg-background-light text-slate-900 h-screen overflow-hidden flex">
-
     <%- include('../partials/admin-sidebar') %>
-
-    <!-- Main Content -->
+    
     <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-
-        <!-- Header -->
         <header class="mb-8">
-            <h2 class="text-3xl font-bold text-slate-800">Students</h2>
-            <p class="text-slate-500 mt-1">Manage all registered students</p>
+            <h2 class="text-3xl font-bold text-slate-800">Students Management</h2>
+            <p class="text-slate-500 mt-1">Manage student accounts and permissions</p>
+            <div class="mt-4">
+                <div class="text-2xl font-bold text-primary"><%= pagination.totalStudents %></div>
+                <div class="text-sm text-slate-500">Total Students</div>
+            </div>
         </header>
 
-        <!-- Table Container -->
-        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <!-- Search and Filter -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+                    <form method="GET" class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" name="search" value="<%= search %>" 
+                                   placeholder="Search by name or email..." 
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        </div>
+                        <div class="md:w-48">
+                            <select name="blocked" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                <option value="all" <%= blocked === 'all' ? 'selected' : '' %>>All Students</option>
+                                <option value="active" <%= blocked === 'active' ? 'selected' : '' %>>Active Only</option>
+                                <option value="blocked" <%= blocked === 'blocked' ? 'selected' : '' %>>Blocked Only</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="px-6 py-3 bg-primary text-deep-forest font-bold rounded-xl hover:bg-primary/90 transition-colors">
+                            <span class="material-icons-outlined inline-block mr-2">search</span>
+                            Search
+                        </button>
+                        <% if (search || blocked !== 'all') { %>
+                        <a href="/admin/students" class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors">
+                            Clear
+                        </a>
+                        <% } %>
+                    </form>
+                </div>
 
-            <table class="w-full text-sm text-left">
-
-                <!-- Table Head -->
-                <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
-                    <tr>
-                        <th class="px-6 py-3">S.NO</th>
-                        <th class="px-6 py-3">NAME</th>
-                        <th class="px-6 py-3">EMAIL</th>
-                        <th class="px-6 py-3">COURSES</th>
-                        <th class="px-6 py-3">JOINED DATE</th>
-                        <th class="px-6 py-3">STATUS</th>
-                        <th class="px-6 py-3">ACTIONS</th>
-                    </tr>
-                </thead>
-
-                <!-- Table Body -->
-                <tbody class="divide-y">
-
-                    <% if (!students || students.length === 0) { %>
-                        <tr>
-                            <td colspan="7" class="text-center py-6 text-gray-400">
-                                No students found 😕
-                            </td>
-                        </tr>
-                    <% } else { %>
-                        <% students.forEach((student, index) => { %>
-
-                        <tr class="hover:bg-slate-50">
-
-                            <!-- S.NO -->
-                            <td class="px-6 py-4"><%= index + 1 %></td>
-
-                            <!-- NAME -->
-                            <td class="px-6 py-4 flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                                    </svg>
-                                </div>
-                                <%= student.fullName || 'N/A' %>
-                            </td>
-
-                            <!-- EMAIL -->
-                            <td class="px-6 py-4"><%= student.email %></td>
-
-                            <!-- COURSES -->
-                            <td class="px-6 py-4">
-                                <%= student.coursesEnrolled ? student.coursesEnrolled.length : 0 %>
-                            </td>
-
-                            
-                            <td class="px-6 py-4">
-                                <%= new Date(student.createdAt).toLocaleDateString() %>
-                            </td>
-
-                            
-                            <td class="px-6 py-4">
-                                <% if(student.isBlocked){ %>
-                                    <span class="px-2 py-1 text-xs bg-red-100 text-red-600 rounded-full">
-                                        BLOCKED
-                                    </span>
+                <!-- Students Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 border-b border-gray-100">
+                                <tr>
+                                    <th class="text-left py-4 px-6 font-bold text-gray-700">Student</th>
+                                    <th class="text-left py-4 px-6 font-bold text-gray-700">Email</th>
+                                    <th class="text-left py-4 px-6 font-bold text-gray-700">Status</th>
+                                    <th class="text-left py-4 px-6 font-bold text-gray-700">Joined</th>
+                                    <th class="text-center py-4 px-6 font-bold text-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <% if (students && students.length > 0) { %>
+                                    <% students.forEach(student => { %>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-4 px-6">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                                    <span class="text-primary font-bold text-sm">
+                                                        <%= student.fullName ? student.fullName.charAt(0).toUpperCase() : 'U' %>
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div class="font-semibold text-gray-900">
+                                                        <%= student.fullName || 'Unknown User' %>
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">
+                                                        ID: <%= student._id.toString().slice(-6) %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-6">
+                                            <div class="text-gray-900"><%= student.email %></div>
+                                            <div class="text-sm text-gray-500">
+                                                <%= student.isVerified ? 'Verified' : 'Unverified' %>
+                                                <% if (student.googleId) { %>
+                                                    • Google
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-6">
+                                            <% if (student.isBlocked) { %>
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                                                    Blocked
+                                                </span>
+                                            <% } else { %>
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                                    Active
+                                                </span>
+                                            <% } %>
+                                        </td>
+                                        <td class="py-4 px-6">
+                                            <div class="text-gray-900">
+                                                <%= new Date(student.createdAt).toLocaleDateString() %>
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <%= new Date(student.createdAt).toLocaleTimeString() %>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-6 text-center">
+                                            <button onclick="toggleStudentBlock('<%= student._id %>', <%- JSON.stringify(student.isBlocked) %>)"
+                                                    class="<%= student.isBlocked ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' %> px-4 py-2 rounded-lg font-medium transition-colors">
+                                                <%= student.isBlocked ? 'Unblock' : 'Block' %>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
                                 <% } else { %>
-                                    <span class="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">
-                                        ACTIVE
-                                    </span>
+                                    <tr>
+                                        <td colspan="5" class="py-12 text-center">
+                                            <div class="text-gray-400">
+                                                <span class="material-icons-outlined text-4xl mb-2 block">person_off</span>
+                                                No students found
+                                            </div>
+                                        </td>
+                                    </tr>
                                 <% } %>
-                            </td>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            
-                            <td class="px-6 py-4 flex gap-2">
-
-                                <form method="POST" action="/admin/toggle-student-block/<%= student._id %>">
-                                    <% if(student.isBlocked){ %>
-                                        <button class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
-                                            Unblock
-                                        </button>
-                                    <% } else { %>
-                                        <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                                            Block
-                                        </button>
-                                    <% } %>
-                                </form>
-
-                                <a href="/admin/view-student/<%= student._id %>" 
-                                   class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                                   View
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                        <% }) %>
+                    <!-- Pagination -->
+                    <% if (pagination.totalPages > 1) { %>
+                    <div class="border-t border-gray-100 px-6 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                Showing <%= ((pagination.currentPage - 1) * 10) + 1 %> to 
+                                <%= Math.min(pagination.currentPage * 10, pagination.totalStudents) %> 
+                                of <%= pagination.totalStudents %> students
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <% if (pagination.hasPrev) { %>
+                                    <a href="?page=<%= pagination.prevPage %>&search=<%= search %>&blocked=<%= blocked %>" 
+                                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                        Previous
+                                    </a>
+                                <% } %>
+                                
+                                <% for (let i = Math.max(1, pagination.currentPage - 2); i <= Math.min(pagination.totalPages, pagination.currentPage + 2); i++) { %>
+                                    <a href="?page=<%= i %>&search=<%= search %>&blocked=<%= blocked %>" 
+                                       class="px-3 py-2 text-sm font-medium <%= i === pagination.currentPage ? 'text-primary bg-primary/10 border-primary' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50' %> border rounded-lg">
+                                        <%= i %>
+                                    </a>
+                                <% } %>
+                                
+                                <% if (pagination.hasNext) { %>
+                                    <a href="?page=<%= pagination.nextPage %>&search=<%= search %>&blocked=<%= blocked %>" 
+                                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                        Next
+                                    </a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
                     <% } %>
-
-                </tbody>
-
-            </table>
-        </div>
-
+                </div>
     </main>
 
-    
+    <script>
+        async function toggleStudentBlock(studentId, isCurrentlyBlocked) {
+            const action = isCurrentlyBlocked ? 'unblock' : 'block';
+            
+            const result = await Swal.fire({
+                title: `${action.charAt(0).toUpperCase() + action.slice(1)} Student?`,
+                text: `Are you sure you want to ${action} this student?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: isCurrentlyBlocked ? '#10B981' : '#EF4444',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: `Yes, ${action}!`,
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) return;
+            
+            try {
+                const response = await fetch(`/admin/toggle-student-block/${studentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const responseData = await response.json();
+                
+                if (responseData.success) {
+                    await Swal.fire({
+                        title: 'Success!',
+                        text: responseData.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: responseData.message,
+                        icon: 'error'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error changing student status',
+                    icon: 'error'
+                });
+                console.error(error);
+            }
+        }
+    </script>
+
+    <!-- Admin Session Management Script -->
     <script src="/js/admin-session.js"></script>
+    
+    <%- include('../partials/toast') %>
 </body>
 </html>

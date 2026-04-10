@@ -90,7 +90,7 @@ if (isGoogleConfigured) {
         }
     }));
     
-    console.log('✅ Google OAuth configured successfully');
+    console.log(' Google OAuth configured successfully');
 } else {
     
     passport.use('google-user', {

@@ -28,11 +28,35 @@ const loginAdmin = async(email, password) => {
 }
 
 
-const getTutorApplications = async () => {
-    return await Tutor.find({ 
+const getTutorApplications = async (page = 1, limit = 10, search = '') => {
+    const skip = (page - 1) * limit;
+    let query = { 
         isVerified: true, 
         approvalStatus: 'pending' 
-    }).sort({ appliedAt: -1 });
+    };
+    
+    if (search) {
+        query.$or = [
+            { fullName: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } }
+        ];
+    }
+    
+    const tutors = await Tutor.find(query)
+        .sort({ appliedAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    
+    const total = await Tutor.countDocuments(query);
+    
+    return {
+        tutors,
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        hasNext: page < Math.ceil(total / limit),
+        hasPrev: page > 1
+    };
 }
 
 
@@ -85,14 +109,13 @@ const rejectTutor = async (tutorId, adminId) => {
     return await Tutor.findById(tutorId);
 }
 
-const getTutors = async (page = 1, limit = 10, search = '', blocked = 'all') => {
+const getTutors = async (page = 1, limit = 5, search = '', blocked = 'all') => {
     const skip = (page - 1) * limit;
     let query = { 
         isVerified: true,
         approvalStatus: 'approved' 
     };
     
-    //  filter
     if (search) {
         query.$or = [
             { fullName: { $regex: search, $options: 'i' } },
@@ -100,7 +123,6 @@ const getTutors = async (page = 1, limit = 10, search = '', blocked = 'all') => 
         ];
     }
     
-    // Blocked filter
     if (blocked !== 'all') {
         query.isBlocked = blocked === 'blocked';
     }
@@ -122,7 +144,6 @@ const getTutors = async (page = 1, limit = 10, search = '', blocked = 'all') => 
     };
 }
 
-// Block/Unblock tutor
 const toggleTutorBlock = async (tutorId, adminId) => {
     const tutor = await Tutor.findById(tutorId);
     if (!tutor) {

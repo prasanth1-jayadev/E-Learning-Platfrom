@@ -242,25 +242,60 @@ form.addEventListener('submit', async function(e) {
 
     let valid = true;
 
-    // Full Name
+    // Full Name validation
     if (!fullName.value.trim()) {
+        fullNameError.textContent = 'Full name is required';
         fullNameError.classList.remove('hidden');
         valid = false;
+    } else {
+        // Validate full name (only letters and single spaces between words)
+        const nameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
+        if (!nameRegex.test(fullName.value.trim())) {
+            fullNameError.textContent = 'Full name can only contain letters and single spaces between words';
+            fullNameError.classList.remove('hidden');
+            valid = false;
+        } else if (fullName.value.trim().length < 2 || fullName.value.trim().length > 50) {
+            fullNameError.textContent = 'Full name must be between 2 and 50 characters';
+            fullNameError.classList.remove('hidden');
+            valid = false;
+        }
     }
 
-    // Email
-    if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)) {
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.value.trim()) {
+        emailError.textContent = 'Email is required';
+        emailError.classList.remove('hidden');
+        valid = false;
+    } else if (!emailRegex.test(email.value.trim())) {
+        emailError.textContent = 'Please enter a valid email address';
         emailError.classList.remove('hidden');
         valid = false;
     }
 
-    // Password
-    if (!password.value || password.value.length < 8) {
+    // Password validation
+    if (!password.value) {
+        passwordError.textContent = 'Password is required';
         passwordError.classList.remove('hidden');
         valid = false;
+    } else if (password.value.length < 8) {
+        passwordError.textContent = 'Password must be at least 8 characters long';
+        passwordError.classList.remove('hidden');
+        valid = false;
+    } else {
+        // Check for password complexity
+        const hasUpperCase = /[A-Z]/.test(password.value);
+        const hasLowerCase = /[a-z]/.test(password.value);
+        const hasNumbers = /\d/.test(password.value);
+
+        if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+            passwordError.textContent = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+            passwordError.classList.remove('hidden');
+            valid = false;
+        }
     }
 
-    // Confirm Password (FIXED)
+    // Confirm Password validation
     if (!confirm.value) {
         confirmPasswordError.textContent = 'Please confirm your password';
         confirmPasswordError.classList.remove('hidden');
@@ -271,7 +306,7 @@ form.addEventListener('submit', async function(e) {
         valid = false;
     }
 
-    // File validation (FIXED)
+    // File validation
     const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
 
     if (file.files.length === 0) {

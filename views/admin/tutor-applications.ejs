@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Tutor Applications - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
     <script>
@@ -158,34 +159,58 @@
                 <p class="text-slate-500">New tutor applications will appear here for review</p>
             </div>
             <% } %>
-        </div>
-
-        <!-- Pagination -->
-        <% if (typeof pages !== 'undefined' && pages > 1) { %>
-        <div class="flex items-center justify-between mt-6">
-            <div class="text-sm text-slate-700">
-                Showing <span class="font-medium">1</span> to <span class="font-medium"><%= tutors.length %></span> of <span class="font-medium"><%= tutors.length %></span> results
+            
+            <!-- Pagination -->
+            <% if (pagination && pagination.totalPages > 1) { %>
+            <div class="border-t border-slate-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-500">
+                        Showing <%= ((pagination.currentPage - 1) * 10) + 1 %> to 
+                        <%= Math.min(pagination.currentPage * 10, pagination.totalApplications) %> 
+                        of <%= pagination.totalApplications %> applications
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <% if (pagination.hasPrev) { %>
+                            <a href="?page=<%= pagination.prevPage %>&search=<%= search %>" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">
+                                Previous
+                            </a>
+                        <% } %>
+                        
+                        <% for (let i = Math.max(1, pagination.currentPage - 2); i <= Math.min(pagination.totalPages, pagination.currentPage + 2); i++) { %>
+                            <a href="?page=<%= i %>&search=<%= search %>" 
+                               class="px-3 py-2 text-sm font-medium <%= i === pagination.currentPage ? 'text-primary bg-primary/10 border-primary' : 'text-slate-500 bg-white border-slate-300 hover:bg-slate-50' %> border rounded-lg">
+                                <%= i %>
+                            </a>
+                        <% } %>
+                        
+                        <% if (pagination.hasNext) { %>
+                            <a href="?page=<%= pagination.nextPage %>&search=<%= search %>" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">
+                                Next
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center gap-2">
-                <% for (let i = 1; i <= Math.min(pages, 10); i++) { %>
-                <a href="?page=<%= i %>&search=<%= typeof search !== 'undefined' ? search : '' %>" 
-                   class="px-3 py-2 text-sm <%= i === (typeof page !== 'undefined' ? page : 1) ? 'bg-primary text-white' : 'bg-white text-slate-700 hover:bg-slate-50' %> border border-slate-300 rounded-md">
-                    <%= i %>
-                </a>
-                <% } %>
-                <span class="px-3 py-2 text-sm text-slate-500">Go to</span>
-                <input type="number" min="1" max="<%= typeof pages !== 'undefined' ? pages : 1 %>" 
-                       class="w-16 px-2 py-1 text-sm border border-slate-300 rounded-md" 
-                       onchange="window.location.href='?page=' + this.value + '&search=<%= typeof search !== 'undefined' ? search : '' %>'">
-                <button class="px-3 py-2 text-sm bg-primary text-white rounded-md hover:bg-green-600">Go</button>
-            </div>
+            <% } %>
         </div>
-        <% } %>
     </main>
 
     <script>
         async function approveApplication(tutorId) {
-            if (!confirm('Are you sure you want to approve this tutor application?')) return;
+            const result = await Swal.fire({
+                title: 'Approve Tutor Application?',
+                text: 'Are you sure you want to approve this tutor application?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10B981',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Yes, approve!',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) return;
             
             try {
                 const response = await fetch(`/admin/approve-tutor/${tutorId}`, {
@@ -195,26 +220,51 @@
                     }
                 });
                 
-                const result = await response.json();
+                const responseData = await response.json();
                 
-                if (result.success) {
-                    showToast('Tutor approved successfully! They can now access all tutor features.', 'success');
-                    if (result.redirect) {
-                        window.location.href = result.redirect;
+                if (responseData.success) {
+                    await Swal.fire({
+                        title: 'Approved!',
+                        text: 'Tutor approved successfully! They can now access all tutor features.',
+                        icon: 'success',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    if (responseData.redirect) {
+                        window.location.href = responseData.redirect;
                     } else {
                         location.reload();
                     }
                 } else {
-                    showToast('Error: ' + result.message, 'error');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: responseData.message,
+                        icon: 'error'
+                    });
                 }
             } catch (error) {
-                showToast('Error approving application', 'error');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error approving application',
+                    icon: 'error'
+                });
                 console.error(error);
             }
         }
         
         async function rejectApplication(tutorId) {
-            if (!confirm('Are you sure you want to reject this tutor application?')) return;
+            const result = await Swal.fire({
+                title: 'Reject Tutor Application?',
+                text: 'Are you sure you want to reject this tutor application?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Yes, reject!',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) return;
             
             try {
                 const response = await fetch(`/admin/reject-tutor/${tutorId}`, {
@@ -224,16 +274,30 @@
                     }
                 });
                 
-                const result = await response.json();
+                const responseData = await response.json();
                 
-                if (result.success) {
-                    showToast('Tutor application rejected.', 'info');
+                if (responseData.success) {
+                    await Swal.fire({
+                        title: 'Rejected!',
+                        text: 'Tutor application rejected.',
+                        icon: 'info',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     location.reload();
                 } else {
-                    showToast('Error: ' + result.message, 'error');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: responseData.message,
+                        icon: 'error'
+                    });
                 }
             } catch (error) {
-                showToast('Error rejecting application', 'error');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error rejecting application',
+                    icon: 'error'
+                });
                 console.error(error);
             }
         }

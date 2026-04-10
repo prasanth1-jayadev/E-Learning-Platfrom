@@ -6,6 +6,27 @@ const upload = require('../config/multer');
 const passport = require('../config/passport');
 
 
+
+
+router.get('/signup',           redirectIfTutor, tutorController.getSignup);
+router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
+router.get('/login',            redirectIfTutor, tutorController.getLogin);
+router.post('/login',           tutorController.postLogin);     
+router.get('/logout',           tutorController.logout);
+
+router.get('/verify-otp',       tutorController.getOtp);
+router.post('/verify-otp',      tutorController.postOtp);
+router.post('/resend-otp',      tutorController.resendOtp);
+
+router.get('/forgot-password',  tutorController.getForgotPassword);
+router.post('/forgot-password', tutorController.postForgotPassword);
+router.get('/reset-password',   tutorController.getResetPassword);
+router.post('/reset-password',  tutorController.postResetPassword);
+
+router.get('/dashboard', isTutor, tutorController.getDashboard);
+router.get('/profile',   isTutor, tutorController.getProfile);
+
+
 router.get('/auth/google', passport.authenticate('google-tutor'));
 
 router.get('/auth/google/callback', 
@@ -36,28 +57,5 @@ router.get('/auth/google/callback',
         })(req, res, next);
     }
 );
-
-router.get('/signup',           redirectIfTutor, tutorController.getSignup);
-router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
-router.get('/login',            redirectIfTutor, tutorController.getLogin);
-router.post('/login',           tutorController.postLogin);     
-router.get('/logout',           tutorController.logout);
-
-router.get('/verify-otp',       tutorController.getOtp);
-router.post('/verify-otp',      tutorController.postOtp);
-router.post('/resend-otp',      tutorController.resendOtp);
-
-router.get('/forgot-password',  tutorController.getForgotPassword);
-router.post('/forgot-password', tutorController.postForgotPassword);
-router.get('/reset-password',   tutorController.getResetPassword);
-router.post('/reset-password',  tutorController.postResetPassword);
-
-// Protected 
-router.get('/dashboard', isTutor, tutorController.getDashboard);
-router.get('/profile',   isTutor, tutorController.getProfile);
-
-router.get('/courses',   isTutorApproved, tutorController.getCourses);
-router.get('/students',  isTutorApproved, tutorController.getStudents);
-router.get('/earnings',  isTutorApproved, tutorController.getEarnings);
 
 module.exports = router;

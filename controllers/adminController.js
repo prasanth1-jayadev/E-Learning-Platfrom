@@ -38,29 +38,30 @@ const getDashboard = async (req, res) => {
 
 const getTutorApplications = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
     const search = req.query.search || '';
     const success = req.query.success;
     const error = req.query.error;
     
-    let tutors = await adminService.getTutorApplications();
-    
-    
-    if (search) {
-      tutors = tutors.filter(tutor => 
-        tutor.fullName.toLowerCase().includes(search.toLowerCase()) ||
-        tutor.email.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    
-    const pendingCount = tutors.filter(t => t.approvalStatus === 'pending').length;
+    const result = await adminService.getTutorApplications(page, 10, search);
+    const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
     
     res.render('admin/tutor-applications', { 
-      tutors, 
+      tutors: result.tutors,
       search,
       success,
       error,
       currentPage: 'tutor-applications',
-      pendingCount 
+      pendingCount,
+      pagination: {
+        currentPage: result.page,
+        totalPages: result.pages,
+        totalApplications: result.total,
+        hasNext: result.hasNext,
+        hasPrev: result.hasPrev,
+        nextPage: result.page + 1,
+        prevPage: result.page - 1
+      }
     });
   } catch (error) {
     console.error('Error fetching tutor applications:', error);
@@ -74,7 +75,7 @@ const getTutors = async (req, res) => {
     const search = req.query.search || '';
     const blocked = req.query.blocked || 'all';
     
-    const result = await adminService.getTutors(page, 12, search, blocked); // 12 for horizontal layout
+    const result = await adminService.getTutors(page, 5, search, blocked); // 12 for horizontal layout
     const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
     
     res.render('admin/tutors', {
@@ -215,36 +216,106 @@ const logout = (req, res) => {
 
 const getStudents = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
     const search = req.query.search || '';
+    const blocked = req.query.blocked || 'all';
 
-    let allUsers = await User.find({}).sort({ createdAt: -1 });
+    // Build query
+    let query = { role: 'user' };
     
-    let students = allUsers.filter(user => user.role === 'user');
-
     if (search) {
-      students = students.filter(student => 
-        (student.fullName && student.fullName.toLowerCase().includes(search.toLowerCase())) ||
-        (student.email && student.email.toLowerCase().includes(search.toLowerCase()))
-      );
+      query.$or = [
+        { fullName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
     }
     
+    if (blocked !== 'all') {
+      query.isBlocked = blocked === 'blocked';
+    }
     
+    const totalStudents = await User.countDocuments(query);
+    const students = await User.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    const totalPages = Math.ceil(totalStudents / limit);
     const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
 
     res.render("admin/students", {
       students,
       search,
+      blocked,
       currentPage: 'students',
-      pendingCount
+      pendingCount,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalStudents,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+        nextPage: page + 1,
+        prevPage: page - 1
+      }
     });
 
   } catch (err) {
+    console.error('Error fetching students:', err);
     res.render("admin/students", { 
       students: [], 
       search: '',
+      blocked: 'all',
       currentPage: 'students',
-      pendingCount: 0
+      pendingCount: 0,
+      pagination: {
+        currentPage: 1,
+        totalPages: 0,
+        totalStudents: 0,
+        hasNext: false,
+        hasPrev: false
+      }
     });
+  }
+};
+
+const toggleStudentBlock = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const adminId = req.session.adminId;
+    
+    const student = await User.findById(studentId);
+    if (!student || student.role !== 'user') {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+    
+    student.isBlocked = !student.isBlocked;
+    student.blockedBy = student.isBlocked ? adminId : null;
+    student.blockedAt = student.isBlocked ? new Date() : null;
+    
+    await student.save();
+    
+    const action = student.isBlocked ? 'blocked' : 'unblocked';
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.json({ 
+        success: true, 
+        message: `Student ${action} successfully`,
+        isBlocked: student.isBlocked
+      });
+    }
+    
+    res.redirect('/admin/students');
+  } catch (error) {
+    console.error('Toggle student block error:', error);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    
+    res.redirect('/admin/students?error=' + encodeURIComponent(error.message));
   }
 };
 
@@ -258,5 +329,7 @@ module.exports = {
   getTutors,
   approveTutor,
   rejectTutor,
-  toggleTutorBlock,getStudents
+  toggleTutorBlock,
+  getStudents,
+  toggleStudentBlock
 };

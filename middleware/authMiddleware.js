@@ -1,22 +1,62 @@
 
-const isUser = (req, res, next) => {
+const isUser = async (req, res, next) => {
     if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'user') || 
         (req.session && req.session.userId)) {
         if (!req.session.userId && req.user) {
             req.session.userId = req.user._id || req.user.id;
         }
+        
+        // Check user is blocked
+        try {
+            const User = require('../models/User');
+            const user = await User.findById(req.session.userId);
+            
+            if (!user) {
+                req.session.destroy();
+                return res.redirect('/user/login?error=account_not_found');
+            }
+            
+            if (user.isBlocked) {
+                req.session.destroy();
+                return res.redirect('/user/login?error=account_blocked');
+            }
+        } catch (error) {
+            console.error('User block check error:', error);
+            return res.redirect('/user/login');
+        }
+        
         return next();
     }
     return res.redirect('/user/login');
 };
 
 
-const isTutor = (req, res, next) => {
+const isTutor = async (req, res, next) => {
     if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'tutor') || 
         (req.session && req.session.tutorId)) {
         if (!req.session.tutorId && req.user) {
             req.session.tutorId = req.user._id || req.user.id;
         }
+        
+        // Check tutor is blocked
+        try {
+            const Tutor = require('../models/Tutor');
+            const tutor = await Tutor.findById(req.session.tutorId);
+            
+            if (!tutor) {
+                req.session.destroy();
+                return res.redirect('/tutor/login?error=account_not_found');
+            }
+            
+            if (tutor.isBlocked) {
+                req.session.destroy();
+                return res.redirect('/tutor/login?error=account_blocked');
+            }
+        } catch (error) {
+            console.error('Tutor block check error:', error);
+            return res.redirect('/tutor/login');
+        }
+        
         return next();
     }
     return res.redirect('/tutor/login');

@@ -6,7 +6,6 @@ const {generateOTP , otpExpiry}  = require('../helpers/otpHelper');
 const {sendOTPEmail}  = require('./emailService');
 
 
-// REGISTER USER
 
 const registerUser = async ({ fullName, email, password }) => {
     email = email.toLowerCase().trim()
@@ -22,7 +21,6 @@ const registerUser = async ({ fullName, email, password }) => {
     await User.create({ fullName, email, password:hashed, isVerified:false });
 
    const otp = generateOTP();
-   console.log(otp)
    await OTP.deleteMany({email, purpose:"signup"})
    await OTP.create({email,otp, purpose:"signup", expiresAt:otpExpiry()});
    await sendOTPEmail(email,otp, 'signup');
@@ -30,7 +28,6 @@ const registerUser = async ({ fullName, email, password }) => {
 }
 
 
-// VERIFY otp
 
 
 const verifyOtp = async (email, otp , purpose ="signup") =>{
@@ -50,7 +47,6 @@ const verifyOtp = async (email, otp , purpose ="signup") =>{
 
 }
 
-// Resend otp
 
 const resendOtp = async(email , purpose="signup")=>{
     email = email.toLowerCase().trim();
@@ -66,7 +62,6 @@ const resendOtp = async(email , purpose="signup")=>{
 }
 
 
-// Login
 
 
 const loginUser = async (email, password) => {
@@ -83,7 +78,6 @@ const loginUser = async (email, password) => {
     return user;
 };
 
-// forgot Password 
 
 
 const   forgotPassword = async(email)=>{

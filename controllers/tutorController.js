@@ -45,87 +45,71 @@ const getProfile = async (req, res) => {
     }
 };
 
-const getCourses = async (req, res) => {
-    try {
-        const Tutor = require('../models/Tutor');
-        const tutor = await Tutor.findById(req.session.tutorId);
-        
-        if (!tutor) {
-            return res.redirect('/tutor/login');
-        }
-        
-        res.render('tutor/courses', { 
-            tutor,
-            isApproved: tutor.approvalStatus === 'approved',
-            currentPage: 'courses'
-        });
-    } catch (error) {
-        console.error('Courses error:', error);
-        res.redirect('/tutor/login');
-    }
-};
 
-const getStudents = async (req, res) => {
-    try {
-        const Tutor = require('../models/Tutor');
-        const tutor = await Tutor.findById(req.session.tutorId);
-        
-        if (!tutor) {
-            return res.redirect('/tutor/login');
-        }
-        
-        res.render('tutor/students', { 
-            tutor,
-            isApproved: tutor.approvalStatus === 'approved',
-            currentPage: 'students'
-        });
-    } catch (error) {
-        console.error('Students error:', error);
-        res.redirect('/tutor/login');
-    }
-};
-
-const getEarnings = async (req, res) => {
-    try {
-        const Tutor = require('../models/Tutor');
-        const tutor = await Tutor.findById(req.session.tutorId);
-        
-        if (!tutor) {
-            return res.redirect('/tutor/login');
-        }
-        
-        res.render('tutor/earnings', { 
-            tutor,
-            isApproved: tutor.approvalStatus === 'approved',
-            currentPage: 'earnings'
-        });
-    } catch (error) {
-        console.error('Earnings error:', error);
-        res.redirect('/tutor/login');
-    }
-};
-
-
-const { hashPassword } = require('../helpers/passwordHelper');
 
 const postSignup = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
     const certificateFile = req.file;
 
+    // Server-side validation
+    if (!fullName || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Validate full name (only letters and single spaces between words)
+    const nameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
+    if (!nameRegex.test(fullName.trim())) {
+      return res.status(400).json({ message: 'Full name can only contain letters and single spaces between words' });
+    }
+
+    // Validate name length
+    if (fullName.trim().length < 2 || fullName.trim().length > 50) {
+      return res.status(400).json({ message: 'Full name must be between 2 and 50 characters' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({ message: 'Please enter a valid email address' });
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+      return res.status(400).json({ message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' });
+    }
+
+    // Validate certificate file
     if (!certificateFile) {
       return res.status(400).json({ message: 'Please upload your certificate' });
     }
 
-    
+    const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
+    if (!allowedTypes.includes(certificateFile.mimetype)) {
+      return res.status(400).json({ message: 'Only PDF, PNG, JPG files are allowed' });
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (certificateFile.size > maxSize) {
+      return res.status(400).json({ message: 'File size must be less than 5MB' });
+    }
+
     await tutorService.registerTutor({
-      fullName,
-      email,
+      fullName: fullName.trim(),
+      email: email.trim(),
       password,
       certificatePath: certificateFile.path
     });
 
-    req.session.otpEmail = email;
+    req.session.otpEmail = email.trim();
     req.session.otpPurpose = 'signup';
 
     res.json({ redirect: '/tutor/verify-otp' });
@@ -260,5 +244,5 @@ module.exports = {
   getOtp, postOtp, resendOtp,
   getForgotPassword, postForgotPassword,
   getResetPassword, postResetPassword, 
-  getDashboard, getProfile, getCourses, getStudents, getEarnings,hashPassword
+  getDashboard, getProfile,
 };

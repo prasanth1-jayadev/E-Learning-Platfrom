@@ -6,7 +6,6 @@ const {hashPassword , comparePassword} = require('../helpers/passwordHelper');
 const {generateOTP, otpExpiry} = require('../helpers/otpHelper');
 const {sendOTPEmail} =require ('./emailService');
 
-// Register Tutor (now creates with pending status)
 const registerTutor = async ({ fullName, email, password, certificatePath }) => {
     email = email.toLowerCase().trim(); 
     const existing = await Tutor.findOne({ email });
@@ -31,7 +30,6 @@ const registerTutor = async ({ fullName, email, password, certificatePath }) => 
     });
 
     const otp = generateOTP();
-    console.log(otp)
     await OTP.deleteMany({email, purpose:"signup"});
     await OTP.create({email, otp, purpose:"signup", expiresAt:otpExpiry()});
     await sendOTPEmail(email, otp, 'signup');
@@ -39,7 +37,6 @@ const registerTutor = async ({ fullName, email, password, certificatePath }) => 
     return tutor;
 };
 
-// verifyOtp
 const verifyOtp = async (email, otp, purpose="signup") =>{
     const record = await OTP.findOne({email,otp, purpose});
     if(!record) throw new Error('Invalid otp')
@@ -73,7 +70,6 @@ const loginTutor = async (email , password) =>{
     const match = await comparePassword(password, tutor.password);
     if(!match) throw new Error('Incorrect password');
 
-    // Allow login regardless of approval status - they can see dashboard
     return tutor;
 }
 

@@ -193,6 +193,16 @@
                     const errorText = errorDiv.querySelector('p');
                     errorText.textContent = 'Google authentication failed. Please try again or use email/password.';
                     errorDiv.classList.remove('hidden');
+                } else if (error === 'account_blocked') {
+                    const errorDiv = document.getElementById('errorMessage');
+                    const errorText = errorDiv.querySelector('p');
+                    errorText.textContent = 'Your account has been blocked by the administrator. Please contact support.';
+                    errorDiv.classList.remove('hidden');
+                } else if (error === 'account_not_found') {
+                    const errorDiv = document.getElementById('errorMessage');
+                    const errorText = errorDiv.querySelector('p');
+                    errorText.textContent = 'Account not found. Please login again.';
+                    errorDiv.classList.remove('hidden');
                 }
 
                 document.getElementById('loginForm').addEventListener('submit', async function (e) {
