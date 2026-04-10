@@ -1,11 +1,42 @@
 const express = require('express');
 const router  = express.Router();
 const tutorController = require('../controllers/tutorController');
-const { isTutor, redirectIfTutor } = require('../middleware/authMiddleware');
+const { isTutor, isTutorApproved, redirectIfTutor } = require('../middleware/authMiddleware');
 const upload = require('../config/multer'); 
+const passport = require('../config/passport');
 
 
-// Public — redirect to dashboard if already logged in
+router.get('/auth/google', passport.authenticate('google-tutor'));
+
+router.get('/auth/google/callback', 
+    (req, res, next) => {
+        passport.authenticate('google-tutor', (err, user, info) => {
+            if (err) {
+                console.error('Google OAuth Error:', err);
+                return res.redirect('/tutor/login?error=google_auth_failed');
+            }
+            if (!user) {
+                return res.redirect('/tutor/login?error=google_auth_failed');
+            }
+            
+            req.logIn(user, (err) => {
+                if (err) {
+                    console.error('Login Error:', err);
+                    return res.redirect('/tutor/login?error=google_auth_failed');
+                }
+                
+                req.session.save((saveErr) => {
+                    if (saveErr) {
+                        console.error('Session save error:', saveErr);
+                        return res.redirect('/tutor/login?error=session_error');
+                    }
+                    return res.redirect('/tutor/dashboard');
+                });
+            });
+        })(req, res, next);
+    }
+);
+
 router.get('/signup',           redirectIfTutor, tutorController.getSignup);
 router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
 router.get('/login',            redirectIfTutor, tutorController.getLogin);
@@ -21,7 +52,12 @@ router.post('/forgot-password', tutorController.postForgotPassword);
 router.get('/reset-password',   tutorController.getResetPassword);
 router.post('/reset-password',  tutorController.postResetPassword);
 
-// Protected — must be logged in
+// Protected 
 router.get('/dashboard', isTutor, tutorController.getDashboard);
 router.get('/profile',   isTutor, tutorController.getProfile);
+
+router.get('/courses',   isTutorApproved, tutorController.getCourses);
+router.get('/students',  isTutorApproved, tutorController.getStudents);
+router.get('/earnings',  isTutorApproved, tutorController.getEarnings);
+
 module.exports = router;

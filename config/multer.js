@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Storage settings
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = 'uploads/certificates';
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter
+
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
 
@@ -34,7 +34,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 module.exports = upload;

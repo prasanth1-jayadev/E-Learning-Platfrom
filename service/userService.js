@@ -72,8 +72,6 @@ const resendOtp = async(email , purpose="signup")=>{
 const loginUser = async (email, password) => {
     email = email.toLowerCase().trim();
 
-    console.log("Login email:", email);
-
     const user = await User.findOne({ email });
 
     if (!user) throw new Error('No account found');

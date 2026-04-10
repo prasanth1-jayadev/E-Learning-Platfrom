@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Tutor = require('../models/Tutor');
 const {comparePassword} = require('../helpers/passwordHelper');
 
 
@@ -8,6 +9,11 @@ const loginAdmin = async(email, password) => {
     if(!admin) {
         throw new Error('Invalid credentials - user not found');
     }
+    
+    if (!admin.password) {
+        throw new Error('Admin password not set - please run setupAdmin.js');
+    }
+    
     const match = await comparePassword(password.trim(), admin.password);
     
     if(!match) {
@@ -21,4 +27,124 @@ const loginAdmin = async(email, password) => {
     return admin;
 }
 
-module.exports={loginAdmin};
+
+const getTutorApplications = async () => {
+    return await Tutor.find({ 
+        isVerified: true, 
+        approvalStatus: 'pending' 
+    }).sort({ appliedAt: -1 });
+}
+
+
+const getPendingTutorApplications = async () => {
+    return await Tutor.find({ 
+        isVerified: true, 
+        approvalStatus: 'pending' 
+    }).sort({ appliedAt: -1 });
+}
+
+
+const approveTutor = async (tutorId, adminId) => {
+    const tutor = await Tutor.findById(tutorId);
+    if (!tutor) {
+        throw new Error('Tutor not found');
+    }
+    
+    if (tutor.approvalStatus === 'approved') {
+        throw new Error('Tutor already approved');
+    }
+    
+    await Tutor.findByIdAndUpdate(tutorId, {
+        approvalStatus: 'approved',
+        isApproved: true,
+        approvedAt: new Date(),
+        approvedBy: adminId
+    });
+    
+    return await Tutor.findById(tutorId);
+}
+
+
+const rejectTutor = async (tutorId, adminId) => {
+    const tutor = await Tutor.findById(tutorId);
+    if (!tutor) {
+        throw new Error('Tutor not found');
+    }
+    
+    if (tutor.approvalStatus === 'rejected') {
+        throw new Error('Tutor already rejected');
+    }
+    
+    await Tutor.findByIdAndUpdate(tutorId, {
+        approvalStatus: 'rejected',
+        isApproved: false,
+        approvedAt: new Date(),
+        approvedBy: adminId
+    });
+    
+    return await Tutor.findById(tutorId);
+}
+
+const getTutors = async (page = 1, limit = 10, search = '', blocked = 'all') => {
+    const skip = (page - 1) * limit;
+    let query = { 
+        isVerified: true,
+        approvalStatus: 'approved' 
+    };
+    
+    //  filter
+    if (search) {
+        query.$or = [
+            { fullName: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } }
+        ];
+    }
+    
+    // Blocked filter
+    if (blocked !== 'all') {
+        query.isBlocked = blocked === 'blocked';
+    }
+    
+    const tutors = await Tutor.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    
+    const total = await Tutor.countDocuments(query);
+    
+    return {
+        tutors,
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        hasNext: page < Math.ceil(total / limit),
+        hasPrev: page > 1
+    };
+}
+
+// Block/Unblock tutor
+const toggleTutorBlock = async (tutorId, adminId) => {
+    const tutor = await Tutor.findById(tutorId);
+    if (!tutor) {
+        throw new Error('Tutor not found');
+    }
+    
+    const isBlocked = !tutor.isBlocked;
+    await Tutor.findByIdAndUpdate(tutorId, {
+        isBlocked,
+        blockedBy: isBlocked ? adminId : null,
+        blockedAt: isBlocked ? new Date() : null
+    });
+    
+    return await Tutor.findById(tutorId);
+}
+
+module.exports = {
+    loginAdmin,
+    getTutorApplications,
+    getPendingTutorApplications,
+    approveTutor,
+    rejectTutor,
+    getTutors,
+    toggleTutorBlock
+};

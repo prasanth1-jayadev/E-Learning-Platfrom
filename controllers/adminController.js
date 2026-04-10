@@ -1,11 +1,162 @@
 const adminService = require('../service/adminService');
+const User = require('../models/User')
 
 const getLogin = (req, res) => {
+  
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  
   res.render('admin/login');
 };
 
-const getDashboard = (req, res) => {
-  res.render('admin/dashboard');
+const getDashboard = async (req, res) => {
+  try {
+    const pendingTutors = await adminService.getPendingTutorApplications();
+    const allTutors = await adminService.getTutorApplications();
+    
+    res.render('admin/dashboard', {
+      pendingTutors,
+      allTutors,
+      pendingCount: pendingTutors.length,
+      totalTutors: allTutors.length,
+      currentPage: 'dashboard'
+    });
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    res.render('admin/dashboard', {
+      pendingTutors: [],
+      allTutors: [],
+      pendingCount: 0,
+      totalTutors: 0,
+      currentPage: 'dashboard'
+    });
+  }
+};
+
+const getTutorApplications = async (req, res) => {
+  try {
+    const search = req.query.search || '';
+    const success = req.query.success;
+    const error = req.query.error;
+    
+    let tutors = await adminService.getTutorApplications();
+    
+    
+    if (search) {
+      tutors = tutors.filter(tutor => 
+        tutor.fullName.toLowerCase().includes(search.toLowerCase()) ||
+        tutor.email.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    
+    const pendingCount = tutors.filter(t => t.approvalStatus === 'pending').length;
+    
+    res.render('admin/tutor-applications', { 
+      tutors, 
+      search,
+      success,
+      error,
+      currentPage: 'tutor-applications',
+      pendingCount 
+    });
+  } catch (error) {
+    console.error('Error fetching tutor applications:', error);
+    res.status(500).json({ message: 'Failed to fetch applications' });
+  }
+};
+
+const getTutors = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const search = req.query.search || '';
+    const blocked = req.query.blocked || 'all';
+    
+    const result = await adminService.getTutors(page, 12, search, blocked); // 12 for horizontal layout
+    const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
+    
+    res.render('admin/tutors', {
+      ...result,
+      search,
+      blocked,
+      currentPage: 'tutors',
+      pendingCount
+    });
+  } catch (error) {
+    console.error('Error fetching tutors:', error);
+    res.status(500).json({ message: 'Failed to fetch tutors' });
+  }
+};
+
+const approveTutor = async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const adminId = req.session.adminId;
+    
+    await adminService.approveTutor(tutorId, adminId);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.json({ success: true, message: 'Tutor approved successfully', redirect: '/admin/tutor-applications' });
+    }
+    
+    res.redirect('/admin/tutor-applications?success=approved');
+  } catch (error) {
+    console.error('Approve tutor error:', error);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.status(400).json({ message: error.message });
+    }
+    
+    res.redirect('/admin/tutor-applications?error=' + encodeURIComponent(error.message));
+  }
+};
+
+const rejectTutor = async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const adminId = req.session.adminId;
+    
+    await adminService.rejectTutor(tutorId, adminId);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.json({ success: true, message: 'Tutor rejected successfully' });
+    }
+    
+    res.redirect('/admin/tutor-applications?success=rejected');
+  } catch (error) {
+    console.error('Reject tutor error:', error);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.status(400).json({ message: error.message });
+    }
+    
+    res.redirect('/admin/tutor-applications?error=' + encodeURIComponent(error.message));
+  }
+};
+
+const toggleTutorBlock = async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const adminId = req.session.adminId;
+    
+    await adminService.toggleTutorBlock(tutorId, adminId);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.json({ success: true });
+    }
+    
+    res.redirect('/admin/tutors');
+  } catch (error) {
+    console.error('Toggle block error:', error);
+    
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.status(400).json({ message: error.message });
+    }
+    
+    res.redirect('/admin/tutors?error=' + encodeURIComponent(error.message));
+  }
 };
 
 const postLogin = async (req, res) => {
@@ -27,7 +178,7 @@ const postLogin = async (req, res) => {
 
     req.session.adminId = admin._id;
 
-    // redirect depending on request type
+    
     if (req.headers['content-type']?.includes('application/json')) {
       return res.json({ redirect: '/admin/dashboard' });
     }
@@ -45,15 +196,67 @@ const postLogin = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  req.session.destroy(() => {
+  
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destruction error:', err);
+    }
     res.clearCookie('connect.sid');
     res.redirect('/admin/login');
   });
 };
 
+
+const getStudents = async (req, res) => {
+  try {
+    const search = req.query.search || '';
+
+    let allUsers = await User.find({}).sort({ createdAt: -1 });
+    
+    let students = allUsers.filter(user => user.role === 'user');
+
+    if (search) {
+      students = students.filter(student => 
+        (student.fullName && student.fullName.toLowerCase().includes(search.toLowerCase())) ||
+        (student.email && student.email.toLowerCase().includes(search.toLowerCase()))
+      );
+    }
+    
+    
+    const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
+
+    res.render("admin/students", {
+      students,
+      search,
+      currentPage: 'students',
+      pendingCount
+    });
+
+  } catch (err) {
+    res.render("admin/students", { 
+      students: [], 
+      search: '',
+      currentPage: 'students',
+      pendingCount: 0
+    });
+  }
+};
+
+
 module.exports = {
   getLogin,
   postLogin,
   logout,
-  getDashboard
+  getDashboard,
+  getTutorApplications,
+  getTutors,
+  approveTutor,
+  rejectTutor,
+  toggleTutorBlock,getStudents
 };

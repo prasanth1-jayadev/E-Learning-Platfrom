@@ -2,11 +2,13 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-
 
 
 dotenv.config();
+
+const connectDB = require('./config/db');
+const passport = require('./config/passport');
+
 connectDB();
 
 const app = express();
@@ -30,9 +32,12 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'lax' // Changed from 'strict' to 'lax' for OAuth redirects
     }
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Prevent browser from caching protected pages
 app.use((req, res, next) => {

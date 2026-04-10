@@ -1,6 +1,6 @@
 const userService = require('../service/userService');
 
-// GET routes
+
 const getLanding        = (req, res) => res.render('user/landing');
 const getHome           = (req, res) => res.render('user/home');
 const getSignup         = (req, res) => res.render('user/signup');
@@ -45,7 +45,7 @@ const postOtp = async (req, res) => {
       return res.json({ redirect: '/user/reset-password' });
     }
 
-    // auto login after signup OTP verified
+  
     const user = await userService.getUserByEmail(email);
     req.session.userId   = user._id;
     req.session.otpEmail = null;

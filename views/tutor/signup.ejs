@@ -301,14 +301,18 @@ form.addEventListener('submit', async function(e) {
         const data = await response.json();
 
         if (response.ok) {
-            window.location.href = data.redirect || '/tutor/verify-otp';
+            showToast('Account created! Check your email for OTP.', 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect || '/tutor/verify-otp';
+            }, 1500);
         } else {
+            showToast(data.message || 'Signup failed', 'error');
             emailError.textContent = data.message || 'Error';
             emailError.classList.remove('hidden');
         }
 
     } catch (error) {
-        console.error(error);
+        showToast('Something went wrong. Please try again.', 'error');
         fullNameError.textContent = 'Something went wrong';
         fullNameError.classList.remove('hidden');
     }
@@ -435,6 +439,6 @@ function handleDrop(e) {
 }
 </script>
 
-    
+<%- include('../partials/toast') %>
 </body>
 </html>

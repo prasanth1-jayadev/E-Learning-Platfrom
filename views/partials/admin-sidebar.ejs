@@ -1,0 +1,95 @@
+<aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-20 overflow-y-auto">
+    <div class="p-6">
+        <div class="flex items-center gap-2 mb-8">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span class="material-icons-outlined text-white text-xl">eco</span>
+            </div>
+            <h1 class="text-xl font-bold text-slate-800 dark:text-white">Organic Learn</h1>
+        </div>
+        
+        <div class="flex items-center gap-3 p-3 mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+            <img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBy6t6x3XGeEVMdPCe838zH-7i5En9rlh7PgpHDzjRbXKymzOygzOL20JRpmUuUbvDJEicb7rfsXsrhNyQYh7ZtAz2UEUwmKBCcIRyCt0f-8-f3t4DJxdXPg0lBmYym9EqunFZR9lVzTojicJ4sE6P_5uLhYBc5e43yHbis4ChXGJfwRGodVos9mVN01vJ8nEHzYF_F0MA5JMLw2c1K70mlUEtnxpFtUkFi68NwNWTfHjS-pcePdUJpSd6Zi30gqtAb3tODFE4Nwk"/>
+            <div class="overflow-hidden">
+                <p class="text-sm font-semibold truncate">Admin</p>
+                <a class="text-xs text-primary hover:underline" href="#">View Profile</a>
+            </div>
+        </div>
+        
+        <nav class="space-y-1">
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'dashboard' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/dashboard">
+                <span class="material-icons-outlined text-[20px]">dashboard</span>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'tutor-applications' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/tutor-applications">
+                <span class="material-icons-outlined text-[20px]">pending_actions</span>
+                <span class="font-medium">Tutor Applications</span>
+                <% if (typeof pendingCount !== 'undefined' && pendingCount > 0) { %>
+                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><%= pendingCount %></span>
+                <% } %>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'tutors' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/tutors">
+                <span class="material-icons-outlined text-[20px]">co_present</span>
+                <span class="font-medium">Tutors</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'students' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/students">
+                <span class="material-icons-outlined text-[20px]">school</span>
+                <span class="font-medium">Students</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'categories' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/categories">
+                <span class="material-icons-outlined text-[20px]">category</span>
+                <span class="font-medium">Categories</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'courses' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/courses">
+                <span class="material-icons-outlined text-[20px]">menu_book</span>
+                <span class="font-medium">Courses</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'coupons' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/coupons">
+                <span class="material-icons-outlined text-[20px]">local_offer</span>
+                <span class="font-medium">Coupons</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'sales-report' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/sales-report">
+                <span class="material-icons-outlined text-[20px]">assessment</span>
+                <span class="font-medium">Sales Report</span>
+            </a>
+        </nav>
+    </div>
+    
+    <div class="mt-auto p-6 border-t border-slate-200 dark:border-slate-800">
+        <a href="#" onclick="confirmLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 font-medium transition">
+            <span class="material-icons-outlined text-[20px]">logout</span>
+            <span class="font-medium">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will be logged out of your admin session',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Use the global logout function from admin-session.js
+            if (typeof adminLogout === 'function') {
+                adminLogout();
+            } else {
+                window.location.href = '/admin/logout';
+            }
+        }
+    });
+}
+</script>

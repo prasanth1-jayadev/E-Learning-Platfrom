@@ -1,45 +1,45 @@
 
-
 const Tutor = require('../models/Tutor');
-const OTP = require('../models/OTP')
+const OTP = require('../models/OTP');
 
 const {hashPassword , comparePassword} = require('../helpers/passwordHelper');
 const {generateOTP, otpExpiry} = require('../helpers/otpHelper');
 const {sendOTPEmail} =require ('./emailService');
 
-
-// register Tutor
-
-const registerTutor = async ({ fullName, email, password }) => {
+// Register Tutor (now creates with pending status)
+const registerTutor = async ({ fullName, email, password, certificatePath }) => {
     email = email.toLowerCase().trim(); 
     const existing = await Tutor.findOne({ email });
+    
     if (existing && existing.isVerified) {
-        throw new Error('email already registered');
+        throw new Error('Email already registered as tutor');
     }
+    
     if (existing && !existing.isVerified) {
         await Tutor.deleteOne({ email });
     }
+    
     const hashed = await hashPassword(password);
-    await Tutor.create({
+    const tutor = await Tutor.create({
         fullName,
         email,
         password: hashed,
         isVerified: false,
-        isApproved: false
+        isApproved: false,
+        approvalStatus: 'pending',
+        certificatePath: certificatePath || null
     });
 
-    const otp = generateOTP()
+    const otp = generateOTP();
     console.log(otp)
     await OTP.deleteMany({email, purpose:"signup"});
-    await OTP.create({email,otp, purpose:"signup",expiresAt:otpExpiry()})
-    await sendOTPEmail(email,otp,'signup')
-
-}
-
+    await OTP.create({email, otp, purpose:"signup", expiresAt:otpExpiry()});
+    await sendOTPEmail(email, otp, 'signup');
+    
+    return tutor;
+};
 
 // verifyOtp
-
-
 const verifyOtp = async (email, otp, purpose="signup") =>{
     const record = await OTP.findOne({email,otp, purpose});
     if(!record) throw new Error('Invalid otp')
@@ -50,53 +50,42 @@ const verifyOtp = async (email, otp, purpose="signup") =>{
     await Tutor.updateOne({email}, {isVerified:true});
    }
    await OTP.deleteMany({email,purpose});
-
-
 }
-
-
 
 const resendOtp = async(email,purpose = "signup") =>{
     const tutor =await Tutor.findOne({email});
     if(!tutor) throw new Error('Email not found ');
 
-
     const otp = generateOTP();
     await OTP.deleteMany({email , purpose});
     await OTP.create({email , otp , purpose , expiresAt:otpExpiry()})
     await sendOTPEmail(email , otp , purpose);
-
 }
-
-
 
 const loginTutor = async (email , password) =>{
+    email = email.toLowerCase().trim();
     const tutor = await Tutor.findOne({email});
-    if(!tutor) throw new Error('No email found');
-    if(!tutor.isVerified) throw new Error('please verify the email');
+    
+    if(!tutor) throw new Error('No account found with this email');
+    if(!tutor.isVerified) throw new Error('Please verify your email first');
+    if(tutor.isBlocked) throw new Error('Your account has been blocked. Please contact support.');
 
+    const match = await comparePassword(password, tutor.password);
+    if(!match) throw new Error('Incorrect password');
 
-    const match = await comparePassword(password,tutor.password);
-    if(!match) throw new Error('Incorrect Password');
-
-
-    return tutor ;
+    // Allow login regardless of approval status - they can see dashboard
+    return tutor;
 }
-
 
 const forgotPassword = async (email) =>{
     const tutor = await Tutor.findOne({email});
     if(!tutor) throw new Error('No Account found');
-
 
     const otp = generateOTP();
     await  OTP.deleteMany({email ,purpose:"reset"});
     await OTP.create({email ,otp , purpose:"reset",expiresAt:otpExpiry()});
     await sendOTPEmail(email , otp , 'reset'); 
 }
-
-
-
 
 const resetPassword =async(email , newPassword) =>{
     email = email.toLowerCase().trim();
@@ -105,34 +94,6 @@ const resetPassword =async(email , newPassword) =>{
     await Tutor.updateOne({email},{password:hashed})
 }
 
-
-const PendingTutor = require('../models/PendingTutor');
-
-const registerPendingTutor = async ({ fullName, email, password, certificatePath, status }) => {
-  email = email.toLowerCase().trim();
-
-  const existing = await PendingTutor.findOne({ email });
-  if (existing) {
-    throw new Error('Request already submitted. Wait for admin approval.');
-  }
-
-  
-  const hashed = await hashPassword(password);
-
-  const pending = new PendingTutor({
-    fullName,
-    email,
-    password: hashed, 
-    certificatePath,
-    status
-  });
-
-  return await pending.save();
-};
-
-
-
-
 module.exports = {
   registerTutor,
   verifyOtp,
@@ -140,6 +101,5 @@ module.exports = {
   loginTutor,
   forgotPassword,
   resetPassword,
-  registerPendingTutor,
 };
 

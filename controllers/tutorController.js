@@ -5,8 +5,105 @@ const getLogin    = (req, res) => res.render('tutor/login');
 const getOtp      = (req, res) => res.render('tutor/otp');
 const getForgotPassword = (req, res) => res.render('tutor/forgot-password');
 const getResetPassword  = (req, res) => res.render('tutor/reset-password');
-const getDashboard = (req, res) => res.render('tutor/dashboard');
-const getProfile   = (req, res) => res.render('tutor/profile');
+const getDashboard = async (req, res) => {
+    try {
+        const Tutor = require('../models/Tutor');
+        const tutor = await Tutor.findById(req.session.tutorId);
+        
+        if (!tutor) {
+            return res.redirect('/tutor/login');
+        }
+        
+        res.render('tutor/dashboard', { 
+            tutor,
+            approvalStatus: tutor.approvalStatus,
+            isApproved: tutor.approvalStatus === 'approved',
+            currentPage: 'dashboard'
+        });
+    } catch (error) {
+        console.error('Dashboard error:', error);
+        res.redirect('/tutor/login');
+    }
+};
+const getProfile = async (req, res) => {
+    try {
+        const Tutor = require('../models/Tutor');
+        const tutor = await Tutor.findById(req.session.tutorId);
+        
+        if (!tutor) {
+            return res.redirect('/tutor/login');
+        }
+        
+        res.render('tutor/profile', { 
+            tutor,
+            isApproved: tutor.approvalStatus === 'approved',
+            currentPage: 'profile'
+        });
+    } catch (error) {
+        console.error('Profile error:', error);
+        res.redirect('/tutor/login');
+    }
+};
+
+const getCourses = async (req, res) => {
+    try {
+        const Tutor = require('../models/Tutor');
+        const tutor = await Tutor.findById(req.session.tutorId);
+        
+        if (!tutor) {
+            return res.redirect('/tutor/login');
+        }
+        
+        res.render('tutor/courses', { 
+            tutor,
+            isApproved: tutor.approvalStatus === 'approved',
+            currentPage: 'courses'
+        });
+    } catch (error) {
+        console.error('Courses error:', error);
+        res.redirect('/tutor/login');
+    }
+};
+
+const getStudents = async (req, res) => {
+    try {
+        const Tutor = require('../models/Tutor');
+        const tutor = await Tutor.findById(req.session.tutorId);
+        
+        if (!tutor) {
+            return res.redirect('/tutor/login');
+        }
+        
+        res.render('tutor/students', { 
+            tutor,
+            isApproved: tutor.approvalStatus === 'approved',
+            currentPage: 'students'
+        });
+    } catch (error) {
+        console.error('Students error:', error);
+        res.redirect('/tutor/login');
+    }
+};
+
+const getEarnings = async (req, res) => {
+    try {
+        const Tutor = require('../models/Tutor');
+        const tutor = await Tutor.findById(req.session.tutorId);
+        
+        if (!tutor) {
+            return res.redirect('/tutor/login');
+        }
+        
+        res.render('tutor/earnings', { 
+            tutor,
+            isApproved: tutor.approvalStatus === 'approved',
+            currentPage: 'earnings'
+        });
+    } catch (error) {
+        console.error('Earnings error:', error);
+        res.redirect('/tutor/login');
+    }
+};
 
 
 const { hashPassword } = require('../helpers/passwordHelper');
@@ -20,18 +117,13 @@ const postSignup = async (req, res) => {
       return res.status(400).json({ message: 'Please upload your certificate' });
     }
 
-    const hashedPassword = await hashPassword(password);
-
-    await tutorService.registerPendingTutor({
+    
+    await tutorService.registerTutor({
       fullName,
       email,
-      password: hashedPassword,
-      certificatePath: certificateFile.path,
-      status: 'pending'
+      password,
+      certificatePath: certificateFile.path
     });
-
-    // ❗ Generate OTP here
-    await tutorService.generateSignupOtp(email);
 
     req.session.otpEmail = email;
     req.session.otpPurpose = 'signup';
@@ -167,6 +259,6 @@ module.exports = {
   getLogin, postLogin, logout,
   getOtp, postOtp, resendOtp,
   getForgotPassword, postForgotPassword,
-  getResetPassword, postResetPassword, getDashboard, getProfile
- 
+  getResetPassword, postResetPassword, 
+  getDashboard, getProfile, getCourses, getStudents, getEarnings,hashPassword
 };

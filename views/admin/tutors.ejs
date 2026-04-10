@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Tutors - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#34D399",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="font-display bg-background-light text-slate-900 h-screen overflow-hidden flex">
+    
+    <%- include('../partials/admin-sidebar') %>
+
+    
+    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
+        <header class="mb-8">
+            <h2 class="text-3xl font-bold text-slate-800">Approved Tutors</h2>
+            <p class="text-slate-500 mt-1">Manage all approved tutors in the system</p>
+        </header>
+
+        <!-- Search and Filters -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 mb-6">
+            <form method="GET" class="flex gap-4 items-end">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Search Tutors</label>
+                    <input type="text" name="search" value="<%= search %>" 
+                           placeholder="Search by name or email..." 
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                    <select name="blocked" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <option value="all" <%= blocked === 'all' ? 'selected' : '' %>>All Tutors</option>
+                        <option value="active" <%= blocked === 'active' ? 'selected' : '' %>>Active</option>
+                        <option value="blocked" <%= blocked === 'blocked' ? 'selected' : '' %>>Blocked</option>
+                    </select>
+                </div>
+                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-green-600 flex items-center gap-2">
+                    <span class="material-icons-outlined text-sm">search</span>
+                    Search
+                </button>
+                <a href="/admin/tutors" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200">
+                    Clear
+                </a>
+            </form>
+        </div>
+
+        <!-- Tutors Table -->
+        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">S.No</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Joined Date</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certificate</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-200">
+                        <% tutors.forEach((tutor, index) => { %>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                                <%= (page - 1) * 12 + index + 1 %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-3">
+                                        <span class="material-icons-outlined text-slate-600 text-sm">person</span>
+                                    </div>
+                                    <div class="text-sm font-medium text-slate-900"><%= tutor.fullName %></div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                <%= tutor.email %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                <%= new Date(tutor.createdAt).toLocaleDateString() %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                <% if (tutor.certificatePath) { %>
+                                <a href="/<%= tutor.certificatePath %>" target="_blank" 
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
+                                    <span class="material-icons-outlined text-xs">description</span>
+                                    View
+                                </a>
+                                <% } else { %>
+                                <span class="text-slate-400">N/A</span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (tutor.isBlocked) { %>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                    BLOCKED
+                                </span>
+                                <% } else { %>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    ACTIVE
+                                </span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex gap-2">
+                                    <% if (tutor.isBlocked) { %>
+                                    <button onclick="toggleBlock('<%= tutor._id %>')" 
+                                            class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                                        Unblock
+                                    </button>
+                                    <% } else { %>
+                                    <button onclick="toggleBlock('<%= tutor._id %>')" 
+                                            class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                                        Block
+                                    </button>
+                                    <% } %>
+                                    <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                        View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>   
+                </table>
+            </div>
+            
+            <% if (tutors.length === 0) { %>
+            <div class="text-center py-12">
+                <span class="material-icons-outlined text-6xl text-slate-300 mb-4">co_present</span>
+                <h3 class="text-lg font-medium text-slate-600 mb-2">No tutors found</h3>
+                <p class="text-slate-500">Try adjusting your search criteria</p>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Pagination -->
+        <% if (pages > 1) { %>
+        <div class="flex items-center justify-between mt-6">
+            <div class="text-sm text-slate-700">
+                Showing <span class="font-medium"><%= (page - 1) * 12 + 1 %></span> to <span class="font-medium"><%= Math.min(page * 12, total) %></span> of <span class="font-medium"><%= total %></span> results
+            </div>
+            <div class="flex items-center gap-2">
+                <% for (let i = Math.max(1, page - 2); i <= Math.min(pages, page + 2); i++) { %>
+                <a href="?page=<%= i %>&search=<%= search %>&blocked=<%= blocked %>" 
+                   class="px-3 py-2 text-sm <%= i === page ? 'bg-primary text-white' : 'bg-white text-slate-700 hover:bg-slate-50' %> border border-slate-300 rounded-md">
+                    <%= i %>
+                </a>
+                <% } %>
+                <span class="px-3 py-2 text-sm text-slate-500">Go to</span>
+                <input type="number" min="1" max="<%= pages %>" value="<%= page %>"
+                       class="w-16 px-2 py-1 text-sm border border-slate-300 rounded-md" 
+                       onchange="window.location.href='?page=' + this.value + '&search=<%= search %>&blocked=<%= blocked %>'">
+                <button onclick="document.querySelector('input[type=number]').onchange()" 
+                        class="px-3 py-2 text-sm bg-primary text-white rounded-md hover:bg-green-600">Go</button>
+            </div>
+        </div>
+        <% } %>
+    </main>
+
+    <script>
+        async function toggleBlock(tutorId) {
+            if (!confirm('Are you sure you want to change the block status of this tutor?')) return;
+            
+            try {
+                const response = await fetch(`/admin/toggle-block/${tutorId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    location.reload();
+                } else {
+                    showToast('Error: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showToast('Error changing block status', 'error');
+                console.error(error);
+            }
+        }
+    </script>
+
+    <!-- Admin Session Management Script -->
+    <script src="/js/admin-session.js"></script>
+<%- include('../partials/toast') %>
+</body>
+</html>
+
+
+
+
+
+

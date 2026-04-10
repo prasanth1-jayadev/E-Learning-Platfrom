@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Students - Admin Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#34D399",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+
+<body class="font-display bg-background-light text-slate-900 h-screen overflow-hidden flex">
+
+    <%- include('../partials/admin-sidebar') %>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <h2 class="text-3xl font-bold text-slate-800">Students</h2>
+            <p class="text-slate-500 mt-1">Manage all registered students</p>
+        </header>
+
+        <!-- Table Container -->
+        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+
+            <table class="w-full text-sm text-left">
+
+                <!-- Table Head -->
+                <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
+                    <tr>
+                        <th class="px-6 py-3">S.NO</th>
+                        <th class="px-6 py-3">NAME</th>
+                        <th class="px-6 py-3">EMAIL</th>
+                        <th class="px-6 py-3">COURSES</th>
+                        <th class="px-6 py-3">JOINED DATE</th>
+                        <th class="px-6 py-3">STATUS</th>
+                        <th class="px-6 py-3">ACTIONS</th>
+                    </tr>
+                </thead>
+
+                <!-- Table Body -->
+                <tbody class="divide-y">
+
+                    <% if (!students || students.length === 0) { %>
+                        <tr>
+                            <td colspan="7" class="text-center py-6 text-gray-400">
+                                No students found 😕
+                            </td>
+                        </tr>
+                    <% } else { %>
+                        <% students.forEach((student, index) => { %>
+
+                        <tr class="hover:bg-slate-50">
+
+                            <!-- S.NO -->
+                            <td class="px-6 py-4"><%= index + 1 %></td>
+
+                            <!-- NAME -->
+                            <td class="px-6 py-4 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                                    </svg>
+                                </div>
+                                <%= student.fullName || 'N/A' %>
+                            </td>
+
+                            <!-- EMAIL -->
+                            <td class="px-6 py-4"><%= student.email %></td>
+
+                            <!-- COURSES -->
+                            <td class="px-6 py-4">
+                                <%= student.coursesEnrolled ? student.coursesEnrolled.length : 0 %>
+                            </td>
+
+                            
+                            <td class="px-6 py-4">
+                                <%= new Date(student.createdAt).toLocaleDateString() %>
+                            </td>
+
+                            
+                            <td class="px-6 py-4">
+                                <% if(student.isBlocked){ %>
+                                    <span class="px-2 py-1 text-xs bg-red-100 text-red-600 rounded-full">
+                                        BLOCKED
+                                    </span>
+                                <% } else { %>
+                                    <span class="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">
+                                        ACTIVE
+                                    </span>
+                                <% } %>
+                            </td>
+
+                            
+                            <td class="px-6 py-4 flex gap-2">
+
+                                <form method="POST" action="/admin/toggle-student-block/<%= student._id %>">
+                                    <% if(student.isBlocked){ %>
+                                        <button class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                                            Unblock
+                                        </button>
+                                    <% } else { %>
+                                        <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                                            Block
+                                        </button>
+                                    <% } %>
+                                </form>
+
+                                <a href="/admin/view-student/<%= student._id %>" 
+                                   class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                   View
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        <% }) %>
+                    <% } %>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </main>
+
+    
+    <script src="/js/admin-session.js"></script>
+</body>
+</html>
