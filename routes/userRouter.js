@@ -58,6 +58,11 @@ router.get('/auth/google/callback',
 
 router.get('/home', isUser, userController.getHome);
 router.get('/profile', isUser, userController.getProfile);
+router.get('/edit-profile', isUser, userController.getEditProfile);
+router.post('/update-profile', isUser, userController.postUpdateProfile);
+router.post('/send-email-change-otp', isUser, userController.postSendEmailChangeOTP);
+router.post('/verify-email-change', isUser, userController.postVerifyEmailChange);
+router.post('/resend-email-otp', isUser, userController.postResendEmailOTP);
 
 
 

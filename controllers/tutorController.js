@@ -45,6 +45,94 @@ const getProfile = async (req, res) => {
     }
 };
 
+const postUpdateProfile = async (req, res) => {
+  try {
+    const { fullName, phone, subjects, bio } = req.body;
+    const Tutor = require('../models/Tutor');
+    
+    const tutor = await Tutor.findById(req.session.tutorId);
+    if (!tutor) {
+      return res.status(404).json({ message: 'Tutor not found' });
+    }
+
+    // Update profile fields
+    tutor.fullName = fullName.trim();
+    tutor.phone = phone ? phone.trim() : null;
+    tutor.subjects = subjects ? subjects.trim() : null;
+    tutor.bio = bio ? bio.trim() : null;
+    await tutor.save();
+    
+    res.json({ success: true, message: 'Profile updated successfully' });
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const postSendEmailChangeOTP = async (req, res) => {
+  try {
+    const { newEmail } = req.body;
+    const Tutor = require('../models/Tutor');
+    const tutorService = require('../service/tutorService');
+    
+    const newEmailTrimmed = newEmail.trim().toLowerCase();
+    
+    // Check if new email already exists
+    const existingTutor = await Tutor.findOne({ email: newEmailTrimmed });
+    if (existingTutor) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    // Send OTP to new email
+    await tutorService.sendEmailChangeOTP(newEmailTrimmed);
+    
+    res.json({ success: true, message: 'OTP sent to new email' });
+
+  } catch (error) {
+    console.error('Send email OTP error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const postVerifyEmailChange = async (req, res) => {
+  try {
+    const { otp, newEmail } = req.body;
+    const Tutor = require('../models/Tutor');
+    const tutorService = require('../service/tutorService');
+    
+    // Verify OTP
+    await tutorService.verifyEmailChangeOTP(newEmail, otp);
+    
+    // Update tutor with new email
+    const tutor = await Tutor.findById(req.session.tutorId);
+    if (!tutor) {
+      return res.status(404).json({ message: 'Tutor not found' });
+    }
+
+    tutor.email = newEmail.trim().toLowerCase();
+    await tutor.save();
+    
+    res.json({ success: true, message: 'Email updated successfully' });
+
+  } catch (error) {
+    console.error('Verify email change error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const postResendEmailOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const tutorService = require('../service/tutorService');
+    await tutorService.sendEmailChangeOTP(email);
+    res.json({ success: true, message: 'OTP resent successfully' });
+  } catch (error) {
+    console.error('Resend OTP error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 
 
 const postSignup = async (req, res) => {
@@ -52,29 +140,29 @@ const postSignup = async (req, res) => {
     const { fullName, email, password } = req.body;
     const certificateFile = req.file;
 
-    // Server-side validation
+    // Serverside vali
     if (!fullName || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Validate full name (only letters and single spaces between words)
+    
     const nameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
     if (!nameRegex.test(fullName.trim())) {
       return res.status(400).json({ message: 'Full name can only contain letters and single spaces between words' });
     }
 
-    // Validate name length
+    
     if (fullName.trim().length < 2 || fullName.trim().length > 50) {
       return res.status(400).json({ message: 'Full name must be between 2 and 50 characters' });
     }
 
-    // Validate email format
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return res.status(400).json({ message: 'Please enter a valid email address' });
     }
 
-    // Validate password strength
+
     if (password.length < 8) {
       return res.status(400).json({ message: 'Password must be at least 8 characters long' });
     }
@@ -87,7 +175,7 @@ const postSignup = async (req, res) => {
       return res.status(400).json({ message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' });
     }
 
-    // Validate certificate file
+    
     if (!certificateFile) {
       return res.status(400).json({ message: 'Please upload your certificate' });
     }
@@ -245,4 +333,5 @@ module.exports = {
   getForgotPassword, postForgotPassword,
   getResetPassword, postResetPassword, 
   getDashboard, getProfile,
+  postUpdateProfile, postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP
 };

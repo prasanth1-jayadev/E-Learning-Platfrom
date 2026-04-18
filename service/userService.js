@@ -21,6 +21,7 @@ const registerUser = async ({ fullName, email, password }) => {
     await User.create({ fullName, email, password:hashed, isVerified:false });
 
    const otp = generateOTP();
+   console.log(otp)
    await OTP.deleteMany({email, purpose:"signup"})
    await OTP.create({email,otp, purpose:"signup", expiresAt:otpExpiry()});
    await sendOTPEmail(email,otp, 'signup');
@@ -105,6 +106,25 @@ const getUserByEmail = async (email) => {
     return await User.findOne({ email });
 };
 
+const sendEmailChangeOTP = async (email) => {
+    email = email.toLowerCase().trim();
+    
+    const otp = generateOTP();
+    await OTP.deleteMany({ email, purpose: 'email-change' });
+    await OTP.create({ email, otp, purpose: 'email-change', expiresAt: otpExpiry() });
+    await sendOTPEmail(email, otp, 'email-change');
+};
+
+const verifyEmailChangeOTP = async (email, otp) => {
+    email = email.toLowerCase().trim();
+    
+    const record = await OTP.findOne({ email, otp, purpose: 'email-change' });
+    if (!record) throw new Error('Invalid OTP');
+    if (record.expiresAt < new Date()) throw new Error('OTP expired. Please resend');
+    
+    await OTP.deleteMany({ email, purpose: 'email-change' });
+};
+
 module.exports = {
   registerUser,
   verifyOtp,
@@ -112,7 +132,9 @@ module.exports = {
   loginUser,
   forgotPassword,
   resetPassword,
-  getUserByEmail
+  getUserByEmail,
+  sendEmailChangeOTP,
+  verifyEmailChangeOTP
 };
 
 

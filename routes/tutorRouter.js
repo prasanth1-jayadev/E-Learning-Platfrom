@@ -25,6 +25,10 @@ router.post('/reset-password',  tutorController.postResetPassword);
 
 router.get('/dashboard', isTutor, tutorController.getDashboard);
 router.get('/profile',   isTutor, tutorController.getProfile);
+router.post('/update-profile', isTutor, tutorController.postUpdateProfile);
+router.post('/send-email-change-otp', isTutor, tutorController.postSendEmailChangeOTP);
+router.post('/verify-email-change', isTutor, tutorController.postVerifyEmailChange);
+router.post('/resend-email-otp', isTutor, tutorController.postResendEmailOTP);
 
 
 router.get('/auth/google', passport.authenticate('google-tutor'));

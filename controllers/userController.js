@@ -8,38 +8,151 @@ const getLogin          = (req, res) => res.render('user/login');
 const getOtp            = (req, res) => res.render('user/otp');
 const getForgotPassword = (req, res) => res.render('user/forgot-password');
 const getResetPassword  = (req, res) => res.render('user/reset-password');
-const getProfile = (req, res) => res.render('user/profile');
+const getProfile = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const user = await User.findById(req.session.userId);
+    
+    if (!user) {
+      return res.redirect('/user/login');
+    }
+    
+    res.render('user/profile', { user });
+  } catch (error) {
+    console.error('Error loading profile:', error);
+    res.redirect('/user/home');
+  }
+};
+
+const getEditProfile = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const user = await User.findById(req.session.userId);
+    
+    if (!user) {
+      return res.redirect('/user/login');
+    }
+    
+    res.render('user/edit-profile', { user });
+  } catch (error) {
+    console.error('Error loading edit profile:', error);
+    res.redirect('/user/profile');
+  }
+};
+
+const postUpdateProfile = async (req, res) => {
+  try {
+    const { fullName, phone } = req.body;
+    const User = require('../models/User');
+    
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update name and phone
+    user.fullName = fullName.trim();
+    user.phone = phone ? phone.trim() : null;
+    await user.save();
+    
+    res.json({ success: true, message: 'Profile updated successfully' });
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const postSendEmailChangeOTP = async (req, res) => {
+  try {
+    const { newEmail } = req.body;
+    const User = require('../models/User');
+    
+    const newEmailTrimmed = newEmail.trim().toLowerCase();
+    
+    // Check if new email already exists
+    const existingUser = await User.findOne({ email: newEmailTrimmed });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    // Send OTP to new email
+    await userService.sendEmailChangeOTP(newEmailTrimmed);
+    
+    res.json({ success: true, message: 'OTP sent to new email' });
+
+  } catch (error) {
+    console.error('Send email OTP error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const postVerifyEmailChange = async (req, res) => {
+  try {
+    const { otp, newEmail } = req.body;
+    const User = require('../models/User');
+    
+    // Verify OTP
+    await userService.verifyEmailChangeOTP(newEmail, otp);
+    
+    // Update user with new email
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.email = newEmail.trim().toLowerCase();
+    await user.save();
+    
+    res.json({ success: true, message: 'Email updated successfully' });
+
+  } catch (error) {
+    console.error('Verify email change error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const postResendEmailOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    await userService.sendEmailChangeOTP(email);
+    res.json({ success: true, message: 'OTP resent successfully' });
+  } catch (error) {
+    console.error('Resend OTP error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
 
 
 const postSignup = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
 
-    // Server-side validation
+    
     if (!fullName || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Validate full name (only letters and single spaces between words)
+    
     const nameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
     if (!nameRegex.test(fullName.trim())) {
-      return res.status(400).json({ message: 'Full name can only contain letters and single spaces between words' });
+      return res.status(400).json({ message: 'Full name can only contain letters' });
     }
 
-    // Validate name length
+  
     if (fullName.trim().length < 2 || fullName.trim().length > 50) {
       return res.status(400).json({ message: 'Full name must be between 2 and 50 characters' });
     }
 
-    // Validate email format
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return res.status(400).json({ message: 'Please enter a valid email address' });
     }
 
-    // Validate password strength
+    
     if (password.length < 8) {
-      return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+      return res.status(400).json({ message: 'Password must be at least 8 characters' });
     }
 
     const hasUpperCase = /[A-Z]/.test(password);
@@ -185,5 +298,7 @@ module.exports = {
   getLogin, postLogin, logout,
   getOtp, postOtp, resendOtp,
   getForgotPassword, postForgotPassword,
-  getResetPassword, postResetPassword,getProfile
+  getResetPassword, postResetPassword,
+  getProfile, getEditProfile, postUpdateProfile, 
+  postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP
 };
