@@ -1,7 +1,6 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -20,7 +19,6 @@ const storage = multer.diskStorage({
   },
 });
 
-
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
 
@@ -37,4 +35,4 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-module.exports = upload;
+export default upload;

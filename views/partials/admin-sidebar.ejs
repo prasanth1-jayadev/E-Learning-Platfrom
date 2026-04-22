@@ -11,7 +11,7 @@
             <img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBy6t6x3XGeEVMdPCe838zH-7i5En9rlh7PgpHDzjRbXKymzOygzOL20JRpmUuUbvDJEicb7rfsXsrhNyQYh7ZtAz2UEUwmKBCcIRyCt0f-8-f3t4DJxdXPg0lBmYym9EqunFZR9lVzTojicJ4sE6P_5uLhYBc5e43yHbis4ChXGJfwRGodVos9mVN01vJ8nEHzYF_F0MA5JMLw2c1K70mlUEtnxpFtUkFi68NwNWTfHjS-pcePdUJpSd6Zi30gqtAb3tODFE4Nwk"/>
             <div class="overflow-hidden">
                 <p class="text-sm font-semibold truncate">Admin</p>
-                <a class="text-xs text-primary hover:underline" href="#">View Profile</a>
+                <a class="text-xs text-primary hover:underline" href="/admin/profile">View Profile</a>
             </div>
         </div>
         
@@ -62,7 +62,7 @@
     </div>
     
     <div class="mt-auto p-6 border-t border-slate-200 dark:border-slate-800">
-        <a href="#" onclick="confirmLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 font-medium transition">
+        <a href="/admin/logout" onclick="event.preventDefault(); confirmLogout();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 font-medium transition">
             <span class="material-icons-outlined text-[20px]">logout</span>
             <span class="font-medium">Logout</span>
         </a>

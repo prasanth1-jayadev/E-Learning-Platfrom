@@ -1,39 +1,72 @@
-const express = require('express');
-const router  = express.Router();
-const tutorController = require('../controllers/tutorController');
-const { isTutor, isTutorApproved, redirectIfTutor } = require('../middleware/authMiddleware');
-const upload = require('../config/multer'); 
-const passport = require('../config/passport');
+import express from 'express';
+import * as tutorController from '../controllers/tutor/tutorController.js';
+import * as courseController from '../controllers/tutor/courseController.js';
+import { isTutor, isTutorApproved, redirectIfTutor } from '../middleware/authMiddleware.js';
+import { upload } from '../config/cloudinary.js';
+import passport from '../config/passport.js';
 
+const router = express.Router();
 
-
-
-router.get('/signup',           redirectIfTutor, tutorController.getSignup);
+// Auth routes
+router.get('/signup', redirectIfTutor, tutorController.getSignup);
 router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
-router.get('/login',            redirectIfTutor, tutorController.getLogin);
-router.post('/login',           tutorController.postLogin);     
-router.get('/logout',           tutorController.logout);
+router.get('/login', redirectIfTutor, tutorController.getLogin);
+router.post('/login', tutorController.postLogin);
+router.get('/logout', tutorController.logout);
 
-router.get('/verify-otp',       tutorController.getOtp);
-router.post('/verify-otp',      tutorController.postOtp);
-router.post('/resend-otp',      tutorController.resendOtp);
+router.get('/verify-otp', tutorController.getOtp);
+router.post('/verify-otp', tutorController.postOtp);
+router.post('/resend-otp', tutorController.resendOtp);
 
-router.get('/forgot-password',  tutorController.getForgotPassword);
+router.get('/forgot-password', tutorController.getForgotPassword);
 router.post('/forgot-password', tutorController.postForgotPassword);
-router.get('/reset-password',   tutorController.getResetPassword);
-router.post('/reset-password',  tutorController.postResetPassword);
+router.get('/reset-password', tutorController.getResetPassword);
+router.post('/reset-password', tutorController.postResetPassword);
 
+// Dashboard and profile
 router.get('/dashboard', isTutor, tutorController.getDashboard);
-router.get('/profile',   isTutor, tutorController.getProfile);
+router.get('/profile', isTutor, tutorController.getProfile);
 router.post('/update-profile', isTutor, tutorController.postUpdateProfile);
 router.post('/send-email-change-otp', isTutor, tutorController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isTutor, tutorController.postVerifyEmailChange);
 router.post('/resend-email-otp', isTutor, tutorController.postResendEmailOTP);
 
+// Course routes
+router.get('/courses', isTutor, courseController.getCourses);
+router.get('/courses/create', isTutor, isTutorApproved, courseController.getCreateCourse);
+router.post('/courses/create', isTutor, isTutorApproved, (req, res, next) => {
+    upload.single('thumbnail')(req, res, (err) => {
+        if (err) {
+            console.error('Multer error:', err);
+            return res.status(400).json({ 
+                success: false,
+                message: err.message || 'File upload failed' 
+            });
+        }
+        next();
+    });
+}, courseController.postCreateCourse);
+router.get('/courses/:id/edit', isTutor, courseController.getEditCourse);
+router.post('/courses/:id/edit', isTutor, (req, res, next) => {
+    upload.single('thumbnail')(req, res, (err) => {
+        if (err) {
+            console.error('Multer error:', err);
+            return res.status(400).json({ 
+                success: false,
+                message: err.message || 'File upload failed' 
+            });
+        }
+        next();
+    });
+}, courseController.postUpdateCourse);
+router.delete('/courses/:id', isTutor, courseController.deleteCourse);
+router.post('/courses/:id/toggle-publish', isTutor, courseController.togglePublish);
+router.get('/courses/:id/details', isTutor, courseController.getCourseDetails);
 
+// Google OAuth
 router.get('/auth/google', passport.authenticate('google-tutor'));
 
-router.get('/auth/google/callback', 
+router.get('/auth/google/callback',
     (req, res, next) => {
         passport.authenticate('google-tutor', (err, user, info) => {
             if (err) {
@@ -43,13 +76,13 @@ router.get('/auth/google/callback',
             if (!user) {
                 return res.redirect('/tutor/login?error=google_auth_failed');
             }
-            
+
             req.logIn(user, (err) => {
                 if (err) {
                     console.error('Login Error:', err);
                     return res.redirect('/tutor/login?error=google_auth_failed');
                 }
-                
+
                 req.session.save((saveErr) => {
                     if (saveErr) {
                         console.error('Session save error:', saveErr);
@@ -62,4 +95,4 @@ router.get('/auth/google/callback',
     }
 );
 
-module.exports = router;
+export default router;

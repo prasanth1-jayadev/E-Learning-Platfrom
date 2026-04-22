@@ -225,11 +225,11 @@
       })
     });
     const data = await res.json();
-    hideLoader();
     if (res.ok) {
-      showToast('Welcome back, Mentor!', 'success');
-      setTimeout(() => window.location.href = data.redirect || '/tutor/dashboard', 1200);
+      // Keep loader visible during redirect - no blink!
+      window.location.href = data.redirect || '/tutor/dashboard';
     } else {
+      hideLoader();
       showToast(data.message || 'Login failed.', 'error');
       errorEl.textContent = data.message || 'Login failed.';
       errorEl.classList.remove('hidden');

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Course - Organic Learn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
+        
+        .main-content { 
+            margin-left: 260px; 
+            flex: 1; 
+            padding: 2rem; 
+            width: calc(100% - 260px);
+            min-height: 100vh;
+        }
+        
+        .form-container { max-width: 900px; margin: 0 auto; }
+        .form-card { background: white; padding: 3rem; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        
+        .form-title { text-align: center; font-size: 1.75rem; font-weight: 700; margin-bottom: 3rem; color: #1a1a1a; }
+        
+        .form-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        
+        .form-left, .form-right { display: flex; flex-direction: column; gap: 1.5rem; }
+        
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+        .form-group label .required { color: #ef4444; margin-left: 2px; }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 0.75rem 1rem; 
+            border: 1px solid #d1d5db; 
+            border-radius: 8px; 
+            font-size: 0.9rem; 
+            font-family: Inter, sans-serif; 
+            transition: all 0.3s;
+            background: white;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+            outline: none; 
+            border-color: #00d9b1;
+            box-shadow: 0 0 0 3px rgba(0, 217, 177, 0.1);
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: #9ca3af;
+        }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        .upload-area:hover {
+            border-color: #00d9b1;
+            background: #f0f9f6;
+        }
+        .upload-area input {
+            display: none;
+        }
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: #e5e7eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-icon svg {
+            width: 32px;
+            height: 32px;
+            color: #9ca3af;
+        }
+        .upload-text {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+        .upload-hint {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .thumbnail-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .create-btn {
+            grid-column: 1 / -1;
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .create-btn:hover {
+            background: #00c29d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 217, 177, 0.3);
+        }
+        .create-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @media (max-width: 1439px) {
+            .main-content { margin-left: 240px; width: calc(100% - 240px); }
+        }
+        
+        @media (max-width: 1023px) {
+            .main-content { margin-left: 220px; width: calc(100% - 220px); }
+        }
+        
+        @media (max-width: 899px) {
+            .main-content { margin-left: 200px; width: calc(100% - 200px); }
+            .form-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+            .create-btn { grid-column: 1; }
+        }
+        
+        @media (max-width: 767px) {
+            .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+            .form-card { padding: 1.5rem; }
+            .form-title { font-size: 1.5rem; margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
+
+<div class="main-content">
+    <div class="form-container">
+        <div class="form-card">
+            <h1 class="form-title">Add New Course</h1>
+
+            <form id="createCourseForm">
+                <div class="form-layout">
+                    <!-- Left Column -->
+                    <div class="form-left">
+                        <div class="form-group">
+                            <label>Course Title <span class="required">*</span></label>
+                            <input type="text" id="title" name="title" placeholder="Enter course title" required maxlength="200">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Course Category <span class="required">*</span></label>
+                            <select id="category" name="category" required>
+                                <option value="">Select a category</option>
+                                <option value="Development">Development</option>
+                                <option value="Design">Design</option>
+                                <option value="Business">Business</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Science">Science</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Language">Language</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Regular Price <span class="required">*</span></label>
+                            <input type="number" id="price" name="price" placeholder="Enter price in ₹" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Offer Percentage</label>
+                            <input type="number" id="discountPrice" name="discountPrice" placeholder="Enter discount percentage" min="0" max="100" step="1">
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="form-right">
+                        <div class="form-group">
+                            <label>Upload Cover Image <span class="required">*</span></label>
+                            <div class="upload-area" onclick="document.getElementById('thumbnailInput').click()">
+                                <input type="file" id="thumbnailInput" accept="image/*">
+                                <div class="upload-icon">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <p class="upload-text">Course Thumbnail</p>
+                                <p class="upload-hint">Click to upload image</p>
+                                <img id="thumbnailPreview" class="thumbnail-preview" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description <span class="required">*</span></label>
+                            <textarea id="description" name="description" placeholder="Enter course description" required maxlength="2000"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="create-btn" id="submitBtn">
+                        CREATE COURSE
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Thumbnail preview
+document.getElementById('thumbnailInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('thumbnailPreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Form submission
+document.getElementById('createCourseForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'CREATING...';
+    
+    // Get form data
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const category = document.getElementById('category').value;
+    const price = document.getElementById('price').value;
+    const discountPrice = document.getElementById('discountPrice').value;
+    const thumbnailFile = document.getElementById('thumbnailInput').files[0];
+    
+    // Validation
+    if (!title || title.length < 5) {
+        showToast('Title must be at least 5 characters long', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'CREATE COURSE';
+        return;
+    }
+    
+    if (!description || description.length < 20) {
+        showToast('Description must be at least 20 characters long', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'CREATE COURSE';
+        return;
+    }
+    
+    if (!category) {
+        showToast('Please select a category', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'CREATE COURSE';
+        return;
+    }
+    
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('level', 'Beginner');
+    formData.append('price', price || 0);
+    if (discountPrice) {
+        formData.append('discountPrice', discountPrice);
+    }
+    if (thumbnailFile) {
+        formData.append('thumbnail', thumbnailFile);
+    }
+    
+    try {
+        const response = await fetch('/tutor/courses/create', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Course created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = '/tutor/courses';
+            }, 1000);
+        } else {
+            showToast(data.message || 'Failed to create course', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'CREATE COURSE';
+        }
+    } catch (error) {
+        console.error('Create course error:', error);
+        showToast('Something went wrong', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'CREATE COURSE';
+    }
+});
+
+// Toast notification
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-weight: 600;
+        ${type === 'success' ? 'background: #10b981; color: white;' : 'background: #ef4444; color: white;'}
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+
+</body>
+</html>

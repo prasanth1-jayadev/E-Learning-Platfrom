@@ -4,207 +4,212 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tutor Profile - Organic Learn</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { primary: '#2beead' },
-          fontFamily: { display: ['Be Vietnam Pro', 'sans-serif'] }
-        }
-      }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
+    
+    /* Main Content Styles */
+    .main-content { 
+        margin-left: 260px; 
+        flex: 1; 
+        padding: 2rem; 
+        width: calc(100% - 260px);
+        min-height: 100vh;
     }
-  </script>
+    
+    /* Profile Card */
+    .profile-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .profile-header h2 { font-size: 1.25rem; font-weight: 700; }
+    .edit-btn { background: #00d9b1; color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.3s; }
+    .edit-btn:hover { background: #00c29d; }
+    .edit-btn.cancel { background: #e5e7eb; color: #666; }
+    .edit-btn.cancel:hover { background: #d1d5db; }
+    
+    .avatar-section { text-align: center; margin-bottom: 2rem; }
+    .avatar-large { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; border: 3px solid #e5e7eb; }
+    
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; font-family: Inter, sans-serif; transition: border-color 0.3s; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #00d9b1; }
+    .form-group input:read-only, .form-group textarea:read-only { background: #f9fafb; }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group .hint { font-size: 0.75rem; color: #9ca3af; margin-top: 0.35rem; }
+    .form-group .char-count { display: flex; justify-content: space-between; margin-top: 0.35rem; }
+    
+    .email-group { display: flex; gap: 0.75rem; }
+    .email-group input { flex: 1; }
+    .change-email-btn { background: white; border: 1px solid #00d9b1; color: #00d9b1; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+    .change-email-btn:hover { background: #f0f9f6; }
+    
+    .save-section { padding-top: 1rem; display: none; }
+    .save-section.active { display: block; }
+    .save-btn { width: 100%; background: #00d9b1; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+    .save-btn:hover { background: #00c29d; }
+    
+    .change-password-section { text-align: center; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; margin-top: 1.5rem; }
+    .change-password-btn { background: white; border: 1px solid #e5e7eb; color: #666; padding: 0.7rem 1.5rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+    .change-password-btn:hover { background: #f9fafb; border-color: #d1d5db; }
+    
+    /* Modal Styles */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: 16px; padding: 2rem; max-width: 450px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+    .modal-header { margin-bottom: 1.5rem; }
+    .modal-header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .modal-header p { color: #666; font-size: 0.9rem; }
+    .modal-buttons { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .modal-buttons button { flex: 1; padding: 0.85rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .btn-primary-modal { background: #00d9b1; color: white; border: none; }
+    .btn-primary-modal:hover { background: #00c29d; }
+    .btn-secondary-modal { background: #f3f4f6; color: #666; border: none; }
+    .btn-secondary-modal:hover { background: #e5e7eb; }
+    .error-text { color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+    .error-text.active { display: block; }
+    
+    /* Responsive */
+    @media (max-width: 1439px) {
+        .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 1.75rem; }
+    }
+    
+    @media (max-width: 1023px) {
+        .main-content { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
+    }
+    
+    @media (max-width: 899px) {
+        .main-content { margin-left: 200px; width: calc(100% - 200px); padding: 1.25rem; }
+    }
+    
+    @media (max-width: 767px) {
+        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+        .profile-card { padding: 1.25rem; }
+        .profile-header { flex-direction: column; gap: 1rem; align-items: stretch; }
+        .edit-btn { justify-content: center; }
+        .email-group { flex-direction: column; }
+        .change-email-btn { width: 100%; }
+    }
+  </style>
 </head>
-<body class="font-display bg-[#f0f4f3] min-h-screen flex flex-col">
+<body>
 
-<!-- Navbar -->
-<nav class="bg-white border-b border-gray-100 px-8 py-3 flex items-center justify-between sticky top-0 z-50">
-  <div class="flex items-center gap-2">
-    <div class="w-7 h-7 bg-primary/20 rounded-lg flex items-center justify-center">
-      <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 48 48"><path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"/></svg>
-    </div>
-    <span class="font-bold text-sm"><span class="text-primary">Organic</span> Learn</span>
-  </div>
-  <div class="flex items-center gap-3">
-    <button class="text-gray-400 hover:text-gray-600">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-    </button>
-    <div class="flex items-center gap-2">
-      <div class="text-right">
-        <p class="text-xs font-bold text-gray-800">Prasanth B jayadev</p>
-        <p class="text-[10px] text-primary">Tutor</p>
-      </div>
-      <div class="w-8 h-8 rounded-full bg-amber-200 overflow-hidden">
-        <svg class="w-full h-full text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-      </div>
-    </div>
-  </div>
-</nav>
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'profile' }) %>
 
-<!-- Main -->
-<div class="flex-1 max-w-5xl mx-auto w-full px-6 py-8 flex gap-6 items-start">
-
-  <%- include('../partials/tutor-sidebar') %>
-
-  <!-- Profile Settings Card -->
-  <div class="flex-1">
-    <div class="bg-white rounded-2xl shadow-sm p-7 mb-5">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-bold text-gray-900">Profile Settings</h2>
-        <button id="editBtn" onclick="toggleEdit()" class="flex items-center gap-2 bg-primary text-gray-900 text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+<!-- Profile Content -->
+<div class="main-content">
+    <div class="profile-card">
+      <div class="profile-header">
+        <h2>Profile Settings</h2>
+        <button id="editBtn" onclick="toggleEdit()" class="edit-btn">
+          <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
           <span id="editBtnText">Edit Profile</span>
         </button>
       </div>
 
-      <!-- Avatar -->
-      <div class="flex justify-center mb-7">
-        <div class="relative">
-          <div class="w-20 h-20 rounded-full bg-gray-700 overflow-hidden border-2 border-gray-200">
-            <svg class="w-full h-full text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          </div>
-          <div class="absolute bottom-0 right-0 w-5 h-5 bg-primary rounded-full border-2 border-white flex items-center justify-center">
-            <svg class="w-2.5 h-2.5 text-gray-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>
-          </div>
+      <div class="avatar-section">
+        <div class="avatar-large"><%= tutor.fullName.charAt(0).toUpperCase() %></div>
+      </div>
+
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="fullName" value="<%= tutor.fullName %>" readonly/>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <div class="email-group">
+          <input type="email" value="<%= tutor.email %>" readonly/>
+          <button onclick="openEmailModal()" class="change-email-btn">Change Email</button>
+        </div>
+        <div class="hint">
+          <svg style="width: 12px; height: 12px; display: inline; margin-right: 4px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Email changes require verification for security
         </div>
       </div>
 
-      <div class="space-y-5">
-        <!-- Name -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 mb-1.5">Name</label>
-          <input type="text" id="fullName" value="<%= tutor.fullName %>" readonly
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-gray-50 focus:outline-none focus:border-primary focus:bg-white transition"/>
-        </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" id="phone" value="<%= tutor.phone || '' %>" placeholder="Enter your phone number" readonly/>
+      </div>
 
-        <!-- Email -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 mb-1.5">Email</label>
-          <div class="flex gap-3">
-            <input type="email" value="<%= tutor.email %>" readonly
-              class="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-gray-50 focus:outline-none"/>
-            <button onclick="openEmailModal()" class="px-4 py-2.5 border border-primary text-primary text-xs font-bold rounded-lg hover:bg-primary/5 transition whitespace-nowrap">
-              Change Email
-            </button>
-          </div>
-          <p class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Email changes require verification for security
-          </p>
-        </div>
+      <div class="form-group">
+        <label>Subjects Teaching</label>
+        <input type="text" id="subjects" value="<%= tutor.subjects || '' %>" placeholder="e.g., Mathematics, Physics, Chemistry" readonly/>
+      </div>
 
-        <!-- Phone -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 mb-1.5">Phone</label>
-          <input type="text" id="phone" value="<%= tutor.phone || '' %>" placeholder="Enter your phone number" readonly
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-gray-50 focus:outline-none focus:border-primary focus:bg-white transition"/>
+      <div class="form-group">
+        <label>Bio</label>
+        <textarea id="bio" placeholder="Tell students about yourself, your teaching experience, and approach..." readonly><%= tutor.bio || '' %></textarea>
+        <div class="char-count">
+          <span class="hint">Maximum 500 characters</span>
+          <span class="hint"><span id="bioCount">0</span>/500</span>
         </div>
+      </div>
 
-        <!-- Subjects Teaching -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 mb-1.5">Subjects Teaching</label>
-          <input type="text" id="subjects" value="<%= tutor.subjects || '' %>" placeholder="e.g., Mathematics, Physics, Chemistry" readonly
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-gray-50 focus:outline-none focus:border-primary focus:bg-white transition"/>
-        </div>
+      <div id="saveSection" class="save-section">
+        <button onclick="saveProfile()" class="save-btn">Save Changes</button>
+      </div>
 
-        <!-- Bio -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 mb-1.5">Bio</label>
-          <textarea id="bio" rows="4" placeholder="Tell students about yourself, your teaching experience, and approach..." readonly
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-gray-50 focus:outline-none focus:border-primary focus:bg-white resize-none transition"><%= tutor.bio || '' %></textarea>
-          <div class="flex justify-between mt-1">
-            <p class="text-[11px] text-gray-400">Maximum 500 characters</p>
-            <p class="text-[11px] text-gray-400"><span id="bioCount">0</span>/500</p>
-          </div>
-        </div>
-
-        <!-- Save Button (Hidden by default) -->
-        <div id="saveSection" class="hidden pt-2">
-          <button onclick="saveProfile()" class="w-full bg-primary text-gray-900 py-3 rounded-lg font-bold hover:brightness-110 transition">
-            Save Changes
-          </button>
-        </div>
-
-        <!-- Change Password -->
-        <div class="pt-2 flex justify-center">
-          <button class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 font-medium hover:bg-gray-50 transition">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-            Change Password
-          </button>
-        </div>
+      <div class="change-password-section">
+        <button class="change-password-btn">
+          <svg style="width: 16px; height: 16px; display: inline; margin-right: 6px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+          Change Password
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Footer -->
-<footer class="bg-white border-t border-gray-100 mt-8">
-  <div class="max-w-5xl mx-auto px-6 py-10 grid grid-cols-4 gap-8">
-    <div>
-      <div class="flex items-center gap-2 mb-3">
-        <div class="w-6 h-6 bg-primary/20 rounded-lg flex items-center justify-center">
-          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 48 48"><path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"/></svg>
+<!-- Email Change Modal -->
+<div id="emailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Change Email</h2>
+            <p>Enter your new email address</p>
         </div>
-        <span class="font-bold text-sm text-gray-800">Organic Learn</span>
-      </div>
-      <p class="text-xs text-gray-400 leading-relaxed mb-4">Empowering learners worldwide with quality education. Join thousands of students and expert tutors in our learning community.</p>
-      <div class="flex gap-2">
-        <div class="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary/10 cursor-pointer transition">
-          <svg class="w-3.5 h-3.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        
+        <div class="form-group">
+            <label>New Email Address</label>
+            <input type="email" id="newEmail" placeholder="Enter new email"/>
+            <p id="emailError" class="error-text"></p>
         </div>
-        <div class="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary/10 cursor-pointer transition">
-          <svg class="w-3.5 h-3.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
-        </div>
-        <div class="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary/10 cursor-pointer transition">
-          <svg class="w-3.5 h-3.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        </div>
-        <div class="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary/10 cursor-pointer transition">
-          <svg class="w-3.5 h-3.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-        </div>
-      </div>
-    </div>
-    <div>
-      <p class="text-xs font-bold text-gray-800 mb-3">Quick Links</p>
-      <ul class="space-y-2 text-xs text-gray-400">
-        <li><a href="#" class="hover:text-primary transition">Browse Courses</a></li>
-        <li><a href="#" class="hover:text-primary transition">Categories</a></li>
-        <li><a href="#" class="hover:text-primary transition">About Us</a></li>
-        <li><a href="#" class="hover:text-primary transition">Contact</a></li>
-        <li><a href="#" class="hover:text-primary transition">Help Center</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="text-xs font-bold text-gray-800 mb-3">For Educators</p>
-      <ul class="space-y-2 text-xs text-gray-400">
-        <li><a href="#" class="hover:text-primary transition">Become a Tutor</a></li>
-        <li><a href="#" class="hover:text-primary transition">Tutor Login</a></li>
-        <li><a href="#" class="hover:text-primary transition">Teaching Guide</a></li>
-        <li><a href="#" class="hover:text-primary transition">Resources</a></li>
-        <li><a href="#" class="hover:text-primary transition">Tutor Support</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="text-xs font-bold text-gray-800 mb-3">Contact Us</p>
-      <ul class="space-y-2 text-xs text-gray-400">
-        <li>hello@organiclearn.com</li>
-        <li>+1 (234) 567-890</li>
-        <li class="leading-relaxed">123 Education Street,<br/>Learning City, LC 12345</li>
-      </ul>
-    </div>
-  </div>
-  <div class="border-t border-gray-100 py-4 text-center text-xs text-gray-400">
-    © 2024 Organic Learn. All rights reserved.
-  </div>
-</footer>
 
-<!-- Dark mode FAB -->
-<button class="fixed bottom-6 right-6 w-10 h-10 bg-[#0d1b17] text-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition">
-  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-</button>
+        <div class="modal-buttons">
+            <button onclick="sendEmailOTP()" class="btn-primary-modal">Send OTP</button>
+            <button onclick="closeEmailModal()" class="btn-secondary-modal">Cancel</button>
+        </div>
+    </div>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- OTP Verification Modal -->
+<div id="otpModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Verify Email</h2>
+            <p>We've sent a verification code to: <strong id="otpNewEmail" style="color: #00d9b1;"></strong></p>
+        </div>
+        
+        <div class="form-group">
+            <label>Enter OTP</label>
+            <input type="text" id="otpInput" maxlength="4" placeholder="0000" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;"/>
+            <p id="otpError" class="error-text"></p>
+        </div>
+
+        <div class="modal-buttons">
+            <button onclick="verifyEmailOTP()" class="btn-primary-modal">Verify</button>
+            <button id="resendBtn" onclick="resendEmailOTP()" class="btn-secondary-modal">
+                <span id="resendText">Resend OTP</span>
+            </button>
+        </div>
+        
+        <button onclick="closeOTPModal()" style="width: 100%; margin-top: 0.75rem; background: none; border: none; color: #9ca3af; cursor: pointer; padding: 0.5rem;">
+            Cancel
+        </button>
+    </div>
+</div>
+
 <script>
 // Profile Edit Functions
 let isEditing = false;
@@ -220,44 +225,23 @@ function toggleEdit() {
     const saveSection = document.getElementById('saveSection');
 
     if (isEditing) {
-        // Enable editing
         fullNameInput.readOnly = false;
         phoneInput.readOnly = false;
         subjectsInput.readOnly = false;
         bioInput.readOnly = false;
-        fullNameInput.classList.remove('bg-gray-50');
-        phoneInput.classList.remove('bg-gray-50');
-        subjectsInput.classList.remove('bg-gray-50');
-        bioInput.classList.remove('bg-gray-50');
-        fullNameInput.classList.add('bg-white');
-        phoneInput.classList.add('bg-white');
-        subjectsInput.classList.add('bg-white');
-        bioInput.classList.add('bg-white');
         editBtnText.textContent = 'Cancel';
-        editBtn.classList.remove('bg-primary');
-        editBtn.classList.add('bg-gray-200');
-        saveSection.classList.remove('hidden');
+        editBtn.classList.add('cancel');
+        saveSection.classList.add('active');
         fullNameInput.focus();
         updateBioCount();
     } else {
-        // Disable editing
         fullNameInput.readOnly = true;
         phoneInput.readOnly = true;
         subjectsInput.readOnly = true;
         bioInput.readOnly = true;
-        fullNameInput.classList.add('bg-gray-50');
-        phoneInput.classList.add('bg-gray-50');
-        subjectsInput.classList.add('bg-gray-50');
-        bioInput.classList.add('bg-gray-50');
-        fullNameInput.classList.remove('bg-white');
-        phoneInput.classList.remove('bg-white');
-        subjectsInput.classList.remove('bg-white');
-        bioInput.classList.remove('bg-white');
         editBtnText.textContent = 'Edit Profile';
-        editBtn.classList.add('bg-primary');
-        editBtn.classList.remove('bg-gray-200');
-        saveSection.classList.add('hidden');
-        // Reset values
+        editBtn.classList.remove('cancel');
+        saveSection.classList.remove('active');
         location.reload();
     }
 }
@@ -267,7 +251,6 @@ function updateBioCount() {
     document.getElementById('bioCount').textContent = bio.length;
 }
 
-// Update bio count on input
 document.addEventListener('DOMContentLoaded', function() {
     const bioInput = document.getElementById('bio');
     bioInput.addEventListener('input', updateBioCount);
@@ -314,14 +297,14 @@ async function saveProfile() {
 
 // Email Change Modal Functions
 function openEmailModal() {
-    document.getElementById('emailModal').classList.remove('hidden');
+    document.getElementById('emailModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 function closeEmailModal() {
-    document.getElementById('emailModal').classList.add('hidden');
+    document.getElementById('emailModal').classList.remove('active');
     document.getElementById('newEmail').value = '';
-    document.getElementById('emailError').classList.add('hidden');
+    document.getElementById('emailError').classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
@@ -331,14 +314,14 @@ async function sendEmailOTP() {
 
     if (!newEmail) {
         emailError.textContent = 'Please enter a new email';
-        emailError.classList.remove('hidden');
+        emailError.classList.add('active');
         return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(newEmail)) {
         emailError.textContent = 'Please enter a valid email';
-        emailError.classList.remove('hidden');
+        emailError.classList.add('active');
         return;
     }
 
@@ -357,7 +340,7 @@ async function sendEmailOTP() {
             openOTPModal(newEmail);
         } else {
             emailError.textContent = data.message || 'Failed to send OTP';
-            emailError.classList.remove('hidden');
+            emailError.classList.add('active');
         }
     } catch (error) {
         showToast('Something went wrong', 'error');
@@ -371,17 +354,18 @@ let resendTimer = null;
 
 function openOTPModal(newEmail) {
     currentNewEmail = newEmail;
-    document.getElementById('otpModal').classList.remove('hidden');
+    document.getElementById('otpModal').classList.add('active');
     document.getElementById('otpNewEmail').textContent = newEmail;
     startResendTimer();
 }
 
 function closeOTPModal() {
-    document.getElementById('otpModal').classList.add('hidden');
+    document.getElementById('otpModal').classList.remove('active');
     document.getElementById('otpInput').value = '';
-    document.getElementById('otpError').classList.add('hidden');
+    document.getElementById('otpError').classList.remove('active');
     currentNewEmail = '';
     if (resendTimer) clearInterval(resendTimer);
+    document.body.style.overflow = 'auto';
 }
 
 async function verifyEmailOTP() {
@@ -390,7 +374,7 @@ async function verifyEmailOTP() {
 
     if (!otp || otp.length !== 4) {
         otpError.textContent = 'Please enter a valid 4-digit OTP';
-        otpError.classList.remove('hidden');
+        otpError.classList.add('active');
         return;
     }
 
@@ -409,7 +393,7 @@ async function verifyEmailOTP() {
             setTimeout(() => location.reload(), 1500);
         } else {
             otpError.textContent = data.message || 'Invalid OTP';
-            otpError.classList.remove('hidden');
+            otpError.classList.add('active');
         }
     } catch (error) {
         showToast('Verification failed', 'error');
@@ -430,7 +414,7 @@ async function resendEmailOTP() {
         if (response.ok) {
             showToast('OTP resent successfully!', 'success');
             document.getElementById('otpInput').value = '';
-            document.getElementById('otpError').classList.add('hidden');
+            document.getElementById('otpError').classList.remove('active');
             startResendTimer();
         } else {
             showToast(data.message || 'Failed to resend OTP', 'error');
@@ -447,7 +431,8 @@ function startResendTimer() {
     const resendText = document.getElementById('resendText');
     
     resendBtn.disabled = true;
-    resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    resendBtn.style.opacity = '0.5';
+    resendBtn.style.cursor = 'not-allowed';
     
     resendTimer = setInterval(() => {
         seconds--;
@@ -456,7 +441,8 @@ function startResendTimer() {
         if (seconds <= 0) {
             clearInterval(resendTimer);
             resendBtn.disabled = false;
-            resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            resendBtn.style.opacity = '1';
+            resendBtn.style.cursor = 'pointer';
             resendText.textContent = 'Resend OTP';
         }
     }, 1000);
@@ -464,74 +450,23 @@ function startResendTimer() {
 
 function showToast(message, type) {
     const toast = document.createElement('div');
-    toast.className = `fixed top-4 right-4 px-6 py-3 rounded-xl shadow-lg z-50 ${
-        type === 'success' ? 'bg-green-500' : 'bg-red-500'
-    } text-white font-medium animate-fade-in`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+        ${type === 'success' ? 'background: #10b981; color: white;' : 'background: #ef4444; color: white;'}
+    `;
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
 </script>
-
-<!-- Email Change Modal -->
-<div id="emailModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-        <h2 class="text-2xl font-black mb-2">Change Email</h2>
-        <p class="text-gray-600 mb-6">Enter your new email address</p>
-        
-        <div class="mb-6">
-            <label class="block text-sm font-bold mb-2" for="newEmail">New Email Address</label>
-            <input type="email" id="newEmail"
-                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
-                   placeholder="Enter new email"/>
-            <p id="emailError" class="text-red-500 text-sm mt-1 hidden"></p>
-        </div>
-
-        <div class="flex gap-3">
-            <button onclick="sendEmailOTP()" 
-                    class="flex-1 bg-primary text-gray-900 py-3 rounded-xl font-bold hover:brightness-110 transition">
-                Send OTP
-            </button>
-            <button onclick="closeEmailModal()" 
-                    class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition">
-                Cancel
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- OTP Verification Modal -->
-<div id="otpModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-        <h2 class="text-2xl font-black mb-2">Verify Email</h2>
-        <p class="text-gray-600 mb-1">We've sent a verification code to:</p>
-        <p class="text-primary font-bold mb-6" id="otpNewEmail"></p>
-        
-        <div class="mb-6">
-            <label class="block text-sm font-bold mb-2" for="otpInput">Enter OTP</label>
-            <input type="text" id="otpInput" maxlength="4"
-                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-center text-2xl tracking-widest"
-                   placeholder="0000"/>
-            <p id="otpError" class="text-red-500 text-sm mt-1 hidden"></p>
-        </div>
-
-        <div class="flex gap-3 mb-3">
-            <button onclick="verifyEmailOTP()" 
-                    class="flex-1 bg-primary text-gray-900 py-3 rounded-xl font-bold hover:brightness-110 transition">
-                Verify
-            </button>
-            <button id="resendBtn" onclick="resendEmailOTP()" 
-                    class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition">
-                <span id="resendText">Resend OTP</span>
-            </button>
-        </div>
-        
-        <button onclick="closeOTPModal()" 
-                class="w-full text-gray-500 hover:text-gray-700 py-2">
-            Cancel
-        </button>
-    </div>
-</div>
 
 </body>
 </html>

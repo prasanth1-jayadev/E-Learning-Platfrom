@@ -29,8 +29,8 @@
       <span class="font-bold text-sm text-gray-800">Organic Learn</span>
     </div>
     <div class="hidden md:flex items-center gap-6 text-sm text-gray-500 font-medium">
-      <a href="#" class="hover:text-gray-900 transition">Courses</a>
-      <a href="#" class="hover:text-gray-900 transition">Tutors</a>
+      <a href="/user/courses" class="hover:text-gray-900 transition">Courses</a>
+      <a href="/user/tutor" class="hover:text-gray-900 transition">Tutors</a>
       <a href="#" class="hover:text-gray-900 transition">Mentors</a>
     </div>
   </div>
@@ -154,61 +154,56 @@
 
 <section class="px-6 py-10 max-w-6xl mx-auto">
   <div class="flex items-center justify-between mb-6">
-    <h2 class="text-lg font-black text-gray-900">Top Courses in UI/UX Mastery</h2>
+    <h2 class="text-lg font-black text-gray-900">Top Courses</h2>
     <div class="flex gap-2">
-      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
-      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+      <button id="prevCourseBtn" class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+      <button id="nextCourseBtn" class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
     </div>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon ribbon-free"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Design System Architecture</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Build scalable, consistent design systems for enterprise products.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.9</span></div>
-          <span class="text-xs font-bold text-brand">Free</span>
+    <% if (courses && courses.length > 0) { %>
+      <% courses.forEach(course => { %>
+        <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
+          <% if (course.discountPrice && course.discountPrice < course.price) { %>
+            <span class="ribbon" data-label="<%= Math.round((1 - course.discountPrice / course.price) * 100) %>% OFF"></span>
+          <% } else if (course.price === 0) { %>
+            <span class="ribbon ribbon-free"></span>
+          <% } %>
+          
+          <% if (course.thumbnail) { %>
+            <img src="<%= course.thumbnail %>" class="w-full h-28 object-cover" alt="<%= course.title %>"/>
+          <% } else { %>
+            <div class="w-full h-28 bg-gradient-to-br from-brand/20 to-brand/5 flex items-center justify-center text-2xl font-bold text-brand">
+              <%= course.title.substring(0, 2).toUpperCase() %>
+            </div>
+          <% } %>
+          
+          <div class="p-3">
+            <h4 class="text-xs font-bold text-gray-900 mb-1 line-clamp-1"><%= course.title %></h4>
+            <p class="text-[10px] text-gray-400 mb-2 leading-relaxed line-clamp-2"><%= course.description %></p>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-400 text-xs">★</span>
+                <span class="text-[10px] text-gray-500"><%= course.rating || 0 %></span>
+              </div>
+              <span class="text-xs font-bold <%= course.price === 0 ? 'text-brand' : 'text-gray-900' %>">
+                <% if (course.price === 0) { %>
+                  Free
+                <% } else if (course.discountPrice && course.discountPrice < course.price) { %>
+                  ₹<%= course.discountPrice.toLocaleString() %>
+                <% } else { %>
+                  ₹<%= course.price.toLocaleString() %>
+                <% } %>
+              </span>
+            </div>
+          </div>
         </div>
+      <% }); %>
+    <% } else { %>
+      <div class="col-span-4 text-center py-8">
+        <p class="text-sm text-gray-400">No courses available yet</p>
       </div>
-    </div>
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon" data-label="Premium"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Psychology of Conversion</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Master behavioral design principles that drive user decisions.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.8</span></div>
-          <span class="text-xs font-bold text-gray-900">₹499</span>
-        </div>
-      </div>
-    </div>
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon" data-label="Premium"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Data-Driven UX Strategy</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Leverage analytics and testing to inform design decisions.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.7</span></div>
-          <span class="text-xs font-bold text-gray-900">₹799</span>
-        </div>
-      </div>
-    </div>
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon" data-label="Premium"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Micro-Interaction Mastery</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Top-tier delightful feedback design using modern animation.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.9</span></div>
-          <span class="text-xs font-bold text-gray-900">₹999</span>
-        </div>
-      </div>
-    </div>
+    <% } %>
   </div>
 </section>
 

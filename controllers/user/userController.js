@@ -1,16 +1,16 @@
-const userService = require('../service/userService');
+import * as userService from '../../service/userService.js';
+import User from '../../models/User.js';
+import Course from '../../models/Course.js';
 
 
-const getLanding        = (req, res) => res.render('user/landing');
-const getHome           = (req, res) => res.render('user/home');
 const getSignup         = (req, res) => res.render('user/signup');
 const getLogin          = (req, res) => res.render('user/login');
 const getOtp            = (req, res) => res.render('user/otp');
 const getForgotPassword = (req, res) => res.render('user/forgot-password');
 const getResetPassword  = (req, res) => res.render('user/reset-password');
+
 const getProfile = async (req, res) => {
   try {
-    const User = require('../models/User');
     const user = await User.findById(req.session.userId);
     
     if (!user) {
@@ -26,7 +26,6 @@ const getProfile = async (req, res) => {
 
 const getEditProfile = async (req, res) => {
   try {
-    const User = require('../models/User');
     const user = await User.findById(req.session.userId);
     
     if (!user) {
@@ -43,14 +42,12 @@ const getEditProfile = async (req, res) => {
 const postUpdateProfile = async (req, res) => {
   try {
     const { fullName, phone } = req.body;
-    const User = require('../models/User');
     
     const user = await User.findById(req.session.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update name and phone
     user.fullName = fullName.trim();
     user.phone = phone ? phone.trim() : null;
     await user.save();
@@ -66,17 +63,14 @@ const postUpdateProfile = async (req, res) => {
 const postSendEmailChangeOTP = async (req, res) => {
   try {
     const { newEmail } = req.body;
-    const User = require('../models/User');
     
     const newEmailTrimmed = newEmail.trim().toLowerCase();
     
-    // Check if new email already exists
     const existingUser = await User.findOne({ email: newEmailTrimmed });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
-    // Send OTP to new email
     await userService.sendEmailChangeOTP(newEmailTrimmed);
     
     res.json({ success: true, message: 'OTP sent to new email' });
@@ -90,12 +84,9 @@ const postSendEmailChangeOTP = async (req, res) => {
 const postVerifyEmailChange = async (req, res) => {
   try {
     const { otp, newEmail } = req.body;
-    const User = require('../models/User');
     
-    // Verify OTP
     await userService.verifyEmailChangeOTP(newEmail, otp);
     
-    // Update user with new email
     const user = await User.findById(req.session.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -229,7 +220,6 @@ const postLogin = async (req, res) => {
 
     const user = await userService.loginUser(email, password);
 
-
     if (!user.isVerified) {
       req.session.otpEmail = email;
       req.session.otpPurpose = 'signup';
@@ -237,7 +227,6 @@ const postLogin = async (req, res) => {
       return res.json({ redirect: '/user/verify-otp' });
     }
 
-    
     req.session.userId = user._id;
 
     res.json({ redirect: '/user/home' });
@@ -248,6 +237,70 @@ const postLogin = async (req, res) => {
   }
 };
 
+const getCourses = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const skip = (page - 1) * limit;
+
+    const totalCourses = await Course.countDocuments({ isPublished: true });
+    const courses = await Course.find({ isPublished: true })
+      .populate('tutor', 'fullName')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPages = Math.ceil(totalCourses / limit);
+
+    res.render('user/courses', {
+      courses,
+      currentPage: page,
+      totalPages,
+      totalCourses
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.render('user/courses', {
+      courses: [],
+      currentPage: 1,
+      totalPages: 1,
+      totalCourses: 0
+    });
+  }
+};
+
+
+ const getHome = async (req, res) => {
+  try {
+    const courses = await Course.find({ isPublished: true })
+      .populate('tutor', 'fullName')
+      .sort({ createdAt: -1 })
+      .limit(4); 
+
+    res.render('user/home', { courses });
+
+  } catch (error) {
+    console.log(error);
+    res.render('user/home', { courses: [] });
+  }
+};
+
+
+
+const getLanding = async (req, res) => {
+  try {
+    const courses = await Course.find({status:'published'})
+      .populate('tutor', 'fullName')
+      .sort({ createdAt: -1 })
+      .limit(8);
+        
+    res.render('user/landing', { courses });
+  } catch (error) {
+    console.error('Error loading landing page:', error);
+    res.render('user/landing', { courses: [] });
+  }
+};
 
 
 
@@ -292,9 +345,9 @@ const postResetPassword = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getLanding,
-  getHome, getSignup, postSignup,
+  getHome, getCourses, getSignup, postSignup,
   getLogin, postLogin, logout,
   getOtp, postOtp, resendOtp,
   getForgotPassword, postForgotPassword,

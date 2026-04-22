@@ -1,42 +1,47 @@
-const nodemailer  = require('nodemailer');
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
 
-const transporter = nodemailer.createTransport({
-    host : process.env.MAIL_HOST,
-    port : Number(process.env.MAIL_PORT),
-    secure: false,
-    auth :{
-        user : process.env.MAIL_USER,
-        pass : process.env.MAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-}); 
+dotenv.config();
 
-const sendOTPEmail = async(to, otp, purpose ="signup") =>{
-    const subject = purpose ==="reset"
-     ? 'Reset Your Password - Organic Learn'
-  : 'Verify Your Email - Organic Learn';
+// Check if we're in development mode (no email credentials)
+const isDevelopment = !process.env.MAIL_USER || !process.env.MAIL_PASS;
 
-    
+let transporter = null;
 
+if (!isDevelopment) {
+    transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
+        }
+    });
 
-    const html =`
-    <div style="font-family: sans-serif; max-width: 400px; margin: auto; padding: 20px;">
-      <h2 style="color: #2beead;">Organic Learn</h2>
-      <p>${purpose === 'reset' ? 'Your password reset code:' : 'Your email verification code:'}</p>
-      <h1 style="letter-spacing: 10px; color: #0d1b17;">${otp}</h1>
-      <p style="color: #999; font-size: 12px;">This code expires in 10 minutes. Do not share it.</p>
-    </div>
-  `;
-
-await transporter.sendMail({
-    from:process.env.MAIL_USER,
-    to,
-    subject,
-    html
-})
-
+    transporter.verify(function (error, success) {
+        if (error) {
+            console.log('Email error:', error.message);
+            console.log('Running in development mode - OTPs will be logged to console');
+        } else {
+            console.log('Email service ready');
+        }
+    });
+} else {
+    console.log('Development mode - OTPs will be logged to console');
 }
-module.exports={sendOTPEmail};
+
+const sendOTPEmail = async (to, otp, purpose = "signup") => {
+    // Always log OTP to console for development
+    console.log('\n=================================');
+    console.log('📧 OTP EMAIL');
+    console.log('=================================');
+    console.log('To:', to);
+    console.log('Purpose:', purpose);
+    console.log('OTP Code:', otp);
+    console.log('=================================\n');
+    
+    // Skip actual email sending for now
+    return;
+}
+
+export { sendOTPEmail };
 

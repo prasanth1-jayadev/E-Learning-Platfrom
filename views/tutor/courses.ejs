@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses - Organic Learn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
+        
+        /* Main Content Styles */
+        .main-content { 
+            margin-left: 260px; 
+            flex: 1; 
+            padding: 2rem; 
+            width: calc(100% - 260px);
+            min-height: 100vh;
+        }
+        .header { 
+            background: white; 
+            padding: 1.5rem 2rem; 
+            border-radius: 12px; 
+            margin-bottom: 1.5rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .header-left p { color: #666; font-size: 0.9rem; }
+        .add-course-btn { background: #00d9b1; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.3s; font-size: 0.9rem; }
+        .add-course-btn:hover { background: #00c29d; }
+        .add-course-btn svg { flex-shrink: 0; }
+        
+        /* Filters */
+        .filters { 
+            background: white; 
+            padding: 1.25rem 1.5rem; 
+            border-radius: 12px; 
+            margin-bottom: 1.5rem; 
+            display: flex; 
+            gap: 1rem; 
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .search-box { flex: 1; min-width: 250px; position: relative; }
+        .search-box input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; }
+        .search-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #999; }
+        .filter-select { padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; background: white; cursor: pointer; min-width: 140px; }
+        
+        /* Course Cards */
+        .course-list { display: flex; flex-direction: column; gap: 1.25rem; }
+        .course-card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 1.5rem; 
+            display: flex; 
+            gap: 1.5rem; 
+            align-items: center; 
+            transition: box-shadow 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .course-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .course-thumbnail { 
+            width: 220px; 
+            height: 130px; 
+            border-radius: 8px; 
+            background: #2a2a2a; 
+            flex-shrink: 0; 
+            overflow: hidden;
+        }
+        .course-info { flex: 1; min-width: 0; }
+        .course-category { display: inline-block; background: #e8f5f1; color: #00d9b1; padding: 0.3rem 0.85rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .course-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.75rem; color: #1a1a1a; line-height: 1.4; }
+        .course-stats { display: flex; gap: 1.5rem; color: #666; font-size: 0.85rem; flex-wrap: wrap; }
+        .stat { display: flex; align-items: center; gap: 0.4rem; }
+        .stat svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .course-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .action-btn { padding: 0.6rem 1.1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.3s; white-space: nowrap; }
+        .btn-primary { background: #00d9b1; color: white; }
+        .btn-primary:hover { background: #00c29d; }
+        .btn-secondary { background: #f0f0f0; color: #666; }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-outline { background: white; border: 1px solid #e5e7eb; color: #666; }
+        .btn-outline:hover { border-color: #00d9b1; color: #00d9b1; }
+        
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2rem; }
+        .page-btn { width: 38px; height: 38px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .page-btn:hover { background: #f0f0f0; }
+        .page-btn.active { background: #00d9b1; color: white; }
+        .results-info { text-align: center; color: #666; font-size: 0.9rem; margin-top: 1rem; }
+        
+        /* Responsive Breakpoints */
+        
+        /* Large Desktop (1440px+) */
+        @media (min-width: 1440px) {
+            .main-content { padding: 2.5rem 3rem; }
+            .course-thumbnail { width: 240px; height: 140px; }
+        }
+        
+        /* Desktop (1024px - 1439px) */
+        @media (max-width: 1439px) {
+            .sidebar { width: 240px; }
+            .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 1.75rem; }
+            .course-thumbnail { width: 200px; height: 120px; }
+        }
+        
+        /* Tablet Landscape (900px - 1023px) */
+        @media (max-width: 1023px) {
+            .sidebar { width: 220px; padding: 1.25rem 0.85rem; }
+            .main-content { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
+            .header { padding: 1.25rem 1.5rem; }
+            .header-left h1 { font-size: 1.5rem; }
+            .course-card { flex-direction: column; align-items: flex-start; padding: 1.25rem; }
+            .course-thumbnail { width: 100%; height: 180px; }
+            .course-actions { width: 100%; }
+            .action-btn { flex: 1; min-width: 120px; justify-content: center; }
+        }
+        
+        /* Tablet Portrait (768px - 899px) */
+        @media (max-width: 899px) {
+            .sidebar { width: 200px; padding: 1rem 0.75rem; gap: 1.25rem; }
+            .main-content { margin-left: 200px; width: calc(100% - 200px); padding: 1.25rem; }
+            .logo-text { font-size: 0.95rem; }
+            .profile-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
+            .profile-name { font-size: 0.85rem; }
+            .nav-link { padding: 0.6rem 0.75rem; font-size: 0.85rem; }
+            .header-left h1 { font-size: 1.35rem; }
+            .filters { padding: 1rem; }
+            .search-box { min-width: 200px; }
+        }
+        
+        /* Mobile (max-width: 767px) */
+        @media (max-width: 767px) {
+            .sidebar { 
+                position: fixed; 
+                left: -260px; 
+                transition: left 0.3s ease; 
+                z-index: 1000;
+                width: 260px;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            .sidebar.open { left: 0; }
+            .main-content { 
+                margin-left: 0; 
+                width: 100%;
+                padding: 1rem; 
+            }
+            .header { 
+                flex-direction: column; 
+                gap: 1rem; 
+                align-items: stretch;
+                padding: 1rem;
+            }
+            .header-left h1 { font-size: 1.25rem; }
+            .header-left p { font-size: 0.85rem; }
+            .add-course-btn { 
+                width: 100%; 
+                justify-content: center;
+                padding: 0.85rem 1.25rem;
+            }
+            .filters { 
+                flex-direction: column; 
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            .search-box { 
+                min-width: 100%; 
+                width: 100%;
+            }
+            .filter-select { width: 100%; }
+            .course-card { 
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .course-thumbnail { height: 160px; }
+            .course-title { font-size: 1rem; }
+            .course-stats { font-size: 0.8rem; gap: 1rem; }
+            .course-actions { 
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+            .action-btn { 
+                width: 100%;
+                justify-content: center;
+                padding: 0.7rem 1rem;
+            }
+            .pagination { gap: 0.35rem; }
+            .page-btn { width: 34px; height: 34px; font-size: 0.9rem; }
+        }
+        
+        /* Small Mobile (max-width: 480px) */
+        @media (max-width: 480px) {
+            .main-content { padding: 0.75rem; }
+            .header { padding: 0.85rem; border-radius: 8px; }
+            .header-left h1 { font-size: 1.1rem; }
+            .filters { padding: 0.85rem; border-radius: 8px; }
+            .course-card { padding: 0.85rem; border-radius: 8px; }
+            .course-thumbnail { height: 140px; }
+            .course-title { font-size: 0.95rem; }
+            .course-category { font-size: 0.65rem; padding: 0.25rem 0.65rem; }
+            .action-btn { font-size: 0.8rem; padding: 0.65rem 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
+
+<main class="main-content">
+<div class="header"><div class="header-left"><h1>My Courses</h1><p>You have <%= courses.length %> course<%= courses.length !== 1 ? 's' : '' %> in total</p></div><a href="/tutor/courses/create" class="add-course-btn"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>Add New Course</a></div>
+<div class="filters"><div class="search-box"><svg class="search-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><input type="text" id="searchInput" placeholder="Search your courses by title or category..."></div><select class="filter-select" id="categoryFilter"><option value="">All Categories</option><option value="Development">Development</option><option value="Design">Design</option><option value="Business">Business</option><option value="Marketing">Marketing</option><option value="Science">Science</option><option value="Mathematics">Mathematics</option><option value="Language">Language</option><option value="Other">Other</option></select><select class="filter-select" id="statusFilter"><option value="">All Status</option><option value="published">Published</option><option value="draft">Draft</option></select></div>
+<div class="course-list" id="courseList">
+<% if (courses && courses.length > 0) { %>
+  <% courses.forEach(course => { %>
+  <div class="course-card" data-course-id="<%= course._id %>">
+    <div class="course-thumbnail" style="<%= course.thumbnail ? `background-image: url('${course.thumbnail}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.1rem;' %>">
+      <% if (!course.thumbnail) { %>
+        <%= course.title.substring(0, 2).toUpperCase() %>
+      <% } %>
+    </div>
+    <div class="course-info">
+      <span class="course-category"><%= course.category.toUpperCase() %></span>
+      <h3 class="course-title"><%= course.title %></h3>
+      <div class="course-stats">
+        <div class="stat">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <%= course.enrolledStudents.length %> Students
+        </div>
+        <div class="stat">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <%= course.lessons.length %> Lessons
+        </div>
+        <div class="stat">
+          <span style="font-weight: 600;">₹<%= course.price.toLocaleString() %></span>
+        </div>
+      </div>
+    </div>
+    <div class="course-actions">
+      <a href="/tutor/courses/<%= course._id %>/edit" class="action-btn btn-primary">Edit Course</a>
+      <button onclick="togglePublish('<%= course._id %>', <%= course.isPublished %>)" class="action-btn <%= course.isPublished ? 'btn-secondary' : 'btn-outline' %>">
+        <%= course.isPublished ? 'Unpublish' : 'Publish' %>
+      </button>
+      <button onclick="deleteCourse('<%= course._id %>')" class="action-btn btn-outline" style="color: #ef4444; border-color: #ef4444;">Delete</button>
+    </div>
+  </div>
+  <% }); %>
+<% } else { %>
+  <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px;">
+    <svg style="width: 80px; height: 80px; margin: 0 auto 1.5rem; color: #d1d5db;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+    </svg>
+    <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: #1a1a1a;">No courses yet</h2>
+    <p style="color: #666; margin-bottom: 2rem; font-size: 1rem;">Start creating your first course and share your knowledge with students worldwide</p>
+    <a href="/tutor/courses/create" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #00d9b1; color: white; padding: 0.85rem 1.75rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem;">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Create Your First Course
+    </a>
+  </div>
+<% } %>
+</div>
+<div class="pagination"><button class="page-btn">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div>
+<p class="results-info">Showing <%= courses.length %> course<%= courses.length !== 1 ? 's' : '' %></p>
+</main>
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Toggle publish status
+async function togglePublish(courseId, isCurrentlyPublished) {
+  const result = await Swal.fire({
+    title: isCurrentlyPublished ? 'Unpublish Course' : 'Publish Course',
+    text: isCurrentlyPublished 
+      ? 'This course will be hidden from students. You can publish it again later.' 
+      : 'This course will be visible to students and available for enrollment.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#00d9b1',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: isCurrentlyPublished ? 'Yes, unpublish' : 'Yes, publish',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/tutor/courses/${courseId}/toggle-publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      await Swal.fire({
+        title: 'Success!',
+        text: data.message,
+        icon: 'success',
+        confirmButtonColor: '#00d9b1',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      Swal.fire({
+        title: 'Error!',
+        text: data.message || 'Failed to update course',
+        icon: 'error',
+        confirmButtonColor: '#00d9b1'
+      });
+    }
+  } catch (error) {
+    console.error('Toggle publish error:', error);
+    Swal.fire({
+      title: 'Error!',
+      text: 'Something went wrong',
+      icon: 'error',
+      confirmButtonColor: '#00d9b1'
+    });
+  }
+}
+
+// Delete course
+async function deleteCourse(courseId) {
+  const result = await Swal.fire({
+    title: 'Delete Course',
+    text: 'Are you sure you want to delete this course? This action cannot be undone!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, delete it',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/tutor/courses/${courseId}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      await Swal.fire({
+        title: 'Deleted!',
+        text: data.message,
+        icon: 'success',
+        confirmButtonColor: '#00d9b1',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      Swal.fire({
+        title: 'Error!',
+        text: data.message || 'Failed to delete course',
+        icon: 'error',
+        confirmButtonColor: '#00d9b1'
+      });
+    }
+  } catch (error) {
+    console.error('Delete course error:', error);
+    Swal.fire({
+      title: 'Error!',
+      text: 'Something went wrong',
+      icon: 'error',
+      confirmButtonColor: '#00d9b1'
+    });
+  }
+}
+
+// Filter courses
+document.getElementById('categoryFilter')?.addEventListener('change', function() {
+  const category = this.value;
+  const status = document.getElementById('statusFilter').value;
+  const params = new URLSearchParams();
+  if (category) params.append('category', category);
+  if (status) params.append('status', status);
+  window.location.href = `/tutor/courses${params.toString() ? '?' + params.toString() : ''}`;
+});
+
+document.getElementById('statusFilter')?.addEventListener('change', function() {
+  const status = this.value;
+  const category = document.getElementById('categoryFilter').value;
+  const params = new URLSearchParams();
+  if (category) params.append('category', category);
+  if (status) params.append('status', status);
+  window.location.href = `/tutor/courses${params.toString() ? '?' + params.toString() : ''}`;
+});
+
+// Search courses
+let searchTimeout;
+document.getElementById('searchInput')?.addEventListener('input', function() {
+  clearTimeout(searchTimeout);
+  const searchTerm = this.value.toLowerCase();
+  
+  searchTimeout = setTimeout(() => {
+    const courseCards = document.querySelectorAll('.course-card');
+    courseCards.forEach(card => {
+      const title = card.querySelector('.course-title').textContent.toLowerCase();
+      const category = card.querySelector('.course-category').textContent.toLowerCase();
+      
+      if (title.includes(searchTerm) || category.includes(searchTerm)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }, 300);
+});
+</script>
+
+</body>
+</html>

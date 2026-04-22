@@ -1,13 +1,18 @@
-const express = require('express');
-const path = require('path');
-const session = require('express-session');
-const dotenv = require('dotenv');
-
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import session from 'express-session';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import passport from './config/passport.js';
+import userRouter from './routes/userRouter.js';
+import tutorRouter from './routes/tutorRouter.js';
+import adminRouter from './routes/adminRouter.js';
 
 dotenv.config();
 
-const connectDB = require('./config/db');
-const passport = require('./config/passport');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 connectDB();
 
@@ -15,15 +20,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
-
-
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
-
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -32,14 +31,13 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        sameSite: 'lax' // Changed from 'strict' to 'lax' for OAuth redirects
+        sameSite: 'lax' 
     }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Prevent browser from caching protected pages
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -47,19 +45,19 @@ app.use((req, res, next) => {
     next();
 });
 
-
-
-app.use('/user', require('./routes/userRouter'));
-app.use('/tutor', require('./routes/tutorRouter'));
-app.use('/admin', require('./routes/adminRouter'));
-
+app.use('/user', userRouter);
+app.use('/tutor', tutorRouter);
+app.use('/admin', adminRouter);
 
 app.get('/', (req, res) => res.redirect('/user/landing'));
 
+// 404 handler - must be after all other routes
+app.use((req, res) => {
+    res.status(404).render('partials/404');
+});
 
 const PORT = process.env.PORT || 5000
 
 app.listen(5000, () => {
     console.log(`server is running = http://localhost:${PORT}`);
-
 })

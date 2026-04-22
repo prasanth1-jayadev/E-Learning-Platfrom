@@ -1,21 +1,21 @@
+import User from '../models/User.js';
+import Tutor from '../models/Tutor.js';
 
 const isUser = async (req, res, next) => {
-    if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'user') || 
+    if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'user') ||
         (req.session && req.session.userId)) {
         if (!req.session.userId && req.user) {
             req.session.userId = req.user._id || req.user.id;
         }
-        
-        // Check user is blocked
+
         try {
-            const User = require('../models/User');
             const user = await User.findById(req.session.userId);
-            
+
             if (!user) {
                 req.session.destroy();
                 return res.redirect('/user/login?error=account_not_found');
             }
-            
+
             if (user.isBlocked) {
                 req.session.destroy();
                 return res.redirect('/user/login?error=account_blocked');
@@ -24,30 +24,27 @@ const isUser = async (req, res, next) => {
             console.error('User block check error:', error);
             return res.redirect('/user/login');
         }
-        
+
         return next();
     }
     return res.redirect('/user/login');
 };
 
-
 const isTutor = async (req, res, next) => {
-    if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'tutor') || 
+    if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'tutor') ||
         (req.session && req.session.tutorId)) {
         if (!req.session.tutorId && req.user) {
             req.session.tutorId = req.user._id || req.user.id;
         }
-        
-        // Check tutor is blocked
+
         try {
-            const Tutor = require('../models/Tutor');
             const tutor = await Tutor.findById(req.session.tutorId);
-            
+
             if (!tutor) {
                 req.session.destroy();
                 return res.redirect('/tutor/login?error=account_not_found');
             }
-            
+
             if (tutor.isBlocked) {
                 req.session.destroy();
                 return res.redirect('/tutor/login?error=account_blocked');
@@ -56,35 +53,33 @@ const isTutor = async (req, res, next) => {
             console.error('Tutor block check error:', error);
             return res.redirect('/tutor/login');
         }
-        
+
         return next();
     }
     return res.redirect('/tutor/login');
 };
 
-
 const isTutorApproved = async (req, res, next) => {
     if (!req.session || !req.session.tutorId) {
         return res.redirect('/tutor/login');
     }
-    
+
     try {
-        const Tutor = require('../models/Tutor');
         const tutor = await Tutor.findById(req.session.tutorId);
-        
+
         if (!tutor) {
             return res.redirect('/tutor/login');
         }
-        
+
         if (tutor.isBlocked) {
             req.session.destroy();
             return res.redirect('/tutor/login?error=account_blocked');
         }
-        
+
         if (tutor.approvalStatus !== 'approved') {
             return res.redirect('/tutor/dashboard?error=approval_required');
         }
-        
+
         next();
     } catch (error) {
         console.error('Approval check error:', error);
@@ -92,24 +87,20 @@ const isTutorApproved = async (req, res, next) => {
     }
 };
 
-
 const isAdmin = (req, res, next) => {
-    
     res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
     });
-    
+
     if (req.session && req.session.adminId) {
-        
         req.session.touch();
         return next();
     }
-    
+
     return res.redirect('/admin/login');
 };
-
 
 const redirectIfUser = (req, res, next) => {
     if (req.session && req.session.userId) return res.redirect('/user/home');
@@ -122,15 +113,14 @@ const redirectIfTutor = (req, res, next) => {
 };
 
 const redirectIfAdmin = (req, res, next) => {
-    
     res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
     });
-    
+
     if (req.session && req.session.adminId) return res.redirect('/admin/dashboard');
     next();
 };
 
-module.exports = { isUser, isTutor, isTutorApproved, isAdmin, redirectIfUser, redirectIfTutor, redirectIfAdmin };
+export { isUser, isTutor, isTutorApproved, isAdmin, redirectIfUser, redirectIfTutor, redirectIfAdmin };

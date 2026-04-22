@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const tutorSchema = new mongoose.Schema({
     fullName: { type: String, required: true, trim: true },
@@ -27,4 +27,4 @@ const tutorSchema = new mongoose.Schema({
     approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Tutor', tutorSchema);
+export default mongoose.model('Tutor', tutorSchema);

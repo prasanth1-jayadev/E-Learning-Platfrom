@@ -218,11 +218,11 @@
                         })
                     });
                     const data = await res.json();
-                    hideLoader();
                     if (res.ok) {
-                        showToast('Welcome back!', 'success');
-                        setTimeout(() => window.location.href = data.redirect || '/user/home', 1200);
+                        // Keep loader visible during redirect - no blink!
+                        window.location.href = data.redirect || '/user/home';
                     } else {
+                        hideLoader();
                         showToast(data.message || 'Login failed.', 'error');
                     }
                 });
