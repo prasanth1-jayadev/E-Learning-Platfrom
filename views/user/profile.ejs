@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile - Organic Learn</title>
+  <title>Profile - Learnify</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <script>
@@ -22,7 +22,25 @@
   <!-- Navbar -->
   <nav class="bg-white border-b border-gray-100 px-8 py-3 flex items-center justify-between sticky top-0 z-50">
     <div class="flex items-center gap-10">
-      <span class="text-primary font-bold text-lg"><a href="/user/home">Organic Learn</a></span>
+      <a href="/user/home" class="flex items-center gap-2" style="text-decoration: none;">
+        <div class="w-10 h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
+          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+            <circle cx="12" cy="12" r="1.5" fill="white"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center">
+            <span class="text-xl font-bold text-gray-900">Learn</span>
+            <span class="text-xl font-bold text-[#00d9b1]">ify</span>
+          </div>
+          <!-- <div class="flex items-center gap-1 -mt-1">
+            <div class="h-px w-3 bg-[#00d9b1]"></div>
+            <span class="text-[10px] text-gray-500 font-medium">Learn Today, Lead Tomorrow.</span>
+            <div class="h-px w-3 bg-[#00d9b1]"></div> -->
+          </div>
+        </div>
+      </a>
       <div class="hidden md:flex items-center gap-6 text-sm text-gray-600 font-medium">
         <a href="/user/home" class="hover:text-primary transition">Home</a>
         <a href="#" class="hover:text-primary transition">Courses</a>
@@ -236,7 +254,7 @@
 
   <!-- Footer -->
   <footer class="text-center text-xs text-gray-400 py-6">
-    © 2024 Organic Learn. All rights reserved.
+    © 2024 Learnify. All rights reserved.
   </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

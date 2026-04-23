@@ -1,6 +1,7 @@
 import * as tutorService from '../../service/tutorService.js';
 import * as courseService from '../../service/courseService.js';
 import Tutor from '../../models/Tutor.js';
+import Course from '../../models/Course.js';
 
 const getSignup = (req, res) => res.render('tutor/signup');
 const getLogin = (req, res) => res.render('tutor/login');
@@ -417,6 +418,119 @@ const getCourses = async (req, res) => {
     }
 };
 
+const getAddLessonPage = async (req, res) => {
+    try {
+        const tutor = await Tutor.findById(req.session.tutorId);
+        const course = await Course.findById(req.params.id);
+
+        if (!course || course.tutor.toString() !== req.session.tutorId) {
+            return res.redirect('/tutor/courses');
+        }
+
+        res.render('tutor/add-lesson', { tutor, course });
+    } catch (error) {
+        console.error('Error loading add lesson page:', error);
+        res.redirect('/tutor/courses');
+    }
+};
+
+const addLesson = async (req, res) => {
+    try {
+        const { title, description, duration } = req.body;
+        const course = await Course.findById(req.params.id);
+
+        if (!course || course.tutor.toString() !== req.session.tutorId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        const newLesson = {
+            title,
+            description,
+            duration,
+            videoUrl: req.file ? req.file.path : '',
+            order: course.lessons.length + 1
+        };
+
+        course.lessons.push(newLesson);
+        await course.save();
+
+        res.json({ success: true, message: 'Lesson added successfully' });
+    } catch (error) {
+        console.error('Error adding lesson:', error);
+        res.status(500).json({ message: 'Failed to add lesson' });
+    }
+};
+
+const getEditLessonPage = async (req, res) => {
+    try {
+        const tutor = await Tutor.findById(req.session.tutorId);
+        const course = await Course.findById(req.params.id);
+
+        if (!course || course.tutor.toString() !== req.session.tutorId) {
+            return res.redirect('/tutor/courses');
+        }
+
+        const lesson = course.lessons.id(req.params.lessonId);
+        if (!lesson) {
+            return res.redirect('/tutor/course/' + req.params.id + '/add-lesson');
+        }
+
+        res.render('tutor/edit-lesson', { tutor, course, lesson });
+    } catch (error) {
+        console.error('Error loading edit lesson page:', error);
+        res.redirect('/tutor/courses');
+    }
+};
+
+const updateLesson = async (req, res) => {
+    try {
+        const { title, description, duration } = req.body;
+        const course = await Course.findById(req.params.id);
+
+        if (!course || course.tutor.toString() !== req.session.tutorId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        const lesson = course.lessons.id(req.params.lessonId);
+        if (!lesson) {
+            return res.status(404).json({ message: 'Lesson not found' });
+        }
+
+        lesson.title = title;
+        lesson.description = description;
+        lesson.duration = duration;
+        
+        if (req.file) {
+            lesson.videoUrl = req.file.path;
+        }
+
+        await course.save();
+
+        res.json({ success: true, message: 'Lesson updated successfully' });
+    } catch (error) {
+        console.error('Error updating lesson:', error);
+        res.status(500).json({ message: 'Failed to update lesson' });
+    }
+};
+
+const deleteLesson = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+
+        if (!course || course.tutor.toString() !== req.session.tutorId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        course.lessons.pull(req.params.lessonId);
+        await course.save();
+
+        res.json({ success: true, message: 'Lesson deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting lesson:', error);
+        res.status(500).json({ message: 'Failed to delete lesson' });
+    }
+};
+
 export {
     getSignup, postSignup,
     getLogin, postLogin, logout,
@@ -424,5 +538,6 @@ export {
     getForgotPassword, postForgotPassword,
     getResetPassword, postResetPassword,
     getDashboard, getCourses, getProfile,
-    postUpdateProfile, postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP
+    postUpdateProfile, postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP,
+    getAddLessonPage, addLesson, getEditLessonPage, updateLesson, deleteLesson
 };

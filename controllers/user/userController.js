@@ -209,6 +209,7 @@ const resendOtp = async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error(err)
+    console.log('resend otp error:',err)
     res.status(400).json({ message: err.message });
   }
 };
@@ -267,6 +268,23 @@ const getCourses = async (req, res) => {
       totalPages: 1,
       totalCourses: 0
     });
+  }
+};
+
+const getCourseDetail = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const course = await Course.findById(courseId).populate('tutor', 'fullName bio avatar');
+
+    if (!course) {
+      return res.redirect('/user/courses');
+    }
+
+    res.render('user/course-detail', { course });
+
+  } catch (error) {
+    console.error(error);
+    res.redirect('/user/courses');
   }
 };
 
@@ -347,7 +365,7 @@ const postResetPassword = async (req, res) => {
 
 export {
   getLanding,
-  getHome, getCourses, getSignup, postSignup,
+  getHome, getCourses, getCourseDetail, getSignup, postSignup,
   getLogin, postLogin, logout,
   getOtp, postOtp, resendOtp,
   getForgotPassword, postForgotPassword,

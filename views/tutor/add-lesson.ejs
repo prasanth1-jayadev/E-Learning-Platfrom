@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add New Lesson - Learnify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
+    
+    .main-content { 
+        margin-left: 260px; 
+        flex: 1; 
+        padding: 2rem; 
+        width: calc(100% - 260px);
+        min-height: 100vh;
+    }
+    
+    .page-header { background: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .page-header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .page-header p { color: #666; font-size: 0.9rem; }
+    
+    .form-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+    .form-card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+    
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 600; font-size: 0.9rem; color: #1a1a1a; margin-bottom: 0.5rem; }
+    .form-group label span { color: #ef4444; }
+    .form-group input, .form-group textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; font-family: Inter, sans-serif; transition: all 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #00d9b1; box-shadow: 0 0 0 3px rgba(0, 217, 177, 0.1); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group small { display: block; color: #666; font-size: 0.8rem; margin-top: 0.25rem; }
+    
+    .upload-area { border: 2px dashed #e5e7eb; border-radius: 12px; padding: 2rem; text-align: center; background: #f9fafb; transition: all 0.3s; cursor: pointer; }
+    .upload-area:hover { border-color: #00d9b1; background: #f0fdf9; }
+    .upload-area.dragover { border-color: #00d9b1; background: #e6fcf5; }
+    .upload-icon { width: 48px; height: 48px; background: #00d9b1; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .upload-icon svg { width: 24px; height: 24px; color: white; }
+    .upload-area h3 { font-size: 1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; }
+    .upload-area p { color: #666; font-size: 0.85rem; }
+    .upload-area input[type="file"] { display: none; }
+    
+    .file-preview { margin-top: 1rem; padding: 1rem; background: #f9fafb; border-radius: 8px; display: none; }
+    .file-preview.active { display: flex; align-items: center; gap: 1rem; }
+    .file-preview .icon { width: 40px; height: 40px; background: #00d9b1; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .file-preview .icon svg { width: 20px; height: 20px; color: white; }
+    .file-preview .info { flex: 1; }
+    .file-preview .info h4 { font-size: 0.9rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.25rem; }
+    .file-preview .info p { font-size: 0.8rem; color: #666; }
+    .file-preview .remove { width: 32px; height: 32px; border-radius: 50%; background: #fee2e2; color: #ef4444; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .file-preview .remove:hover { background: #fecaca; }
+    
+    .lessons-list { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+    .lessons-list h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+    .lesson-item { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+    .lesson-item .number { width: 40px; height: 40px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #666; flex-shrink: 0; }
+    .lesson-item .info { flex: 1; }
+    .lesson-item .info h4 { font-size: 0.95rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.25rem; }
+    .lesson-item .info p { font-size: 0.8rem; color: #666; }
+    .lesson-item .actions { display: flex; gap: 0.5rem; }
+    .lesson-item .actions button { padding: 0.5rem 1rem; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .lesson-item .actions .play-btn { background: #00d9b1; color: white; }
+    .lesson-item .actions .play-btn:hover { background: #00c29d; }
+    .lesson-item .actions .edit-btn { background: #f3f4f6; color: #1a1a1a; }
+    .lesson-item .actions .edit-btn:hover { background: #e5e7eb; }
+    .lesson-item .actions .delete-btn { background: #fee2e2; color: #ef4444; }
+    .lesson-item .actions .delete-btn:hover { background: #fecaca; }
+    
+    .empty-state { text-align: center; padding: 3rem 1rem; color: #9ca3af; }
+    .empty-state svg { width: 64px; height: 64px; margin-bottom: 1rem; opacity: 0.5; }
+    .empty-state p { font-size: 0.95rem; }
+    
+    .btn-group { display: flex; gap: 1rem; justify-content: flex-end; }
+    .btn { padding: 0.875rem 2rem; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #00d9b1; color: white; }
+    .btn-primary:hover { background: #00c29d; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 217, 177, 0.3); }
+    .btn-secondary { background: #f3f4f6; color: #1a1a1a; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    
+    @media (max-width: 1439px) {
+        .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 1.75rem; }
+    }
+    
+    @media (max-width: 1023px) {
+        .main-content { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
+    }
+    
+    @media (max-width: 899px) {
+        .main-content { margin-left: 200px; width: calc(100% - 200px); padding: 1.25rem; }
+    }
+    
+    @media (max-width: 767px) {
+        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+        .page-header { padding: 1rem; }
+        .page-header h1 { font-size: 1.25rem; }
+        .form-card, .lessons-list { padding: 1rem; }
+        .btn-group { flex-direction: column; }
+        .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
+
+<div class="main-content">
+  <div class="page-header">
+    <h1>Add New Lesson</h1>
+    <p>Add lessons to <%= course.title %></p>
+  </div>
+
+  <form id="addLessonForm" class="form-card">
+    <h2>Lesson Details</h2>
+    
+    <div class="form-group">
+      <label>Lesson Title <span>*</span></label>
+      <input type="text" name="title" id="lessonTitle" placeholder="Enter lesson title" required />
+    </div>
+
+    <div class="form-group">
+      <label>Lesson Description</label>
+      <textarea name="description" id="lessonDescription" placeholder="Enter detailed lesson description"></textarea>
+      <small>Provide a brief overview of what students will learn in this lesson</small>
+    </div>
+
+    <div class="form-group">
+      <label>Lesson Duration</label>
+      <input type="text" name="duration" id="lessonDuration" placeholder="e.g., 15-30 minutes or 1-2 hours" />
+      <small>Estimated time to complete this lesson</small>
+    </div>
+
+    <div class="form-group">
+      <label>Upload Video <span>*</span></label>
+      <div class="upload-area" id="videoUploadArea">
+        <div class="upload-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+        </div>
+        <h3>Upload Video</h3>
+        <p>Drag and drop or click to upload</p>
+        <input type="file" name="video" id="videoInput" accept="video/*" />
+      </div>
+      <div class="file-preview" id="videoPreview">
+        <div class="icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="info">
+          <h4 id="videoFileName">video.mp4</h4>
+          <p id="videoFileSize">0 MB</p>
+        </div>
+        <button type="button" class="remove" id="removeVideo">×</button>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+      <button type="submit" class="btn btn-primary">Add Lesson</button>
+    </div>
+  </form>
+
+  <div class="lessons-list">
+    <h2>Lessons (<%= course.lessons ? course.lessons.length : 0 %>)</h2>
+    
+    <% if (course.lessons && course.lessons.length > 0) { %>
+      <% course.lessons.forEach((lesson, index) => { %>
+        <div class="lesson-item">
+          <div class="number"><%= index + 1 %></div>
+          <div class="info">
+            <h4><%= lesson.title %></h4>
+            <p><%= lesson.description || 'No description' %> • <%= lesson.duration || 'Duration not set' %></p>
+          </div>
+          <div class="actions">
+            <% if (lesson.videoUrl) { %>
+              <button class="play-btn" onclick="playVideo('<%= lesson.videoUrl %>', '<%= lesson.title %>')">Play</button>
+            <% } %>
+            <button class="edit-btn" onclick="window.location.href='/tutor/course/<%= course._id %>/lesson/<%= lesson._id %>/edit'">Edit</button>
+            <button class="delete-btn" onclick="deleteLesson('<%= lesson._id %>')">Delete</button>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="empty-state">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+        </svg>
+        <p>No lessons added yet. Add your first lesson above.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  const videoUploadArea = document.getElementById('videoUploadArea');
+  const videoInput = document.getElementById('videoInput');
+  const videoPreview = document.getElementById('videoPreview');
+  const videoFileName = document.getElementById('videoFileName');
+  const videoFileSize = document.getElementById('videoFileSize');
+  const removeVideo = document.getElementById('removeVideo');
+
+  videoUploadArea.addEventListener('click', () => videoInput.click());
+
+  videoUploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    videoUploadArea.classList.add('dragover');
+  });
+
+  videoUploadArea.addEventListener('dragleave', () => {
+    videoUploadArea.classList.remove('dragover');
+  });
+
+  videoUploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    videoUploadArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      videoInput.files = files;
+      handleVideoUpload(files[0]);
+    }
+  });
+
+  videoInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      handleVideoUpload(e.target.files[0]);
+    }
+  });
+
+  removeVideo.addEventListener('click', (e) => {
+    e.stopPropagation();
+    videoInput.value = '';
+    videoPreview.classList.remove('active');
+  });
+
+  function handleVideoUpload(file) {
+    videoFileName.textContent = file.name;
+    videoFileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+    videoPreview.classList.add('active');
+  }
+
+  document.getElementById('addLessonForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', document.getElementById('lessonTitle').value);
+    formData.append('description', document.getElementById('lessonDescription').value);
+    formData.append('duration', document.getElementById('lessonDuration').value);
+    
+    if (videoInput.files.length > 0) {
+      formData.append('video', videoInput.files[0]);
+    }
+
+    try {
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: data.message || 'Lesson added successfully',
+          confirmButtonColor: '#00d9b1'
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.message || 'Failed to add lesson',
+          confirmButtonColor: '#00d9b1'
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while adding the lesson',
+        confirmButtonColor: '#00d9b1'
+      });
+    }
+  });
+
+  function deleteLesson(lessonId) {
+    Swal.fire({
+      title: 'Delete Lesson?',
+      text: 'This action cannot be undone',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/tutor/course/<%= course._id %>/lesson/${lessonId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: data.message || 'Lesson deleted successfully',
+              confirmButtonColor: '#00d9b1'
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: data.message || 'Failed to delete lesson',
+              confirmButtonColor: '#00d9b1'
+            });
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while deleting the lesson',
+            confirmButtonColor: '#00d9b1'
+          });
+        }
+      }
+    });
+  }
+
+  function playVideo(videoUrl, title) {
+    Swal.fire({
+      title: title,
+      html: `
+        <video controls autoplay style="width: 100%; max-width: 600px; border-radius: 8px;">
+          <source src="${videoUrl}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      `,
+      width: '800px',
+      showCloseButton: true,
+      showConfirmButton: false,
+      customClass: {
+        popup: 'video-popup'
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

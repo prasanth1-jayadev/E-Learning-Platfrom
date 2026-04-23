@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= course.title %> - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="/user/home" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                            <circle cx="12" cy="12" r="1.5" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xl font-bold text-gray-900">Learn</span>
+                        <span class="text-xl font-bold text-primary">ify</span>
+                    </div>
+                </a>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/user/home" class="text-sm font-medium text-gray-700 hover:text-primary transition">Home</a>
+                    <a href="#" class="text-sm font-medium text-gray-700 hover:text-primary transition">About Us</a>
+                    <a href="#" class="text-sm font-medium text-gray-700 hover:text-primary transition">Contact</a>
+                    <a href="#" class="text-sm font-medium text-gray-700 hover:text-primary transition">Tutors</a>
+                </div>
+
+                <!-- Right Side Icons -->
+                <div class="flex items-center space-x-4">
+                    <!-- Wishlist -->
+                    <button class="p-2 text-gray-600 hover:text-primary transition relative">
+                        <i class="far fa-heart text-xl"></i>
+                    </button>
+
+                    <!-- Cart -->
+                    <button class="p-2 text-gray-600 hover:text-primary transition relative">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="absolute top-0 right-0 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">1</span>
+                    </button>
+
+                    <!-- Messages -->
+                    <button class="p-2 text-gray-600 hover:text-primary transition">
+                        <i class="far fa-comment-dots text-xl"></i>
+                    </button>
+
+                    <!-- Notifications -->
+                    <button class="p-2 text-gray-600 hover:text-primary transition relative">
+                        <i class="far fa-bell text-xl"></i>
+                        <span class="absolute top-1 right-1 bg-red-500 w-2 h-2 rounded-full"></span>
+                    </button>
+
+                    <!-- Profile -->
+                    <a href="/user/profile" class="p-2 text-gray-600 hover:text-primary transition">
+                        <i class="far fa-user-circle text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        
+        <a href="/user/courses" class="inline-flex items-center text-sm text-teal-600 hover:text-teal-700 mb-6">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Courses
+        </a>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-2 space-y-6">
+                
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <span class="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full mb-3">
+                        <%= course.category %>
+                    </span>
+                    
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= course.title %></h1>
+                    
+                    <p class="text-gray-600 mb-4"><%= course.description %></p>
+                    
+                    <div class="flex items-center gap-6 text-sm text-gray-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-users text-teal-600"></i>
+                            <span><%= course.enrolledStudents.length %> students enrolled</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-clock text-teal-600"></i>
+                            <span>Updated <%= new Date(course.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-book text-teal-600"></i>
+                            <span><%= course.lessons.length %> lessons</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-start gap-4 mb-6">
+                        <% if (course.tutor.avatar) { %>
+                            <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>" class="w-16 h-16 rounded-full object-cover">
+                        <% } else { %>
+                            <div class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center">
+                                <span class="text-teal-700 font-bold text-xl"><%= course.tutor.fullName.charAt(0).toUpperCase() %></span>
+                            </div>
+                        <% } %>
+                        
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900"><%= course.tutor.fullName %></h3>
+                            <p class="text-sm text-gray-500">Professional Instructor</p>
+                            <p class="text-sm text-gray-600 mt-2"><%= course.tutor.bio || 'Expert in ' + course.category + ' with years of teaching experience' %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">What you'll learn</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                            <span class="text-sm text-gray-700">Master <%= course.category %> fundamentals and core concepts</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                            <span class="text-sm text-gray-700">Build practical projects and real-world applications</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                            <span class="text-sm text-gray-700">Learn industry best practices and professional techniques</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                            <span class="text-sm text-gray-700">Get hands-on experience with practical lessons</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                            <span class="text-sm text-gray-700">Develop problem-solving and analytical skills</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                            <span class="text-sm text-gray-700">Apply knowledge to real-world scenarios and projects</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">Course content</h2>
+                        <span class="text-sm text-gray-500"><%= course.lessons.length %> lessons</span>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <% if (course.lessons && course.lessons.length > 0) { %>
+                            <% course.lessons.forEach((lesson, index) => { %>
+                                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-play text-teal-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="font-semibold text-gray-900 text-sm"><%= lesson.title %></h3>
+                                                <p class="text-xs text-gray-500 mt-1"><%= lesson.description || 'This is the ' + lesson.title.toLowerCase() + ' part' %></p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-500"><%= lesson.duration || 0 %> minutes</span>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-book-open text-4xl mb-3"></i>
+                                <p>No lessons available yet</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">About This Course</h2>
+                    <p class="text-gray-700 leading-relaxed"><%= course.description %></p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">About the Instructor</h2>
+                    
+                    <div class="flex items-start gap-4">
+                        <% if (course.tutor.avatar) { %>
+                            <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>" class="w-20 h-20 rounded-full object-cover">
+                        <% } else { %>
+                            <div class="w-20 h-20 rounded-full bg-teal-100 flex items-center justify-center">
+                                <span class="text-teal-700 font-bold text-2xl"><%= course.tutor.fullName.charAt(0).toUpperCase() %></span>
+                            </div>
+                        <% } %>
+                        
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1"><%= course.tutor.fullName %></h3>
+                            <p class="text-sm text-gray-500 mb-2">Course Instructor</p>
+                            <p class="text-sm text-gray-700"><%= course.tutor.bio || 'I am a master in ' + course.category.toLowerCase() %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden sticky top-6">
+                    
+                    <% if (course.thumbnail) { %>
+                        <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-full h-48 object-cover">
+                    <% } else { %>
+                        <div class="w-full h-48 bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                            <i class="fas fa-book text-white text-6xl"></i>
+                        </div>
+                    <% } %>
+                    
+                    <div class="p-6">
+                        
+                        <div class="mb-4">
+                            <% if (course.discountPrice && course.discountPrice < course.price) { %>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-3xl font-bold text-teal-600">₹<%= course.discountPrice.toLocaleString() %></span>
+                                    <span class="text-lg text-gray-400 line-through">₹<%= course.price.toLocaleString() %></span>
+                                </div>
+                                <span class="inline-block mt-2 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded">
+                                    <%= Math.round((1 - course.discountPrice / course.price) * 100) %>% off
+                                </span>
+                                <p class="text-xs text-red-600 mt-1">Limited time offer - 10% off!</p>
+                            <% } else if (course.price === 0) { %>
+                                <span class="text-3xl font-bold text-teal-600">Free</span>
+                            <% } else { %>
+                                <span class="text-3xl font-bold text-teal-600">₹<%= course.price.toLocaleString() %></span>
+                            <% } %>
+                        </div>
+
+                        <button class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
+                            Continue Learning
+                        </button>
+                        
+                        <div class="flex gap-2">
+                            <button class="flex-1 border border-teal-600 text-teal-600 font-semibold py-2 rounded-lg hover:bg-teal-50 transition text-sm">
+                                <i class="fas fa-book-open mr-2"></i>Go to Course
+                            </button>
+                            <button class="flex-1 border border-blue-600 text-blue-600 font-semibold py-2 rounded-lg hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-comments mr-2"></i>Chat
+                            </button>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <h3 class="font-bold text-gray-900 mb-3">This course includes:</h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 text-sm text-gray-700">
+                                    <i class="fas fa-video text-teal-600"></i>
+                                    <span><%= course.lessons.length %> on-demand video lessons</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700">
+                                    <i class="fas fa-certificate text-teal-600"></i>
+                                    <span>Certificate of completion</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700">
+                                    <i class="fas fa-infinity text-teal-600"></i>
+                                    <span>Full lifetime access</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700">
+                                    <i class="fas fa-mobile-alt text-teal-600"></i>
+                                    <span>Access on mobile and desktop</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700">
+                                    <i class="fas fa-clock text-teal-600"></i>
+                                    <span>Learn at your own pace</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

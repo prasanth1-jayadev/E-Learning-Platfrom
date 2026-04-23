@@ -1,7 +1,7 @@
 import Tutor from '../models/Tutor.js';
 import OTP from '../models/OTP.js';
 import { hashPassword, comparePassword } from '../helpers/passwordHelper.js';
-import { generateOTP, otpExpiry } from '../helpers/otpHelper.js';
+import { generateOTP, otpExpiry, logOTP } from '../helpers/otpHelper.js';
 import { sendOTPEmail } from './emailService.js';
 
 const registerTutor = async ({ fullName, email, password, certificatePath }) => {
@@ -28,12 +28,7 @@ const registerTutor = async ({ fullName, email, password, certificatePath }) => 
     });
 
     const otp = generateOTP();
-    console.log('========================================');
-    console.log('🎯 TUTOR REGISTRATION OTP');
-    console.log('========================================');
-    console.log('Email:', email);
-    console.log('OTP Code:', otp);
-    console.log('========================================');
+    logOTP(email, otp, 'TUTOR SIGNUP');
     
     await OTP.deleteMany({ email, purpose: "signup" });
     await OTP.create({ email, otp, purpose: "signup", expiresAt: otpExpiry() });
@@ -46,25 +41,10 @@ const verifyOtp = async (email, otp, purpose = "signup") => {
     email = email.toLowerCase().trim();
     otp = otp.trim();
     
-    console.log('========================================');
-    console.log('🔍 VERIFYING OTP');
-    console.log('========================================');
-    console.log('Email:', email);
-    console.log('OTP entered:', otp);
-    console.log('Purpose:', purpose);
-    
     const record = await OTP.findOne({ email, otp, purpose });
-    console.log('OTP record found:', record ? 'YES' : 'NO');
     
-    if (record) {
-        console.log('Stored OTP:', record.otp);
-        console.log('Expires at:', record.expiresAt);
-        console.log('Current time:', new Date());
-    }
-    console.log('========================================');
-    
-    if (!record) throw new Error('Invalid otp')
-    if (record.expiresAt < new Date()) throw new Error('Otp expired . please resend ');
+    if (!record) throw new Error('Invalid otp');
+    if (record.expiresAt < new Date()) throw new Error('Otp expired. Please resend');
 
     if (purpose === 'signup') {
         await Tutor.updateOne({ email }, { isVerified: true });
@@ -74,11 +54,13 @@ const verifyOtp = async (email, otp, purpose = "signup") => {
 
 const resendOtp = async (email, purpose = "signup") => {
     const tutor = await Tutor.findOne({ email });
-    if (!tutor) throw new Error('Email not found ');
+    if (!tutor) throw new Error('Email not found');
 
     const otp = generateOTP();
+    logOTP(email, otp, 'TUTOR RESEND');
+    
     await OTP.deleteMany({ email, purpose });
-    await OTP.create({ email, otp, purpose, expiresAt: otpExpiry() })
+    await OTP.create({ email, otp, purpose, expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, purpose);
 }
 
@@ -101,6 +83,8 @@ const forgotPassword = async (email) => {
     if (!tutor) throw new Error('No Account found');
 
     const otp = generateOTP();
+    logOTP(email, otp, 'TUTOR PASSWORD RESET');
+    
     await OTP.deleteMany({ email, purpose: "reset" });
     await OTP.create({ email, otp, purpose: "reset", expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, 'reset');
@@ -117,6 +101,8 @@ const sendEmailChangeOTP = async (email) => {
     email = email.toLowerCase().trim();
 
     const otp = generateOTP();
+    logOTP(email, otp, 'TUTOR EMAIL CHANGE');
+    
     await OTP.deleteMany({ email, purpose: 'email-change' });
     await OTP.create({ email, otp, purpose: 'email-change', expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, 'email-change');

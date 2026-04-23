@@ -34,6 +34,11 @@ router.post('/resend-email-otp', isTutor, tutorController.postResendEmailOTP);
 // Course routes
 router.get('/courses', isTutor, courseController.getCourses);
 router.get('/courses/create', isTutor, isTutorApproved, courseController.getCreateCourse);
+router.get('/course/:id/add-lesson', isTutor, isTutorApproved, tutorController.getAddLessonPage);
+router.post('/course/:id/add-lesson', isTutor, isTutorApproved, upload.single('video'), tutorController.addLesson);
+router.get('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, tutorController.getEditLessonPage);
+router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, upload.single('video'), tutorController.updateLesson);
+router.delete('/course/:id/lesson/:lessonId', isTutor, isTutorApproved, tutorController.deleteLesson);
 router.post('/courses/create', isTutor, isTutorApproved, (req, res, next) => {
     upload.single('thumbnail')(req, res, (err) => {
         if (err) {

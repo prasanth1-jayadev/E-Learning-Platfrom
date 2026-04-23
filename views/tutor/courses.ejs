@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Courses - Organic Learn</title>
+    <title>My Courses - Learnify</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -235,7 +235,7 @@
           <%= course.lessons.length %> Lessons
         </div>
         <div class="stat">
-          <span style="font-weight: 600;">₹<%= course.price.toLocaleString() %></span>
+          <span style="font-weight: 600;">?<%= course.price.toLocaleString() %></span>
         </div>
       </div>
     </div>
@@ -244,7 +244,7 @@
       <button onclick="togglePublish('<%= course._id %>', <%= course.isPublished %>)" class="action-btn <%= course.isPublished ? 'btn-secondary' : 'btn-outline' %>">
         <%= course.isPublished ? 'Unpublish' : 'Publish' %>
       </button>
-      <button onclick="deleteCourse('<%= course._id %>')" class="action-btn btn-outline" style="color: #ef4444; border-color: #ef4444;">Delete</button>
+      <a href="/tutor/course/<%= course._id %>/add-lesson" class="action-btn btn-outline" style="color: #00d9b1; border-color: #00d9b1;">Add Lesson</a>
     </div>
   </div>
   <% }); %>
@@ -262,7 +262,7 @@
   </div>
 <% } %>
 </div>
-<div class="pagination"><button class="page-btn">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div>
+<div class="pagination"><button class="page-btn">�</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">�</button></div>
 <p class="results-info">Showing <%= courses.length %> course<%= courses.length !== 1 ? 's' : '' %></p>
 </main>
 

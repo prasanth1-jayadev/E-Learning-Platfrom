@@ -6,6 +6,7 @@ import passport from '../config/passport.js';
 const router = express.Router();
 
 router.get('/', userController.getLanding);
+router.get('/landing', userController.getLanding);
 router.get('/signup', redirectIfUser, userController.getSignup);
 router.post('/signup', userController.postSignup);
 router.get('/login', redirectIfUser, userController.getLogin);
@@ -54,6 +55,7 @@ router.get('/auth/google/callback',
 
 router.get('/home', isUser, userController.getHome);
 router.get('/courses', userController.getCourses);
+router.get('/course/:id', userController.getCourseDetail);
 router.get('/profile', isUser, userController.getProfile);
 router.get('/edit-profile', isUser, userController.getEditProfile);
 router.post('/update-profile', isUser, userController.postUpdateProfile);

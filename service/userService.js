@@ -1,11 +1,11 @@
 import User from '../models/User.js';
 import OTP from '../models/OTP.js';
 import { hashPassword, comparePassword } from '../helpers/passwordHelper.js';
-import { generateOTP, otpExpiry } from '../helpers/otpHelper.js';
+import { generateOTP, otpExpiry, logOTP } from '../helpers/otpHelper.js';
 import { sendOTPEmail } from './emailService.js';
 
 const registerUser = async ({ fullName, email, password }) => {
-    email = email.toLowerCase().trim()
+    email = email.toLowerCase().trim();
     const existing = await User.findOne({ email });
 
     if (existing && existing.isVerified) {
@@ -18,8 +18,9 @@ const registerUser = async ({ fullName, email, password }) => {
     await User.create({ fullName, email, password: hashed, isVerified: false });
 
     const otp = generateOTP();
-    console.log(otp)
-    await OTP.deleteMany({ email, purpose: "signup" })
+    logOTP(email, otp, 'USER SIGNUP');
+    
+    await OTP.deleteMany({ email, purpose: "signup" });
     await OTP.create({ email, otp, purpose: "signup", expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, 'signup');
 }
@@ -44,9 +45,11 @@ const resendOtp = async (email, purpose = "signup") => {
     const user = await User.findOne({ email });
     if (!user) throw new Error('Email not found');
 
-    const otp = generateOTP()
+    const otp = generateOTP();
+    logOTP(email, otp, 'USER RESEND');
+    
     await OTP.deleteMany({ email, purpose });
-    await OTP.create({ email, otp, purpose, expiresAt: otpExpiry() })
+    await OTP.create({ email, otp, purpose, expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, purpose);
 }
 
@@ -65,11 +68,13 @@ const loginUser = async (email, password) => {
 };
 
 const forgotPassword = async (email) => {
-    email = email.toLowerCase().trim()
+    email = email.toLowerCase().trim();
     const user = await User.findOne({ email });
     if (!user) throw new Error('no account found in this email');
 
-    const otp = generateOTP()
+    const otp = generateOTP();
+    logOTP(email, otp, 'USER PASSWORD RESET');
+    
     await OTP.deleteMany({ email, purpose: 'reset' });
     await OTP.create({ email, otp, purpose: 'reset', expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, 'reset');
@@ -89,6 +94,8 @@ const sendEmailChangeOTP = async (email) => {
     email = email.toLowerCase().trim();
 
     const otp = generateOTP();
+    logOTP(email, otp, 'USER EMAIL CHANGE');
+    
     await OTP.deleteMany({ email, purpose: 'email-change' });
     await OTP.create({ email, otp, purpose: 'email-change', expiresAt: otpExpiry() });
     await sendOTPEmail(email, otp, 'email-change');
