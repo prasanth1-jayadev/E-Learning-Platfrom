@@ -20,10 +20,9 @@ const getCourses = async (req, res) => {
     let categories = [];
     try {
       categories = await categoryService.getListedCategories();
-      console.log('Categories fetched for courses list:', categories.length);
     } catch (categoryError) {
       console.error('Error fetching categories:', categoryError);
-      categories = []; 
+      categories = [];
     }
 
     const courses = await courseService.getTutorCourses(tutorId, filters);
@@ -59,10 +58,9 @@ const getCreateCourse = async (req, res) => {
     let categories = [];
     try {
       categories = await categoryService.getListedCategories();
-      console.log('Categories fetched for create course:', categories.length);
     } catch (categoryError) {
       console.error('Error fetching categories:', categoryError);
-      categories = []; 
+      categories = [];
     }
     res.render('tutor/create-course', {
       tutor,
@@ -173,57 +171,29 @@ const getEditCourse = async (req, res) => {
     const tutorId = req.session.tutorId;
     const courseId = req.params.id;
     
-    console.log('=== EDIT COURSE START ===');
-    console.log('Tutor ID:', tutorId);
-    console.log('Course ID:', courseId);
-    
     const tutor = await Tutor.findById(tutorId);
     if (!tutor) {
-      console.log('Tutor not found, redirecting to login');
       return res.redirect('/tutor/login');
     }
-    console.log('Tutor found:', tutor.fullName);
 
-    
     let categories = [];
-    console.log('Fetching categories...');
-    
     try {
-      const fetchedCategories = await categoryService.getListedCategories();
-      console.log('Raw categories from service:', fetchedCategories);
-      
-      if (fetchedCategories && Array.isArray(fetchedCategories)) {
-        categories = fetchedCategories;
-        console.log('✅ Categories successfully fetched:', categories.length);
-        console.log('Category names:', categories.map(c => c.name));
-      } else {
-        console.log('⚠️ Categories is not an array:', typeof fetchedCategories);
-        categories = [];
-      }
+      categories = await categoryService.getListedCategories();
     } catch (categoryError) {
-      console.error(' Error fetching categories:', categoryError);
-      categories = []; 
+      console.error('Error fetching categories:', categoryError);
+      categories = [];
     }
 
-    console.log('Fetching course...');
     const course = await courseService.getCourseById(courseId, tutorId);
-    console.log('Course found:', course.title);
-    console.log('Course category:', course.category);
-    
-    console.log('=== RENDERING TEMPLATE ===');
-    console.log('Categories to pass:', categories.length);
-    console.log('Categories array:', JSON.stringify(categories.map(c => ({ name: c.name }))));
 
     res.render('tutor/edit-course', {
-      tutor: tutor,
-      course: course,
-      categories: categories,
+      tutor,
+      course,
+      categories,
       currentPage: 'courses'
     });
-    
-    console.log('=== EDIT COURSE END ===');
   } catch (error) {
-    console.error(' Get edit course error:', error);
+    console.error('Get edit course error:', error);
     res.status(404).render('error', { message: 'Course not found' });
   }
 };

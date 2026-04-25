@@ -103,13 +103,13 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                 <% if (tutor.certificatePath) { %>
-                                <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')" 
-                                   class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
-                                    <span class="material-icons-outlined text-xs">description</span>
-                                    View
-                                </button>
+                                    <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')" 
+                                       class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
+                                        <span class="material-icons-outlined text-xs">description</span>
+                                        View
+                                    </button>
                                 <% } else { %>
-                                <span class="text-slate-400">N/A</span>
+                                    <span class="text-slate-400">N/A</span>
                                 <% } %>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -205,44 +205,61 @@
     </div>
 
     <script>
-          function viewCertificate(certificateUrl, tutorName) {
-                console.log("Certificate URL:", certificateUrl); // 👈 ADD HERE
-
+        function viewCertificate(certificateUrl, tutorName) {
             const modal = document.getElementById('certificateModal');
             const image = document.getElementById('certificateImage');
             const title = document.getElementById('certificateTitle');
             
-            title.textContent = `${tutorName}'s Certificate`;
-            image.src = certificateUrl;
-            modal.classList.remove('hidden');
+            if (!certificateUrl) {
+                alert('Certificate URL is missing');
+                return;
+            }
             
-            // Prevent body scroll when modal is open
+            title.textContent = `${tutorName}'s Certificate`;
+            image.src = '';
+            image.alt = 'Loading certificate...';
+            image.src = certificateUrl.trim();
+            
+            image.onload = function() {
+                // Certificate loaded successfully
+            };
+            
+            image.onerror = function() {
+                const modalBody = image.parentElement;
+                modalBody.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <svg style="width: 64px; height: 64px; margin: 0 auto 1rem; color: #ef4444;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">Certificate Not Available</h3>
+                        <p style="color: #6b7280; margin-bottom: 1rem;">Failed to load the certificate image</p>
+                    </div>
+                `;
+            };
+            
+            modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
         function closeCertificateModal() {
             const modal = document.getElementById('certificateModal');
             modal.classList.add('hidden');
-            
-            // Restore body scroll
             document.body.style.overflow = 'auto';
         }
 
-        // Close modal when clicking outside
         document.getElementById('certificateModal')?.addEventListener('click', function(e) {
             if (e.target === this) {
                 closeCertificateModal();
             }
         });
 
-        // Close modal with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeCertificateModal();
             }
         });
+        
         async function toggleBlock(tutorId) {
-            // First get the current status to show appropriate message
             const tutorRow = document.querySelector(`button[onclick="toggleBlock('${tutorId}')"]`);
             const isCurrentlyBlocked = tutorRow.textContent.trim() === 'Unblock';
             const action = isCurrentlyBlocked ? 'unblock' : 'block';
@@ -292,7 +309,6 @@
                     text: 'Error changing block status',
                     icon: 'error'
                 });
-                console.error(error);
             }
         }
     </script>
