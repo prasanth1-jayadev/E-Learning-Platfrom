@@ -61,7 +61,7 @@
                 }, 2000);
             }
         }, 5 * 60 * 1000); // 5 minutes
-    }
+    }   
 
     // Handle login page caching
     if (isLoginPage) {

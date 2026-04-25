@@ -17,7 +17,7 @@ const getDashboard = async (req, res) => {
             return res.redirect('/tutor/login');
         }
 
-        // Get dashboard statistics
+       
         let stats = {
             totalCourses: 0,
             publishedCourses: 0,
@@ -31,7 +31,7 @@ const getDashboard = async (req, res) => {
         if (tutor.approvalStatus === 'approved') {
             stats = await courseService.getDashboardStats(req.session.tutorId);
             recentCourses = await courseService.getTutorCourses(req.session.tutorId, {});
-            recentCourses = recentCourses.slice(0, 5); // Get only 5 most recent
+            recentCourses = recentCourses.slice(0, 5); // get recent 5 courses
         }
 
         res.render('tutor/dashboard', {
@@ -67,11 +67,14 @@ const getProfile = async (req, res) => {
     }
 };
 
+
+
+
 const postUpdateProfile = async (req, res) => {
     try {
         const { fullName, phone, subjects, bio } = req.body;
 
-        // Server-side validation
+       
         if (!fullName || fullName.trim().length === 0) {
             return res.status(400).json({ message: 'Name is required' });
         }
@@ -96,7 +99,7 @@ const postUpdateProfile = async (req, res) => {
             return res.status(404).json({ message: 'Tutor not found' });
         }
 
-        // Update profile fields
+      
         tutor.fullName = fullName.trim();
         tutor.phone = phone ? phone.trim() : null;
         tutor.subjects = subjects ? subjects.trim() : null;
@@ -111,11 +114,14 @@ const postUpdateProfile = async (req, res) => {
     }
 };
 
+
+
+
 const postSendEmailChangeOTP = async (req, res) => {
     try {
         const { newEmail } = req.body;
 
-        // Server-side validation
+        
         if (!newEmail || newEmail.trim().length === 0) {
             return res.status(400).json({ message: 'Email is required' });
         }
@@ -144,11 +150,16 @@ const postSendEmailChangeOTP = async (req, res) => {
     }
 };
 
+
+
+
+
+
 const postVerifyEmailChange = async (req, res) => {
     try {
         const { otp, newEmail } = req.body;
 
-        // Server-side validation
+     
         if (!otp || otp.trim().length === 0) {
             return res.status(400).json({ message: 'OTP is required' });
         }
@@ -170,7 +181,7 @@ const postVerifyEmailChange = async (req, res) => {
             return res.status(400).json({ message: 'Invalid email address' });
         }
 
-        // Verify OTP
+
         await tutorService.verifyEmailChangeOTP(newEmail, otp);
 
         // Update tutor with new email
@@ -194,7 +205,6 @@ const postResendEmailOTP = async (req, res) => {
     try {
         const { email } = req.body;
 
-        // Server-side validation
         if (!email || email.trim().length === 0) {
             return res.status(400).json({ message: 'Email is required' });
         }
@@ -212,12 +222,14 @@ const postResendEmailOTP = async (req, res) => {
     }
 };
 
+
+
 const postSignup = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
         const certificateFile = req.file;
 
-        // Serverside vali
+     
         if (!fullName || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
@@ -262,11 +274,13 @@ const postSignup = async (req, res) => {
             return res.status(400).json({ message: 'File size must be less than 5MB' });
         }
 
+        // Cloudinary returns: path (URL) and filename (public_id)
         await tutorService.registerTutor({
             fullName: fullName.trim(),
             email: email.trim(),
             password,
-            certificatePath: certificateFile.path
+            certificatePath: certificateFile.path,        // Cloudinary URL
+            certificatePublicId: certificateFile.filename  // Cloudinary public_id
         });
 
         req.session.otpEmail = email.trim();
@@ -286,13 +300,12 @@ const postOtp = async (req, res) => {
         const email = req.session.otpEmail;
         const purpose = req.session.otpPurpose || 'signup';
 
-        console.log('========================================');
         console.log('📥 OTP SUBMISSION');
         console.log('========================================');
         console.log('OTP from form:', otp);
         console.log('Email from session:', email);
         console.log('Purpose:', purpose);
-        console.log('========================================');
+      
 
         if (!email) {
             return res.status(400).json({ message: "session - expired" })
@@ -330,6 +343,8 @@ const resendOtp = async (req, res) => {
     }
 }
 
+
+
 const postLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -345,12 +360,16 @@ const postLogin = async (req, res) => {
     }
 }
 
+
+
 const logout = (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('connect.sid');
         res.redirect('/tutor/login');
     });
 };
+
+
 
 const postForgotPassword = async (req, res) => {
     try {
@@ -461,6 +480,9 @@ const addLesson = async (req, res) => {
     }
 };
 
+
+
+
 const getEditLessonPage = async (req, res) => {
     try {
         const tutor = await Tutor.findById(req.session.tutorId);
@@ -481,6 +503,9 @@ const getEditLessonPage = async (req, res) => {
         res.redirect('/tutor/courses');
     }
 };
+
+
+
 
 const updateLesson = async (req, res) => {
     try {
@@ -512,6 +537,9 @@ const updateLesson = async (req, res) => {
         res.status(500).json({ message: 'Failed to update lesson' });
     }
 };
+
+
+
 
 const deleteLesson = async (req, res) => {
     try {

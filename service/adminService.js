@@ -40,6 +40,9 @@ const getTutorApplications = async (page = 1, limit = 10, search = '') => {
         ];
     }
 
+
+    
+
     const tutors = await Tutor.find(query)
         .sort({ appliedAt: -1 })
         .skip(skip)
@@ -123,7 +126,7 @@ const getTutors = async (page = 1, limit = 5, search = '', blocked = 'all') => {
     }
 
     const tutors = await Tutor.find(query)
-        .sort({ createdAt: -1 })
+        .sort({ approvedAt: 1 })
         .skip(skip)
         .limit(limit);
 

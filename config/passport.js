@@ -24,7 +24,7 @@ passport.deserializeUser(async (obj, done) => {
     }
 });
 
-// Google OAuth for Users
+
 passport.use('google-user', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -56,7 +56,7 @@ passport.use('google-user', new GoogleStrategy({
     }
 }));
 
-// Google OAuth for Tutors
+
 passport.use('google-tutor', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,

@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>OTP Verification - Learnify</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>OTP Verification - Learnify</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -20,12 +25,12 @@
                     fontFamily: {
                         "display": ["Be Vietnam Pro", "sans-serif"]
                     },
-                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
                 },
             },
         }
     </script>
-<style type="text/tailwindcss">
+    <style type="text/tailwindcss">
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -45,162 +50,197 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa] h-screen overflow-hidden">
-<main class="grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
-<section class="hidden lg:flex relative overflow-hidden bg-deep-forest p-16 flex-col justify-between h-full">
-<div class="absolute inset-0 z-0">
-<img alt="Professional Tutor Teaching" class="w-full h-full object-cover opacity-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX9yVBG9qhOCGwdsHLyDLQYCuX352Fjl1lpc2BNtRvrAx90hSNg58_Dj1LWtve8EqUE0PXI3P07L-PIkirSqbpE87HP5t0hDKlwVGzMu9zuafyD4LrppH4n_NoRmfYvGqQXlObRwv2btzDRE9rVnfEEMkC7BEmhw6u4HfhFV613AfZYV2rbS5KpIkfZ4Cd_zc44IERSEbs6yyabpcLuE7KFSneHBI9MtBt6kRbc6jQsPDQ0x5Q8udaRlHp5VZnr9KH-UvLQHaULD0"/>
-<div class="absolute inset-0 bg-gradient-to-t from-deep-forest via-deep-forest/60 to-deep-forest/40"></div>
-</div>
-<div class="relative z-10">
-<div class="flex items-center gap-3 mb-12">
-<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-<svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-<path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
-<circle cx="12" cy="12" r="1.5" fill="white"/>
-</svg>
-</div>
-<div class="flex items-center">
-<span class="text-2xl font-bold text-white">Learn</span>
-<span class="text-2xl font-bold text-primary">ify</span>
-</div>
-</div>
-<div class="max-w-md">
-<h1 class="text-5xl font-black text-white leading-tight mb-6">Learn from the <span class="text-primary italic">best</span> in the field.</h1>
-<p class="text-xl text-[#a0c5ba] leading-relaxed">Access world-class instructors and interactive digital whiteboards designed for immersive professional growth.</p>
-</div>
-</div>
-<div class="relative z-10">
-<div class="flex -space-x-3 mb-4">
-<img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPFwDFori3wRedSbe2VMksk6ykpL0OL0nmCXMeke2UwgFO1YQQtVt-iL0HzPytOhdwjwfj6_1w-X1oc0w92rKXYbYtlSK2-B4bDus1UpGnQfvDbAfRt2puNkH8GmfmnhdR6Pp5FAfHuDLlvMbvoXFgQzGs_nFT8QuIxGTWe4ieXnEDy6aY1aou1yjahZwTuUADsXUapPT8tTWsSH2TXf4L9a5ct90NSbp2hllkikQ0bMn_OSv_5ywJUx-YsNZ9gOFMX16x-yy4GHM"/>
-<img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxfSEtWRx4FzGg-hLQS-ZIqamI0CjlgF-ZhDM5YOKiSaUX1vd2yzTxluDoCee8EqWRaoYnl-dTJUO-EjYN6lH_f03D6bmrAhcX1nkNwwNXbDL0WcwZXSKgcPSmmZv94oTnHBdylRDRHXQjhTZoNHfpRe-ueqDzxUmc3y0GIclEC4nCax-HMri1WdMYOaHGhb5FxJpH1dIWioQs6osXStryzu8hElxOx-4GFPWP9kbhUssXk0eNcA--elymJsyLoyi78HmH3BiBzxc"/>
-<img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBdBa4v27LJxOkfY3wBvbfcJSm0iXR9KDXTF0Wl7ibDdRPM2jDQWeyo2l6JBAFydGnP99rvk-DjbIW1Soywa3mWgv2837Jftm3khxBhWExzN6tXsIT2mf2cIk1LlHhBsjYDHcGfdNIqR_kgIdHTPNe5y7rZz2tPLk0TJd84bwJrtBrmvC4hs6NtQ7t4k25rmXF-lhizuWfZVHpsrs5RluSraSdhE9pQ2MAuPWM4UqZCwj8cE89nAjqxWhFJsCTIyoG62Lwll6fzIo"/>
-<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-xs font-bold border-2 border-deep-forest text-deep-forest">+50k</div>
-</div>
-<p class="text-sm font-medium text-white/60 italic">"The mentorship here is unparalleled. Truly a career-changing experience." — Engineering Manager</p>
-</div>
-</section>
-<section class="flex flex-col bg-white dark:bg-background-dark overflow-y-auto h-full">
-<div class="flex-1 flex flex-col justify-center px-6 py-8 md:px-16 lg:px-20">
-<div class="max-w-md mx-auto w-full">
-<div class="flex items-center justify-center mb-12 gap-0">
-<div class="flex items-center">
-<div class="w-10 h-10 rounded-full border-2 border-primary/40 flex items-center justify-center text-sm font-bold text-primary/60">1</div>
-<div class="w-16 h-[2px] bg-primary/20"></div>
-</div>
-<div class="flex items-center">
-<div class="w-12 h-12 rounded-full bg-primary border-4 border-white dark:border-background-dark flex items-center justify-center text-deep-forest font-black step-glow z-10">2</div>
-<div class="w-16 h-[2px] bg-primary/20"></div>
-</div>
-<div class="flex items-center">
-<div class="w-10 h-10 rounded-full border-2 border-primary/20 flex items-center justify-center text-sm font-bold opacity-30">3</div>
-</div>
-</div>
-<div class="mb-10 text-center">
-<h2 class="text-3xl font-black mb-3">Verification</h2>
-<p class="text-[#4c9a80] dark:text-[#a0c5ba]">We've sent a 4-digit code to your email. Enter it below to continue.</p>
-</div>
-<form class="flex flex-col gap-8" id="tutorOtpForm">
-<div class="flex flex-col items-center gap-6">
-<div class="flex justify-between gap-4 w-full p-4 rounded-2xl otp-glow bg-primary/5 border border-primary/20">
-<input class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text"/>
-<input class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text"/>
-<input class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text"/>
-<input class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text"/>
-</div>
-<div class="text-sm">
-<span class="opacity-60">Didn't receive the code?</span>
-<button class="text-primary font-bold hover:underline ml-1" id="tutorResendBtn" type="button">Resend Code</button>
-</div>
-</div>
-<button class="bg-primary text-[#0d1b17] py-4 rounded-xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.01] transition-transform w-full" type="submit">
-                        Verify OTP
-                    </button>
-</form>
-<script>
-    const boxes = document.querySelectorAll('.otp-box');
-    boxes.forEach((box, i) => {
-        box.addEventListener('input', e => {
-            const val = e.target.value.replace(/\D/g, '');
-            e.target.value = val;
-            if (val && i < boxes.length - 1) boxes[i + 1].focus();
-        });
-        box.addEventListener('keydown', e => {
-            if (e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
-        });
-        box.addEventListener('paste', e => {
-            e.preventDefault();
-            const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
-            pasted.split('').forEach((ch, idx) => { if (boxes[idx]) boxes[idx].value = ch; });
-            boxes[Math.min(pasted.length, boxes.length - 1)].focus();
-        });
-    });
-    boxes[0].focus();
 
-    // 60s resend timer
-    let timerInterval;
-    function startTimer() {
-        let seconds = 60;
-        const btn = document.getElementById('tutorResendBtn');
-        btn.disabled = true;
-        btn.textContent = `Resend in ${seconds}s`;
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-        timerInterval = setInterval(() => {
-            seconds--;
-            btn.textContent = `Resend in ${seconds}s`;
-            if (seconds <= 0) {
-                clearInterval(timerInterval);
-                btn.disabled = false;
-                btn.textContent = 'Resend Code';
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        }, 1000);
-    }
-    startTimer();
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa] h-screen overflow-hidden">
+    <main class="grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
+        <section class="hidden lg:flex relative overflow-hidden bg-deep-forest p-16 flex-col justify-between h-full">
+            <div class="absolute inset-0 z-0">
+                <img alt="Professional Tutor Teaching" class="w-full h-full object-cover opacity-50"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX9yVBG9qhOCGwdsHLyDLQYCuX352Fjl1lpc2BNtRvrAx90hSNg58_Dj1LWtve8EqUE0PXI3P07L-PIkirSqbpE87HP5t0hDKlwVGzMu9zuafyD4LrppH4n_NoRmfYvGqQXlObRwv2btzDRE9rVnfEEMkC7BEmhw6u4HfhFV613AfZYV2rbS5KpIkfZ4Cd_zc44IERSEbs6yyabpcLuE7KFSneHBI9MtBt6kRbc6jQsPDQ0x5Q8udaRlHp5VZnr9KH-UvLQHaULD0" />
+                <div class="absolute inset-0 bg-gradient-to-t from-deep-forest via-deep-forest/60 to-deep-forest/40">
+                </div>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-12">
+                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                            <circle cx="12" cy="12" r="1.5" fill="white" />
+                        </svg>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-2xl font-bold text-white">Learn</span>
+                        <span class="text-2xl font-bold text-primary">ify</span>
+                    </div>
+                </div>
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-black text-white leading-tight mb-6">Learn from the <span
+                            class="text-primary italic">best</span> in the field.</h1>
+                    <p class="text-xl text-[#a0c5ba] leading-relaxed">Access world-class instructors and interactive
+                        digital whiteboards designed for immersive professional growth.</p>
+                </div>
+            </div>
+            <div class="relative z-10">
+                <div class="flex -space-x-3 mb-4">
+                    <img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPFwDFori3wRedSbe2VMksk6ykpL0OL0nmCXMeke2UwgFO1YQQtVt-iL0HzPytOhdwjwfj6_1w-X1oc0w92rKXYbYtlSK2-B4bDus1UpGnQfvDbAfRt2puNkH8GmfmnhdR6Pp5FAfHuDLlvMbvoXFgQzGs_nFT8QuIxGTWe4ieXnEDy6aY1aou1yjahZwTuUADsXUapPT8tTWsSH2TXf4L9a5ct90NSbp2hllkikQ0bMn_OSv_5ywJUx-YsNZ9gOFMX16x-yy4GHM" />
+                    <img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxfSEtWRx4FzGg-hLQS-ZIqamI0CjlgF-ZhDM5YOKiSaUX1vd2yzTxluDoCee8EqWRaoYnl-dTJUO-EjYN6lH_f03D6bmrAhcX1nkNwwNXbDL0WcwZXSKgcPSmmZv94oTnHBdylRDRHXQjhTZoNHfpRe-ueqDzxUmc3y0GIclEC4nCax-HMri1WdMYOaHGhb5FxJpH1dIWioQs6osXStryzu8hElxOx-4GFPWP9kbhUssXk0eNcA--elymJsyLoyi78HmH3BiBzxc" />
+                    <img alt="User" class="w-12 h-12 rounded-full border-2 border-deep-forest object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBdBa4v27LJxOkfY3wBvbfcJSm0iXR9KDXTF0Wl7ibDdRPM2jDQWeyo2l6JBAFydGnP99rvk-DjbIW1Soywa3mWgv2837Jftm3khxBhWExzN6tXsIT2mf2cIk1LlHhBsjYDHcGfdNIqR_kgIdHTPNe5y7rZz2tPLk0TJd84bwJrtBrmvC4hs6NtQ7t4k25rmXF-lhizuWfZVHpsrs5RluSraSdhE9pQ2MAuPWM4UqZCwj8cE89nAjqxWhFJsCTIyoG62Lwll6fzIo" />
+                    <div
+                        class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-xs font-bold border-2 border-deep-forest text-deep-forest">
+                        +50k</div>
+                </div>
+                <p class="text-sm font-medium text-white/60 italic">"The mentorship here is unparalleled. Truly a
+                    career-changing experience." — Engineering Manager</p>
+            </div>
+        </section>
+        <section class="flex flex-col bg-white dark:bg-background-dark overflow-y-auto h-full">
+            <div class="flex-1 flex flex-col justify-center px-6 py-8 md:px-16 lg:px-20">
+                <div class="max-w-md mx-auto w-full">
+                    <div class="flex items-center justify-center mb-12 gap-0">
+                        <div class="flex items-center">
+                            <div
+                                class="w-10 h-10 rounded-full border-2 border-primary/40 flex items-center justify-center text-sm font-bold text-primary/60">
+                                1</div>
+                            <div class="w-16 h-[2px] bg-primary/20"></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div
+                                class="w-12 h-12 rounded-full bg-primary border-4 border-white dark:border-background-dark flex items-center justify-center text-deep-forest font-black step-glow z-10">
+                                2</div>
+                            <div class="w-16 h-[2px] bg-primary/20"></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div
+                                class="w-10 h-10 rounded-full border-2 border-primary/20 flex items-center justify-center text-sm font-bold opacity-30">
+                                3</div>
+                        </div>
+                    </div>
+                    <div class="mb-10 text-center">
+                        <h2 class="text-3xl font-black mb-3">Verification</h2>
+                        <p class="text-[#4c9a80] dark:text-[#a0c5ba]">We've sent a 4-digit code to your email. Enter it
+                            below to continue.</p>
+                    </div>
+                    <form class="flex flex-col gap-8" id="tutorOtpForm">
+                        <div class="flex flex-col items-center gap-6">
+                            <div
+                                class="flex justify-between gap-4 w-full p-4 rounded-2xl otp-glow bg-primary/5 border border-primary/20">
+                                <input
+                                    class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none"
+                                    maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" />
+                                <input
+                                    class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none"
+                                    maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" />
+                                <input
+                                    class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none"
+                                    maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" />
+                                <input
+                                    class="otp-box w-16 h-16 text-center text-2xl font-bold bg-white dark:bg-[#1a3a30] border-2 border-[#e7f3ef] dark:border-[#1a3a30] rounded-xl focus:ring-primary focus:border-primary focus:outline-none"
+                                    maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" />
+                            </div>
+                            <div class="text-sm">
+                                <span class="opacity-60">Didn't receive the code?</span>
+                                <button class="text-primary font-bold hover:underline ml-1" id="tutorResendBtn"
+                                    type="button">Resend Code</button>
+                            </div>
+                        </div>
+                        <button
+                            class="bg-primary text-[#0d1b17] py-4 rounded-xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.01] transition-transform w-full"
+                            type="submit">
+                            Verify OTP
+                        </button>
+                    </form>
+                    <script>
+                        const boxes = document.querySelectorAll('.otp-box');
+                        boxes.forEach((box, i) => {
+                            box.addEventListener('input', e => {
+                                const val = e.target.value.replace(/\D/g, '');
+                                e.target.value = val;
+                                if (val && i < boxes.length - 1) boxes[i + 1].focus();
+                            });
+                            box.addEventListener('keydown', e => {
+                                if (e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
+                            });
+                            box.addEventListener('paste', e => {
+                                e.preventDefault();
+                                const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
+                                pasted.split('').forEach((ch, idx) => { if (boxes[idx]) boxes[idx].value = ch; });
+                                boxes[Math.min(pasted.length, boxes.length - 1)].focus();
+                            });
+                        });
+                        boxes[0].focus();
 
-    document.getElementById('tutorOtpForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const otp = Array.from(boxes).map(b => b.value).join('');
-        if (otp.length < 4) { showToast('Please enter all 4 digits.', 'error'); return; }
-        showLoader('Verifying OTP...');
-        const res = await fetch('/tutor/verify-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ otp })
-        });
-        const data = await res.json();
-        hideLoader();
-        if (res.ok) {
-            showToast('OTP verified successfully!', 'success');
-            setTimeout(() => window.location.href = data.redirect || '/tutor/login', 1200);
-        } else {
-            showToast(data.message || 'Invalid OTP. Try again.', 'error');
-            boxes.forEach(b => b.value = '');
-            boxes[0].focus();
-        }
-    });
-    document.getElementById('tutorResendBtn').addEventListener('click', async function() {
-        const res = await fetch('/tutor/resend-otp', { method: 'POST' });
-        const data = await res.json();
-        if (res.ok) { showToast('OTP resent to your email!', 'info'); startTimer(); }
-        else showToast(data.message || 'Failed to resend.', 'error');
-    });
-</script>
-</div>
-</div>
-<footer class="px-6 py-6 md:px-16 border-t border-[#e7f3ef] flex justify-between items-center text-[10px] opacity-50 font-bold uppercase tracking-widest mt-auto">
-<div class="flex items-center gap-2">
-<span class="text-primary">Step 2 of 3</span>
-<span class="opacity-30">•</span>
-<span class="opacity-50">© 2024 Learnify</span>
-</div>
-<div class="flex gap-4 opacity-50">
-<a class="hover:text-primary transition-colors" href="#">Privacy</a>
-<a class="hover:text-primary transition-colors" href="#">Terms</a>
-<a class="hover:text-primary transition-colors" href="#">Contact</a>
-</div>
-</footer>
-</section>
-</main>
-<%- include('../partials/toast') %>
-</body></html>
+                        // 60s resend timer
+                        let timerInterval;
+                        function startTimer() {
+                            let seconds = 60;
+                            const btn = document.getElementById('tutorResendBtn');
+                            btn.disabled = true;
+                            btn.textContent = `Resend in ${seconds}s`;
+                            btn.classList.add('opacity-50', 'cursor-not-allowed');
+                            timerInterval = setInterval(() => {
+                                seconds--;
+                                btn.textContent = `Resend in ${seconds}s`;
+                                if (seconds <= 0) {
+                                    clearInterval(timerInterval);
+                                    btn.disabled = false;
+                                    btn.textContent = 'Resend Code';
+                                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                                }
+                            }, 1000);
+                        }
+                        startTimer();
+
+                        document.getElementById('tutorOtpForm').addEventListener('submit', async function (e) {
+                            e.preventDefault();
+                            const otp = Array.from(boxes).map(b => b.value).join('');
+                            if (otp.length < 4) { showToast('Please enter all 4 digits.', 'error'); return; }
+                            showLoader('Verifying OTP...');
+                            const res = await fetch('/tutor/verify-otp', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ otp })
+                            });
+                            const data = await res.json();
+                            hideLoader();
+                            if (res.ok) {
+                                showToast('OTP verified successfully!', 'success');
+                                setTimeout(() => window.location.href = data.redirect || '/tutor/login', 1200);
+                            } else {
+                                showToast(data.message || 'Invalid OTP. Try again.', 'error');
+                                boxes.forEach(b => b.value = '');
+                                boxes[0].focus();
+                            }
+                        });
+                        document.getElementById('tutorResendBtn').addEventListener('click', async function () {
+                            const res = await fetch('/tutor/resend-otp', { method: 'POST' });
+                            const data = await res.json();
+                            if (res.ok) { showToast('OTP resent to your email!', 'info'); startTimer(); }
+                            else showToast(data.message || 'Failed to resend.', 'error');
+                        });
+                    </script>
+                </div>
+            </div>
+            <footer
+                class="px-6 py-6 md:px-16 border-t border-[#e7f3ef] flex justify-between items-center text-[10px] opacity-50 font-bold uppercase tracking-widest mt-auto">
+                <div class="flex items-center gap-2">
+                    <span class="text-primary">Step 2 of 3</span>
+                    <span class="opacity-30">•</span>
+                    <span class="opacity-50">© 2024 Learnify</span>
+                </div>
+                <div class="flex gap-4 opacity-50">
+                    <a class="hover:text-primary transition-colors" href="#">Privacy</a>
+                    <a class="hover:text-primary transition-colors" href="#">Terms</a>
+                    <a class="hover:text-primary transition-colors" href="#">Contact</a>
+                </div>
+            </footer>
+        </section>
+    </main>
+    <%- include('../partials/toast') %>
+</body>
+
+</html>

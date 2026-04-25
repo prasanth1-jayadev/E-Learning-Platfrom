@@ -120,11 +120,11 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                 <% if (tutor.certificatePath) { %>
-                                <a href="/<%= tutor.certificatePath %>" target="_blank" 
+                                <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')" 
                                    class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
                                     <span class="material-icons-outlined text-xs">description</span>
                                     View
-                                </a>
+                                </button>
                                 <% } else { %>
                                 <span class="text-slate-400">N/A</span>
                                 <% } %>
@@ -197,7 +197,59 @@
         </div>
     </main>
 
+    <!-- Certificate Modal -->
+    <div id="certificateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-800" id="certificateTitle">Certificate</h3>
+                <button onclick="closeCertificateModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-icons-outlined text-slate-600">close</span>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-4 overflow-auto max-h-[calc(90vh-80px)]">
+                <img id="certificateImage" src="" alt="Certificate" class="w-full h-auto rounded-lg" />
+            </div>
+        </div>
+    </div>
+
     <script>
+        function viewCertificate(certificateUrl, tutorName) {
+            const modal = document.getElementById('certificateModal');
+            const image = document.getElementById('certificateImage');
+            const title = document.getElementById('certificateTitle');
+            
+            title.textContent = `${tutorName}'s Certificate`;
+            image.src = certificateUrl;
+            modal.classList.remove('hidden');
+            
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCertificateModal() {
+            const modal = document.getElementById('certificateModal');
+            modal.classList.add('hidden');
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('certificateModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCertificateModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCertificateModal();
+            }
+        });
+
         async function approveApplication(tutorId) {
             const result = await Swal.fire({
                 title: 'Approve Tutor Application?',

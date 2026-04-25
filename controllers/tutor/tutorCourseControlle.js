@@ -6,8 +6,8 @@ const getTutorCourses = async (req, res) => {
 
     const courses = await Course.find({ tutor: tutorId });
 
-    console.log(courses); // for now
-
+    console.log(courses);
+    
     res.send("Courses fetched successfully");
   } catch (error) {
     console.log(error);

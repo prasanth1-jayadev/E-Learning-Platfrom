@@ -80,9 +80,12 @@
     <div class="page-header">
         <h1>Edit Course</h1>
         <p>Update your course information and settings</p>
+        <!-- Debug timestamp: <%= new Date().toISOString() %> -->
     </div>
 
     <div class="form-container">
+        <!-- DEBUG INFO -->
+        
         <div class="form-card">
             <form id="editCourseForm">
                 <div class="form-section">
@@ -123,15 +126,20 @@
                             <label>Category <span class="required">*</span></label>
                             <select id="category" name="category" required>
                                 <option value="">Select a category</option>
-                                <option value="Development" <%= course.category === 'Development' ? 'selected' : '' %>>Development</option>
-                                <option value="Design" <%= course.category === 'Design' ? 'selected' : '' %>>Design</option>
-                                <option value="Business" <%= course.category === 'Business' ? 'selected' : '' %>>Business</option>
-                                <option value="Marketing" <%= course.category === 'Marketing' ? 'selected' : '' %>>Marketing</option>
-                                <option value="Science" <%= course.category === 'Science' ? 'selected' : '' %>>Science</option>
-                                <option value="Mathematics" <%= course.category === 'Mathematics' ? 'selected' : '' %>>Mathematics</option>
-                                <option value="Language" <%= course.category === 'Language' ? 'selected' : '' %>>Language</option>
-                                <option value="Other" <%= course.category === 'Other' ? 'selected' : '' %>>Other</option>
+                                <% if (categories && Array.isArray(categories) && categories.length > 0) { %>
+                                    <% categories.forEach(cat => { %>
+                                        <option value="<%= cat.name %>" <%= course.category === cat.name ? 'selected' : '' %>><%= cat.name %></option>
+                                    <% }); %>
+                                <% } else { %>
+                                    <!-- Fallback: Show current category if categories array is empty -->
+                                    <% if (course.category) { %>
+                                        <option value="<%= course.category %>" selected><%= course.category %></option>
+                                    <% } %>
+                                <% } %>
                             </select>
+                            <% if (!categories || categories.length === 0) { %>
+                                <span class="hint" style="color: #ef4444;">No categories available. Please contact admin to add categories.</span>
+                            <% } %>
                         </div>
 
                         <div class="form-group">

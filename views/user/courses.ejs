@@ -738,11 +738,12 @@
 
         <!-- Category Tabs -->
         <div class="category-tabs">
-            <button class="category-tab active">All Categories</button>
-            <button class="category-tab">Designing</button>
-            <button class="category-tab">Development</button>
-            <button class="category-tab">Higher Secondary</button>
-            <button class="category-tab">System Design</button>
+            <button class="category-tab active" data-category="">All Categories</button>
+            <% if (typeof categories !== 'undefined' && categories && categories.length > 0) { %>
+                <% categories.forEach(category => { %>
+                    <button class="category-tab" data-category="<%= category.name %>"><%= category.name %></button>
+                <% }); %>
+            <% } %>
         </div>
 
         <p class="results-count">Showing <%= courses.length %> of <%= typeof totalCourses !== 'undefined' ? totalCourses : 0 %> courses</p>
@@ -761,6 +762,9 @@
                             <% } %>
                         </div>
                         <div class="course-info">
+                            <% if (course.category) { %>
+                                <span class="course-category" style="display: inline-block; background: #e8f5f1; color: #00d9b1; padding: 0.3rem 0.85rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;"><%= course.category %></span>
+                            <% } %>
                             <h3 class="course-title"><%= course.title %></h3>
                             <div class="course-instructor">
                                 <div class="instructor-avatar"></div>
@@ -855,13 +859,40 @@
     </div>
 
     <script>
-        // Category tab switching
+        // Category tab switching with filtering
         document.querySelectorAll('.category-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
+                
+                const selectedCategory = this.getAttribute('data-category');
+                filterCoursesByCategory(selectedCategory);
             });
         });
+
+        // Filter courses by category
+        function filterCoursesByCategory(category) {
+            const courseCards = document.querySelectorAll('.course-card');
+            let visibleCount = 0;
+            
+            courseCards.forEach(card => {
+                const courseCategory = card.querySelector('.course-category') ? 
+                    card.querySelector('.course-category').textContent.trim() : '';
+                
+                if (!category || courseCategory === category) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Update results count
+            const resultsCount = document.querySelector('.results-count');
+            if (resultsCount) {
+                resultsCount.textContent = `Showing ${visibleCount} of <%= typeof totalCourses !== 'undefined' ? totalCourses : 0 %> courses`;
+            }
+        }
 
         // Pagination
         document.querySelectorAll('.page-btn:not([disabled])').forEach(btn => {

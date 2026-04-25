@@ -1,4 +1,5 @@
 import * as userService from '../../service/userService.js';
+import * as categoryService from '../../service/categoryService.js';
 import User from '../../models/User.js';
 import Course from '../../models/Course.js';
 
@@ -244,6 +245,16 @@ const getCourses = async (req, res) => {
     const limit = 6;
     const skip = (page - 1) * limit;
 
+    // Get listed categories
+    let categories = [];
+    try {
+      categories = await categoryService.getListedCategories();
+      console.log('Categories fetched for user courses:', categories.length);
+    } catch (categoryError) {
+      console.error('Error fetching categories:', categoryError);
+      categories = []; // Fallback to empty array
+    }
+
     const totalCourses = await Course.countDocuments({ isPublished: true });
     const courses = await Course.find({ isPublished: true })
       .populate('tutor', 'fullName')
@@ -255,6 +266,7 @@ const getCourses = async (req, res) => {
 
     res.render('user/courses', {
       courses,
+      categories,
       currentPage: page,
       totalPages,
       totalCourses
@@ -264,6 +276,7 @@ const getCourses = async (req, res) => {
     console.error(error);
     res.render('user/courses', {
       courses: [],
+      categories: [],
       currentPage: 1,
       totalPages: 1,
       totalCourses: 0

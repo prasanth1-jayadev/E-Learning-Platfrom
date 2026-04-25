@@ -102,8 +102,20 @@
         </p>
         <div class="error-actions">
             <a href="/" class="btn btn-primary">Go Home</a>
-            <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+            <button onclick="goBackSafely()" class="btn btn-secondary">Go Back</button>
         </div>
     </div>
+    
+    <script>
+        function goBackSafely() {
+            // Check if there's a valid history to go back to
+            if (document.referrer && document.referrer !== window.location.href) {
+                window.history.back();
+            } else {
+                // If no valid history, go to home page
+                window.location.href = '/';
+            }
+        }
+    </script>
 </body>
 </html>

@@ -30,6 +30,9 @@ const isUser = async (req, res, next) => {
     return res.redirect('/user/login');
 };
 
+
+
+
 const isTutor = async (req, res, next) => {
     if ((req.isAuthenticated && req.isAuthenticated() && req.user && req.user.type === 'tutor') ||
         (req.session && req.session.tutorId)) {
@@ -59,6 +62,9 @@ const isTutor = async (req, res, next) => {
     return res.redirect('/tutor/login');
 };
 
+
+
+
 const isTutorApproved = async (req, res, next) => {
     if (!req.session || !req.session.tutorId) {
         return res.redirect('/tutor/login');
@@ -86,6 +92,8 @@ const isTutorApproved = async (req, res, next) => {
         return res.redirect('/tutor/login');
     }
 };
+
+
 
 const isAdmin = (req, res, next) => {
     res.set({

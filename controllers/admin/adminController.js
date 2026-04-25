@@ -11,6 +11,8 @@ const getLogin = (req, res) => {
     res.render('admin/login');
 };
 
+
+
 const getDashboard = async (req, res) => {
     try {
         const pendingTutors = await adminService.getPendingTutorApplications();
@@ -34,6 +36,9 @@ const getDashboard = async (req, res) => {
         });
     }
 };
+
+
+
 
 const getTutorApplications = async (req, res) => {
     try {
@@ -68,6 +73,8 @@ const getTutorApplications = async (req, res) => {
     }
 };
 
+
+
 const getTutors = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -89,6 +96,9 @@ const getTutors = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch tutors' });
     }
 };
+
+
+
 
 const approveTutor = async (req, res) => {
     try {
@@ -113,6 +123,8 @@ const approveTutor = async (req, res) => {
     }
 };
 
+
+
 const rejectTutor = async (req, res) => {
     try {
         const { tutorId } = req.params;
@@ -136,6 +148,10 @@ const rejectTutor = async (req, res) => {
     }
 };
 
+
+
+
+
 const toggleTutorBlock = async (req, res) => {
     try {
         const { tutorId } = req.params;
@@ -158,6 +174,9 @@ const toggleTutorBlock = async (req, res) => {
         res.redirect('/admin/tutors?error=' + encodeURIComponent(error.message));
     }
 };
+
+
+
 
 const postLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -191,6 +210,9 @@ const postLogin = async (req, res) => {
     }
 };
 
+
+
+
 const logout = (req, res) => {
     res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -206,6 +228,10 @@ const logout = (req, res) => {
         res.redirect('/admin/login');
     });
 };
+
+
+
+
 
 const getStudents = async (req, res) => {
     try {
@@ -274,6 +300,10 @@ const getStudents = async (req, res) => {
     }
 };
 
+
+
+
+
 const toggleStudentBlock = async (req, res) => {
     try {
         const { studentId } = req.params;
@@ -311,6 +341,9 @@ const toggleStudentBlock = async (req, res) => {
         res.redirect('/admin/students?error=' + encodeURIComponent(error.message));
     }
 };
+
+
+
 
 export {
     getLogin,

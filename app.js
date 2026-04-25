@@ -51,7 +51,7 @@ app.use('/admin', adminRouter);
 
 app.get('/', (req, res) => res.redirect('/user/landing'));
 
-// 404 handler - must be after all other routes
+
 app.use((req, res) => {
     res.status(404).render('partials/404');
 });
