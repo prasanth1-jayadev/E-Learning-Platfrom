@@ -16,7 +16,7 @@ const getCourses = async (req, res) => {
       category: req.query.category
     };
 
-    // Get listed categories for filtering
+
     let categories = [];
     try {
       categories = await categoryService.getListedCategories();
@@ -73,7 +73,7 @@ const getCreateCourse = async (req, res) => {
   }
 };
 
-// Create new course
+//  new course
 const postCreateCourse = async (req, res) => {
   try {
     const tutorId = req.session.tutorId;
@@ -99,7 +99,7 @@ const postCreateCourse = async (req, res) => {
       fileDetails: req.file ? { path: req.file.path, mimetype: req.file.mimetype } : null
     });
 
-    // Basic validation
+    
     if (!title || !description || !category) {
       return res.status(400).json({ 
         success: false,

@@ -241,7 +241,7 @@ const getStudents = async (req, res) => {
         const search = req.query.search || '';
         const blocked = req.query.blocked || 'all';
 
-        // Build query
+      
         let query = { role: 'user' };
 
         if (search) {

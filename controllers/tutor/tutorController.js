@@ -222,6 +222,47 @@ const postResendEmailOTP = async (req, res) => {
     }
 };
 
+const postChangePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        if (newPassword.length < 8) {
+            return res.status(400).json({ message: 'New password must be at least 8 characters' });
+        }
+
+        const hasUpperCase = /[A-Z]/.test(newPassword);
+        const hasLowerCase = /[a-z]/.test(newPassword);
+        const hasNumbers = /\d/.test(newPassword);
+
+        if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+            return res.status(400).json({ message: 'Password must contain uppercase, lowercase, and number' });
+        }
+
+        const tutor = await Tutor.findById(req.session.tutorId);
+        if (!tutor) {
+            return res.status(404).json({ message: 'Tutor not found' });
+        }
+
+        const isMatch = await tutorService.comparePassword(currentPassword, tutor.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Current password is incorrect' });
+        }
+
+        const hashedPassword = await tutorService.hashPassword(newPassword);
+        tutor.password = hashedPassword;
+        await tutor.save();
+
+        res.json({ success: true, message: 'Password changed successfully' });
+    } catch (error) {
+        console.error('Change password error:', error);
+        res.status(400).json({ message: error.message });
+    }
+};
+
 
 
 const postSignup = async (req, res) => {
@@ -567,5 +608,6 @@ export {
     getResetPassword, postResetPassword,
     getDashboard, getCourses, getProfile,
     postUpdateProfile, postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP,
+    postChangePassword,
     getAddLessonPage, addLesson, getEditLessonPage, updateLesson, deleteLesson
 };

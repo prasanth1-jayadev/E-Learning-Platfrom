@@ -60,10 +60,220 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* Loading Screen Animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+            }
+        }
+
+        @keyframes spin-slow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes ping-slow {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes pulse-slower {
+            0%, 100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(0, 217, 177, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(0, 217, 177, 0.8), 0 0 40px rgba(0, 217, 177, 0.6);
+            }
+        }
+
+        @keyframes loading-bar {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes fade-out-screen {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-ping-slow {
+            animation: ping-slow 2s ease-in-out infinite;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s ease-in-out infinite;
+        }
+
+        .animate-pulse-slower {
+            animation: pulse-slower 5s ease-in-out infinite;
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.8s ease-out forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .animate-slide-up-delay {
+            animation: slide-up 0.8s ease-out forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        .animate-slide-up-delay-2 {
+            animation: slide-up 0.8s ease-out forwards;
+            animation-delay: 0.9s;
+            opacity: 0;
+        }
+
+        .animate-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .animate-loading-bar {
+            animation: loading-bar 2s ease-in-out forwards;
+        }
+
+        .animate-fade-out-screen {
+            animation: fade-out-screen 0.6s ease-out forwards;
+        }
+
+        #loadingScreen {
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
     </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa]">
+    
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#0a1612] via-[#0d1b17] to-[#1a3a30]">
+        <div class="flex flex-col items-center gap-12">
+            <!-- Animated Circles Background -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
+                <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-pulse-slower"></div>
+            </div>
+            
+            <!-- Main Logo Container -->
+            <div class="relative z-10">
+                <!-- Rotating Ring -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-40 h-40 rounded-full border-4 border-transparent border-t-primary border-r-primary/50 animate-spin-slow"></div>
+                </div>
+                
+                <!-- Pulsing Ring -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-32 h-32 rounded-full border-2 border-primary/30 animate-ping-slow"></div>
+                </div>
+                
+                <!-- Logo Icon with Glow -->
+                <div class="relative w-24 h-24 bg-gradient-to-br from-[#00d9b1] to-[#00b894] rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/50 animate-float">
+                    <div class="absolute inset-0 bg-primary/20 rounded-2xl blur-xl animate-pulse"></div>
+                    <svg class="relative w-14 h-14 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                        <circle cx="12" cy="12" r="1.5" fill="white"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Brand Name with Animation -->
+            <div class="relative z-10 flex flex-col items-center gap-4">
+                <div class="flex items-center gap-1 animate-slide-up">
+                    <span class="text-5xl font-black text-white tracking-tight">Learn</span>
+                    <span class="text-5xl font-black text-[#00d9b1] tracking-tight animate-glow">ify</span>
+                </div>
+                
+                <!-- Tagline -->
+                <div class="flex items-center gap-3 animate-slide-up-delay">
+                    <div class="h-px w-8 bg-gradient-to-r from-transparent to-primary"></div>
+                    <p class="text-sm text-[#a0c5ba] font-medium tracking-widest uppercase">Learn Today, Lead Tomorrow</p>
+                    <div class="h-px w-8 bg-gradient-to-l from-transparent to-primary"></div>
+                </div>
+            </div>
+            
+            <!-- Loading Progress Bar -->
+            <div class="relative z-10 w-64 h-1 bg-white/10 rounded-full overflow-hidden animate-slide-up-delay-2">
+                <div class="h-full bg-gradient-to-r from-primary to-[#00b894] rounded-full animate-loading-bar"></div>
+            </div>
+            
+            <!-- Loading Text -->
+            <p class="relative z-10 text-primary/80 text-sm font-medium animate-pulse">Loading your experience...</p>
+        </div>
+    </div>
+
     <header
         class="sticky-nav bg-white/80 dark:bg-background-dark/80 border-b border-[#e7f3ef] dark:border-[#1a3a30] px-4 md:px-20 py-4 flex items-center justify-between">
         <div class="flex items-center gap-8">
@@ -610,6 +820,32 @@
                 });
             }
         });
+
+        // Loading Screen Handler
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            
+            // Wait for minimum display time and page load
+            setTimeout(function() {
+                loadingScreen.classList.add('hidden');
+                
+                // Remove from DOM after transition
+                setTimeout(function() {
+                    loadingScreen.remove();
+                }, 600);
+            }, 1500); // Show for at least 1.5 seconds
+        });
+
+        // Fallback: Hide loading screen after maximum time
+        setTimeout(function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(function() {
+                    loadingScreen.remove();
+                }, 600);
+            }
+        }, 5000); // Maximum 5 seconds
     </script>
 
 </body>

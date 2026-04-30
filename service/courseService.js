@@ -1,7 +1,6 @@
 import Course from '../models/Course.js';
 import Tutor from '../models/Tutor.js';
 
-// Get all courses for a specific tutor
 const getTutorCourses = async (tutorId, filters = {}) => {
   try {
     const query = { tutor: tutorId };
@@ -24,7 +23,7 @@ const getTutorCourses = async (tutorId, filters = {}) => {
   }
 };
 
-// Get single course by ID
+// single course ID
 const getCourseById = async (courseId, tutorId = null) => {
   try {
     const query = { _id: courseId };
@@ -47,10 +46,9 @@ const getCourseById = async (courseId, tutorId = null) => {
   }
 };
 
-// Create new course
+
 const createCourse = async (courseData, tutorId) => {
   try {
-    // Verify tutor exists and is approved
     const tutor = await Tutor.findById(tutorId);
     
     if (!tutor) {
@@ -84,7 +82,7 @@ const updateCourse = async (courseId, tutorId, updateData) => {
       throw new Error('Course not found or unauthorized');
     }
 
-    // Update fields
+
     Object.keys(updateData).forEach(key => {
       if (updateData[key] !== undefined && key !== 'tutor') {
         course[key] = updateData[key];
@@ -98,7 +96,7 @@ const updateCourse = async (courseId, tutorId, updateData) => {
   }
 };
 
-// Delete course
+
 const deleteCourse = async (courseId, tutorId) => {
   try {
     const course = await Course.findOne({ _id: courseId, tutor: tutorId });
@@ -107,7 +105,6 @@ const deleteCourse = async (courseId, tutorId) => {
       throw new Error('Course not found or unauthorized');
     }
 
-    // Check if course has enrolled students
     if (course.enrolledStudents.length > 0) {
       throw new Error('Cannot delete course with enrolled students. Archive it instead.');
     }
@@ -119,7 +116,7 @@ const deleteCourse = async (courseId, tutorId) => {
   }
 };
 
-// Publish/Unpublish course
+
 const togglePublishCourse = async (courseId, tutorId) => {
   try {
     const course = await Course.findOne({ _id: courseId, tutor: tutorId });
@@ -128,7 +125,6 @@ const togglePublishCourse = async (courseId, tutorId) => {
       throw new Error('Course not found or unauthorized');
     }
 
-    // Validate course has minimum requirements before publishing
     if (!course.isPublished) {
       if (!course.title || !course.description || !course.category) {
         throw new Error('Course must have title, description, and category before publishing');
@@ -145,7 +141,6 @@ const togglePublishCourse = async (courseId, tutorId) => {
   }
 };
 
-// Get dashboard statistics
 const getDashboardStats = async (tutorId) => {
   try {
     const courses = await Course.find({ tutor: tutorId });
@@ -174,7 +169,7 @@ const getDashboardStats = async (tutorId) => {
   }
 };
 
-// Get all published courses (for users)
+
 const getPublishedCourses = async (filters = {}) => {
   try {
     const query = { isPublished: true, status: 'published' };

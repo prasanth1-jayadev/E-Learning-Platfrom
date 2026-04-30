@@ -127,5 +127,7 @@ export {
     forgotPassword,
     resetPassword,
     sendEmailChangeOTP,
-    verifyEmailChangeOTP
+    verifyEmailChangeOTP,
+    hashPassword,
+    comparePassword
 };

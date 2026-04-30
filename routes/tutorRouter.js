@@ -7,7 +7,6 @@ import passport from '../config/passport.js';
 
 const router = express.Router();
 
-// Auth routes
 router.get('/signup', redirectIfTutor, tutorController.getSignup);
 router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
 router.get('/login', redirectIfTutor, tutorController.getLogin);
@@ -30,6 +29,7 @@ router.post('/update-profile', isTutor, tutorController.postUpdateProfile);
 router.post('/send-email-change-otp', isTutor, tutorController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isTutor, tutorController.postVerifyEmailChange);
 router.post('/resend-email-otp', isTutor, tutorController.postResendEmailOTP);
+router.post('/change-password', isTutor, tutorController.postChangePassword);
 
 // Course routes
 router.get('/courses', isTutor, courseController.getCourses);

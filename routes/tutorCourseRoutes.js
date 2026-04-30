@@ -5,4 +5,5 @@ const router = express.Router();
 
 router.get('/tutor/courses', getTutorCourses);
 
+
 export default router;

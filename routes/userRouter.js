@@ -62,5 +62,6 @@ router.post('/update-profile', isUser, userController.postUpdateProfile);
 router.post('/send-email-change-otp', isUser, userController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isUser, userController.postVerifyEmailChange);
 router.post('/resend-email-otp', isUser, userController.postResendEmailOTP);
+router.post('/change-password', isUser, userController.postChangePassword);
 
 export default router;

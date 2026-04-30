@@ -7,7 +7,7 @@ const getCategories = async (req, res) => {
     try {
         const categories = await Category.find().sort({ createdAt: -1 });
         
-        // Get pending tutor count for sidebar
+        
         const Tutor = (await import('../../models/Tutor.js')).default;
         const pendingCount = await Tutor.countDocuments({ approvalStatus: 'pending' });
         
@@ -53,11 +53,11 @@ const addCategory = async (req, res) => {
             status: 'listed'
         });
 
-        console.log('✅ Category created:', newCategory);
+        console.log(' Category created:', newCategory);
         res.json({ success: true, message: 'Category added successfully' });
         
     } catch (error) {
-        console.error('❌ Add category error:', error);
+        console.error(' Add category error:', error);
         
        
         if (error.code === 11000) {

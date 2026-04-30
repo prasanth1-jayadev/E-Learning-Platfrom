@@ -115,6 +115,47 @@ const postResendEmailOTP = async (req, res) => {
   }
 };
 
+const postChangePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ message: 'New password must be at least 8 characters' });
+    }
+
+    const hasUpperCase = /[A-Z]/.test(newPassword);
+    const hasLowerCase = /[a-z]/.test(newPassword);
+    const hasNumbers = /\d/.test(newPassword);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+      return res.status(400).json({ message: 'Password must contain uppercase, lowercase, and number' });
+    }
+
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await userService.comparePassword(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    const hashedPassword = await userService.hashPassword(newPassword);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 
 const postSignup = async (req, res) => {
   try {
@@ -244,21 +285,64 @@ const getCourses = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 6;
     const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+    const category = req.query.category || '';
+    const sort = req.query.sort || 'newest';
 
-    // Get listed categories
+    // Get categories
     let categories = [];
     try {
       categories = await categoryService.getListedCategories();
-      console.log('Categories fetched for user courses:', categories.length);
     } catch (categoryError) {
       console.error('Error fetching categories:', categoryError);
-      categories = []; // Fallback to empty array
+      categories = []; 
     }
 
-    const totalCourses = await Course.countDocuments({ isPublished: true });
-    const courses = await Course.find({ isPublished: true })
+    // Build filter query
+    const filter = { isPublished: true };
+    
+    // Add search filter
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Add category filter
+    if (category) {
+      filter.category = category;
+    }
+
+    // Build sort query
+    let sortQuery = {};
+    switch (sort) {
+      case 'newest':
+        sortQuery = { createdAt: -1 };
+        break;
+      case 'oldest':
+        sortQuery = { createdAt: 1 };
+        break;
+      case 'price-low':
+        sortQuery = { price: 1 };
+        break;
+      case 'price-high':
+        sortQuery = { price: -1 };
+        break;
+      case 'title-az':
+        sortQuery = { title: 1 };
+        break;
+      case 'title-za':
+        sortQuery = { title: -1 };
+        break;
+      default:
+        sortQuery = { createdAt: -1 };
+    }
+
+    const totalCourses = await Course.countDocuments(filter);
+    const courses = await Course.find(filter)
       .populate('tutor', 'fullName')
-      .sort({ createdAt: -1 })
+      .sort(sortQuery)
       .skip(skip)
       .limit(limit);
 
@@ -269,7 +353,10 @@ const getCourses = async (req, res) => {
       categories,
       currentPage: page,
       totalPages,
-      totalCourses
+      totalCourses,
+      search,
+      category,
+      sort
     });
 
   } catch (error) {
@@ -279,10 +366,17 @@ const getCourses = async (req, res) => {
       categories: [],
       currentPage: 1,
       totalPages: 1,
-      totalCourses: 0
+      totalCourses: 0,
+      search: '',
+      category: '',
+      sort: 'newest'
     });
   }
 };
+
+
+
+
 
 const getCourseDetail = async (req, res) => {
   try {
@@ -384,5 +478,6 @@ export {
   getForgotPassword, postForgotPassword,
   getResetPassword, postResetPassword,
   getProfile, getEditProfile, postUpdateProfile, 
-  postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP
+  postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP,
+  postChangePassword
 };

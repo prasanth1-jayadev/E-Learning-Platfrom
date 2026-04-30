@@ -120,7 +120,9 @@ export {
     resetPassword,
     getUserByEmail,
     sendEmailChangeOTP,
-    verifyEmailChangeOTP
+    verifyEmailChangeOTP,
+    hashPassword,
+    comparePassword
 };
 
 

@@ -1,6 +1,5 @@
 import Category from '../models/Category.js';
 
-// Get all listed categories (for users and tutors)
 const getListedCategories = async () => {
     try {
         const categories = await Category.find({ status: 'listed' })
@@ -13,7 +12,6 @@ const getListedCategories = async () => {
     }
 };
 
-// Get all categories (for admin)
 const getAllCategories = async () => {
     try {
         const categories = await Category.find()
@@ -25,7 +23,7 @@ const getAllCategories = async () => {
     }
 };
 
-// Get single category by ID
+// single category id 
 const getCategoryById = async (categoryId) => {
     try {
         const category = await Category.findById(categoryId);
