@@ -4,11 +4,13 @@ import * as courseController from '../controllers/tutor/courseController.js';
 import { isTutor, isTutorApproved, redirectIfTutor } from '../middleware/authMiddleware.js';
 import { upload } from '../config/cloudinary.js';
 import passport from '../config/passport.js';
+import { uploadCertificate, uploadVideo } from '../config/multer.js';
+
 
 const router = express.Router();
 
 router.get('/signup', redirectIfTutor, tutorController.getSignup);
-router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
+router.post('/signup', uploadCertificate.single('certificateFile'), tutorController.postSignup);
 router.get('/login', redirectIfTutor, tutorController.getLogin);
 router.post('/login', tutorController.postLogin);
 router.get('/logout', tutorController.logout);
@@ -26,6 +28,7 @@ router.post('/reset-password', tutorController.postResetPassword);
 router.get('/dashboard', isTutor, tutorController.getDashboard);
 router.get('/profile', isTutor, tutorController.getProfile);
 router.post('/update-profile', isTutor, tutorController.postUpdateProfile);
+router.post('/upload-avatar', isTutor, upload.single('avatar'), tutorController.postUploadAvatar);
 router.post('/send-email-change-otp', isTutor, tutorController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isTutor, tutorController.postVerifyEmailChange);
 router.post('/resend-email-otp', isTutor, tutorController.postResendEmailOTP);
@@ -35,9 +38,9 @@ router.post('/change-password', isTutor, tutorController.postChangePassword);
 router.get('/courses', isTutor, courseController.getCourses);
 router.get('/courses/create', isTutor, isTutorApproved, courseController.getCreateCourse);
 router.get('/course/:id/add-lesson', isTutor, isTutorApproved, tutorController.getAddLessonPage);
-router.post('/course/:id/add-lesson', isTutor, isTutorApproved, upload.single('video'), tutorController.addLesson);
+router.post('/course/:id/add-lesson', isTutor, isTutorApproved, uploadVideo.single('video'), tutorController.addLesson);
 router.get('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, tutorController.getEditLessonPage);
-router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, upload.single('video'), tutorController.updateLesson);
+router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, uploadVideo.single('video'), tutorController.updateLesson);
 router.delete('/course/:id/lesson/:lessonId', isTutor, isTutorApproved, tutorController.deleteLesson);
 router.post('/courses/create', isTutor, isTutorApproved, (req, res, next) => {
     upload.single('thumbnail')(req, res, (err) => {

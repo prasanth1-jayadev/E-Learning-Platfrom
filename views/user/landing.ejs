@@ -299,7 +299,7 @@
             <nav class="hidden lg:flex items-center gap-8 ml-8">
                 <a class="text-sm font-medium hover:text-primary transition-colors" href="/user/courses">Courses</a>
                 <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Categories</a>
-                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Mentors</a>
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="/user/tutors">Mentors</a>
                 <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Expert Insights</a>
             </nav>
         </div>
@@ -504,11 +504,7 @@
                                         </div>
                                         <span class="text-xs opacity-60"><%= course.tutor ? course.tutor.fullName : 'Instructor' %></span>
                                         <span class="text-xs font-black text-primary ml-auto">
-                                            <% if (course.discountPrice && course.discountPrice < course.price) { %>
-                                                ₹<%= course.discountPrice.toLocaleString() %>
-                                            <% } else { %>
-                                                ₹<%= course.price.toLocaleString() %>
-                                            <% } %>
+                                            ₹<%= course.price.toLocaleString() %>
                                         </span>
                                     </div>
                                 </div>
@@ -719,16 +715,18 @@
                     We are looking for authority figures. If you have 10+ years of domain expertise, our platform offers
                     the highest tier for specialized instruction.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 relative z-10">
+                <!-- <div class="flex flex-col sm:flex-row gap-4 relative z-10">
                     <button
+                    <a href="tutor/signup"
                         class="bg-primary text-[#0d1b17] px-10 py-4 rounded-xl font-bold text-lg hover:scale-[1.05] transition-transform">
                         Apply as Master Mentor
+                    </a>
                     </button>
                     <button
                         class="bg-white/10 backdrop-blur-md text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-colors">
                         Partnership Programs
                     </button>
-                </div>
+                </div> -->
             </div>
         </section>
     </main>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= tutor.fullName %> - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a1a1a; }
+        
+        /* Navbar */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: #00d9b1; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; color: #1a1a1a; }
+        .logo-text span { color: #00d9b1; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: #666; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: #00d9b1; }
+        .nav-icons { display: flex; gap: 1rem; align-items: center; }
+        .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.3s; }
+        .icon-btn:hover { background: #e5e7eb; }
+        
+        /* Container */
+        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+        
+        /* Tutor Header */
+        .tutor-header {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .tutor-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .tutor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .tutor-info { flex: 1; }
+        .tutor-name { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .tutor-title { color: #666; font-size: 1rem; margin-bottom: 1rem; }
+        .tutor-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .rating-star { color: #fbbf24; font-size: 1.25rem; }
+        .rating-value { font-weight: 600; font-size: 1.1rem; }
+        .rating-count { color: #666; font-size: 0.9rem; }
+        .action-buttons { display: flex; gap: 1rem; }
+        .btn-primary {
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { background: #00c29d; }
+        .btn-secondary {
+            background: white;
+            color: #666;
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover { background: #f9fafb; }
+        
+        /* Content Grid */
+        .content-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+        
+        /* About Section */
+        .about-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-icon { color: #00d9b1; }
+        .about-text {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        .expertise-section { margin-top: 2rem; }
+        .expertise-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        .expertise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .expertise-tag {
+            background: #f3f4f6;
+            color: #666;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* Courses Section */
+        .courses-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        .courses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .view-all-link {
+            color: #00d9b1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .view-all-link:hover { text-decoration: underline; }
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .course-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .course-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .course-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .course-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .course-content { padding: 1.25rem; }
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .course-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .course-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .course-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .enroll-btn {
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .enroll-btn:hover { background: #00c29d; }
+        
+        .no-courses {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+            font-size: 0.85rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .courses-grid { grid-template-columns: 1fr; }
+            .tutor-header { flex-direction: column; text-align: center; }
+            .action-buttons { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/user/home" class="logo">
+        <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+            </svg>
+        </div>
+        <div class="logo-text">Learn<span>ify</span></div>
+    </a>
+    <div class="nav-links">
+        <a href="/user/courses">Courses</a>
+        <a href="/user/tutors">Tutors</a>
+    </div>
+    <div class="nav-icons">
+        <button class="icon-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+        </button>
+        <button class="icon-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+        </button>
+        <a href="/user/profile" class="icon-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
+            </svg>
+        </a>
+    </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+    <!-- Tutor Header -->
+    <div class="tutor-header">
+        <div class="tutor-avatar">
+            <% if (tutor.avatar) { %>
+                <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>">
+            <% } else { %>
+                <%= tutor.fullName.charAt(0).toUpperCase() %>
+            <% } %>
+        </div>
+        <div class="tutor-info">
+            <h1 class="tutor-name"><%= tutor.fullName %></h1>
+            <p class="tutor-title"><%= tutor.subjects || 'Professional Instructor' %></p>
+            <div class="tutor-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-value"><%= tutor.rating || 4.5 %></span>
+                <span class="rating-count">(<%= tutor.reviewCount || 0 %> reviews)</span>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-primary">Follow <%= tutor.fullName.split(' ')[0] %></button>
+                <button class="btn-secondary">Message</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- About Section -->
+        <div class="about-section">
+            <h2 class="section-title">
+                <span class="section-icon">👨‍🏫</span>
+                About the Instructor
+            </h2>
+            <div class="about-text">
+                <%= tutor.bio || 'Experienced instructor dedicated to helping students achieve their learning goals.' %>
+            </div>
+            
+            <% if (tutor.subjects) { %>
+            <div class="expertise-section">
+                <h3 class="expertise-title">Top Expertise</h3>
+                <div class="expertise-tags">
+                    <% tutor.subjects.split(',').forEach(subject => { %>
+                        <span class="expertise-tag"><%= subject.trim() %></span>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="courses-section">
+            <div class="courses-header">
+                <h2 class="section-title">Courses by <%= tutor.fullName.split(' ')[0] %></h2>
+                <% if (courses.length > 0) { %>
+                    <a href="/user/courses" class="view-all-link">View All</a>
+                <% } %>
+            </div>
+            
+            <% if (courses.length > 0) { %>
+                <div class="courses-grid">
+                    <% courses.forEach(course => { %>
+                        <a href="/user/course/<%= course._id %>" class="course-card">
+                            <div class="course-thumbnail">
+                                <% if (course.thumbnail) { %>
+                                    <img src="<%= course.thumbnail %>" alt="<%= course.title %>">
+                                <% } %>
+                            </div>
+                            <div class="course-content">
+                                <h3 class="course-title"><%= course.title %></h3>
+                                <div class="course-meta">
+                                    <span class="course-meta-item">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        <%= course.lessons ? course.lessons.length : 0 %> lessons
+                                    </span>
+                                    <span class="course-meta-item">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                            <circle cx="9" cy="7" r="4"/>
+                                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                                        </svg>
+                                        2.1k students
+                                    </span>
+                                </div>
+                                <div class="course-footer">
+                                    <span class="course-price">$<%= course.price || 0 %></span>
+                                    <button class="enroll-btn">Enroll Now</button>
+                                </div>
+                            </div>
+                        </a>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="no-courses">
+                    <p>No courses available yet.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    © 2024 Learnify. All rights reserved.
+</div>
+
+</body>
+</html>

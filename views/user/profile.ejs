@@ -43,8 +43,8 @@
       </a>
       <div class="hidden md:flex items-center gap-6 text-sm text-gray-600 font-medium">
         <a href="/user/home" class="hover:text-primary transition">Home</a>
-        <a href="#" class="hover:text-primary transition">Courses</a>
-        <a href="#" class="hover:text-primary transition">Tutors</a>
+        <a href="/user/courses" class="hover:text-primary transition">Courses</a>
+        <a href="/user/tutors" class="hover:text-primary transition">Tutors</a>
         <a href="#" class="hover:text-primary transition">About Us</a>
         <a href="#" class="hover:text-primary transition">Contact</a>
 
@@ -78,11 +78,15 @@
         </svg>
       </button>
       <!-- Avatar -->
-      <div class="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center overflow-hidden">
-        <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-        </svg>
-      </div>
+      <a href="/user/profile" class="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center overflow-hidden">
+        <% if (user.avatar) { %>
+          <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
+        <% } else { %>
+          <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+          </svg>
+        <% } %>
+      </a>
     </div>
   </nav>
 
@@ -94,10 +98,14 @@
       <!-- Avatar + Name -->
       <div class="flex flex-col items-center mb-5">
         <div class="relative mb-3">
-          <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg class="w-9 h-9 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-            </svg>
+          <div id="sidebarAvatar" class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+            <% if (user.avatar) { %>
+              <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
+            <% } else { %>
+              <svg class="w-9 h-9 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+              </svg>
+            <% } %>
           </div>
           <div class="absolute bottom-0 right-0 w-5 h-5 bg-primary rounded-full border-2 border-white flex items-center justify-center">
             <svg class="w-2.5 h-2.5 text-gray-900" fill="currentColor" viewBox="0 0 24 24">
@@ -105,13 +113,27 @@
             </svg>
           </div>
         </div>
-        <p class="font-bold text-gray-900 text-sm">Prasanth B jayadev</p>
-        <button class="mt-2 flex items-center gap-1 text-xs text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/5 transition">
-          Share Profile
+        <input type="file" id="userAvatarInput" class="hidden" accept="image/jpeg,image/jpg,image/png,image/webp" onchange="previewAvatar(this)">
+        <p class="font-bold text-gray-900 text-sm mb-2"><%= user.fullName %></p>
+        
+        <!-- Change Photo Button -->
+        <button id="changePhotoBtn" onclick="document.getElementById('userAvatarInput').click()" class="flex items-center gap-1 text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1 hover:bg-gray-50 transition">
           <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
+          Change Photo
         </button>
+        
+        <!-- Upload/Cancel Buttons (hidden by default) -->
+        <div id="uploadButtons" class="hidden flex-col gap-2 w-full px-4">
+          <button onclick="uploadAvatar()" class="w-full bg-primary text-gray-900 text-xs font-bold py-1.5 rounded-lg hover:brightness-110 transition">
+            Upload
+          </button>
+          <button onclick="cancelUpload()" class="w-full bg-gray-100 text-gray-700 text-xs font-medium py-1.5 rounded-lg hover:bg-gray-200 transition">
+            Cancel
+          </button>
+        </div>
       </div>
 
       <!-- Nav -->
@@ -507,6 +529,102 @@ function showToast(message, type) {
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+// Avatar Upload Functions
+let selectedFile = null;
+
+function previewAvatar(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        showToast('Please upload a valid image (JPG, PNG, or WEBP)', 'error');
+        input.value = '';
+        return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('Image size must be less than 5MB', 'error');
+        input.value = '';
+        return;
+    }
+
+    selectedFile = file;
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const avatarImg = document.getElementById('sidebarAvatar');
+        avatarImg.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover" alt="Preview">`;
+    };
+    reader.readAsDataURL(file);
+
+    // Show upload/cancel buttons, hide change photo button
+    document.getElementById('changePhotoBtn').style.display = 'none';
+    document.getElementById('uploadButtons').style.display = 'flex';
+}
+
+async function uploadAvatar() {
+    if (!selectedFile) {
+        showToast('Please select an image first', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('avatar', selectedFile);
+
+    // Show loading state
+    const uploadButtons = document.getElementById('uploadButtons');
+    const originalHTML = uploadButtons.innerHTML;
+    uploadButtons.innerHTML = '<div class="text-center text-primary text-xs">Uploading...</div>';
+
+    try {
+        const response = await fetch('/user/upload-avatar', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast('Profile photo updated successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showToast(data.message || 'Failed to upload photo', 'error');
+            uploadButtons.innerHTML = originalHTML;
+            cancelUpload();
+        }
+    } catch (error) {
+        showToast('Something went wrong', 'error');
+        console.error(error);
+        uploadButtons.innerHTML = originalHTML;
+        cancelUpload();
+    }
+}
+
+function cancelUpload() {
+    selectedFile = null;
+    document.getElementById('userAvatarInput').value = '';
+    
+    // Restore original avatar
+    const avatarImg = document.getElementById('sidebarAvatar');
+    const hasAvatar = <%- user.avatar ? 'true' : 'false' %>;
+    const avatarUrl = '<%- user.avatar || "" %>';
+    const userName = '<%- user.fullName || "" %>';
+    
+    if (hasAvatar) {
+        avatarImg.innerHTML = '<img src="' + avatarUrl + '" alt="' + userName + '" class="w-full h-full object-cover">';
+    } else {
+        avatarImg.innerHTML = '<svg class="w-9 h-9 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>';
+    }
+    
+    // Show change photo button, hide upload/cancel buttons
+    document.getElementById('changePhotoBtn').style.display = 'flex';
+    document.getElementById('uploadButtons').style.display = 'none';
 }
 
 // Password Change Modal Functions

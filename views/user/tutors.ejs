@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Expert Mentor - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #1a1a1a;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        @media (min-width: 768px) {
+            .header {
+                padding: 1rem 2rem;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #00d9b1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #00d9b1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            color: #666;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+        
+        .icon-btn:hover {
+            color: #00d9b1;
+        }
+        
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #00d9b1;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e8f5f1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .user-avatar:hover {
+            background: #d0ede5;
+            transform: scale(1.05);
+        }
+        
+        .user-avatar svg {
+            color: #00d9b1;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #00d9b1;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box input:focus {
+            border-color: #00d9b1;
+            box-shadow: 0 0 0 3px rgba(0, 217, 177, 0.15), 0 10px 15px -3px rgba(0, 217, 177, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .search-box input:focus ~ .search-icon {
+            color: #00d9b1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .dropdown-wrapper {
+            position: relative;
+            min-width: 180px;
+        }
+
+        .dropdown-button {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            outline: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            color: #111827;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 177, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .dropdown-button:hover::before {
+            left: 100%;
+        }
+
+        .dropdown-button:hover {
+            border-color: #00d9b1;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 217, 177, 0.2), 0 4px 6px -2px rgba(0, 217, 177, 0.1);
+        }
+
+        .dropdown-button.active {
+            border-color: #00d9b1;
+            background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+            box-shadow: 0 0 0 3px rgba(0, 217, 177, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .dropdown-icon {
+            position: absolute;
+            right: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: #6b7280;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-button:hover .dropdown-icon {
+            color: #00d9b1;
+        }
+
+        .dropdown-button.active .dropdown-icon {
+            transform: translateY(-50%) rotate(180deg);
+            color: #00d9b1;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes dropdownSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            color: #374151;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #00d9b1;
+            transform: scaleY(0);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%);
+            color: #111827;
+            padding-left: 1.25rem;
+        }
+
+        .dropdown-item.selected {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            color: #00d9b1;
+            font-weight: 600;
+        }
+
+        .dropdown-item.selected::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-item.selected::after {
+            content: '✓';
+            color: #00d9b1;
+            font-weight: 700;
+            font-size: 1rem;
+            animation: checkmarkPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes checkmarkPop {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .clear-filters-btn {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .clear-filters-btn:hover {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tutor Grid */
+        .tutor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutor-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .tutor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .tutor-image {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .tutor-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .courses-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #00d9b1;
+            color: white;
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .tutor-info {
+            padding: 1.5rem;
+        }
+
+        .tutor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .tutor-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .verified-badge {
+            width: 20px;
+            height: 20px;
+            background: #00d9b1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .verified-badge svg {
+            width: 12px;
+            height: 12px;
+            color: white;
+        }
+
+        .tutor-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .star-icon {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+
+        .rating-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .tutor-bio {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .tutor-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .tutor-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .price-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #00d9b1;
+        }
+
+        .view-profile-btn {
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .view-profile-btn:hover {
+            background: #00c29d;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a2332;
+            color: white;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #00d9b1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .footer-description {
+            color: #a0a0a0;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00d9b1;
+        }
+
+        .footer-cta {
+            background: #00d9b1;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .footer-cta:hover {
+            background: #00c29d;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #2a3544;
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-box,
+            .filter-select {
+                width: 100%;
+            }
+
+            .tutor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="/user/home" class="logo" style="text-decoration: none;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 40px; height: 40px; background: #00d9b1; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg style="width: 24px; height: 24px; color: white;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                        <circle cx="12" cy="12" r="1.5" fill="white"/>
+                    </svg>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-size: 20px; font-weight: 700; color: #1a1a1a;">Learn</span>
+                        <span style="font-size: 20px; font-weight: 700; color: #00d9b1;">ify</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/user/courses">Courses</a></li>
+                <li><a href="/user/tutors">Mentors</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button class="icon-btn" title="Wishlist">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </button>
+            <button class="icon-btn" title="Cart">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </button>
+            <button class="icon-btn" title="Messages">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+            <button class="icon-btn" title="Notifications">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+            </button>
+            <a href="/user/profile" class="user-avatar" title="Profile">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">Find Your Expert Mentor</h1>
+            <p class="hero-subtitle">Connect with industry leaders for 1-on-1 guidance, portfolio reviews, and technical mastery.</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name or subject..." value="<%= search || '' %>">
+                <svg class="search-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+
+            <div class="dropdown-wrapper">
+                <button type="button" class="dropdown-button" id="sortButton">
+                    <span id="sortButtonText">
+                        <% if (sort === 'name-az') { %>Name: A-Z
+                        <% } else if (sort === 'name-za') { %>Name: Z-A
+                        <% } else if (sort === 'rating-high') { %>Rating: High to Low
+                        <% } else if (sort === 'rating-low') { %>Rating: Low to High
+                        <% } else if (sort === 'price-low') { %>Price: Low to High
+                        <% } else if (sort === 'price-high') { %>Price: High to Low
+                        <% } else { %>Sort By<% } %>
+                    </span>
+                    <svg class="dropdown-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="dropdown-menu" id="sortMenu">
+                    <div class="dropdown-item <%= sort === 'name-az' ? 'selected' : '' %>" data-value="name-az">Name: A-Z</div>
+                    <div class="dropdown-item <%= sort === 'name-za' ? 'selected' : '' %>" data-value="name-za">Name: Z-A</div>
+                    <div class="dropdown-item <%= sort === 'rating-high' ? 'selected' : '' %>" data-value="rating-high">Rating: High to Low</div>
+                    <div class="dropdown-item <%= sort === 'rating-low' ? 'selected' : '' %>" data-value="rating-low">Rating: Low to High</div>
+                    <div class="dropdown-item <%= sort === 'price-low' ? 'selected' : '' %>" data-value="price-low">Price: Low to High</div>
+                    <div class="dropdown-item <%= sort === 'price-high' ? 'selected' : '' %>" data-value="price-high">Price: High to Low</div>
+                </div>
+            </div>
+
+            <% if (search || sort !== 'newest') { %>
+                <button class="clear-filters-btn" onclick="clearFilters()">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Clear Filters
+                </button>
+            <% } %>
+        </div>
+
+        <!-- Tutor Grid -->
+        <div class="tutor-grid">
+            <% if (tutors && tutors.length > 0) { %>
+                <% tutors.forEach(tutor => { %>
+                    <div class="tutor-card">
+                        <div class="tutor-image">
+                            <% if (tutor.profileImage) { %>
+                                <img src="<%= tutor.profileImage %>" alt="<%= tutor.fullName %>">
+                            <% } %>
+                            <div class="courses-badge">
+                                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <%= tutor.courseCount || 0 %> COURSES
+                            </div>
+                        </div>
+                        <div class="tutor-info">
+                            <div class="tutor-header">
+                                <h3 class="tutor-name"><%= tutor.fullName %></h3>
+                                <% if (tutor.approvalStatus === 'approved') { %>
+                                    <div class="verified-badge">
+                                        <svg fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="tutor-rating">
+                                <span class="star-icon">★</span>
+                                <span class="rating-text"><strong><%= tutor.rating || 4.5 %></strong> (<%= tutor.reviewCount || 0 %> REVIEWS)</span>
+                            </div>
+                            <p class="tutor-bio"><%= tutor.bio || 'Experienced tutor specializing in various subjects. Passionate about helping students achieve their learning goals.' %></p>
+                            <div class="tutor-footer">
+                                <div class="tutor-price">
+                                    <span class="price-label">Starting From</span>
+                                    <span class="price-value">$<%= tutor.hourlyRate || 180 %></span>
+                                </div>
+                                <a href="/user/tutor/<%= tutor._id %>" class="view-profile-btn">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                    <svg style="width: 80px; height: 80px; margin: 0 auto 1.5rem; color: #d1d5db;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: #1a1a1a;">No tutors available</h2>
+                    <p style="color: #666; font-size: 1rem;">Check back soon for expert mentors</p>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <div class="footer-logo-icon">L</div>
+                    <div>
+                        <span style="color: white;">Learn</span><span style="color: #00d9b1;">ify</span>
+                    </div>
+                </div>
+                <p class="footer-description">
+                    A premium directory for professional expertise. Built for the world's most ambitious engineers, designers, and strategists.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>For Professionals</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Mentor Directory</a></li>
+                    <li><a href="#">Career Tracks</a></li>
+                    <li><a href="#">Skills Assessment</a></li>
+                    <li><a href="#">Certifications</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Expert Hub</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Apply to Mentor</a></li>
+                    <li><a href="#">Teaching Standards</a></li>
+                    <li><a href="#">Payout Systems</a></li>
+                    <li><a href="#">Mentorship Ethics</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Ready to Upskill?</h3>
+                <div class="footer-cta">Join Membership</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2024 Learnify Learn. Expert Directory Edition. | Architected for high-end professional growth.
+        </div>
+    </footer>
+
+    <script>
+        // Dropdown functionality
+        const sortButton = document.getElementById('sortButton');
+        const sortMenu = document.getElementById('sortMenu');
+        let currentSort = '<%= sort || "newest" %>';
+
+        sortButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sortButton.classList.toggle('active');
+            sortMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            sortButton.classList.remove('active');
+            sortMenu.classList.remove('show');
+        });
+
+        sortMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (e.target.classList.contains('dropdown-item')) {
+                currentSort = e.target.dataset.value;
+                applyFilters();
+            }
+        });
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+
+        // Apply filters function
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.trim();
+            
+            let url = '/user/tutors?';
+            if (search) url += `search=${encodeURIComponent(search)}&`;
+            if (currentSort && currentSort !== 'newest') url += `sort=${currentSort}&`;
+            
+            window.location.href = url;
+        }
+
+        // Clear filters function
+        function clearFilters() {
+            window.location.href = '/user/tutors';
+        }
+    </script>
+</body>
+</html>

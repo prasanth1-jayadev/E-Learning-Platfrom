@@ -263,6 +263,28 @@ const postChangePassword = async (req, res) => {
     }
 };
 
+const postUploadAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'Please upload an image' });
+        }
+
+        const tutor = await Tutor.findById(req.session.tutorId);
+        if (!tutor) {
+            return res.status(404).json({ message: 'Tutor not found' });
+        }
+
+        // Update avatar with Cloudinary URL
+        tutor.avatar = req.file.path;
+        await tutor.save();
+
+        res.json({ success: true, message: 'Profile photo updated successfully', avatar: req.file.path });
+    } catch (error) {
+        console.error('Upload avatar error:', error);
+        res.status(400).json({ message: error.message });
+    }
+};
+
 
 
 const postSignup = async (req, res) => {
@@ -503,10 +525,19 @@ const addLesson = async (req, res) => {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
+
+       let videoDuration = duration || 0;
+        if (req.file && req.file.duration) {
+            videoDuration = Math.round(req.file.duration); // Cloudinary returns duration
+        }
+
+
+
+
         const newLesson = {
             title,
             description,
-            duration,
+            duration: videoDuration,
             videoUrl: req.file ? req.file.path : '',
             order: course.lessons.length + 1
         };
@@ -564,10 +595,16 @@ const updateLesson = async (req, res) => {
 
         lesson.title = title;
         lesson.description = description;
-        lesson.duration = duration;
         
+
         if (req.file) {
             lesson.videoUrl = req.file.path;
+            if(req.file.duration){
+                lesson.duration =Math.round(req.file.duration);
+
+            }
+        }else{
+            lesson.duration = duration
         }
 
         await course.save();
@@ -608,6 +645,6 @@ export {
     getResetPassword, postResetPassword,
     getDashboard, getCourses, getProfile,
     postUpdateProfile, postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP,
-    postChangePassword,
+    postChangePassword, postUploadAvatar,
     getAddLessonPage, addLesson, getEditLessonPage, updateLesson, deleteLesson
 };

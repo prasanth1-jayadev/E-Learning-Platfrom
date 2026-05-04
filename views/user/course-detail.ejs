@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
         tailwind.config = {
-            theme: {
+            theme: {    
                 extend: {
                     colors: {
                         primary: '#00d9b1'
@@ -43,7 +43,7 @@
                     <a href="/user/home" class="text-sm font-medium text-gray-700 hover:text-primary transition">Home</a>
                     <a href="#" class="text-sm font-medium text-gray-700 hover:text-primary transition">About Us</a>
                     <a href="#" class="text-sm font-medium text-gray-700 hover:text-primary transition">Contact</a>
-                    <a href="#" class="text-sm font-medium text-gray-700 hover:text-primary transition">Tutors</a>
+                    <a href="/user/tutors" class="text-sm font-medium text-gray-700 hover:text-primary transition">Tutors</a>
                 </div>
 
                 <!-- Right Side Icons -->
@@ -90,6 +90,59 @@
             
             <div class="lg:col-span-2 space-y-6">
                 
+    <div class="bg-black rounded-lg overflow-hidden">
+    <% if (course.lessons && course.lessons.length > 0 && course.lessons[0].videoUrl) { %>
+      
+      <video id="mainVideo" controls class="w-full h-[400px] object-cover">
+        <source src="<%= course.lessons[0].videoUrl %>">
+        Your browser does not support the video tag.
+      </video>
+
+    <% } else { %>
+      
+      <div class="text-white p-6 text-center">
+        No video available
+      </div>
+
+    <% } %>
+  </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">Course content</h2>
+                        <span class="text-sm text-gray-500"><%= course.lessons.length %> lessons</span>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <% if (course.lessons && course.lessons.length > 0) { %>
+                            <% course.lessons.forEach((lesson, index) => { %>
+                                <div onclick="playVideo('<%= lesson.videoUrl || '' %>')" 
+     class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
+                                <!-- <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition"> -->
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-play text-teal-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="font-semibold text-gray-900 text-sm"><%= lesson.title %></h3>
+                                                <p class="text-xs text-gray-500 mt-1"><%= lesson.description || 'This is the ' + lesson.title.toLowerCase() + ' part' %></p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-500"><%= lesson.duration || 0 %> minutes</span>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-book-open text-4xl mb-3"></i>
+                                <p>No lessons available yet</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <span class="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full mb-3">
                         <%= course.category %>
@@ -164,38 +217,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-gray-900">Course content</h2>
-                        <span class="text-sm text-gray-500"><%= course.lessons.length %> lessons</span>
-                    </div>
-                    
-                    <div class="space-y-2">
-                        <% if (course.lessons && course.lessons.length > 0) { %>
-                            <% course.lessons.forEach((lesson, index) => { %>
-                                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-play text-teal-600 text-sm"></i>
-                                            </div>
-                                            <div>
-                                                <h3 class="font-semibold text-gray-900 text-sm"><%= lesson.title %></h3>
-                                                <p class="text-xs text-gray-500 mt-1"><%= lesson.description || 'This is the ' + lesson.title.toLowerCase() + ' part' %></p>
-                                            </div>
-                                        </div>
-                                        <span class="text-xs text-gray-500"><%= lesson.duration || 0 %> minutes</span>
-                                    </div>
-                                </div>
-                            <% }); %>
-                        <% } else { %>
-                            <div class="text-center py-8 text-gray-500">
-                                <i class="fas fa-book-open text-4xl mb-3"></i>
-                                <p>No lessons available yet</p>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
+
 
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-900 mb-4">About This Course</h2>
@@ -237,16 +259,7 @@
                     <div class="p-6">
                         
                         <div class="mb-4">
-                            <% if (course.discountPrice && course.discountPrice < course.price) { %>
-                                <div class="flex items-baseline gap-2">
-                                    <span class="text-3xl font-bold text-teal-600">₹<%= course.discountPrice.toLocaleString() %></span>
-                                    <span class="text-lg text-gray-400 line-through">₹<%= course.price.toLocaleString() %></span>
-                                </div>
-                                <span class="inline-block mt-2 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded">
-                                    <%= Math.round((1 - course.discountPrice / course.price) * 100) %>% off
-                                </span>
-                                <p class="text-xs text-red-600 mt-1">Limited time offer - 10% off!</p>
-                            <% } else if (course.price === 0) { %>
+                            <% if (course.price === 0) { %>
                                 <span class="text-3xl font-bold text-teal-600">Free</span>
                             <% } else { %>
                                 <span class="text-3xl font-bold text-teal-600">₹<%= course.price.toLocaleString() %></span>
@@ -297,6 +310,35 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+    <!-- your entire page code -->
+
+<script>
+  function playVideo(url) {
+    const video = document.getElementById('mainVideo');
+    const source = video.querySelector("source");
+
+    if (!url) {
+      console.error("No video URL found");
+      return;
+    }
+
+    source.src = url;
+    video.load();
+    video.play();
+
+    video.scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+    })
+  }
+
+</script>
+
 
 </body>
 </html>

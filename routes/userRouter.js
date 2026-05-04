@@ -2,6 +2,7 @@ import express from 'express';
 import * as userController from '../controllers/user/userController.js';
 import { isUser, redirectIfUser } from '../middleware/authMiddleware.js';
 import passport from '../config/passport.js';
+import { upload } from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -56,9 +57,12 @@ router.get('/auth/google/callback',
 router.get('/home', isUser, userController.getHome);
 router.get('/courses', userController.getCourses);
 router.get('/course/:id', userController.getCourseDetail);
+router.get('/tutors', userController.getTutors);
+router.get('/tutor/:id', userController.getTutorDetail);
 router.get('/profile', isUser, userController.getProfile);
 router.get('/edit-profile', isUser, userController.getEditProfile);
 router.post('/update-profile', isUser, userController.postUpdateProfile);
+router.post('/upload-avatar', isUser, upload.single('avatar'), userController.postUploadAvatar);
 router.post('/send-email-change-otp', isUser, userController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isUser, userController.postVerifyEmailChange);
 router.post('/resend-email-otp', isUser, userController.postResendEmailOTP);
