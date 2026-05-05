@@ -10,7 +10,7 @@ import { uploadCertificate, uploadVideo } from '../config/multer.js';
 const router = express.Router();
 
 router.get('/signup', redirectIfTutor, tutorController.getSignup);
-router.post('/signup', uploadCertificate.single('certificateFile'), tutorController.postSignup);
+router.post('/signup', upload.single('certificateFile'), tutorController.postSignup);
 router.get('/login', redirectIfTutor, tutorController.getLogin);
 router.post('/login', tutorController.postLogin);
 router.get('/logout', tutorController.logout);

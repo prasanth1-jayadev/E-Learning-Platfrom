@@ -175,6 +175,32 @@ const toggleTutorBlock = async (req, res) => {
     }
 };
 
+const toggleTutorCertified = async (req, res) => {
+    try {
+        const { tutorId } = req.params;
+
+        const result = await adminService.toggleTutorCertified(tutorId);
+
+        if (req.headers['content-type']?.includes('application/json')) {
+            return res.json({ 
+                success: true, 
+                message: result.message,
+                isCertified: result.isCertified
+            });
+        }
+
+        res.redirect('/admin/tutors');
+    } catch (error) {
+        console.error('Toggle certified error:', error);
+
+        if (req.headers['content-type']?.includes('application/json')) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+
+        res.redirect('/admin/tutors?error=' + encodeURIComponent(error.message));
+    }
+};
+
 
 
 
@@ -355,6 +381,7 @@ export {
     approveTutor,
     rejectTutor,
     toggleTutorBlock,
+    toggleTutorCertified,
     getStudents,
     toggleStudentBlock
 };

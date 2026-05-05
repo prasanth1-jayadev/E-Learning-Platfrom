@@ -14,6 +14,7 @@ const tutorSchema = new mongoose.Schema({
         enum: ['pending', 'approved', 'rejected'], 
         default: 'pending' 
     },
+    isCertified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false }, 
     blockedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
     blockedAt: { type: Date },
@@ -27,4 +28,4 @@ const tutorSchema = new mongoose.Schema({
     approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } 
 }, { timestamps: true });
 
-export default mongoose.model('Tutor', tutorSchema);
+export default mongoose.models.Tutor || mongoose.model('Tutor', tutorSchema);

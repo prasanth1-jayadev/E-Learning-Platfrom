@@ -78,6 +78,7 @@
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Joined Date</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certificate</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certified</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -123,6 +124,17 @@
                                 </span>
                                 <% } %>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (tutor.isCertified) { %>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    ✓ CERTIFIED
+                                </span>
+                                <% } else { %>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                                    NOT CERTIFIED
+                                </span>
+                                <% } %>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex gap-2">
                                     <% if (tutor.isBlocked) { %>
@@ -136,8 +148,9 @@
                                         Block
                                     </button>
                                     <% } %>
-                                    <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                                        View
+                                    <button onclick="toggleCertified('<%= tutor._id %>')" 
+                                            class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white <%= tutor.isCertified ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700' %>">
+                                        <%= tutor.isCertified ? 'Remove Certified' : 'Mark Certified' %>
                                     </button>
                                 </div>
                             </td>
@@ -307,6 +320,59 @@
                 Swal.fire({
                     title: 'Error!',
                     text: 'Error changing block status',
+                    icon: 'error'
+                });
+            }
+        }
+
+        async function toggleCertified(tutorId) {
+            const tutorRow = document.querySelector(`button[onclick="toggleCertified('${tutorId}')"]`);
+            const isCurrentlyCertified = tutorRow.textContent.trim() === 'Remove Certified';
+            const action = isCurrentlyCertified ? 'remove certification from' : 'certify';
+            
+            const result = await Swal.fire({
+                title: `${isCurrentlyCertified ? 'Remove Certification?' : 'Mark as Certified?'}`,
+                text: `Are you sure you want to ${action} this tutor?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: isCurrentlyCertified ? '#EF4444' : '#3B82F6',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: `Yes, ${action}!`,
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) return;
+            
+            try {
+                const response = await fetch(`/admin/toggle-certified/${tutorId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseData = await response.json();
+                
+                if (responseData.success) {
+                    await Swal.fire({
+                        title: 'Success!',
+                        text: responseData.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: responseData.message,
+                        icon: 'error'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error changing certified status',
                     icon: 'error'
                 });
             }

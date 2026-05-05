@@ -16,6 +16,7 @@ router.get('/tutors', isAdmin, adminController.getTutors);
 router.post('/approve-tutor/:tutorId', isAdmin, adminController.approveTutor);
 router.post('/reject-tutor/:tutorId', isAdmin, adminController.rejectTutor);
 router.post('/toggle-block/:tutorId', isAdmin, adminController.toggleTutorBlock);
+router.post('/toggle-certified/:tutorId', isAdmin, adminController.toggleTutorCertified);
 
 router.get('/students', isAdmin, adminController.getStudents);
 router.post('/toggle-student-block/:studentId', isAdmin, adminController.toggleStudentBlock);

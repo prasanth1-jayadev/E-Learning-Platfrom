@@ -158,6 +158,27 @@ const toggleTutorBlock = async (tutorId, adminId) => {
     return await Tutor.findById(tutorId);
 }
 
+const toggleTutorCertified = async (tutorId) => {
+    const tutor = await Tutor.findById(tutorId);
+    if (!tutor) {
+        throw new Error('Tutor not found');
+    }
+
+    if (tutor.approvalStatus !== 'approved') {
+        throw new Error('Only approved tutors can be certified');
+    }
+
+    const isCertified = !tutor.isCertified;
+    await Tutor.findByIdAndUpdate(tutorId, {
+        isCertified
+    });
+
+    return {
+        isCertified,
+        message: isCertified ? 'Tutor marked as certified successfully' : 'Certification removed successfully'
+    };
+}
+
 export {
     loginAdmin,
     getTutorApplications,
@@ -165,5 +186,6 @@ export {
     approveTutor,
     rejectTutor,
     getTutors,
-    toggleTutorBlock
+    toggleTutorBlock,
+    toggleTutorCertified
 };
