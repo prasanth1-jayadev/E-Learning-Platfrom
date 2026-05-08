@@ -27,10 +27,10 @@ const getLanding = async (req, res) => {
     // Shuffle for variety
     const tutors = certifiedTutors.sort(() => 0.5 - Math.random());
 
-    res.render('user/landing', { courses, tutors });
+    res.render('user/landing', { courses, tutors, user: null, currentPage: 'home' });
   } catch (error) {
     console.error('Error loading landing page:', error);
-    res.render('user/landing', { courses: [], tutors: [] });
+    res.render('user/landing', { courses: [], tutors: [], user: null, currentPage: 'home' });
   }
 };
 
@@ -60,11 +60,11 @@ const getHome = async (req, res) => {
     // Shuffle for variety
     const tutors = certifiedTutors.sort(() => 0.5 - Math.random());
 
-    res.render('user/home', { courses, user, tutors });
+    res.render('user/home', { courses, user, tutors, currentPage: 'home' });
 
   } catch (error) {
     console.log(error);
-    res.render('user/home', { courses: [], user: null, tutors: [] });
+    res.render('user/home', { courses: [], user: null, tutors: [], currentPage: 'home' });
   }
 };
 

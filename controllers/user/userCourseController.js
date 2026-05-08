@@ -1,9 +1,12 @@
 import * as categoryService from '../../service/categoryService.js';
 import Course from '../../models/Course.js';
+import User from '../../models/User.js';
+import Cart from '../../models/Cart.js';
 
 // Get Courses List
 const getCourses = async (req, res) => {
   try {
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
     const page = parseInt(req.query.page) || 1;
     const limit = 6;
     const skip = (page - 1) * limit;
@@ -79,12 +82,14 @@ const getCourses = async (req, res) => {
     res.render('user/courses', {
       courses,
       categories,
-      currentPage: page,
+      page: page,
       totalPages,
       totalCourses,
       search,
       category,
-      sort
+      sort,
+      user,
+      currentPage: 'courses'
     });
 
   } catch (error) {
@@ -92,33 +97,65 @@ const getCourses = async (req, res) => {
     res.render('user/courses', {
       courses: [],
       categories: [],
-      currentPage: 1,
+      page: 1,
       totalPages: 1,
       totalCourses: 0,
       search: '',
       category: '',
-      sort: 'newest'
+      sort: 'newest',
+      user: null,
+      currentPage: 'courses'
     });
   }
 };
 
-// Get Course Detail
-const getCourseDetail = async (req, res) => {
+
+ const getCourseDetail = async (req, res) => {
   try {
-    const courseId = req.params.id;
-    const course = await Course.findById(courseId).populate('tutor', 'fullName bio avatar');
+    const { id } = req.params;  // Changed from courseId to id
+    const userId = req.session.userId;
+
+    const user = userId 
+      ? await User.findById(userId).select('enrolledCourses fullName email avatar')
+      : null;
+
+    const course = await Course.findById(id)  // Changed from courseId to id
+      .populate('tutor', 'fullName email bio avatar subjects');
 
     if (!course) {
       return res.redirect('/user/courses');
     }
 
-    res.render('user/course-detail', { course });
+    let isPurchased = false;
+    let isInCart = false;
+    
+    if (user) {
+      isPurchased = user.enrolledCourses?.some(
+        courseId => courseId.toString() === id  // Changed comparison
+      );
+      
+      // Check if course is in cart
+      const cart = await Cart.findOne({ user: userId });
+      if (cart) {
+        isInCart = cart.items.some(item => item.course.toString() === id);
+      }
+    }
+
+    res.render('user/course-detail', {
+      course,
+      user,
+      isPurchased,
+      isInCart,
+      currentPage: "courses"
+    });
 
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching course details:', error);
     res.redirect('/user/courses');
   }
 };
+
+
 
 export {
   getCourses,

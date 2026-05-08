@@ -149,9 +149,14 @@
                                     </button>
                                     <% } %>
                                     <button onclick="toggleCertified('<%= tutor._id %>')" 
-                                            class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white <%= tutor.isCertified ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700' %>">
-                                        <%= tutor.isCertified ? 'Remove Certified' : 'Mark Certified' %>
+                                            class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white <%= tutor.isCertified ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700' %>">
+                                        <%= tutor.isCertified ? 'Remove' : 'Certify' %>
                                     </button>
+                                    <a href="/admin/tutor/<%= tutor._id %>" 
+                                       class="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50">
+                                        <span class="material-icons-outlined text-xs">visibility</span>
+                                        View
+                                    </a>
                                 </div>
                             </td>
                         </tr>

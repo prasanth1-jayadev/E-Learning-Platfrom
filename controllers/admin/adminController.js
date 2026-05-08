@@ -15,23 +15,40 @@ const getLogin = (req, res) => {
 
 const getDashboard = async (req, res) => {
     try {
-        const pendingTutors = await adminService.getPendingTutorApplications();
-        const allTutors = await adminService.getTutorApplications();
+        const [pendingTutors, allTutors, students, courses, payments] = await Promise.all([
+            adminService.getPendingTutorApplications(),
+            adminService.getTutorApplications(),
+            User.countDocuments({ role: 'user' }),
+            (async () => {
+                const Course = (await import('../../models/Course.js')).default;
+                return Course.countDocuments();
+            })(),
+            (async () => {
+                const Payment = (await import('../../models/Payment.js')).default;
+                const result = await Payment.aggregate([
+                    { $match: { status: 'completed' } },
+                    { $group: { _id: null, total: { $sum: '$amount' } } }
+                ]);
+                return result[0]?.total || 0;
+            })()
+        ]);
 
         res.render('admin/dashboard', {
-            pendingTutors,
-            allTutors,
             pendingCount: pendingTutors.length,
             totalTutors: allTutors.length,
+            totalStudents: students,
+            totalCourses: courses,
+            totalRevenue: payments,
             currentPage: 'dashboard'
         });
     } catch (error) {
         console.error('Dashboard error:', error);
         res.render('admin/dashboard', {
-            pendingTutors: [],
-            allTutors: [],
             pendingCount: 0,
             totalTutors: 0,
+            totalStudents: 0,
+            totalCourses: 0,
+            totalRevenue: 0,
             currentPage: 'dashboard'
         });
     }
@@ -368,6 +385,24 @@ const toggleStudentBlock = async (req, res) => {
     }
 };
 
+const getTutorDetail = async (req, res) => {
+    try {
+        const { tutorId } = req.params;
+        const result = await adminService.getTutorDetail(tutorId);
+        const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
+
+        res.render('admin/tutor-detail', {
+            tutor: result.tutor,
+            courses: result.courses,
+            currentPage: 'tutors',
+            pendingCount
+        });
+    } catch (error) {
+        console.error('Get tutor detail error:', error);
+        res.redirect('/admin/tutors?error=' + encodeURIComponent(error.message));
+    }
+};
+
 
 
 
@@ -383,5 +418,6 @@ export {
     toggleTutorBlock,
     toggleTutorCertified,
     getStudents,
-    toggleStudentBlock
+    toggleStudentBlock,
+    getTutorDetail
 };

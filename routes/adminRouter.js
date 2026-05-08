@@ -13,6 +13,7 @@ router.get('/dashboard', isAdmin, adminController.getDashboard);
 
 router.get('/tutor-applications', isAdmin, adminController.getTutorApplications);
 router.get('/tutors', isAdmin, adminController.getTutors);
+router.get('/tutor/:tutorId', isAdmin, adminController.getTutorDetail);
 router.post('/approve-tutor/:tutorId', isAdmin, adminController.approveTutor);
 router.post('/reject-tutor/:tutorId', isAdmin, adminController.rejectTutor);
 router.post('/toggle-block/:tutorId', isAdmin, adminController.toggleTutorBlock);

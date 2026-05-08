@@ -1,9 +1,11 @@
 import Tutor from '../../models/Tutor.js';
 import Course from '../../models/Course.js';
+import User from '../../models/User.js';
 
 // Get Tutors List
 const getTutors = async (req, res) => {
   try {
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
     // Get query parameters
     const search = req.query.search || '';
     const sort = req.query.sort || 'newest';
@@ -83,14 +85,18 @@ const getTutors = async (req, res) => {
     res.render('user/tutors', {
       tutors: tutorsWithData,
       search,
-      sort
+      sort,
+      user,
+      currentPage: 'tutors'
     });
   } catch (error) {
     console.error('Get tutors error:', error);
     res.render('user/tutors', {
       tutors: [],
       search: '',
-      sort: 'newest'
+      sort: 'newest',
+      user: null,
+      currentPage: 'tutors'
     });
   }
 };
@@ -98,6 +104,7 @@ const getTutors = async (req, res) => {
 // Get Tutor Detail
 const getTutorDetail = async (req, res) => {
   try {
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
     // Get tutor by ID
     const tutor = await Tutor.findById(req.params.id).lean();
 
@@ -129,7 +136,9 @@ const getTutorDetail = async (req, res) => {
         ...tutor,
         ...ratingData
       },
-      courses
+      courses,
+      user,
+      currentPage: 'tutors'
     });
   } catch (error) {
     console.error('Get tutor detail error:', error);

@@ -4,9 +4,13 @@ import * as profileController from '../controllers/user/profileController.js';
 import * as pageController from '../controllers/user/pageController.js';
 import * as courseController from '../controllers/user/userCourseController.js';
 import * as tutorController from '../controllers/user/userTutorController.js';
+import * as cartController from '../controllers/user/cartController.js';
 import { isUser, redirectIfUser } from '../middleware/authMiddleware.js';
 import passport from '../config/passport.js';
 import { upload } from '../config/cloudinary.js';
+import * as paymentController from '../controllers/user/paymentController.js';
+
+
 
 const router = express.Router();
 
@@ -63,9 +67,26 @@ router.get('/auth/google/callback',
     }
 );
 
+//payment Routes 
+router.post('/payment/create-order', isUser, paymentController.createOrder);
+router.post('/payment/verify', isUser, paymentController.verifyPayment);
+router.post('/enroll-free', isUser, paymentController.enrollFree);
+router.get('/payment/success', isUser, paymentController.getPaymentSuccess);
+router.get('/payment/failure', isUser, paymentController.getPaymentFailure);
+
+
+
+// Cart Routes
+router.get('/cart', isUser, cartController.getCart);
+router.post('/cart/add', isUser, cartController.addToCart);
+router.post('/cart/remove/:courseId', isUser, cartController.removeFromCart);
+router.get('/cart/count', isUser, cartController.getCartCount);
+
 // Course Routes
 router.get('/courses', courseController.getCourses);
 router.get('/course/:id', courseController.getCourseDetail);
+
+
 
 // Tutor Routes
 router.get('/tutors', tutorController.getTutors);
@@ -79,6 +100,8 @@ router.post('/upload-avatar', isUser, upload.single('avatar'), profileController
 router.post('/send-email-change-otp', isUser, profileController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isUser, profileController.postVerifyEmailChange);
 router.post('/resend-email-otp', isUser, profileController.postResendEmailOTP);
+router.get('/my-courses', isUser, profileController.getMyCourses);
 router.post('/change-password', isUser, profileController.postChangePassword);
+
 
 export default router;

@@ -1,0 +1,182 @@
+<!-- User Navbar -->
+<nav class="sticky top-0 z-50 bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between shadow-sm">
+  <div class="flex items-center gap-8">
+    <!-- Logo -->
+    <a href="/user/home" class="flex items-center gap-2">
+      <div class="w-10 h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+          <circle cx="12" cy="12" r="1.5" fill="white" />
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <span class="text-xl font-bold text-gray-900">Learn</span>
+          <span class="text-xl font-bold text-[#00d9b1]">ify</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Navigation Links -->
+    <div class="hidden md:flex items-center gap-6 text-sm text-gray-600 font-medium">
+      <a href="/user/home" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1] font-semibold' : '' %>">
+        Home
+      </a>
+      <a href="/user/courses" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1] font-semibold' : '' %>">
+        Courses
+      </a>
+      <a href="/user/tutors" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1] font-semibold' : '' %>">
+        Tutors
+      </a>
+      <a href="#" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1] font-semibold' : '' %>">
+        About Us
+      </a>
+      <a href="#" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1] font-semibold' : '' %>">
+        Contact
+      </a>
+    </div>
+  </div>
+
+  <!-- Right Side Actions -->
+  <div class="flex items-center gap-3">
+    <!-- Become a Tutor Button -->
+    <a href="/tutor/signup"
+      class="hidden sm:flex px-4 py-2 bg-[#00d9b1] text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">
+      Become a Tutor
+    </a>
+
+    <!-- Wishlist Icon -->
+    <button class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Wishlist">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+    </button>
+
+    <!-- Cart Icon with Badge -->
+    <a href="/user/cart" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Cart">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span id="cartCount"
+        class="absolute -top-1 -right-1 bg-[#00d9b1] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+    </a>
+
+    <!-- Chat/Messages Icon -->
+    <button class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Messages">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    </button>
+
+    <!-- Notifications Icon with Dot -->
+    <button class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Notifications">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg>
+      <span class="absolute top-1 right-1 bg-red-500 rounded-full w-2 h-2"></span>
+    </button>
+
+    <!-- User Profile -->
+    <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/user/profile"
+        class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:ring-2 hover:ring-[#00d9b1] transition overflow-hidden">
+        <% if (user.avatar) { %>
+          <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
+        <% } else { %>
+          <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+          </svg>
+        <% } %>
+      </a>
+    <% } else { %>
+      <a href="/user/login"
+        class="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200 transition">
+        Login
+      </a>
+    <% } %>
+
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-600 hover:text-gray-900">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-lg">
+  <div class="px-6 py-4 space-y-3">
+    <a href="/user/home" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1]' : '' %>">
+      Home
+    </a>
+    <a href="/user/courses" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1]' : '' %>">
+      Courses
+    </a>
+    <a href="/user/tutors" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1]' : '' %>">
+      Tutors
+    </a>
+    <a href="#" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1]' : '' %>">
+      About Us
+    </a>
+    <a href="#" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1]' : '' %>">
+      Contact
+    </a>
+    <a href="/tutor/signup" class="block px-4 py-2 bg-[#00d9b1] text-gray-900 text-sm font-bold rounded-lg hover:brightness-110 transition text-center">
+      Become a Tutor
+    </a>
+  </div>
+</div>
+
+<!-- Mobile Menu Toggle Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+
+    // Fetch and update cart count
+    <% if (typeof user !== 'undefined' && user) { %>
+      fetchCartCount();
+    <% } %>
+  });
+
+  // Function to fetch cart count
+  async function fetchCartCount() {
+    try {
+      const response = await fetch('/user/cart/count');
+      const data = await response.json();
+      
+      if (data.success && data.count > 0) {
+        const cartCountElement = document.getElementById('cartCount');
+        if (cartCountElement) {
+          cartCountElement.textContent = data.count;
+          cartCountElement.classList.remove('hidden');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching cart count:', error);
+    }
+  }
+
+  // Make fetchCartCount available globally for other pages to update cart count
+  window.updateCartCount = fetchCartCount;
+</script>
+
+<style>
+  /* Tailwind config for brand color */
+  .bg-brand { background-color: #00d9b1; }
+  .text-brand { color: #00d9b1; }
+  .ring-brand { --tw-ring-color: #00d9b1; }
+</style>

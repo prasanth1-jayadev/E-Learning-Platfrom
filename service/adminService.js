@@ -179,6 +179,25 @@ const toggleTutorCertified = async (tutorId) => {
     };
 }
 
+const getTutorDetail = async (tutorId) => {
+    const tutor = await Tutor.findById(tutorId).lean();
+    if (!tutor) {
+        throw new Error('Tutor not found');
+    }
+
+    // Import Course model dynamically to avoid circular dependency
+    const Course = (await import('../models/Course.js')).default;
+    
+    const courses = await Course.find({ tutor: tutorId })
+        .select('title description price thumbnail isPublished lessons enrolledStudents')
+        .lean();
+
+    return {
+        tutor,
+        courses
+    };
+}
+
 export {
     loginAdmin,
     getTutorApplications,
@@ -187,5 +206,6 @@ export {
     rejectTutor,
     getTutors,
     toggleTutorBlock,
-    toggleTutorCertified
+    toggleTutorCertified,
+    getTutorDetail
 };

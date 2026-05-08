@@ -10,7 +10,7 @@ const getProfile = async (req, res) => {
       return res.redirect('/user/login');
     }
 
-    res.render('user/profile', { user });
+    res.render('user/profile', { user, currentPage: 'profile' });
   } catch (error) {
     console.error('Error loading profile:', error);
     res.redirect('/user/home');
@@ -135,6 +135,43 @@ const postResendEmailOTP = async (req, res) => {
   }
 };
 
+
+// Get My Courses
+const getMyCourses = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    
+    if (!userId) {
+      return res.redirect('/user/login');
+    }
+
+    // Fetch user with enrolled courses
+    const user = await User.findById(userId)
+      .populate({
+        path: 'enrolledCourses',
+        populate: {
+          path: 'tutor',
+          select: 'fullName avatar'
+        }
+      });
+
+    res.render('user/my-courses', {
+      user: user,
+      courses: user.enrolledCourses || [],
+      currentPage: 'my-courses'
+    });
+
+  } catch (error) {
+    console.error('Error fetching my courses:', error);
+    res.redirect('/user/profile');
+  }
+};
+
+
+
+
+
+
 // Change Password
 const postChangePassword = async (req, res) => {
   try {
@@ -185,5 +222,6 @@ export {
   postSendEmailChangeOTP,
   postVerifyEmailChange,
   postResendEmailOTP,
-  postChangePassword
+  postChangePassword,
+  getMyCourses
 };
