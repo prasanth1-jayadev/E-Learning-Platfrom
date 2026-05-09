@@ -52,6 +52,9 @@ const isTutor = async (req, res, next) => {
                 req.session.destroy();
                 return res.redirect('/tutor/login?error=account_blocked');
             }
+
+            // Set req.user with tutor data
+            req.user = tutor;
         } catch (error) {
             console.error('Tutor block check error:', error);
             return res.redirect('/tutor/login');

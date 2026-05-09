@@ -1,7 +1,11 @@
 import express from 'express';
 import * as adminController from '../controllers/admin/adminController.js';
 import * as categoryController from '../controllers/admin/categoryController.js';
+import * as courseController from '../controllers/admin/courseController.js';
+import * as orderController from '../controllers/admin/orderController.js';
+import * as walletController from '../controllers/admin/walletController.js';
 import { isAdmin, redirectIfAdmin } from '../middleware/authMiddleware.js';
+
 
 const router = express.Router();
 
@@ -26,5 +30,24 @@ router.get('/categories', isAdmin, categoryController.getCategories);
 router.post('/categories/add', isAdmin, categoryController.addCategory);
 router.post('/categories/:id/edit', isAdmin, categoryController.editCategory);
 router.post('/categories/:id/toggle-status', isAdmin, categoryController.toggleStatus);
+
+router.get('/courses', isAdmin, courseController.getCourses);
+router.get('/course/:id', isAdmin, courseController.getCourseDetail);
+router.post('/course/:id/toggle-status', isAdmin, courseController.toggleCourseStatus);
+router.post('/course/:id/delete', isAdmin, courseController.deleteCourse);
+
+
+
+router.get('/orders', isAdmin, orderController.getOrders);
+router.get('/order/:id', isAdmin, orderController.getOrderDetail);
+router.post('/order/:id/update-status', isAdmin, orderController.updateOrderStatus);
+
+// Wallet routes
+router.get('/wallet', isAdmin, walletController.getWalletOverview);
+router.get('/wallet/tutor/:tutorId', isAdmin, walletController.getTutorWalletDetail);
+
+
+
+
 
 export default router;

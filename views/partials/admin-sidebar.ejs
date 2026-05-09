@@ -1,11 +1,13 @@
-<aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-20 overflow-y-auto">
+<aside
+    class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-20 overflow-y-auto">
     <div class="p-6">
         <!-- Logo -->
         <div class="flex items-center gap-2 mb-8">
             <div class="w-10 h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
                 <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
-                    <circle cx="12" cy="12" r="1.5" fill="white"/>
+                    <path
+                        d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                    <circle cx="12" cy="12" r="1.5" fill="white" />
                 </svg>
             </div>
             <div class="flex flex-col">
@@ -15,64 +17,91 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Admin Profile Card -->
         <div class="flex items-center gap-3 p-3 mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
-            <img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700" src="https://ui-avatars.com/api/?name=Admin&background=00d9b1&color=fff&bold=true"/>
+            <img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700"
+                src="https://ui-avatars.com/api/?name=Admin&background=00d9b1&color=fff&bold=true" />
             <div class="overflow-hidden flex-1">
                 <p class="text-sm font-semibold truncate text-slate-800 dark:text-white">Admin</p>
                 <a class="text-xs text-[#00d9b1] hover:underline" href="/admin/profile">View Profile</a>
             </div>
         </div>
-        
+
         <nav class="space-y-1">
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'dashboard' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/dashboard">
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'dashboard' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/dashboard">
                 <span class="material-icons-outlined text-[20px]">dashboard</span>
                 <span class="font-medium">Dashboard</span>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'tutor-applications' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/tutor-applications">
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'tutor-applications' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/tutor-applications">
                 <span class="material-icons-outlined text-[20px]">pending_actions</span>
                 <span class="font-medium">Tutor Applications</span>
-                <% if (typeof pendingCount !== 'undefined' && pendingCount > 0) { %>
-                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><%= pendingCount %></span>
-                <% } %>
+                <% if (typeof pendingCount !=='undefined' && pendingCount> 0) { %>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                        <%= pendingCount %>
+                    </span>
+                    <% } %>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'tutors' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/tutors">
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'tutors' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/tutors">
                 <span class="material-icons-outlined text-[20px]">co_present</span>
                 <span class="font-medium">Tutors</span>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'students' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/students">
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'students' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/students">
                 <span class="material-icons-outlined text-[20px]">school</span>
                 <span class="font-medium">Students</span>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'categories' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/categories">
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'categories' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/categories">
                 <span class="material-icons-outlined text-[20px]">category</span>
                 <span class="font-medium">Categories</span>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'courses' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/courses">
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'courses' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/courses">
                 <span class="material-icons-outlined text-[20px]">menu_book</span>
                 <span class="font-medium">Courses</span>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'coupons' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/coupons">
+
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'orders' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/orders">
+                <span class="material-icons-outlined text-[20px]">receipt_long</span>
+                <span class="font-medium">Orders</span>
+            </a>
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'wallet' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/wallet">
+                <span class="material-icons-outlined text-[20px]">account_balance_wallet</span>
+                <span class="font-medium">Wallet</span>
+            </a>
+
+
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'coupons' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/coupons">
                 <span class="material-icons-outlined text-[20px]">local_offer</span>
                 <span class="font-medium">Coupons</span>
             </a>
-            
-            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'sales-report' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all" href="/admin/sales-report">
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'sales-report' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/sales-report">
                 <span class="material-icons-outlined text-[20px]">assessment</span>
                 <span class="font-medium">Sales Report</span>
             </a>
         </nav>
     </div>
-    
+
     <div class="mt-auto p-6 border-t border-slate-200 dark:border-slate-800">
-        <a href="/admin/logout" onclick="event.preventDefault(); confirmLogout();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 font-medium transition">
+        <a href="/admin/logout" onclick="event.preventDefault(); confirmLogout();"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 font-medium transition">
             <span class="material-icons-outlined text-[20px]">logout</span>
             <span class="font-medium">Logout</span>
         </a>
@@ -81,25 +110,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function confirmLogout() {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will be logged out of your admin session',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, logout',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Use the global logout function from admin-session.js
-            if (typeof adminLogout === 'function') {
-                adminLogout();
-            } else {
-                window.location.href = '/admin/logout';
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will be logged out of your admin session',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Use the global logout function from admin-session.js
+                if (typeof adminLogout === 'function') {
+                    adminLogout();
+                } else {
+                    window.location.href = '/admin/logout';
+                }
             }
-        }
-    });
-}
+        });
+    }
 </script>

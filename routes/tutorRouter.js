@@ -1,6 +1,7 @@
 import express from 'express';
 import * as tutorController from '../controllers/tutor/tutorController.js';
 import * as courseController from '../controllers/tutor/courseController.js';
+import * as walletController from '../controllers/tutor/walletController.js';
 import { isTutor, isTutorApproved, redirectIfTutor } from '../middleware/authMiddleware.js';
 import { upload } from '../config/cloudinary.js';
 import passport from '../config/passport.js';
@@ -70,6 +71,10 @@ router.post('/courses/:id/edit', isTutor, (req, res, next) => {
 router.delete('/courses/:id', isTutor, courseController.deleteCourse);
 router.post('/courses/:id/toggle-publish', isTutor, courseController.togglePublish);
 router.get('/courses/:id/details', isTutor, courseController.getCourseDetails);
+
+// Wallet routes
+router.get('/wallet', isTutor, walletController.getWallet);
+router.post('/wallet/withdraw', isTutor, walletController.requestWithdrawal);
 
 // Google OAuth
 router.get('/auth/google', passport.authenticate('google-tutor'));

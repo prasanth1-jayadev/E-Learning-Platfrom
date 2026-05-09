@@ -30,7 +30,7 @@ export const enrollUserInCourse = async (userId, courseId, paymentData) => {
     paymentId: paymentData.paymentId,
     signature: paymentData.signature,
     amount: paymentData.amount,
-    status: 'success'
+    status: 'completed'
   });
 
   await payment.save();

@@ -5,10 +5,11 @@ import User from "../../models/User.js";
 import { enrollUserInCourse } from "../../service/paymentService.js";
 import * as cartService from "../../service/cartService.js";
 import Payment from "../../models/Payment.js";
+import Earning from '../../models/Earning.js';
 
 export const createOrder = async (req, res) => {
   try {
-    const { courseIds } = req.body; // Now accepts array of course IDs
+    const { courseIds } = req.body; 
     const userId = req.session.userId;
 
     if (!userId) {

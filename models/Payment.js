@@ -33,8 +33,12 @@ const paymentSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'success', 'failed'],
-    default: 'success'
+    enum: ['pending', 'completed', 'failed'],
+    default: 'completed'
+  },
+  paymentMethod: {
+    type: String,
+    default: 'Razorpay'
   }
 }, {
   timestamps: true

@@ -101,20 +101,97 @@
                 transform: scale(1);
             }
             50% {
-                opacity: 0.5;
-                transform: scale(1.1);
+                opacity: 0.6;
+                transform: scale(1.2);
             }
         }
 
         @keyframes pulse-slower {
             0%, 100% {
                 opacity: 0.2;
-                transform: scale(1);
+                transform: scale(1) rotate(0deg);
             }
             50% {
-                opacity: 0.4;
-                transform: scale(1.15);
+                opacity: 0.5;
+                transform: scale(1.3) rotate(180deg);
             }
+        }
+
+        @keyframes orbit-1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.2;
+            }
+            25% {
+                transform: translate(30px, -20px) scale(1.1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(50px, 10px) scale(1);
+                opacity: 0.2;
+            }
+            75% {
+                transform: translate(20px, 30px) scale(0.9);
+                opacity: 0.25;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.2;
+            }
+        }
+
+        @keyframes orbit-2 {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 0.15;
+            }
+            25% {
+                transform: translate(-25px, 25px) scale(1.15) rotate(90deg);
+                opacity: 0.25;
+            }
+            50% {
+                transform: translate(-40px, -10px) scale(1) rotate(180deg);
+                opacity: 0.15;
+            }
+            75% {
+                transform: translate(-15px, -30px) scale(0.95) rotate(270deg);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(0, 0) scale(1) rotate(360deg);
+                opacity: 0.15;
+            }
+        }
+
+        @keyframes orbit-3 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.1;
+            }
+            33% {
+                transform: translate(15px, 35px) scale(1.2);
+                opacity: 0.2;
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+                opacity: 0.15;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.1;
+            }
+        }
+
+        .animate-orbit-1 {
+            animation: orbit-1 8s ease-in-out infinite;
+        }
+
+        .animate-orbit-2 {
+            animation: orbit-2 10s ease-in-out infinite;
+        }
+
+        .animate-orbit-3 {
+            animation: orbit-3 12s ease-in-out infinite;
         }
 
         @keyframes slide-up {
@@ -222,12 +299,16 @@
     <div id="loadingScreen"
         class="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#0a1612] via-[#0d1b17] to-[#1a3a30]">
         <div class="flex flex-col items-center gap-12">
-            <!-- Animated Circles Background -->
+            <!-- Animated Circles Background - Modern Orbital Animation -->
             <div class="absolute inset-0 overflow-hidden">
-                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow">
+                <!-- Main orb -->
+                <div class="absolute top-1/3 left-[42%] w-40 h-40 bg-primary/5 rounded-full blur-3xl animate-orbit-1">
                 </div>
-                <div
-                    class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-pulse-slower">
+                <!-- Secondary orb -->
+                <div class="absolute top-1/3 left-[42%] w-32 h-32 bg-primary/4 rounded-full blur-2xl animate-orbit-2">
+                </div>
+                <!-- Accent orb -->
+                <div class="absolute top-1/3 left-[42%] w-24 h-24 bg-primary/3 rounded-full blur-xl animate-orbit-3">
                 </div>
             </div>
 
@@ -384,9 +465,9 @@
             <div class="flex flex-col gap-16">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div
-                        class="group relative p-8 rounded-[2rem] bg-background-light dark:bg-[#1a3a30] border border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                        class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
                         <div
-                            class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 group-hover:opacity-20 transition-transform">
+                            class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
                             <span class="material-symbols-outlined text-8xl">design_services</span>
                         </div>
                         <div class="relative z-10">
@@ -402,9 +483,9 @@
                         </div>
                     </div>
                     <div
-                        class="group relative p-8 rounded-[2rem] bg-background-light dark:bg-[#1a3a30] border border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                        class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
                         <div
-                            class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 group-hover:opacity-20 transition-transform">
+                            class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
                             <span class="material-symbols-outlined text-8xl">cloud_done</span>
                         </div>
                         <div class="relative z-10">
@@ -420,9 +501,9 @@
                         </div>
                     </div>
                     <div
-                        class="group relative p-8 rounded-[2rem] bg-background-light dark:bg-[#1a3a30] border border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                        class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
                         <div
-                            class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 group-hover:opacity-20 transition-transform">
+                            class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
                             <span class="material-symbols-outlined text-8xl">terminal</span>
                         </div>
                         <div class="relative z-10">
@@ -456,7 +537,7 @@
                         <% if (courses && courses.length> 0) { %>
                             <% courses.forEach(course=> { %>
                                 <div
-                                    class="min-w-[320px] bg-background-light dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef] dark:border-[#1a3a30] group">
+                                    class="min-w-[320px] bg-white/60 dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef]/50 dark:border-[#1a3a30] group">
                                     <div class="bg-primary/20 rounded-2xl h-40 mb-6 overflow-hidden">
                                         <% if (course.thumbnail) { %>
                                             <img alt="<%= course.title %>"
