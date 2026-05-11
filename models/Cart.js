@@ -21,7 +21,6 @@ const cartSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Ensure one cart per user
 cartSchema.index({ user: 1 }, { unique: true });
 
 export default mongoose.model('Cart', cartSchema);

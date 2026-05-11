@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Course from '../models/Course.js';
 import Payment from '../models/Payment.js';
+import { addCredit } from './walletService.js';
 
 export const checkIfAlreadyPurchased = async (userId, courseId) => {
   const user = await User.findById(userId);
@@ -13,6 +14,11 @@ export const enrollUserInCourse = async (userId, courseId, paymentData) => {
   const alreadyEnrolled = await checkIfAlreadyPurchased(userId, courseId);
   if (alreadyEnrolled) {
     throw new Error('Already enrolled in this course');
+  }
+
+  const course = await Course.findById(courseId);
+  if (!course) {
+    throw new Error('Course not found');
   }
 
   await User.findByIdAndUpdate(userId, {
@@ -34,6 +40,15 @@ export const enrollUserInCourse = async (userId, courseId, paymentData) => {
   });
 
   await payment.save();
+
+  const tutorEarnings = paymentData.amount * 0.8;
+  await addCredit(
+    course.tutor,
+    tutorEarnings,
+    `Course enrollment: ${course.title}`,
+    payment._id,
+    courseId
+  );
 
   return payment;
 };

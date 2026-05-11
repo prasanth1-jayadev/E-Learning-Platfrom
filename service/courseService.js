@@ -23,7 +23,6 @@ const getTutorCourses = async (tutorId, filters = {}) => {
   }
 };
 
-// single course ID
 const getCourseById = async (courseId, tutorId = null) => {
   try {
     const query = { _id: courseId };
@@ -73,7 +72,6 @@ const createCourse = async (courseData, tutorId) => {
   }
 };
 
-// Update course
 const updateCourse = async (courseId, tutorId, updateData) => {
   try {
     const course = await Course.findOne({ _id: courseId, tutor: tutorId });

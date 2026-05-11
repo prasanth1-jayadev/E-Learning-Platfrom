@@ -17,14 +17,12 @@ export const getCart = async (userId) => {
     cart = await Cart.create({ user: userId, items: [] });
   }
 
-  // Filter out unpublished courses or null courses
   cart.items = cart.items.filter(item => item.course && item.course.isPublished);
   
   return cart;
 };
 
 export const addToCart = async (userId, courseId) => {
-  // Check if user already enrolled
   const user = await User.findById(userId);
   const alreadyEnrolled = user.enrolledCourses.some(id => id.toString() === courseId);
   
@@ -32,7 +30,6 @@ export const addToCart = async (userId, courseId) => {
     throw new Error('You are already enrolled in this course');
   }
 
-  // Check if course exists and is published
   const course = await Course.findById(courseId);
   if (!course) {
     throw new Error('Course not found');
@@ -41,19 +38,16 @@ export const addToCart = async (userId, courseId) => {
     throw new Error('Course is not available');
   }
 
-  // Get or create cart
   let cart = await Cart.findOne({ user: userId });
   if (!cart) {
     cart = await Cart.create({ user: userId, items: [] });
   }
 
-  // Check if already in cart
   const alreadyInCart = cart.items.some(item => item.course.toString() === courseId);
   if (alreadyInCart) {
     throw new Error('Course already in cart');
   }
 
-  // Add to cart
   cart.items.push({ course: courseId });
   await cart.save();
 

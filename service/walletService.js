@@ -2,9 +2,6 @@ import Wallet from '../models/Wallet.js';
 import Payment from '../models/Payment.js';
 import Course from '../models/Course.js';
 
-/**
- * Get or create wallet for a tutor
- */
 export const getOrCreateWallet = async (tutorId) => {
     try {
         let wallet = await Wallet.findOne({ tutor: tutorId });
@@ -27,14 +24,16 @@ export const getOrCreateWallet = async (tutorId) => {
     }
 };
 
-/**
- * Add credit transaction to wallet
- */
 export const addCredit = async (tutorId, amount, description, orderId = null, courseId = null) => {
     try {
         const wallet = await getOrCreateWallet(tutorId);
         
-        wallet.balance += amount;
+        // Set release date to 7 days from now
+        const releaseDate = new Date();
+        releaseDate.setDate(releaseDate.getDate() + 7);
+        
+        // Add to pending balance (not available for withdrawal yet)
+        wallet.pendingBalance += amount;
         wallet.totalEarnings += amount;
         
         wallet.transactions.push({
@@ -43,7 +42,8 @@ export const addCredit = async (tutorId, amount, description, orderId = null, co
             description,
             orderId,
             courseId,
-            status: 'completed'
+            status: 'pending',
+            releaseDate
         });
         
         await wallet.save();
@@ -54,9 +54,7 @@ export const addCredit = async (tutorId, amount, description, orderId = null, co
     }
 };
 
-/**
- * Add debit transaction to wallet (withdrawal)
- */
+
 export const addDebit = async (tutorId, amount, description) => {
     try {
         const wallet = await getOrCreateWallet(tutorId);
@@ -83,9 +81,6 @@ export const addDebit = async (tutorId, amount, description) => {
     }
 };
 
-/**
- * Get wallet with populated transactions
- */
 export const getWalletDetails = async (tutorId) => {
     try {
         let wallet = await Wallet.findOne({ tutor: tutorId })
@@ -101,7 +96,6 @@ export const getWalletDetails = async (tutorId) => {
         
         if (!wallet) {
             wallet = await getOrCreateWallet(tutorId);
-            // Populate after creation
             wallet = await Wallet.findById(wallet._id).populate('tutor', 'fullName email');
         }
         
@@ -112,14 +106,10 @@ export const getWalletDetails = async (tutorId) => {
     }
 };
 
-/**
- * Get revenue statistics for tutor
- */
 export const getRevenueStats = async (tutorId) => {
     try {
         const wallet = await getWalletDetails(tutorId);
         
-        // Get course-wise revenue
         const courses = await Course.find({ tutor: tutorId })
             .populate('enrolledStudents');
         
@@ -130,7 +120,6 @@ export const getRevenueStats = async (tutorId) => {
             revenue: course.enrolledStudents.length * course.price
         }));
         
-        // Get monthly revenue (last 6 months)
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         
@@ -153,9 +142,6 @@ export const getRevenueStats = async (tutorId) => {
     }
 };
 
-/**
- * Get all wallets (admin view)
- */
 export const getAllWallets = async () => {
     try {
         const wallets = await Wallet.find()
@@ -180,11 +166,9 @@ export const getPlatformStats = async () => {
         const totalWithdrawn = wallets.reduce((sum, wallet) => sum + wallet.totalWithdrawn, 0);
         const totalBalance = wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
         
-        // Get all completed payments
         const completedPayments = await Payment.find({ status: 'completed' });
         const totalRevenue = completedPayments.reduce((sum, payment) => sum + payment.amount, 0);
         
-        // Platform commission (assuming 20% commission)
         const platformCommission = totalRevenue * 0.2;
         
         return {

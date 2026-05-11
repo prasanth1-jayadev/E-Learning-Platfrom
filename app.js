@@ -8,6 +8,7 @@ import passport from './config/passport.js';
 import userRouter from './routes/userRouter.js';
 import tutorRouter from './routes/tutorRouter.js';
 import adminRouter from './routes/adminRouter.js';
+import { initCronJobs } from './service/cronService.js';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 connectDB();
+
+initCronJobs();
 
 const app = express();
 app.set('view engine', 'ejs');

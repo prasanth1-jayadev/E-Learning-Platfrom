@@ -118,5 +118,4 @@ courseSchema.virtual('lessonCount').get(function() {
   return this.lessons.length;
 });
 
-// export default mongoose.model('Course', courseSchema);
 export default mongoose.models.Course || mongoose.model('Course', courseSchema);

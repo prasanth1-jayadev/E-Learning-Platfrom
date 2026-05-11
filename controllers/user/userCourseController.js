@@ -3,7 +3,6 @@ import Course from '../../models/Course.js';
 import User from '../../models/User.js';
 import Cart from '../../models/Cart.js';
 
-// Get Courses List
 const getCourses = async (req, res) => {
   try {
     const user = req.session.userId ? await User.findById(req.session.userId) : null;
@@ -14,7 +13,6 @@ const getCourses = async (req, res) => {
     const category = req.query.category || '';
     const sort = req.query.sort || 'newest';
 
-    // Get categories
     let categories = [];
     try {
       categories = await categoryService.getListedCategories();
@@ -23,16 +21,13 @@ const getCourses = async (req, res) => {
       categories = [];
     }
 
-    // Build filter query
     const filter = {
       isPublished: true,
-      // Exclude the specific psychology course
       $nor: [
         { title: 'psychology', category: 'SCIENCE' }
       ]
     };
 
-    // Add search filter
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -40,12 +35,10 @@ const getCourses = async (req, res) => {
       ];
     }
 
-    // Add category filter
     if (category) {
       filter.category = category;
     }
 
-    // Build sort query
     let sortQuery = {};
     switch (sort) {
       case 'newest':
@@ -112,14 +105,14 @@ const getCourses = async (req, res) => {
 
  const getCourseDetail = async (req, res) => {
   try {
-    const { id } = req.params;  // Changed from courseId to id
+    const { id } = req.params;  
     const userId = req.session.userId;
 
     const user = userId 
       ? await User.findById(userId).select('enrolledCourses fullName email avatar')
       : null;
 
-    const course = await Course.findById(id)  // Changed from courseId to id
+    const course = await Course.findById(id) 
       .populate('tutor', 'fullName email bio avatar subjects');
 
     if (!course) {
@@ -131,10 +124,9 @@ const getCourses = async (req, res) => {
     
     if (user) {
       isPurchased = user.enrolledCourses?.some(
-        courseId => courseId.toString() === id  // Changed comparison
+        courseId => courseId.toString() === id  
       );
       
-      // Check if course is in cart
       const cart = await Cart.findOne({ user: userId });
       if (cart) {
         isInCart = cart.items.some(item => item.course.toString() === id);

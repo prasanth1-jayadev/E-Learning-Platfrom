@@ -27,6 +27,10 @@ const transactionSchema = new mongoose.Schema({
         enum: ['pending', 'completed', 'failed'],
         default: 'completed'
     },
+    releaseDate: {
+        type: Date,
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -41,6 +45,11 @@ const walletSchema = new mongoose.Schema({
         unique: true
     },
     balance: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    pendingBalance: {
         type: Number,
         default: 0,
         min: 0
@@ -62,7 +71,6 @@ const walletSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Update the updatedAt field before saving
 walletSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();

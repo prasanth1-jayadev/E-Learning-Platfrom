@@ -1,7 +1,6 @@
 import * as userService from '../../service/userService.js';
 import User from '../../models/User.js';
 
-// Get Profile
 const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
@@ -17,7 +16,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-// Get Edit Profile
 const getEditProfile = async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
@@ -33,7 +31,6 @@ const getEditProfile = async (req, res) => {
   }
 };
 
-// Update Profile
 const postUpdateProfile = async (req, res) => {
   try {
     const { fullName, phone } = req.body;
@@ -55,7 +52,6 @@ const postUpdateProfile = async (req, res) => {
   }
 };
 
-// Upload Avatar
 const postUploadAvatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -67,7 +63,6 @@ const postUploadAvatar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update avatar with Cloudinary URL
     user.avatar = req.file.path;
     await user.save();
 
@@ -78,7 +73,6 @@ const postUploadAvatar = async (req, res) => {
   }
 };
 
-// Send Email Change OTP
 const postSendEmailChangeOTP = async (req, res) => {
   try {
     const { newEmail } = req.body;
@@ -100,7 +94,6 @@ const postSendEmailChangeOTP = async (req, res) => {
   }
 };
 
-// Verify Email Change
 const postVerifyEmailChange = async (req, res) => {
   try {
     const { otp, newEmail } = req.body;
@@ -123,7 +116,6 @@ const postVerifyEmailChange = async (req, res) => {
   }
 };
 
-// Resend Email OTP
 const postResendEmailOTP = async (req, res) => {
   try {
     const { email } = req.body;
@@ -136,7 +128,6 @@ const postResendEmailOTP = async (req, res) => {
 };
 
 
-// Get My Courses
 const getMyCourses = async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -145,7 +136,6 @@ const getMyCourses = async (req, res) => {
       return res.redirect('/user/login');
     }
 
-    // Fetch user with enrolled courses
     const user = await User.findById(userId)
       .populate({
         path: 'enrolledCourses',
@@ -172,7 +162,6 @@ const getMyCourses = async (req, res) => {
 
 
 
-// Change Password
 const postChangePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;

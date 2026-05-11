@@ -23,7 +23,6 @@ const getAllCategories = async () => {
     }
 };
 
-// single category id 
 const getCategoryById = async (categoryId) => {
     try {
         const category = await Category.findById(categoryId);
