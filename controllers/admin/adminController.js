@@ -15,7 +15,9 @@ const getLogin = (req, res) => {
 
 const getDashboard = async (req, res) => {
     try {
-        const [pendingTutors, allTutors, students, courses, payments] = await Promise.all([
+        const timeRange = req.query.range || '7days';
+        
+        const [pendingTutors, allTutors, students, courses, payments, analytics] = await Promise.all([
             adminService.getPendingTutorApplications(),
             adminService.getTutorApplications(),
             User.countDocuments({ role: 'user' }),
@@ -30,7 +32,8 @@ const getDashboard = async (req, res) => {
                     { $group: { _id: null, total: { $sum: '$amount' } } }
                 ]);
                 return result[0]?.total || 0;
-            })()
+            })(),
+            adminService.getDashboardAnalytics(timeRange)
         ]);
 
         res.render('admin/dashboard', {
@@ -39,6 +42,8 @@ const getDashboard = async (req, res) => {
             totalStudents: students,
             totalCourses: courses,
             totalRevenue: payments,
+            analytics,
+            timeRange,
             currentPage: 'dashboard'
         });
     } catch (error) {
@@ -49,6 +54,13 @@ const getDashboard = async (req, res) => {
             totalStudents: 0,
             totalCourses: 0,
             totalRevenue: 0,
+            analytics: {
+                revenueData: [],
+                studentGrowth: [],
+                topCourses: [],
+                categoryDistribution: []
+            },
+            timeRange: '7days',
             currentPage: 'dashboard'
         });
     }

@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import Tutor from '../models/Tutor.js';
+import Course from '../models/Course.js';
+import Payment from '../models/Payment.js';
 import { comparePassword } from '../helpers/passwordHelper.js';
 
 const loginAdmin = async (email, password) => {
@@ -197,6 +199,142 @@ const getTutorDetail = async (tutorId) => {
     };
 }
 
+const getDashboardAnalytics = async (timeRange = '7days') => {
+    try {
+        const now = new Date();
+        let startDate = new Date();
+        
+        switch(timeRange) {
+            case '7days':
+                startDate.setDate(now.getDate() - 7);
+                break;
+            case '30days':
+                startDate.setDate(now.getDate() - 30);
+                break;
+            case '1year':
+                startDate.setFullYear(now.getFullYear() - 1);
+                break;
+            default:
+                startDate.setDate(now.getDate() - 7);
+        }
+
+        const revenueData = await Payment.aggregate([
+            {
+                $match: {
+                    status: 'completed',
+                    createdAt: { $gte: startDate }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
+                    },
+                    revenue: { $sum: '$amount' }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$_id',
+                    revenue: { $divide: ['$revenue', 100] } 
+                }
+            }
+        ]);
+
+        const studentGrowth = await User.aggregate([
+            {
+                $match: {
+                    role: 'user',
+                    createdAt: { $gte: startDate }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
+                    },
+                    newStudents: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$_id',
+                    newStudents: 1
+                }
+            }
+        ]);
+
+        const topCourses = await Course.aggregate([
+            {
+                $match: {
+                    isPublished: true
+                }
+            },
+            {
+                $project: {
+                    title: 1,
+                    enrollments: { $size: '$enrolledStudents' }
+                }
+            },
+            {
+                $sort: { enrollments: -1 }
+            },
+            {
+                $limit: 5
+            },
+            {
+                $project: {
+                    _id: 0,
+                    courseTitle: '$title',
+                    enrollments: 1
+                }
+            }
+        ]);
+
+        const categoryDistribution = await Course.aggregate([
+            {
+                $group: {
+                    _id: '$category',
+                    totalCourses: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    category: '$_id',
+                    totalCourses: 1
+                }
+            },
+            {
+                $sort: { totalCourses: -1 }
+            }
+        ]);
+
+        return {
+            revenueData,
+            studentGrowth,
+            topCourses,
+            categoryDistribution
+        };
+    } catch (error) {
+        console.error('Analytics error:', error);
+        return {
+            revenueData: [],
+            studentGrowth: [],
+            topCourses: [],
+            categoryDistribution: []
+        };
+    }
+};
+
 export {
     loginAdmin,
     getTutorApplications,
@@ -206,5 +344,6 @@ export {
     getTutors,
     toggleTutorBlock,
     toggleTutorCertified,
-    getTutorDetail
+    getTutorDetail,
+    getDashboardAnalytics
 };

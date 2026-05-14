@@ -1,15 +1,18 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= course.title %> - Learnify</title>
+    <title>
+        <%= course.title %> - Learnify
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         tailwind.config = {
-            theme: {    
+            theme: {
                 extend: {
                     colors: {
                         primary: '#00d9b1'
@@ -19,404 +22,503 @@
         }
     </script>
 </head>
+
 <body class="bg-gray-50">
     <%- include('../partials/user-navbar') %>
-    
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        
-        <a href="/user/courses" class="inline-flex items-center text-sm text-teal-600 hover:text-teal-700 mb-6">
-            <i class="fas fa-arrow-left mr-2"></i>
-            Back to Courses
-        </a>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <div class="lg:col-span-2 space-y-6">
-                
-    <div class="bg-black rounded-lg overflow-hidden">
-    <% if (course.lessons && course.lessons.length > 0 && course.lessons[0].videoUrl) { %>
-      <!-- First video is always free (preview) -->
-      <video id="mainVideo" controls controlsList="nodownload" oncontextmenu="return false;" class="w-full h-[400px] object-cover">
-        <source src="<%= course.lessons[0].videoUrl %>">
-        Your browser does not support the video tag.
-      </video>
-      <% if (!isPurchased && course.lessons.length > 1) { %>
-        <!-- Show preview badge for non-purchased users -->
-        <div class="bg-gradient-to-r from-teal-600 to-green-600 text-white px-4 py-2 text-sm">
-          <i class="fas fa-eye mr-2"></i>
-          <strong>Free Preview</strong> - Purchase to unlock <%= course.lessons.length - 1 %> more lesson<%= course.lessons.length - 1 > 1 ? 's' : '' %>
-        </div>
-      <% } %>
-    <% } else { %>
-      
-      <div class="text-white p-6 text-center">
-        No video available
-      </div>
+        <div class="max-w-7xl mx-auto px-4 py-6">
 
-    <% } %>
-  </div>
+            <a href="/user/courses" class="inline-flex items-center text-sm text-teal-600 hover:text-teal-700 mb-6">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Courses
+            </a>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-gray-900">Course content</h2>
-                        <span class="text-sm text-gray-500"><%= course.lessons.length %> lessons</span>
-                    </div>
-                    
-                    <div class="space-y-2">
-                        <% if (course.lessons && course.lessons.length > 0) { %>
-                            <% course.lessons.forEach((lesson, index) => { %>
-                                <% if (index === 0) { %>
-                                    <!-- First lesson is always free (preview) -->
-                                    <div onclick="playVideo('<%= lesson.videoUrl || '' %>', 0)" 
-                                         class="border-2 border-teal-200 bg-teal-50 rounded-lg p-4 hover:bg-teal-100 transition cursor-pointer">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-play text-white text-sm"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="flex items-center gap-2">
-                                                        <h3 class="font-semibold text-gray-900 text-sm"><%= lesson.title %></h3>
-                                                        <span class="px-2 py-0.5 bg-teal-600 text-white text-xs rounded-full font-semibold">FREE</span>
-                                                    </div>
-                                                    <p class="text-xs text-gray-600 mt-1"><%= lesson.description || 'Watch this free preview lesson' %></p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-gray-600 font-semibold"><%= lesson.duration || 0 %> min</span>
-                                        </div>
-                                    </div>
-                                <% } else if (isPurchased) { %>
-                                    <!-- Other lessons - unlocked for purchased users -->
-                                    <div onclick="playVideo('<%= lesson.videoUrl || '' %>', <%= index %>)" 
-                                         class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-play text-teal-600 text-sm"></i>
-                                                </div>
-                                                <div>
-                                                    <h3 class="font-semibold text-gray-900 text-sm"><%= lesson.title %></h3>
-                                                    <p class="text-xs text-gray-500 mt-1"><%= lesson.description || 'Lesson ' + (index + 1) %></p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-gray-500"><%= lesson.duration || 0 %> min</span>
-                                        </div>
-                                    </div>
-                                <% } else { %>
-                                    <!-- Other lessons - locked for non-purchased users -->
-                                    <div onclick="showPurchasePrompt()" 
-                                         class="border border-gray-300 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-lock text-gray-600 text-sm"></i>
-                                                </div>
-                                                <div>
-                                                    <h3 class="font-semibold text-gray-700 text-sm"><%= lesson.title %></h3>
-                                                    <p class="text-xs text-gray-500 mt-1">
-                                                        <i class="fas fa-lock mr-1"></i>Locked - Purchase to unlock
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-gray-500"><%= lesson.duration || 0 %> min</span>
-                                        </div>
-                                    </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <div class="lg:col-span-2 space-y-6">
+
+                    <div class="bg-black rounded-lg overflow-hidden">
+                        <% if (course.lessons && course.lessons.length> 0 && course.lessons[0].videoUrl) { %>
+                            <!-- First video is always free (preview) -->
+                            <video id="mainVideo" controls controlsList="nodownload" oncontextmenu="return false;"
+                                class="w-full h-[400px] object-cover">
+                                <source src="<%= course.lessons[0].videoUrl %>">
+                                Your browser does not support the video tag.
+                            </video>
+                            <% if (!isPurchased && course.lessons.length> 1) { %>
+                                <!-- Show preview badge for non-purchased users -->
+                                <div class="bg-gradient-to-r from-teal-600 to-green-600 text-white px-4 py-2 text-sm">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    <strong>Free Preview</strong> - Purchase to unlock <%= course.lessons.length - 1 %>
+                                        more lesson<%= course.lessons.length - 1> 1 ? 's' : '' %>
+                                </div>
                                 <% } %>
-                            <% }); %>
-                        <% } else { %>
-                            <div class="text-center py-8 text-gray-500">
-                                <i class="fas fa-book-open text-4xl mb-3"></i>
-                                <p>No lessons available yet</p>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
+                                    <% } else { %>
 
+                                        <div class="text-white p-6 text-center">
+                                            No video available
+                                        </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <span class="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full mb-3">
-                        <%= course.category %>
-                    </span>
-                    
-                    <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= course.title %></h1>
-                    
-                    <p class="text-gray-600 mb-4"><%= course.description %></p>
-                    
-                    <div class="flex items-center gap-6 text-sm text-gray-500">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-users text-teal-600"></i>
-                            <span><%= course.enrolledStudents.length %> students enrolled</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-clock text-teal-600"></i>
-                            <span>Updated <%= new Date(course.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-book text-teal-600"></i>
-                            <span><%= course.lessons.length %> lessons</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-start gap-4 mb-6">
-                        <% if (course.tutor.avatar) { %>
-                            <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>" class="w-16 h-16 rounded-full object-cover">
-                        <% } else { %>
-                            <div class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center">
-                                <span class="text-teal-700 font-bold text-xl"><%= course.tutor.fullName.charAt(0).toUpperCase() %></span>
-                            </div>
-                        <% } %>
-                        
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900"><%= course.tutor.fullName %></h3>
-                            <p class="text-sm text-gray-500">Professional Instructor</p>
-                            <p class="text-sm text-gray-600 mt-2"><%= course.tutor.bio || 'Expert in ' + course.category + ' with years of teaching experience' %></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">What you'll learn</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
-                            <span class="text-sm text-gray-700">Master <%= course.category %> fundamentals and core concepts</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
-                            <span class="text-sm text-gray-700">Build practical projects and real-world applications</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
-                            <span class="text-sm text-gray-700">Learn industry best practices and professional techniques</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
-                            <span class="text-sm text-gray-700">Get hands-on experience with practical lessons</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
-                            <span class="text-sm text-gray-700">Develop problem-solving and analytical skills</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-teal-600 mt-1"></i>
-                            <span class="text-sm text-gray-700">Apply knowledge to real-world scenarios and projects</span>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">About This Course</h2>
-                    <p class="text-gray-700 leading-relaxed"><%= course.description %></p>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">About the Instructor</h2>
-                    
-                    <div class="flex items-start gap-4">
-                        <% if (course.tutor.avatar) { %>
-                            <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>" class="w-20 h-20 rounded-full object-cover">
-                        <% } else { %>
-                            <div class="w-20 h-20 rounded-full bg-teal-100 flex items-center justify-center">
-                                <span class="text-teal-700 font-bold text-2xl"><%= course.tutor.fullName.charAt(0).toUpperCase() %></span>
-                            </div>
-                        <% } %>
-                        
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-1"><%= course.tutor.fullName %></h3>
-                            <p class="text-sm text-gray-500 mb-2">Course Instructor</p>
-                            <p class="text-sm text-gray-700"><%= course.tutor.bio || 'I am a master in ' + course.category.toLowerCase() %></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden sticky top-6">
-                    
-                    <% if (course.thumbnail) { %>
-                        <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-full h-48 object-cover">
-                    <% } else { %>
-                        <div class="w-full h-48 bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
-                            <i class="fas fa-book text-white text-6xl"></i>
-                        </div>
-                    <% } %>
-                    
-                    <div class="p-6">
-                        
-                        <div class="mb-4">
-                            <% if (course.price === 0) { %>
-                                <span class="text-3xl font-bold text-teal-600">Free</span>
-                            <% } else { %>
-                                <span class="text-3xl font-bold text-teal-600">₹<%= course.price.toLocaleString() %></span>
-                            <% } %>
-                        </div>
-
-                        <!-- Buttons based on purchase status -->
-                        <% if (isPurchased) { %>
-                            <!-- Already Purchased -->
-                            <div class="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
-                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                                <span class="text-green-700 font-semibold">Already Enrolled</span>
-                            </div>
-                            <button onclick="window.location.href='/user/courses'" 
-                                    class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
-                                <i class="fas fa-play-circle mr-2"></i>Continue Learning
-                            </button>
-                        <% } else { %>
-                            <!-- Not Purchased -->
-                            <% if (!user) { %>
-                                <!-- User not logged in -->
-                                <button onclick="window.location.href='/user/login'" 
-                                        class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
-                                    <i class="fas fa-sign-in-alt mr-2"></i>Login to Enroll
-                                </button>
-                            <% } else { %>
-                                <!-- User logged in -->
-                                <% if (course.price === 0) { %>
-                                    <!-- Free Course - Show Enroll Now -->
-                                    <button onclick="enrollFreeCourse('<%= course._id %>')" 
-                                            class="w-full bg-teal-600 text-white font-bold py-4 rounded-xl hover:bg-teal-700 transition mb-3 text-lg shadow-lg">
-                                        <i class="fas fa-graduation-cap mr-2"></i>Enroll Now
-                                    </button>
-                                    <div class="flex gap-3">
-                                        <button class="flex-1 border-2 border-teal-600 text-teal-600 font-semibold py-3 rounded-xl hover:bg-teal-50 transition flex items-center justify-center">
-                                            <i class="fas fa-shopping-cart text-xl"></i>
-                                        </button>
-                                        <button class="flex-1 border-2 border-gray-300 text-gray-600 font-semibold py-3 rounded-xl hover:bg-gray-50 transition flex items-center justify-center">
-                                            <i class="fas fa-heart text-xl"></i>
-                                        </button>
-                                    </div>
-                                <% } else { %>
-                                    <!-- Paid Course - Enroll Now as main button -->
-                                    <button onclick="enrollNowDirect('<%= course._id %>', '<%= course.price %>', '<%= course.title %>')" 
-                                            class="w-full bg-teal-600 text-white font-bold py-2 rounded-xl hover:bg-teal-700 transition mb-3 text-lg shadow-lg">
-                                        <i class="fas fa-graduation-cap mr-2"></i>Enroll Now
-                                    </button>
-                                    <div class="flex gap-3">
-                                        <% if (isInCart) { %>
-                                            <!-- Already in Cart - Disabled State -->
-                                            <button disabled
-                                                    class="flex-1 border-2 border-gray-300 bg-gray-100 text-gray-400 font-semibold py-2 rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
-                                                <i class="fas fa-check-circle text-lg"></i>
-                                                <span class="text-sm">In Cart</span>
-                                            </button>
-                                        <% } else { %>
-                                            <!-- Add to Cart -->
-                                            <button onclick="addToCart('<%= course._id %>')" 
-                                                    class="flex-1 border-2 border-teal-600 text-teal-600 font-semibold py-2 rounded-xl hover:bg-teal-50 transition flex items-center justify-center">
-                                                <i class="fas fa-shopping-cart text-xl"></i>
-                                            </button>
                                         <% } %>
-                                        <button class="flex-1 border-2 border-gray-300 text-gray-600 font-semibold py-2 rounded-xl hover:bg-gray-50 transition flex items-center justify-center">
-                                            <i class="fas fa-heart text-xl"></i>
-                                        </button>
-                                    </div>
-                                <% } %>
-                            <% } %>
-                        <% } %>
+                    </div>
 
-                        <div class="mt-6 pt-6 border-t border-gray-200">
-                            <h3 class="font-bold text-gray-900 mb-3">This course includes:</h3>
-                            
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-3 text-sm text-gray-700">
-                                    <i class="fas fa-video text-teal-600"></i>
-                                    <span><%= course.lessons.length %> on-demand video lessons</span>
-                                </div>
-                                <div class="flex items-center gap-3 text-sm text-gray-700">
-                                    <i class="fas fa-certificate text-teal-600"></i>
-                                    <span>Certificate of completion</span>
-                                </div>
-                                <div class="flex items-center gap-3 text-sm text-gray-700">
-                                    <i class="fas fa-infinity text-teal-600"></i>
-                                    <span>Full lifetime access</span>
-                                </div>
-                                <div class="flex items-center gap-3 text-sm text-gray-700">
-                                    <i class="fas fa-mobile-alt text-teal-600"></i>
-                                    <span>Access on mobile and desktop</span>
-                                </div>
-                                <div class="flex items-center gap-3 text-sm text-gray-700">
-                                    <i class="fas fa-clock text-teal-600"></i>
-                                    <span>Learn at your own pace</span>
-                                </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-bold text-gray-900">Course content</h2>
+                            <span class="text-sm text-gray-500">
+                                <%= course.lessons.length %> lessons
+                            </span>
+                        </div>
+
+                        <div class="space-y-2">
+                            <% if (course.lessons && course.lessons.length> 0) { %>
+                                <% course.lessons.forEach((lesson, index)=> { %>
+                                    <% if (index===0) { %>
+                                        <!-- First lesson is always free (preview) -->
+                                        <div onclick="playVideo('<%= lesson.videoUrl || '' %>', 0)"
+                                            class="border-2 border-teal-200 bg-teal-50 rounded-lg p-4 hover:bg-teal-100 transition cursor-pointer">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center flex-shrink-0">
+                                                        <i class="fas fa-play text-white text-sm"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="flex items-center gap-2">
+                                                            <h3 class="font-semibold text-gray-900 text-sm">
+                                                                <%= lesson.title %>
+                                                            </h3>
+                                                            <span
+                                                                class="px-2 py-0.5 bg-teal-600 text-white text-xs rounded-full font-semibold">FREE</span>
+                                                        </div>
+                                                        <p class="text-xs text-gray-600 mt-1">
+                                                            <%= lesson.description || 'Watch this free preview lesson'
+                                                                %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <span class="text-xs text-gray-600 font-semibold">
+                                                    <%= lesson.duration || 0 %> min
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <% } else if (isPurchased) { %>
+                                            <!-- Other lessons - unlocked for purchased users -->
+                                            <div onclick="playVideo('<%= lesson.videoUrl || '' %>', <%= index %>)"
+                                                class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center gap-3">
+                                                        <div
+                                                            class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
+                                                            <i class="fas fa-play text-teal-600 text-sm"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h3 class="font-semibold text-gray-900 text-sm">
+                                                                <%= lesson.title %>
+                                                            </h3>
+                                                            <p class="text-xs text-gray-500 mt-1">
+                                                                <%= lesson.description || 'Lesson ' + (index + 1) %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-xs text-gray-500">
+                                                        <%= lesson.duration || 0 %> min
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <% } else { %>
+                                                <!-- Other lessons - locked for non-purchased users -->
+                                                <div onclick="showPurchasePrompt()"
+                                                    class="border border-gray-300 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex items-center gap-3">
+                                                            <div
+                                                                class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                                                                <i class="fas fa-lock text-gray-600 text-sm"></i>
+                                                            </div>
+                                                            <div>
+                                                                <h3 class="font-semibold text-gray-700 text-sm">
+                                                                    <%= lesson.title %>
+                                                                </h3>
+                                                                <p class="text-xs text-gray-500 mt-1">
+                                                                    <i class="fas fa-lock mr-1"></i>Locked - Purchase to
+                                                                    unlock
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-xs text-gray-500">
+                                                            <%= lesson.duration || 0 %> min
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                                                    <% }); %>
+                                                        <% } else { %>
+                                                            <div class="text-center py-8 text-gray-500">
+                                                                <i class="fas fa-book-open text-4xl mb-3"></i>
+                                                                <p>No lessons available yet</p>
+                                                            </div>
+                                                            <% } %>
+                        </div>
+                    </div>
+
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <span
+                            class="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full mb-3">
+                            <%= course.category %>
+                        </span>
+
+                        <h1 class="text-3xl font-bold text-gray-900 mb-3">
+                            <%= course.title %>
+                        </h1>
+
+                        <p class="text-gray-600 mb-4">
+                            <%= course.description %>
+                        </p>
+
+                        <div class="flex items-center gap-6 text-sm text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-users text-teal-600"></i>
+                                <span>
+                                    <%= course.enrolledStudents.length %> students enrolled
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-teal-600"></i>
+                                <span>Updated <%= new Date(course.updatedAt).toLocaleDateString('en-US', {
+                                        month: 'short' , day: 'numeric' , year: 'numeric' }) %></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-book text-teal-600"></i>
+                                <span>
+                                    <%= course.lessons.length %> lessons
+                                </span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-start gap-4 mb-6">
+
+                            <a href="/user/tutor/<%= course.tutor._id %>" class="flex-shrink-0">
+                                <% if (course.tutor.avatar) { %>
+                                    <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>"
+                                        class="w-16 h-16 rounded-full object-cover hover:ring-4 hover:ring-primary/20 transition">
+                                <% } else { %>
+                                    <div class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center hover:ring-4 hover:ring-primary/20 transition">
+                                        <span class="text-teal-700 font-bold text-xl">
+                                            <%= course.tutor.fullName.charAt(0).toUpperCase() %>
+                                        </span>
+                                    </div>
+                                <% } %>
+                            </a>
+
+                                        <div>
+                                            <!-- Clickable Tutor Name -->
+                                            <a href="/user/tutor/<%= course.tutor._id %>"
+                                                class="text-lg font-bold text-gray-900 hover:text-teal-600 transition">
+                                                <%= course.tutor.fullName %>
+                                            </a>
+
+                                            <p class="text-sm text-gray-500">
+                                                Professional Instructor
+                                            </p>
+
+                                            <p class="text-sm text-gray-600 mt-2">
+                                                <%= course.tutor.bio || 'Expert in ' + course.category
+                                                    + ' with years of teaching experience' %>
+                                            </p>
+                                        </div>
+
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-4">What you'll learn</h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                                <span class="text-sm text-gray-700">Master <%= course.category %> fundamentals and core
+                                        concepts</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                                <span class="text-sm text-gray-700">Build practical projects and real-world
+                                    applications</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                                <span class="text-sm text-gray-700">Learn industry best practices and professional
+                                    techniques</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                                <span class="text-sm text-gray-700">Get hands-on experience with practical
+                                    lessons</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                                <span class="text-sm text-gray-700">Develop problem-solving and analytical skills</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-teal-600 mt-1"></i>
+                                <span class="text-sm text-gray-700">Apply knowledge to real-world scenarios and
+                                    projects</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-4">About This Course</h2>
+                        <p class="text-gray-700 leading-relaxed">
+                            <%= course.description %>
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-4">About the Instructor</h2>
+
+                        <div class="flex items-start gap-4">
+                            <% if (course.tutor.avatar) { %>
+                                <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>"
+                                    class="w-20 h-20 rounded-full object-cover">
+                                <% } else { %>
+                                    <div class="w-20 h-20 rounded-full bg-teal-100 flex items-center justify-center">
+                                        <span class="text-teal-700 font-bold text-2xl">
+                                            <%= course.tutor.fullName.charAt(0).toUpperCase() %>
+                                        </span>
+                                    </div>
+                                    <% } %>
+
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900 mb-1">
+                                                <%= course.tutor.fullName %>
+                                            </h3>
+                                            <p class="text-sm text-gray-500 mb-2">Course Instructor</p>
+                                            <p class="text-sm text-gray-700">
+                                                <%= course.tutor.bio || 'I am a master in ' +
+                                                    course.category.toLowerCase() %>
+                                            </p>
+                                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden sticky top-6">
+
+                        <% if (course.thumbnail) { %>
+                            <img src="<%= course.thumbnail %>" alt="<%= course.title %>"
+                                class="w-full h-48 object-cover">
+                            <% } else { %>
+                                <div
+                                    class="w-full h-48 bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                                    <i class="fas fa-book text-white text-6xl"></i>
+                                </div>
+                                <% } %>
+
+                                    <div class="p-6">
+
+                                        <div class="mb-4">
+                                            <% if (course.price===0) { %>
+                                                <span class="text-3xl font-bold text-teal-600">Free</span>
+                                                <% } else { %>
+                                                    <span class="text-3xl font-bold text-teal-600">₹<%=
+                                                            course.price.toLocaleString() %></span>
+                                                    <% } %>
+                                        </div>
+
+                                        <!-- Buttons based on purchase status -->
+                                        <% if (isPurchased) { %>
+                                            <!-- Already Purchased -->
+                                            <div
+                                                class="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                                <span class="text-green-700 font-semibold">Already Enrolled</span>
+                                            </div>
+                                            <button onclick="window.location.href='/user/courses'"
+                                                class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
+                                                <i class="fas fa-play-circle mr-2"></i>Continue Learning
+                                            </button>
+                                            <% } else { %>
+                                                <!-- Not Purchased -->
+                                                <% if (!user) { %>
+                                                    <!-- User not logged in -->
+                                                    <button onclick="window.location.href='/user/login'"
+                                                        class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
+                                                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Enroll
+                                                    </button>
+                                                    <% } else { %>
+                                                        <!-- User logged in -->
+                                                        <% if (course.price===0) { %>
+                                                            <!-- Free Course - Show Enroll Now -->
+                                                            <button onclick="enrollFreeCourse('<%= course._id %>')"
+                                                                class="w-full bg-teal-600 text-white font-bold py-4 rounded-xl hover:bg-teal-700 transition mb-3 text-lg shadow-lg">
+                                                                <i class="fas fa-graduation-cap mr-2"></i>Enroll Now
+                                                            </button>
+                                                            <div class="flex gap-3">
+                                                                <button
+                                                                    class="flex-1 border-2 border-teal-600 text-teal-600 font-semibold py-3 rounded-xl hover:bg-teal-50 transition flex items-center justify-center">
+                                                                    <i class="fas fa-shopping-cart text-xl"></i>
+                                                                </button>
+                                                                <button
+                                                                    class="flex-1 border-2 border-gray-300 text-gray-600 font-semibold py-3 rounded-xl hover:bg-gray-50 transition flex items-center justify-center">
+                                                                    <i class="fas fa-heart text-xl"></i>
+                                                                </button>
+                                                            </div>
+                                                            <% } else { %>
+                                                                <!-- Paid Course - Enroll Now as main button -->
+                                                                <button
+                                                                    onclick="enrollNowDirect('<%= course._id %>', '<%= course.price %>', '<%= course.title %>')"
+                                                                    class="w-full bg-teal-600 text-white font-bold py-2 rounded-xl hover:bg-teal-700 transition mb-3 text-lg shadow-lg">
+                                                                    <i class="fas fa-graduation-cap mr-2"></i>Enroll Now
+                                                                </button>
+                                                                <div class="flex gap-3">
+                                                                    <% if (isInCart) { %>
+                                                                        <!-- Already in Cart - Disabled State -->
+                                                                        <button disabled
+                                                                            class="flex-1 border-2 border-gray-300 bg-gray-100 text-gray-400 font-semibold py-2 rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+                                                                            <i class="fas fa-check-circle text-lg"></i>
+                                                                            <span class="text-sm">In Cart</span>
+                                                                        </button>
+                                                                        <% } else { %>
+                                                                            <!-- Add to Cart -->
+                                                                            <button
+                                                                                onclick="addToCart('<%= course._id %>')"
+                                                                                class="flex-1 border-2 border-teal-600 text-teal-600 font-semibold py-2 rounded-xl hover:bg-teal-50 transition flex items-center justify-center">
+                                                                                <i
+                                                                                    class="fas fa-shopping-cart text-xl"></i>
+                                                                            </button>
+                                                                            <% } %>
+                                                                                <button
+                                                                                    class="flex-1 border-2 border-gray-300 text-gray-600 font-semibold py-2 rounded-xl hover:bg-gray-50 transition flex items-center justify-center">
+                                                                                    <i class="fas fa-heart text-xl"></i>
+                                                                                </button>
+                                                                </div>
+                                                                <% } %>
+                                                                    <% } %>
+                                                                        <% } %>
+
+                                                                            <div
+                                                                                class="mt-6 pt-6 border-t border-gray-200">
+                                                                                <h3
+                                                                                    class="font-bold text-gray-900 mb-3">
+                                                                                    This course includes:</h3>
+
+                                                                                <div class="space-y-3">
+                                                                                    <div
+                                                                                        class="flex items-center gap-3 text-sm text-gray-700">
+                                                                                        <i
+                                                                                            class="fas fa-video text-teal-600"></i>
+                                                                                        <span>
+                                                                                            <%= course.lessons.length %>
+                                                                                                on-demand video lessons
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="flex items-center gap-3 text-sm text-gray-700">
+                                                                                        <i
+                                                                                            class="fas fa-certificate text-teal-600"></i>
+                                                                                        <span>Certificate of
+                                                                                            completion</span>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="flex items-center gap-3 text-sm text-gray-700">
+                                                                                        <i
+                                                                                            class="fas fa-infinity text-teal-600"></i>
+                                                                                        <span>Full lifetime
+                                                                                            access</span>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="flex items-center gap-3 text-sm text-gray-700">
+                                                                                        <i
+                                                                                            class="fas fa-mobile-alt text-teal-600"></i>
+                                                                                        <span>Access on mobile and
+                                                                                            desktop</span>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="flex items-center gap-3 text-sm text-gray-700">
+                                                                                        <i
+                                                                                            class="fas fa-clock text-teal-600"></i>
+                                                                                        <span>Learn at your own
+                                                                                            pace</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                    </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
 
 
 
-    <!-- your entire page code -->
+        <!-- your entire page code -->
 
-<!-- Razorpay Checkout Script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <!-- Razorpay Checkout Script -->
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<script>
-  const isPurchased = <%= isPurchased ? 'true' : 'false' %>;
-  const totalLessons = <%= course.lessons.length %>;
-  
-  function playVideo(url, lessonIndex) {
-    // First lesson (index 0) is always free
-    if (lessonIndex === 0) {
-      // Allow playing first video for everyone
-      const video = document.getElementById('mainVideo');
-      const source = video.querySelector("source");
+        <script>
+            const isPurchased = <%= isPurchased ? 'true' : 'false' %>;
+            const totalLessons = <%= course.lessons.length %>;
 
-      if (!url) {
-        console.error("No video URL found");
-        return;
-      }
+            function playVideo(url, lessonIndex) {
+                // First lesson (index 0) is always free
+                if (lessonIndex === 0) {
+                    // Allow playing first video for everyone
+                    const video = document.getElementById('mainVideo');
+                    const source = video.querySelector("source");
 
-      source.src = url;
-      video.load();
-      video.play();
+                    if (!url) {
+                        console.error("No video URL found");
+                        return;
+                    }
 
-      video.scrollIntoView({
-          behavior:'smooth',
-          block:'center'
-      });
-      return;
-    }
+                    source.src = url;
+                    video.load();
+                    video.play();
 
-    // For other lessons, check if user has purchased
-    if (!isPurchased && lessonIndex > 0) {
-      showPurchasePrompt();
-      return;
-    }
+                    video.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    return;
+                }
 
-    // Play video for purchased users
-    const video = document.getElementById('mainVideo');
-    const source = video.querySelector("source");
+                // For other lessons, check if user has purchased
+                if (!isPurchased && lessonIndex > 0) {
+                    showPurchasePrompt();
+                    return;
+                }
 
-    if (!url) {
-      console.error("No video URL found");
-      return;
-    }
+                // Play video for purchased users
+                const video = document.getElementById('mainVideo');
+                const source = video.querySelector("source");
 
-    source.src = url;
-    video.load();
-    video.play();
+                if (!url) {
+                    console.error("No video URL found");
+                    return;
+                }
 
-    video.scrollIntoView({
-        behavior:'smooth',
-        block:'center'
-    });
-  }
+                source.src = url;
+                video.load();
+                video.play();
 
-  function showPurchasePrompt() {
-    Swal.fire({
-      title: '🔒 Lesson Locked',
-      html: `
+                video.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+
+            function showPurchasePrompt() {
+                Swal.fire({
+                    title: '🔒 Lesson Locked',
+                    html: `
         <p class="text-gray-600 mb-4">This lesson is locked. Purchase the course to unlock all ${totalLessons - 1} remaining lessons.</p>
         <div class="bg-teal-50 border border-teal-200 rounded-lg p-4 text-left">
           <p class="font-semibold text-teal-900 mb-2">What you'll get:</p>
@@ -428,187 +530,188 @@
           </ul>
         </div>
       `,
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonColor: '#00d9b1',
-      cancelButtonColor: '#6B7280',
-      confirmButtonText: '<i class="fas fa-shopping-cart mr-2"></i>Purchase Now',
-      cancelButtonText: 'Maybe Later'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Scroll to purchase section
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-  }
-
-  // Prevent right-click on video
-  document.addEventListener('contextmenu', function(e) {
-    if (e.target.tagName === 'VIDEO' || e.target.tagName === 'SOURCE') {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  // Add to Cart
-  async function addToCart(courseId) {
-    try {
-        const response = await fetch('/user/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ courseId })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            // Update cart count in navbar
-            if (typeof window.updateCartCount === 'function') {
-                window.updateCartCount();
-            }
-            
-            await Swal.fire({
-                title: 'Added to Cart!',
-                text: 'Course has been added to your cart.',
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonColor: '#00d9b1',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'View Cart',
-                cancelButtonText: 'Continue Shopping'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/user/cart';
-                } else {
-                    window.location.reload();
-                }
-            });
-        } else {
-            Swal.fire({
-                title: 'Error!',
-                text: data.message || 'Failed to add to cart',
-                icon: 'error'
-            });
-        }
-    } catch (error) {
-        console.error('Add to cart error:', error);
-        Swal.fire({
-            title: 'Error!',
-            text: 'Failed to add to cart. Please try again.',
-            icon: 'error'
-        });
-    }
-  }
-
-  // Enroll Now Direct (Single Course Payment)
-  async function enrollNowDirect(courseId, price, title) {
-    try {
-        const response = await fetch('/user/payment/create-order', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ courseIds: [courseId] })
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-            alert(data.message || 'Failed to create order');
-            return;
-        }
-
-        const options = {
-            key: 'rzp_test_RXk9uJlrmjEW0r',
-            amount: data.order.amount,
-            currency: data.order.currency,
-            name: 'Learnify',
-            description: title,
-            order_id: data.order.id,
-            handler: async function (response) {
-                const verifyResponse = await fetch('/user/payment/verify', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        courseIds: [courseId]
-                    })
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9b1',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: '<i class="fas fa-shopping-cart mr-2"></i>Purchase Now',
+                    cancelButtonText: 'Maybe Later'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Scroll to purchase section
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
                 });
+            }
 
-                const verifyData = await verifyResponse.json();
-
-                console.log('Payment verification response:', verifyData);
-
-                if (verifyData.success) {
-                    console.log('Redirecting to:', verifyData.redirectUrl);
-                    // Redirect to success page
-                    window.location.href = verifyData.redirectUrl || '/user/payment/success';
-                } else {
-                    console.log('Payment failed, redirecting to failure page');
-                    // Redirect to failure page
-                    window.location.href = `/user/payment/failure?error=${encodeURIComponent(verifyData.message)}`;
+            // Prevent right-click on video
+            document.addEventListener('contextmenu', function (e) {
+                if (e.target.tagName === 'VIDEO' || e.target.tagName === 'SOURCE') {
+                    e.preventDefault();
+                    return false;
                 }
-            },
-            prefill: {
-                name: '<%= user ? user.fullName : "" %>',
-                email: '<%= user ? user.email : "" %>'
-            },
-            theme: {
-                color: '#00d9b1'
-            },
-            modal: {
-                ondismiss: function() {
-                    // Redirect to failure page if user closes modal
-                    window.location.href = '/user/payment/failure?error=Payment cancelled by user';
+            });
+
+            // Add to Cart
+            async function addToCart(courseId) {
+                try {
+                    const response = await fetch('/user/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ courseId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Update cart count in navbar
+                        if (typeof window.updateCartCount === 'function') {
+                            window.updateCartCount();
+                        }
+
+                        await Swal.fire({
+                            title: 'Added to Cart!',
+                            text: 'Course has been added to your cart.',
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonColor: '#00d9b1',
+                            cancelButtonColor: '#6B7280',
+                            confirmButtonText: 'View Cart',
+                            cancelButtonText: 'Continue Shopping'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/user/cart';
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message || 'Failed to add to cart',
+                            icon: 'error'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Add to cart error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to add to cart. Please try again.',
+                        icon: 'error'
+                    });
                 }
             }
-        };
 
-        const razorpay = new Razorpay(options);
-        razorpay.on('payment.failed', function (response) {
-            // Redirect to failure page on payment failure
-            window.location.href = `/user/payment/failure?orderId=${response.error.metadata.order_id}&error=${encodeURIComponent(response.error.description)}`;
-        });
-        razorpay.open();
+            // Enroll Now Direct (Single Course Payment)
+            async function enrollNowDirect(courseId, price, title) {
+                try {
+                    const response = await fetch('/user/payment/create-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ courseIds: [courseId] })
+                    });
 
-    } catch (error) {
-        console.error('Payment error:', error);
-        alert('Payment failed. Please try again.');
-    }
-  }
+                    const data = await response.json();
 
-  // Enroll in Free Course
-  async function enrollFreeCourse(courseId) {
-    try {
-        const response = await fetch('/user/enroll-free', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ courseId })
-        });
+                    if (!data.success) {
+                        alert(data.message || 'Failed to create order');
+                        return;
+                    }
 
-        const data = await response.json();
+                    const options = {
+                        key: 'rzp_test_RXk9uJlrmjEW0r',
+                        amount: data.order.amount,
+                        currency: data.order.currency,
+                        name: 'Learnify',
+                        description: title,
+                        order_id: data.order.id,
+                        handler: async function (response) {
+                            const verifyResponse = await fetch('/user/payment/verify', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    courseIds: [courseId]
+                                })
+                            });
 
-        if (data.success) {
-            alert('Successfully enrolled in the course!');
-            window.location.reload();
-        } else {
-            alert(data.message || 'Enrollment failed');
-        }
-    } catch (error) {
-        console.error('Enrollment error:', error);
-        alert('Enrollment failed. Please try again.');
-    }
-  }
-</script>
+                            const verifyData = await verifyResponse.json();
+
+                            console.log('Payment verification response:', verifyData);
+
+                            if (verifyData.success) {
+                                console.log('Redirecting to:', verifyData.redirectUrl);
+                                // Redirect to success page
+                                window.location.href = verifyData.redirectUrl || '/user/payment/success';
+                            } else {
+                                console.log('Payment failed, redirecting to failure page');
+                                // Redirect to failure page
+                                window.location.href = `/user/payment/failure?error=${encodeURIComponent(verifyData.message)}&courseIds=${courseId}`;
+                            }
+                        },
+                        prefill: {
+                            name: '<%= user ? user.fullName : "" %>',
+                            email: '<%= user ? user.email : "" %>'
+                        },
+                        theme: {
+                            color: '#00d9b1'
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                // Redirect to failure page if user closes modal
+                                window.location.href = `/user/payment/failure?error=Payment cancelled by user&courseIds=${courseId}`;
+                            }
+                        }
+                    };
+
+                    const razorpay = new Razorpay(options);
+                    razorpay.on('payment.failed', function (response) {
+                        // Redirect to failure page on payment failure
+                        window.location.href = `/user/payment/failure?orderId=${response.error.metadata.order_id}&error=${encodeURIComponent(response.error.description)}&courseIds=${courseId}`;
+                    });
+                    razorpay.open();
+
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    alert('Payment failed. Please try again.');
+                }
+            }
+
+            // Enroll in Free Course
+            async function enrollFreeCourse(courseId) {
+                try {
+                    const response = await fetch('/user/enroll-free', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ courseId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Successfully enrolled in the course!');
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Enrollment failed');
+                    }
+                } catch (error) {
+                    console.error('Enrollment error:', error);
+                    alert('Enrollment failed. Please try again.');
+                }
+            }
+        </script>
 
 
 </body>
+
 </html>

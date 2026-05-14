@@ -43,6 +43,7 @@ router.post('/course/:id/add-lesson', isTutor, isTutorApproved, uploadVideo.sing
 router.get('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, tutorController.getEditLessonPage);
 router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, uploadVideo.single('video'), tutorController.updateLesson);
 router.delete('/course/:id/lesson/:lessonId', isTutor, isTutorApproved, tutorController.deleteLesson);
+
 router.post('/courses/create', isTutor, isTutorApproved, (req, res, next) => {
     upload.single('thumbnail')(req, res, (err) => {
         if (err) {

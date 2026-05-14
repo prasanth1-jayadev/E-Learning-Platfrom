@@ -133,7 +133,6 @@ const postSendEmailChangeOTP = async (req, res) => {
 
         const newEmailTrimmed = newEmail.trim().toLowerCase();
 
-        // Check if new email already exists
         const existingTutor = await Tutor.findOne({ email: newEmailTrimmed });
         if (existingTutor) {
             return res.status(400).json({ message: 'Email already in use' });
@@ -337,7 +336,6 @@ const postSignup = async (req, res) => {
             return res.status(400).json({ message: 'File size must be less than 5MB' });
         }
 
-        // Cloudinary returns: path (URL) and filename (public_id)
         await tutorService.registerTutor({
             fullName: fullName.trim(),
             email: email.trim(),

@@ -16,7 +16,6 @@ export const createOrder = async (req, res) => {
       return res.status(401).json({ success: false, message: "Please login first" });
     }
 
-    // Calculate total amount
     let totalAmount = 0;
     const courses = await Course.find({ _id: { $in: courseIds } });
     
@@ -61,7 +60,7 @@ export const verifyPayment = async (req, res) => {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      courseIds // Now accepts array of course IDs
+      courseIds 
     } = req.body;
 
     const userId = req.session.userId;
@@ -85,7 +84,6 @@ export const verifyPayment = async (req, res) => {
 
     console.log('Payment signature verified successfully');
 
-    // Enroll user in all courses
     let totalAmount = 0;
     for (const courseId of courseIds) {
       const course = await Course.findById(courseId);
@@ -102,7 +100,6 @@ export const verifyPayment = async (req, res) => {
 
     console.log('User enrolled in courses, total amount:', totalAmount);
 
-    // Clear cart after successful payment
     await cartService.clearCart(userId);
 
     const redirectUrl = `/user/payment/success?orderId=${razorpay_order_id}&paymentId=${razorpay_payment_id}&amount=${totalAmount}`;
@@ -171,7 +168,6 @@ export const getPaymentSuccess = async (req, res) => {
       return res.redirect('/user/login');
     }
 
-    // Fetch user from database
     const user = await User.findById(userId);
     console.log('User found:', user ? user.fullName : 'NOT FOUND');
 
@@ -180,7 +176,6 @@ export const getPaymentSuccess = async (req, res) => {
       return res.redirect('/user/login');
     }
 
-    // Fetch payment details and enrolled courses - FIXED: use 'course' not 'courseId'
     const payments = await Payment.find({ orderId }).populate('course');
     console.log('Payments found:', payments.length);
     
@@ -210,7 +205,6 @@ export const getPaymentSuccess = async (req, res) => {
   }
 };
 
-// Payment Failure Page
 export const getPaymentFailure = async (req, res) => {
   try {
     const { orderId, error } = req.query;
@@ -220,10 +214,8 @@ export const getPaymentFailure = async (req, res) => {
       return res.redirect('/user/login');
     }
 
-    // Fetch user from database
     const user = await User.findById(userId);
 
-    // Get cart items to show what was attempted
     const cart = await cartService.getCart(userId);
     const courses = cart.items.map(item => item.course).filter(c => c);
 
@@ -238,6 +230,6 @@ export const getPaymentFailure = async (req, res) => {
 
   } catch (error) {
     console.error('Payment failure page error:', error);
-    res.redirect('/user/cart');
+    res.redirect('/user/payment-payment-failure');
   }
 };

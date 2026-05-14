@@ -21,7 +21,7 @@ export const releasePendingFunds = async () => {
             
             wallet.transactions.forEach(transaction => {
                 if (
-                    transaction.status === 'pending' && 
+                    transaction.status === 'pending' &&    
                     transaction.releaseDate && 
                     transaction.releaseDate <= now
                 ) {
@@ -57,9 +57,9 @@ export const releasePendingFunds = async () => {
 };
 
 
-
+ // Run every at 2:00 AM
 export const initCronJobs = () => {
-    // Run every day at 2:00 AM
+   
     cron.schedule('0 2 * * *', async () => {
         console.log('Starting scheduled pending funds release...');
         await releasePendingFunds();

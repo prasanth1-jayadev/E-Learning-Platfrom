@@ -10,6 +10,7 @@ export const getOrCreateWallet = async (tutorId) => {
             wallet = new Wallet({
                 tutor: tutorId,
                 balance: 0,
+                pendingBalance: 0, 
                 totalEarnings: 0,
                 totalWithdrawn: 0,
                 transactions: []
@@ -28,11 +29,10 @@ export const addCredit = async (tutorId, amount, description, orderId = null, co
     try {
         const wallet = await getOrCreateWallet(tutorId);
         
-        // Set release date to 7 days from now
+        // from now to 7 days release
         const releaseDate = new Date();
         releaseDate.setDate(releaseDate.getDate() + 7);
         
-        // Add to pending balance (not available for withdrawal yet)
         wallet.pendingBalance += amount;
         wallet.totalEarnings += amount;
         
@@ -155,9 +155,7 @@ export const getAllWallets = async () => {
     }
 };
 
-/**
- * Get platform revenue statistics (admin)
- */
+
 export const getPlatformStats = async () => {
     try {
         const wallets = await Wallet.find();

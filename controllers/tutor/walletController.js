@@ -1,11 +1,7 @@
 import * as walletService from '../../service/walletService.js';
 
-/**
- * Get tutor wallet page
- */
 export const getWallet = async (req, res) => {
     try {
-        // Check if user is authenticated
         if (!req.user || !req.user._id) {
             return res.redirect('/tutor/login');
         }
@@ -14,12 +10,10 @@ export const getWallet = async (req, res) => {
         
         const { wallet, courseRevenue, monthlyRevenue } = await walletService.getRevenueStats(tutorId);
         
-        // Populate tutor data in wallet if not already populated
         if (!wallet.tutor || !wallet.tutor.fullName) {
             await wallet.populate('tutor', 'fullName email');
         }
         
-        // Sort transactions by date (newest first)
         const sortedTransactions = wallet.transactions.sort((a, b) => 
             new Date(b.createdAt) - new Date(a.createdAt)
         );
@@ -37,7 +31,6 @@ export const getWallet = async (req, res) => {
         console.error('Error fetching wallet:', error);
         console.error('req.user:', req.user);
         
-        // If user exists but there's an error, show the page with empty data
         if (req.user && req.user._id) {
             res.render('tutor/wallet', {
                 tutor: req.user,
@@ -49,15 +42,12 @@ export const getWallet = async (req, res) => {
                 error: 'Failed to load wallet data'
             });
         } else {
-            // If no user, redirect to login
             res.redirect('/tutor/login');
         }
     }
 };
 
-/**
- * Request withdrawal
- */
+
 export const requestWithdrawal = async (req, res) => {
     try {
         const tutorId = req.user._id;

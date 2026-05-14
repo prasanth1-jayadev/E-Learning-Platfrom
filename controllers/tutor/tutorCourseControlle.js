@@ -2,7 +2,7 @@ const Course = require('../models/Course');
 
 const getTutorCourses = async (req, res) => {
   try {
-    const tutorId = req.tutor._id; // make sure this exists
+    const tutorId = req.tutor._id; 
 
     const courses = await Course.find({ tutor: tutorId });
 

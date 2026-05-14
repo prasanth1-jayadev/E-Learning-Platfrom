@@ -2,9 +2,7 @@ import Course from '../../models/Course.js';
 import Tutor from '../../models/Tutor.js';
 import * as adminService from '../../service/adminService.js';
 
-/**
- * Get all courses with pagination, search, and filters
- */
+
 const getCourses = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -32,10 +30,8 @@ const getCourses = async (req, res) => {
             query.category = category;
         }
 
-        // Get total count
         const totalCourses = await Course.countDocuments(query);
 
-        // Get courses with tutor details
         const courses = await Course.find(query)
             .populate('tutor', 'fullName email profilePicture')
             .sort({ createdAt: -1 })
@@ -45,7 +41,6 @@ const getCourses = async (req, res) => {
         const totalPages = Math.ceil(totalCourses / limit);
         const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
 
-        // Get unique categories for filter
         const categories = await Course.distinct('category');
 
         res.render('admin/courses', {
@@ -88,9 +83,8 @@ const getCourses = async (req, res) => {
     }
 };
 
-/**
- * Get course detail with lessons
- */
+
+
 const getCourseDetail = async (req, res) => {
     try {
         const { id } = req.params;
@@ -150,9 +144,7 @@ const toggleCourseStatus = async (req, res) => {
     }
 };
 
-/**
- * Delete course
- */
+
 const deleteCourse = async (req, res) => {
     try {
         const { id } = req.params;
@@ -162,7 +154,6 @@ const deleteCourse = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Course not found' });
         }
 
-        // Check if course has enrolled students
         if (course.enrolledStudents && course.enrolledStudents.length > 0) {
             return res.status(400).json({ 
                 success: false, 
