@@ -5,6 +5,7 @@ import * as pageController from '../controllers/user/pageController.js';
 import * as courseController from '../controllers/user/userCourseController.js';
 import * as tutorController from '../controllers/user/userTutorController.js';
 import * as cartController from '../controllers/user/cartController.js';
+import * as wishlistController from '../controllers/user/wishlistController.js';
 import { isUser, redirectIfUser } from '../middleware/authMiddleware.js';
 import passport from '../config/passport.js';
 import { upload } from '../config/cloudinary.js';
@@ -67,11 +68,20 @@ router.post('/enroll-free', isUser, paymentController.enrollFree);
 router.get('/payment/success', isUser, paymentController.getPaymentSuccess);
 router.get('/payment/failure', isUser, paymentController.getPaymentFailure);
 
+// Invoice Route
+    router.get('/invoice/:orderId', isUser, paymentController.downloadInvoice);
+
 // Cart Routes
 router.get('/cart', isUser, cartController.getCart);
 router.post('/cart/add', isUser, cartController.addToCart);
 router.post('/cart/remove/:courseId', isUser, cartController.removeFromCart);
 router.get('/cart/count', isUser, cartController.getCartCount);
+
+// Wishlist Routes
+router.get('/wishlist', isUser, wishlistController.getWishlist);
+router.post('/wishlist/add', isUser, wishlistController.addToWishlist);
+router.post('/wishlist/remove/:courseId', isUser, wishlistController.removeFromWishlist);
+router.get('/wishlist/check/:courseId', isUser, wishlistController.checkWishlist);
 
 // Course Routes
 router.get('/courses', courseController.getCourses);

@@ -4,188 +4,402 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tutor Dashboard - Learnify</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
-    
-    /* Main Content Styles */
-    .main-content { 
-        margin-left: 260px; 
-        flex: 1; 
-        padding: 2rem; 
-        width: calc(100% - 260px);
-        min-height: 100vh;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00d9b1',
+            'background-light': '#F9FAFB'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
     }
-    
-    /* Dashboard specific styles */
-    .dashboard-header { background: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .dashboard-header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
-    .dashboard-header p { color: #666; font-size: 0.9rem; }
-    
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
-    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .stat-card h3 { font-size: 0.75rem; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
-    .stat-card .value { font-size: 2rem; font-weight: 700; color: #1a1a1a; }
-    .stat-card.blue { border-left: 4px solid #3b82f6; }
-    .stat-card.green { border-left: 4px solid #10b981; }
-    .stat-card.purple { border-left: 4px solid #8b5cf6; }
-    .stat-card.yellow { border-left: 4px solid #f59e0b; }
-    
-    .content-card { background: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .content-card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
-    
-    .alert-banner { background: #fef3c7; border: 1px solid #fde68a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; }
-    .alert-banner .icon { width: 48px; height: 48px; background: #fbbf24; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .alert-banner .content h3 { font-size: 1.1rem; font-weight: 700; color: #92400e; margin-bottom: 0.5rem; }
-    .alert-banner .content p { color: #92400e; font-size: 0.9rem; line-height: 1.6; }
-    
-    .chart-placeholder { height: 250px; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px dashed #e5e7eb; }
-    .chart-placeholder .text { text-align: center; color: #9ca3af; }
-    
-    table { width: 100%; border-collapse: collapse; }
-    table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb; }
-    table td { padding: 1rem; border-bottom: 1px solid #f3f4f6; }
-    
-    /* Responsive */
-    @media (max-width: 1439px) {
-        .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 1.75rem; }
-    }
-    
-    @media (max-width: 1023px) {
-        .main-content { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
-        .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    
-    @media (max-width: 899px) {
-        .main-content { margin-left: 200px; width: calc(100% - 200px); padding: 1.25rem; }
-    }
-    
-    @media (max-width: 767px) {
-        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
-        .stats-grid { grid-template-columns: 1fr; }
-        .dashboard-header { padding: 1rem; }
-        .dashboard-header h1 { font-size: 1.25rem; }
-        .content-card { padding: 1rem; }
-    }
-  </style>
+  </script>
 </head>
-<body>
+<body class="bg-background-light">
 
 <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'dashboard' }) %>
 
-<!-- Dashboard Content -->
-<div class="main-content">
-    <!-- Approval Status Banner -->
-    <% if (!isApproved) { %>
-    <div class="alert-banner">
-      <div class="icon">
-        <svg style="width: 24px; height: 24px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-      </div>
-      <div class="content">
-        <h3>Account Under Review</h3>
-        <p>Your tutor application is currently being reviewed by our admin team. Once approved, you'll have access to all tutor features including course creation, student management, and earnings tracking.</p>
-      </div>
+<!-- Main Content -->
+<main class="ml-64 p-6 min-h-screen">
+  
+  <% if (!isApproved) { %>
+  <!-- Approval Pending Banner -->
+  <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-lg mb-6 flex items-start gap-4">
+    <div class="flex-shrink-0">
+      <span class="material-icons-outlined text-amber-600 text-3xl">warning</span>
     </div>
-    <% } else { %>
+    <div>
+      <h3 class="text-lg font-bold text-amber-900 mb-2">Account Under Review</h3>
+      <p class="text-amber-800 leading-relaxed">Your tutor application is currently being reviewed by our admin team. Once approved, you'll have access to all tutor features including course creation, student management, and earnings tracking.</p>
+    </div>
+  </div>
+  <% } else { %>
+
+  <!-- Dashboard Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Analytics Overview</h1>
+    <p class="text-gray-600">Welcome back, <%= tutor.fullName %>! Here's your performance summary.</p>
+  </div>
+
+  <!-- Time Range Filter -->
+  <div class="flex gap-2 mb-6">
+    <button class="px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm">Last Week</button>
+    <button class="px-4 py-2 bg-white text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">Last Month</button>
+    <button class="px-4 py-2 bg-white text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">Last 3 Months</button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <!-- Total Students -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+          <span class="material-icons-outlined text-blue-600">people</span>
+        </div>
+        <span class="material-icons-outlined text-gray-400">trending_up</span>
+      </div>
+      <h3 class="text-sm font-medium text-gray-600 mb-1">Total Students</h3>
+      <p class="text-3xl font-bold text-gray-900"><%= stats.totalStudents || 0 %></p>
+      <p class="text-xs text-green-600 mt-2">+12% from last month</p>
+    </div>
+
+    <!-- Total Courses -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-cyan-50 rounded-lg flex items-center justify-center">
+          <span class="material-icons-outlined text-cyan-600">menu_book</span>
+        </div>
+        <span class="material-icons-outlined text-gray-400">trending_up</span>
+      </div>
+      <h3 class="text-sm font-medium text-gray-600 mb-1">Total Courses</h3>
+      <p class="text-3xl font-bold text-gray-900"><%= stats.totalCourses || 0 %></p>
+      <p class="text-xs text-gray-500 mt-2"><%= stats.publishedCourses || 0 %> published</p>
+    </div>
+
+    <!-- Active Courses -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+          <span class="material-icons-outlined text-green-600">check_circle</span>
+        </div>
+        <span class="material-icons-outlined text-gray-400">trending_up</span>
+      </div>
+      <h3 class="text-sm font-medium text-gray-600 mb-1">Active Courses</h3>
+      <p class="text-3xl font-bold text-gray-900"><%= stats.publishedCourses || 0 %></p>
+      <p class="text-xs text-gray-500 mt-2">Currently live</p>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
+          <span class="material-icons-outlined text-purple-600">account_balance_wallet</span>
+        </div>
+        <span class="material-icons-outlined text-gray-400">trending_up</span>
+      </div>
+      <h3 class="text-sm font-medium text-gray-600 mb-1">Total Revenue</h3>
+      <p class="text-3xl font-bold text-gray-900">₹<%= (stats.totalRevenue || 0).toLocaleString('en-IN') %></p>
+      <p class="text-xs text-green-600 mt-2">+8% from last month</p>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-      <h1>Analytics Overview</h1>
-      <p>Welcome back, <%= tutor.fullName %>!</p>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card blue">
-        <h3>Total Students</h3>
-        <div class="value"><%= stats.totalStudents %></div>
-      </div>
-      <div class="stat-card green">
-        <h3>Total Courses</h3>
-        <div class="value"><%= stats.totalCourses %></div>
-      </div>
-      <div class="stat-card purple">
-        <h3>Published Courses</h3>
-        <div class="value"><%= stats.publishedCourses %></div>
-      </div>
-      <div class="stat-card yellow">
-        <h3>Total Revenue</h3>
-        <div class="value">₹<%= stats.totalRevenue.toLocaleString() %></div>
-      </div>
-    </div>
-
-    <!-- Revenue Chart -->
-    <div class="content-card">
-      <h2>Revenue & Profit Overview</h2>
-      <div class="chart-placeholder">
-        <div class="text">
-          <svg style="width: 48px; height: 48px; color: #9ca3af; margin: 0 auto 1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-          </svg>
-          <p style="font-size: 0.9rem; margin-bottom: 0.25rem;">Revenue chart will appear here</p>
-          <p style="font-size: 0.8rem;">Start earning to see your revenue trends</p>
+    <!-- Revenue & Profit Overview -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold text-gray-900">Revenue & Profit Overview</h2>
+        <div class="flex gap-4 text-sm">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+            <span class="text-gray-600">Revenue</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-cyan-500 rounded-full"></div>
+            <span class="text-gray-600">Profit</span>
+          </div>
         </div>
       </div>
+      <div class="h-64">
+        <canvas id="revenueChart"></canvas>
+      </div>
     </div>
 
-    <!-- Course Management Table -->
-    <div class="content-card">
-      <h2>Recent Courses</h2>
-      <% if (recentCourses && recentCourses.length > 0) { %>
-      <table>
-        <thead>
+    <!-- Course Performance -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <h2 class="text-lg font-bold text-gray-900 mb-6">Course Performance</h2>
+      <div class="h-64 flex items-center justify-center">
+        <canvas id="coursePerformanceChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key Metrics Chart -->
+  <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+    <h2 class="text-lg font-bold text-gray-900 mb-6">Key Metrics</h2>
+    <div class="h-64">
+      <canvas id="keyMetricsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Course Management Table -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-gray-900">Course Management</h2>
+      <a href="/tutor/courses/create" class="px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90 transition flex items-center gap-2">
+        <span class="material-icons-outlined text-sm">add</span>
+        New Course
+      </a>
+    </div>
+    
+    <% if (recentCourses && recentCourses.length > 0) { %>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
           <tr>
-            <th>Course Name</th>
-            <th>Category</th>
-            <th>Students</th>
-            <th>Price</th>
-            <th>Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white divide-y divide-gray-100">
           <% recentCourses.forEach(course => { %>
-          <tr>
-            <td>
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 40px; height: 40px; background: #dbeafe; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                  <svg style="width: 20px; height: 20px; color: #3b82f6;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                  </svg>
-                </div>
+          <tr class="hover:bg-gray-50 transition">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <% if (course.thumbnail) { %>
+                  <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-12 h-12 rounded-lg object-cover">
+                <% } else { %>
+                  <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <span class="material-icons-outlined text-primary">menu_book</span>
+                  </div>
+                <% } %>
                 <div>
-                  <p style="font-weight: 600; margin-bottom: 0.25rem;"><%= course.title %></p>
-                  <p style="font-size: 0.85rem; color: #666;"><%= course.lessons.length %> lessons</p>
+                  <p class="font-semibold text-gray-900"><%= course.title %></p>
+                  <p class="text-sm text-gray-500"><%= course.lessons.length %> lessons</p>
                 </div>
               </div>
             </td>
-            <td style="color: #666;"><%= course.category %></td>
-            <td style="color: #666;"><%= course.enrolledStudents.length %></td>
-            <td style="font-weight: 600;">₹<%= course.price.toLocaleString() %></td>
-            <td>
-              <span style="padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; <%= course.isPublished ? 'background: #d1fae5; color: #065f46;' : 'background: #fef3c7; color: #92400e;' %>">
-                <%= course.isPublished ? 'Published' : 'Draft' %>
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                <%= course.category %>
               </span>
+            </td>
+            <td class="px-6 py-4 text-gray-900 font-medium">
+              <%= course.enrolledStudents.length %>
+            </td>
+            <td class="px-6 py-4 text-gray-900 font-semibold">
+              ₹<%= course.price.toLocaleString('en-IN') %>
+            </td>
+            <td class="px-6 py-4">
+              <% if (course.isPublished) { %>
+                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center gap-1 w-fit">
+                  <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  Published
+                </span>
+              <% } else { %>
+                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium flex items-center gap-1 w-fit">
+                  <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                  Draft
+                </span>
+              <% } %>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <a href="/tutor/courses/<%= course._id %>/edit" class="p-2 text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition" title="Edit">
+                  <span class="material-icons-outlined text-sm">edit</span>
+                </a>
+                <a href="/tutor/courses/<%= course._id %>" class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="View">
+                  <span class="material-icons-outlined text-sm">visibility</span>
+                </a>
+              </div>
             </td>
           </tr>
           <% }); %>
         </tbody>
       </table>
-      <% } else { %>
-      <div style="text-align: center; padding: 3rem; color: #9ca3af;">
-        <svg style="width: 64px; height: 64px; margin: 0 auto 1rem; color: #d1d5db;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-        </svg>
-        <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">No courses yet</p>
-        <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Start creating your first course to share your knowledge</p>
-        <a href="/tutor/courses/create" style="display: inline-block; background: #00d9b1; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Create Your First Course</a>
-      </div>
-      <% } %>
     </div>
-    
+    <% } else { %>
+    <div class="p-12 text-center">
+      <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-icons-outlined text-gray-400 text-4xl">menu_book</span>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">No courses yet</h3>
+      <p class="text-gray-600 mb-6">Start creating your first course to share your knowledge with students.</p>
+      <a href="/tutor/courses/create" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition">
+        <span class="material-icons-outlined">add</span>
+        Create Your First Course
+      </a>
+    </div>
     <% } %>
   </div>
-</div>
+
+  <% } %>
+</main>
+
+<!-- Chart.js Configuration -->
+<script>
+  <% if (isApproved) { %>
+  // Chart colors
+  const primaryColor = '#00d9b1';
+  const secondaryColor = '#06b6d4';
+  const chartColors = ['#3b82f6', '#06b6d4', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444'];
+
+  // Revenue & Profit Chart
+  const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+  new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+      labels: <%- JSON.stringify(analytics.revenueData.labels) %>,
+      datasets: [
+        {
+          label: 'Revenue',
+          data: <%- JSON.stringify(analytics.revenueData.revenue) %>,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2
+        },
+        {
+          label: 'Profit',
+          data: <%- JSON.stringify(analytics.revenueData.profit) %>,
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ₹' + context.parsed.y.toLocaleString('en-IN');
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return '₹' + (value / 1000) + 'k';
+            }
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+
+  // Course Performance Donut Chart
+  const coursePerformanceCtx = document.getElementById('coursePerformanceChart').getContext('2d');
+  new Chart(coursePerformanceCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Excellent', 'Good', 'Average'],
+      datasets: [{
+        data: [
+          <%= analytics.coursePerformance.excellent %>,
+          <%= analytics.coursePerformance.good %>,
+          <%= analytics.coursePerformance.average %>
+        ],
+        backgroundColor: ['#3b82f6', '#f59e0b', '#e5e7eb'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            font: {
+              size: 12
+            }
+          }
+        }
+      },
+      cutout: '70%'
+    }
+  });
+
+  // Key Metrics Bar Chart
+  const keyMetricsCtx = document.getElementById('keyMetricsChart').getContext('2d');
+  new Chart(keyMetricsCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Total Views', 'Enrollments', 'Completions'],
+      datasets: [{
+        label: 'Metrics',
+        data: [
+          <%= analytics.keyMetrics.totalViews %>,
+          <%= analytics.keyMetrics.totalEnrollments %>,
+          <%= analytics.keyMetrics.totalCompletions %>
+        ],
+        backgroundColor: ['#3b82f6', '#06b6d4', '#8b5cf6'],
+        borderRadius: 8,
+        barThickness: 60
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+  <% } %>
+</script>
 
 </body>
 </html>

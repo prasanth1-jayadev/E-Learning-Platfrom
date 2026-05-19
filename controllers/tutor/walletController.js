@@ -71,7 +71,6 @@ export const requestWithdrawal = async (req, res) => {
             });
         }
         
-        // Process withdrawal
         await walletService.addDebit(
             tutorId, 
             withdrawAmount, 

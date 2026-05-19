@@ -62,6 +62,70 @@ const getTutorApplications = async (page = 1, limit = 10, search = '') => {
     };
 }
 
+const getTutorRegistrationStats = async () => {
+    try {
+        // Get last 30 days of tutor registrations
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const registrationData = await Tutor.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: thirtyDaysAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$_id',
+                    count: 1
+                }
+            }
+        ]);
+
+        const statusBreakdown = await Tutor.aggregate([
+            {
+                $group: {
+                    _id: '$approvalStatus',
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const stats = {
+            pending: 0,
+            approved: 0,
+            rejected: 0
+        };
+
+        statusBreakdown.forEach(item => {
+            stats[item._id] = item.count;
+        });
+
+        return {
+            registrationData,
+            stats
+        };
+    } catch (error) {
+        console.error('Get tutor registration stats error:', error);
+        return {
+            registrationData: [],
+            stats: { pending: 0, approved: 0, rejected: 0 }
+        };
+    }
+};
+
 const getPendingTutorApplications = async () => {
     return await Tutor.find({
         isVerified: true,
@@ -245,10 +309,9 @@ const getDashboardAnalytics = async (timeRange = '7days') => {
             }
         ]);
 
-        const studentGrowth = await User.aggregate([
+        const tutorGrowth = await Tutor.aggregate([
             {
                 $match: {
-                    role: 'user',
                     createdAt: { $gte: startDate }
                 }
             },
@@ -257,7 +320,7 @@ const getDashboardAnalytics = async (timeRange = '7days') => {
                     _id: {
                         $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
                     },
-                    newStudents: { $sum: 1 }
+                    newTutors: { $sum: 1 }
                 }
             },
             {
@@ -267,7 +330,7 @@ const getDashboardAnalytics = async (timeRange = '7days') => {
                 $project: {
                     _id: 0,
                     date: '$_id',
-                    newStudents: 1
+                    newTutors: 1
                 }
             }
         ]);
@@ -320,7 +383,7 @@ const getDashboardAnalytics = async (timeRange = '7days') => {
 
         return {
             revenueData,
-            studentGrowth,
+            tutorGrowth,
             topCourses,
             categoryDistribution
         };
@@ -328,10 +391,26 @@ const getDashboardAnalytics = async (timeRange = '7days') => {
         console.error('Analytics error:', error);
         return {
             revenueData: [],
-            studentGrowth: [],
+            tutorGrowth: [],
             topCourses: [],
             categoryDistribution: []
         };
+    }
+};
+
+const getRecentOrders = async (limit = 10) => {
+    try {
+        const orders = await Payment.find({ status: 'completed' })
+            .populate('user', 'fullName email')
+            .populate('course', 'title price')
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .lean();
+        
+        return orders;
+    } catch (error) {
+        console.error('Get recent orders error:', error);
+        return [];
     }
 };
 
@@ -345,5 +424,7 @@ export {
     toggleTutorBlock,
     toggleTutorCertified,
     getTutorDetail,
-    getDashboardAnalytics
+    getDashboardAnalytics,
+    getRecentOrders,
+    getTutorRegistrationStats
 };

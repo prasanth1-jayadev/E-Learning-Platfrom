@@ -1,9 +1,9 @@
 import * as walletService from '../../service/walletService.js';
 import * as adminService from '../../service/adminService.js';
 
-/**
- * Get admin wallet overview page
- */
+
+
+
 export const getWalletOverview = async (req, res) => {
     try {
         const wallets = await walletService.getAllWallets();
@@ -36,9 +36,9 @@ export const getWalletOverview = async (req, res) => {
     }
 };
 
-/**
- * Get specific tutor wallet details
- */
+
+
+
 export const getTutorWalletDetail = async (req, res) => {
     try {
         const { tutorId } = req.params;
@@ -46,7 +46,6 @@ export const getTutorWalletDetail = async (req, res) => {
         const { wallet, courseRevenue, monthlyRevenue } = await walletService.getRevenueStats(tutorId);
         const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
         
-        // Sort transactions by date (newest first)
         const sortedTransactions = wallet.transactions.sort((a, b) => 
             new Date(b.createdAt) - new Date(a.createdAt)
         );

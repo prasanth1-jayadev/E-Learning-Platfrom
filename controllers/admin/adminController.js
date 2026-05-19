@@ -17,7 +17,7 @@ const getDashboard = async (req, res) => {
     try {
         const timeRange = req.query.range || '7days';
         
-        const [pendingTutors, allTutors, students, courses, payments, analytics] = await Promise.all([
+        const [pendingTutors, allTutors, students, courses, payments, analytics, recentOrders] = await Promise.all([
             adminService.getPendingTutorApplications(),
             adminService.getTutorApplications(),
             User.countDocuments({ role: 'user' }),
@@ -33,7 +33,8 @@ const getDashboard = async (req, res) => {
                 ]);
                 return result[0]?.total || 0;
             })(),
-            adminService.getDashboardAnalytics(timeRange)
+            adminService.getDashboardAnalytics(timeRange),
+            adminService.getRecentOrders(10)
         ]);
 
         res.render('admin/dashboard', {
@@ -43,6 +44,7 @@ const getDashboard = async (req, res) => {
             totalCourses: courses,
             totalRevenue: payments,
             analytics,
+            recentOrders,
             timeRange,
             currentPage: 'dashboard'
         });
@@ -56,10 +58,11 @@ const getDashboard = async (req, res) => {
             totalRevenue: 0,
             analytics: {
                 revenueData: [],
-                studentGrowth: [],
+                tutorGrowth: [],
                 topCourses: [],
                 categoryDistribution: []
             },
+            recentOrders: [],
             timeRange: '7days',
             currentPage: 'dashboard'
         });
@@ -76,8 +79,11 @@ const getTutorApplications = async (req, res) => {
         const success = req.query.success;
         const error = req.query.error;
 
-        const result = await adminService.getTutorApplications(page, 10, search);
-        const pendingCount = await adminService.getPendingTutorApplications().then(tutors => tutors.length);
+        const [result, pendingCount, registrationStats] = await Promise.all([
+            adminService.getTutorApplications(page, 4, search),
+            adminService.getPendingTutorApplications().then(tutors => tutors.length),
+            adminService.getTutorRegistrationStats()
+        ]);
 
         res.render('admin/tutor-applications', {
             tutors: result.tutors,
@@ -86,6 +92,7 @@ const getTutorApplications = async (req, res) => {
             error,
             currentPage: 'tutor-applications',
             pendingCount,
+            registrationStats,
             pagination: {
                 currentPage: result.page,
                 totalPages: result.pages,

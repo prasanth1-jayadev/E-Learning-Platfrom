@@ -198,6 +198,82 @@ const getPublishedCourses = async (filters = {}) => {
   }
 };
 
+const getTutorAnalytics = async (tutorId) => {
+  try {
+    const Payment = (await import('../models/Payment.js')).default;
+    
+    // Get all coursesthis tutor
+    const courses = await Course.find({ tutor: tutorId }).lean();
+    
+    const courseIds = courses.map(c => c._id);
+    const payments = await Payment.find({ 
+      course: { $in: courseIds },
+      status: 'completed'
+    }).populate('course').lean();
+
+    const monthlyData = {};
+    const currentDate = new Date();
+    
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+      const monthKey = date.toLocaleString('en-US', { month: 'short' });
+      monthlyData[monthKey] = { revenue: 0, profit: 0 };
+    }
+
+    payments.forEach(payment => {
+      const paymentDate = new Date(payment.createdAt);
+      const monthKey = paymentDate.toLocaleString('en-US', { month: 'short' });
+      
+      if (monthlyData[monthKey]) {
+        const revenue = payment.amount;
+        const profit = revenue * 0.8; // 80% to tutor
+        
+        monthlyData[monthKey].revenue += revenue;
+        monthlyData[monthKey].profit += profit;
+      }
+    });
+
+    const revenueData = {
+      labels: Object.keys(monthlyData),
+      revenue: Object.values(monthlyData).map(d => Math.round(d.revenue)),
+      profit: Object.values(monthlyData).map(d => Math.round(d.profit))
+    };
+
+    let excellent = 0, good = 0, average = 0;
+    
+    courses.forEach(course => {
+      const enrollmentCount = course.enrolledStudents.length;
+      if (enrollmentCount >= 50) excellent++;
+      else if (enrollmentCount >= 20) good++;
+      else average++;
+    });
+
+    const coursePerformance = {
+      excellent,
+      good,
+      average
+    };
+
+    const totalViews = courses.reduce((sum, course) => sum + (course.views || 0), 0);
+    const totalEnrollments = courses.reduce((sum, course) => sum + course.enrolledStudents.length, 0);
+    const totalCompletions = Math.round(totalEnrollments * 0.65); // Estimate 65% completion rate
+
+    const keyMetrics = {
+      totalViews,
+      totalEnrollments,
+      totalCompletions
+    };
+
+    return {
+      revenueData,
+      coursePerformance,
+      keyMetrics
+    };
+  } catch (error) {
+    throw new Error('Failed to fetch tutor analytics: ' + error.message);
+  }
+};
+
 export {
   getTutorCourses,
   getCourseById,
@@ -206,5 +282,6 @@ export {
   deleteCourse,
   togglePublishCourse,
   getDashboardStats,
-  getPublishedCourses
+  getPublishedCourses,
+  getTutorAnalytics
 };

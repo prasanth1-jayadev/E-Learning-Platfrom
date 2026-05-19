@@ -6,6 +6,7 @@
     <title>Tutor Applications - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
     <script>
@@ -39,30 +40,7 @@
             <p class="text-slate-500 mt-1">Review verified tutor applications awaiting admin approval</p>
         </header>
 
-        <!-- Success/Error Messages -->
-        <% if (typeof success !== 'undefined') { %>
-        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div class="flex">
-                <span class="material-icons-outlined text-green-600 mr-2">check_circle</span>
-                <p class="text-green-800">
-                    <% if (success === 'approved') { %>
-                        Tutor approved successfully! They can now access all tutor features.
-                    <% } else if (success === 'rejected') { %>
-                        Tutor application rejected.
-                    <% } %>
-                </p>
-            </div>
-        </div>
-        <% } %>
-
-        <% if (typeof error !== 'undefined') { %>
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div class="flex">
-                <span class="material-icons-outlined text-red-600 mr-2">error</span>
-                <p class="text-red-800"><%= error %></p>
-            </div>
-        </div>
-        <% } %>
+       
 
         <!-- Search -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 mb-6">
@@ -215,6 +193,70 @@
     </div>
 
     <script>
+        // Registration Trend Chart
+        const registrationData = <%- JSON.stringify(registrationStats.registrationData) %>;
+        const labels = registrationData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        const counts = registrationData.map(d => d.count);
+
+        const ctx = document.getElementById('registrationChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'New Registrations',
+                    data: counts,
+                    borderColor: '#34D399',
+                    backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#34D399',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#34D399',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#64748b'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#64748b'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
         function viewCertificate(certificateUrl, tutorName) {
             const modal = document.getElementById('certificateModal');
             const image = document.getElementById('certificateImage');

@@ -135,9 +135,9 @@
 
         <!-- Student Growth -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 class="text-base font-bold text-gray-900 mb-4">Student Growth</h3>
+          <h3 class="text-base font-bold text-gray-900 mb-4">Tutor Registration Growth</h3>
           <div class="h-64">
-            <canvas id="studentChart"></canvas>
+            <canvas id="tutorChart"></canvas>
           </div>
         </div>
 
@@ -234,6 +234,87 @@
         </a>
       </div>
     </div>
+
+    <!-- Recent Orders -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+      <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-gray-900">Recent Orders</h2>
+          <p class="text-sm text-gray-500 mt-1">Last 10 completed orders</p>
+        </div>
+        <a href="/admin/orders" class="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1">
+          View All
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+      
+      <% if (recentOrders && recentOrders.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+            <% recentOrders.forEach(order => { %>
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm font-mono text-gray-900">#<%= order.orderId.substring(0, 12) %>...</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                    <span class="text-xs font-semibold text-blue-600"><%= order.user?.fullName?.charAt(0) || 'U' %></span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900"><%= order.user?.fullName || 'Unknown' %></div>
+                    <div class="text-xs text-gray-500"><%= order.user?.email || '' %></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-gray-900 max-w-xs truncate"><%= order.course?.title || 'Course Deleted' %></div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm font-semibold text-gray-900">₹<%= (order.amount / 100).toLocaleString('en-IN') %></span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm text-gray-500"><%= new Date(order.createdAt).toLocaleDateString('en-IN') %></span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                  Completed
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
+                <a href="/admin/order/<%= order._id %>" class="text-primary hover:text-primary/80 font-medium">View</a>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="p-12 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
+        <p class="text-gray-500">Orders will appear here once students start purchasing courses.</p>
+      </div>
+      <% } %>
+    </div>
   </main>
 
   <!-- Chart.js Configuration -->
@@ -289,19 +370,19 @@
     });
 
     // Student Growth Chart Data
-    const studentData = <%- JSON.stringify(analytics.studentGrowth) %>;
-    const studentLabels = studentData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-    const studentValues = studentData.map(d => d.newStudents);
+    const tutorData = <%- JSON.stringify(analytics.tutorGrowth) %>;
+    const tutorLabels = tutorData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    const tutorValues = tutorData.map(d => d.newTutors);
 
-    // Student Growth Chart
-    const studentCtx = document.getElementById('studentChart').getContext('2d');
-    new Chart(studentCtx, {
+    // Tutor Growth Chart
+    const tutorCtx = document.getElementById('tutorChart').getContext('2d');
+    new Chart(tutorCtx, {
       type: 'line',
       data: {
-        labels: studentLabels,
+        labels: tutorLabels,
         datasets: [{
-          label: 'New Students',
-          data: studentValues,
+          label: 'New Tutors',
+          data: tutorValues,
           borderColor: secondaryColor,
           backgroundColor: secondaryColor + '30',
           fill: true,

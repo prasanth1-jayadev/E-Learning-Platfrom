@@ -6,6 +6,7 @@ import { enrollUserInCourse } from "../../service/paymentService.js";
 import * as cartService from "../../service/cartService.js";
 import Payment from "../../models/Payment.js";
 import Earning from '../../models/Earning.js';
+import { generateInvoice } from '../../helpers/invoiceHelper.js';
 
 export const createOrder = async (req, res) => {
   try {
@@ -231,5 +232,68 @@ export const getPaymentFailure = async (req, res) => {
   } catch (error) {
     console.error('Payment failure page error:', error);
     res.redirect('/user/payment-payment-failure');
+  }
+};
+
+
+export const downloadInvoice = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.session.userId;
+
+    console.log('OrderId:', orderId);
+    console.log('UserId:', userId);
+
+    if (!userId) {
+      console.log('No user session');
+      return res.redirect('/user/login');
+    }
+
+    const payments = await Payment.find({ orderId, user: userId })
+      .populate('course')
+      .populate('user');
+
+    console.log('Payments found:', payments.length);
+
+    if (!payments || payments.length === 0) {
+      console.log('No payments found');
+      return res.status(404).send('Invoice not found');
+    }
+
+    const user = payments[0].user;
+    const courses = payments.map(p => p.course).filter(c => c);
+
+    console.log('User:', user ? user.fullName : 'NULL');
+    console.log('Courses:', courses.length);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    if (courses.length === 0) {
+      return res.status(404).send('No courses found');
+    }
+
+    console.log('Generating invoice PDF...');
+    const filepath = await generateInvoice(payments[0], user, courses);
+    console.log('PDF generated at:', filepath);
+
+    res.download(filepath, 'invoice-' + orderId + '.pdf', (err) => {
+      if (err) {
+        console.error('Download error:', err);
+        if (!res.headersSent) {
+          res.status(500).send('Error downloading invoice');
+        }
+      } else {
+        console.log('Invoice sent successfully');
+      }
+    });
+
+  } catch (error) {
+    console.error('Error:', error.message);
+    console.error('Stack:', error.stack);
+    if (!res.headersSent) {
+      res.status(500).send('Failed to generate invoice: ' + error.message);
+    }
   }
 };

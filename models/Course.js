@@ -80,6 +80,11 @@ const courseSchema = new mongoose.Schema({
     ref: 'User'
   }],
 
+  views: {
+    type: Number,
+    default: 0
+  },
+
   rating: {
     type: Number,
     default: 0,

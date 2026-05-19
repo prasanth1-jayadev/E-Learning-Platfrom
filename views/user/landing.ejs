@@ -32,6 +32,32 @@
         }
     </script>
     <style type="text/tailwindcss">
+        /* ── Fan Carousel ── */
+.fan-stage { perspective: 1200px; perspective-origin: 50% 40%; }
+.fan-track { position: relative; display: flex; align-items: center; justify-content: center; height: 440px; cursor: grab; }
+.fan-track.dragging { cursor: grabbing; }
+.fan-card { position: absolute; width: 300px; background: white; border-radius: 24px; overflow: hidden; cursor: pointer; transition: transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1), box-shadow 0.5s ease, opacity 0.4s ease; transform-origin: center bottom; box-shadow: 0 8px 32px rgba(0,0,0,0.08); border: 1.5px solid #e7f3ef; will-change: transform; user-select: none; }
+.fan-card[data-pos="0"] { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index: 10; box-shadow: 0 24px 64px rgba(43,238,173,0.18), 0 8px 32px rgba(0,0,0,0.12); }
+.fan-card[data-pos="1"] { transform: translateX(260px) translateZ(-100px) rotateY(-18deg) scale(0.9); z-index: 7; }
+.fan-card[data-pos="-1"] { transform: translateX(-260px) translateZ(-100px) rotateY(18deg) scale(0.9); z-index: 7; }
+.fan-card[data-pos="2"] { transform: translateX(460px) translateZ(-220px) rotateY(-30deg) scale(0.78); z-index: 4; opacity: 0.75; }
+.fan-card[data-pos="-2"] { transform: translateX(-460px) translateZ(-220px) rotateY(30deg) scale(0.78); z-index: 4; opacity: 0.75; }
+.fan-card[data-pos="3"], .fan-card[data-pos="-3"] { transform: translateX(0) translateZ(-400px) scale(0.5); z-index: 1; opacity: 0; pointer-events: none; }
+.fan-card[data-pos="0"] .active-badge { display: flex; }
+.active-badge { display: none; }
+.fan-card[data-pos="0"] .card-cta { opacity: 1; transform: translateY(0); }
+.card-cta { opacity: 0; transform: translateY(8px); transition: opacity 0.4s 0.1s ease, transform 0.4s 0.1s ease; }
+.fan-card:not([data-pos="0"]):hover { box-shadow: 0 12px 40px rgba(0,0,0,0.15); filter: brightness(1.04); }
+.thumb-overlay { background: linear-gradient(180deg, transparent 40%, rgba(13,27,23,0.7) 100%); }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #c5ddd7; transition: all 0.3s ease; cursor: pointer; }
+.dot.active { width: 24px; border-radius: 3px; background: #2beead; }
+.nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: white; border: 1.5px solid #e7f3ef; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; transition: background 0.2s, border-color 0.2s, box-shadow 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.nav-btn:hover { background: #2beead; border-color: #2beead; box-shadow: 0 4px 20px rgba(43,238,173,0.35); }
+.nav-btn:hover .nav-icon { color: #0d1b17; }
+.nav-btn.left { left: 0; } .nav-btn.right { right: 0; }
+.star-fill { color: #f59e0b; }
+@keyframes popIn { 0% { transform: translateX(0) translateZ(0) rotateY(0deg) scale(0.92); } 60% { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1.03); } 100% { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); } }
+.fan-card[data-pos="0"].just-centered { animation: popIn 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards; }
         .course-card:hover .quick-view {
             opacity: 1;
             transform: translateY(0);
@@ -365,413 +391,461 @@
     </div>
 
     <%- include('../partials/user-navbar') %>
-    <main class="max-w-[1440px] mx-auto">
-        <section class="px-6 md:px-20 py-16 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div class="lg:col-span-7 flex flex-col gap-10">
-                <div class="flex flex-col gap-6">
-                    <div
-                        class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full w-fit">
-                        <span class="material-symbols-outlined text-sm">workspace_premium</span>
-                        <span class="text-xs font-bold uppercase tracking-widest">Designed for Mastery</span>
+        <main class="max-w-[1440px] mx-auto">
+            <section class="px-6 md:px-20 py-16 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 flex flex-col gap-10">
+                    <div class="flex flex-col gap-6">
+                        <div
+                            class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full w-fit">
+                            <span class="material-symbols-outlined text-sm">workspace_premium</span>
+                            <span class="text-xs font-bold uppercase tracking-widest">Designed for Mastery</span>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-black leading-[1.1] tracking-[-0.04em]">
+                            The art of <span class="text-primary italic">deep work</span> starts here.
+                        </h1>
+                        <p class="text-xl text-[#4c9a80] dark:text-[#a0c5ba] max-w-2xl leading-relaxed">
+                            Beyond simple tutorials. We provide the architectural blueprints for professional excellence
+                            through rigorous, expert-led curriculums.
+                        </p>
                     </div>
-                    <h1 class="text-5xl md:text-7xl font-black leading-[1.1] tracking-[-0.04em]">
-                        The art of <span class="text-primary italic">deep work</span> starts here.
-                    </h1>
-                    <p class="text-xl text-[#4c9a80] dark:text-[#a0c5ba] max-w-2xl leading-relaxed">
-                        Beyond simple tutorials. We provide the architectural blueprints for professional excellence
-                        through rigorous, expert-led curriculums.
-                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 max-w-2xl">
+                        <div
+                            class="flex-1 flex items-center bg-white dark:bg-[#1a3a30] rounded-2xl border border-[#e7f3ef] dark:border-[#1a3a30] px-6 h-16 shadow-sm">
+                            <span class="material-symbols-outlined text-[#4c9a80]">search</span>
+                            <input
+                                class="bg-transparent border-none focus:ring-0 w-full text-base placeholder:text-[#4c9a80] ml-2"
+                                placeholder="Explore advanced learning paths..." type="text" />
+                        </div>
+                        <button
+                            class="bg-primary text-[#0d1b17] px-10 py-4 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
+                            Start Learning
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-8 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
+                        <div class="flex -space-x-3">
+                            <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
+                            <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" />
+                            <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" />
+                            <div
+                                class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold border-2 border-white dark:border-[#0d1b17]">
+                                50k+</div>
+                        </div>
+                        <p class="text-sm font-medium opacity-60">Professional learners achieving mastery daily</p>
+                    </div>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-4 max-w-2xl">
-                    <div
-                        class="flex-1 flex items-center bg-white dark:bg-[#1a3a30] rounded-2xl border border-[#e7f3ef] dark:border-[#1a3a30] px-6 h-16 shadow-sm">
-                        <span class="material-symbols-outlined text-[#4c9a80]">search</span>
-                        <input
-                            class="bg-transparent border-none focus:ring-0 w-full text-base placeholder:text-[#4c9a80] ml-2"
-                            placeholder="Explore advanced learning paths..." type="text" />
+                <div class="lg:col-span-5 relative flex justify-center items-center h-[500px]">
+                    <div class="absolute w-[120%] h-[120%] abstract-mesh -z-10 rounded-[4rem] opacity-50 blur-3xl">
                     </div>
-                    <button
-                        class="bg-primary text-[#0d1b17] px-10 py-4 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
-                        Start Learning
+                    <div class="relative w-full aspect-square max-w-[450px]">
+                        <div class="absolute inset-0 bg-primary/20 rounded-[3rem] rotate-6 border border-primary/30">
+                        </div>
+                        <div
+                            class="absolute inset-0 bg-deep-forest rounded-[3rem] -rotate-3 overflow-hidden shadow-2xl flex items-center justify-center">
+                            <div class="w-full h-full relative p-12">
+                                <div class="grid grid-cols-4 gap-4 h-full">
+                                    <div
+                                        class="col-span-2 bg-primary/10 rounded-2xl border border-primary/20 flex items-center justify-center overflow-hidden relative">
+                                        <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="col-span-2 bg-primary/40 rounded-2xl flex items-center justify-center">
+                                        <span
+                                            class="material-symbols-outlined text-white text-5xl opacity-40">grid_guides</span>
+                                    </div>
+                                    <div class="col-span-1 bg-primary/20 rounded-2xl flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary/60">architecture</span>
+                                    </div>
+                                    <div
+                                        class="col-span-3 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-6xl opacity-40">blur_on</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="absolute -bottom-6 -right-6 bg-white dark:bg-[#1a3a30] p-6 rounded-2xl shadow-2xl border border-[#e7f3ef] dark:border-[#1a3a30] max-w-[240px]">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary">psychology</span>
+                                </div>
+                                <span class="text-sm font-bold">Expert Authority</span>
+                            </div>
+                            <p class="text-xs leading-relaxed opacity-70">Curated by 1% of industry experts who
+                                prioritize
+                                depth over breadth.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section
+                class="px-6 md:px-20 py-24 bg-white dark:bg-[#0d1b17] border-y border-[#e7f3ef] dark:border-[#1a3a30]">
+                <div class="mb-16">
+                    <div
+                        class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full mb-4">
+                        <span class="material-symbols-outlined text-sm">route</span>
+                        <span class="text-xs font-bold uppercase tracking-widest">Career Progression</span>
+                    </div>
+                    <h2 class="text-4xl font-black mb-4">Curated Learning Paths</h2>
+                    <p class="text-[#4c9a80] max-w-2xl">Tailored tracks designed to bridge the gap between intermediate
+                        skillsets and senior professional mastery.</p>
+                </div>
+                <div class="flex flex-col gap-16">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div
+                            class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                            <div
+                                class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
+                                <span class="material-symbols-outlined text-8xl">design_services</span>
+                            </div>
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-black mb-2">UI/UX Mastery</h3>
+                                <p class="text-sm text-[#4c9a80] mb-6">Advanced system design, behavioral psychology,
+                                    and
+                                    high-fidelity prototyping.</p>
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
+                                        Senior</span>
+                                    <span class="text-primary material-symbols-outlined">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                            <div
+                                class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
+                                <span class="material-symbols-outlined text-8xl">cloud_done</span>
+                            </div>
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-black mb-2">Cloud Architecture</h3>
+                                <p class="text-sm text-[#4c9a80] mb-6">Scalable infrastructure, serverless patterns, and
+                                    cloud-native security protocols.</p>
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
+                                        Specialist</span>
+                                    <span class="text-primary material-symbols-outlined">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
+                            <div
+                                class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
+                                <span class="material-symbols-outlined text-8xl">terminal</span>
+                            </div>
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-black mb-2">Full-Stack Lead</h3>
+                                <p class="text-sm text-[#4c9a80] mb-6">Enterprise-grade architecture, CI/CD mastery, and
+                                    technical team leadership.</p>
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
+                                        Principal</span>
+                                    <span class="text-primary material-symbols-outlined">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h4 class="text-xl font-bold">Top Courses in UI/UX Mastery</h4>
+                            <button
+                                class="text-sm font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all">
+                                View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </button>
+                        </div>
+                        <% if (courses && courses.length> 0) { %>
+                            <div class="fan-stage relative select-none" id="fanStageLanding">
+                                <div class="fan-track" id="fanTrackLanding">
+                                    <% courses.forEach((course, index)=> { %>
+                                        <% const roundedRating = Math.round(course.rating || 0); %>
+                                        <% const tutorName = course.tutor && course.tutor.fullName ? String(course.tutor.fullName) : 'Instructor'; %>
+                                        <% const tutorInitials = tutorName.split(' ').map(namePart => namePart[0]).join('').substring(0, 2).toUpperCase(); %>
+                                        <% const courseTitle = course.title ? String(course.title) : 'Course'; %>
+                                        <% const coursePrice = course.price || 0; %>
+                                        <% const initialPos = Math.max(-3, Math.min(3, index)); %>
+                                        <div class="fan-card" data-course-url="/user/course/<%= course._id %>" data-index="<%= index %>" data-pos="<%= initialPos %>">
+                                            <div class="relative h-44 overflow-hidden bg-gradient-to-br from-primary/40 to-[#0d9e76]/60">
+                                                <% if (course.thumbnail) { %>
+                                                    <img alt="<%= courseTitle %>"
+                                                        class="w-full h-full object-cover"
+                                                        loading="lazy"
+                                                        src="<%= course.thumbnail %>" />
+                                                    <% } else { %>
+                                                        <div
+                                                            class="w-full h-full flex items-center justify-center text-4xl font-black text-white/40">
+                                                            <%= courseTitle.substring(0, 2).toUpperCase() %>
+                                                        </div>
+                                                        <% } %>
+                                                <div class="thumb-overlay absolute inset-0"></div>
+                                                <span
+                                                    class="absolute top-3 left-3 bg-black/40 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Course</span>
+                                                <div
+                                                    class="active-badge absolute top-3 right-3 items-center gap-1 bg-primary text-[#0d1b17] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                    <span>Live</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-5">
+                                                <h5 class="font-black text-[15px] mb-1.5 text-[#0d1b17] leading-snug line-clamp-2">
+                                                    <%= courseTitle %>
+                                                </h5>
+                                                <p class="text-xs text-[#6b9e8e] leading-relaxed mb-3 line-clamp-2">
+                                                    <%= course.description %>
+                                                </p>
+                                                <div class="flex items-center gap-3 mb-4">
+                                                    <div class="flex items-center gap-0.5">
+                                                        <% for (let star = 0; star < 5; star++) { %>
+                                                            <span class="<%= star < roundedRating ? 'star-fill' : 'text-gray-300' %> text-xs">★</span>
+                                                            <% } %>
+                                                    </div>
+                                                    <span class="text-xs font-bold text-[#0d1b17]">
+                                                        <%= course.rating || 0 %>
+                                                    </span>
+                                                </div>
+                                                <div class="flex items-center justify-between pt-3 border-t border-[#e7f3ef]">
+                                                    <div class="flex items-center gap-2">
+                                                        <div
+                                                            class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[9px] font-black text-primary">
+                                                            <%= tutorInitials || 'IN' %>
+                                                        </div>
+                                                        <span class="text-[11px] text-[#4c9a80] font-medium truncate max-w-[80px]">
+                                                            <%= tutorName %>
+                                                        </span>
+                                                    </div>
+                                                    <span class="text-base font-black text-[#0d1b17]">
+                                                        &#8377;<%= coursePrice.toLocaleString ? coursePrice.toLocaleString() : coursePrice %>
+                                                    </span>
+                                                </div>
+                                                <button
+                                                    class="card-cta w-full mt-4 bg-primary text-[#0d1b17] py-2.5 rounded-xl text-xs font-black hover:opacity-90 transition-opacity"
+                                                    onclick="event.stopPropagation(); window.location.href='/user/course/<%= course._id %>'">
+                                                    Enroll Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                                <button class="nav-btn left" id="fanPrevLanding" aria-label="Previous course">
+                                    <svg class="nav-icon w-5 h-5 text-[#4c9a80]" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <button class="nav-btn right" id="fanNextLanding" aria-label="Next course">
+                                    <svg class="nav-icon w-5 h-5 text-[#4c9a80]" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-center gap-2 mt-8" id="fanDotsLanding"></div>
+                            <% } else { %>
+                                <div class="w-full text-center py-8">
+                                    <p class="text-sm opacity-60">No courses available yet</p>
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+            </section>
+            <section class="px-6 md:px-20 py-16">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight mb-2">Advanced Curriculums</h2>
+                        <p class="text-[#4c9a80]">Systematic learning paths designed for professional depth.</p>
+                    </div>
+                    <button class="text-sm font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all">
+                        View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
                 </div>
-                <div class="flex items-center gap-8 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
-                    <div class="flex -space-x-3">
-                        <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" />
-                        <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" />
-                        <img alt="User" class="w-10 h-10 rounded-full border-2 border-white dark:border-[#0d1b17]"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" />
-                        <div
-                            class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold border-2 border-white dark:border-[#0d1b17]">
-                            50k+</div>
-                    </div>
-                    <p class="text-sm font-medium opacity-60">Professional learners achieving mastery daily</p>
-                </div>
-            </div>
-            <div class="lg:col-span-5 relative flex justify-center items-center h-[500px]">
-                <div class="absolute w-[120%] h-[120%] abstract-mesh -z-10 rounded-[4rem] opacity-50 blur-3xl"></div>
-                <div class="relative w-full aspect-square max-w-[450px]">
-                    <div class="absolute inset-0 bg-primary/20 rounded-[3rem] rotate-6 border border-primary/30"></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div
-                        class="absolute inset-0 bg-deep-forest rounded-[3rem] -rotate-3 overflow-hidden shadow-2xl flex items-center justify-center">
-                        <div class="w-full h-full relative p-12">
-                            <div class="grid grid-cols-4 gap-4 h-full">
+                        class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                        <div
+                            class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">palette</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Design</h3>
+                            <p class="text-sm text-[#4c9a80]">120+ Courses</p>
+                        </div>
+                    </div>
+                    <div
+                        class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                        <div
+                            class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">code</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Development</h3>
+                            <p class="text-sm text-[#4c9a80]">150+ Courses</p>
+                        </div>
+                    </div>
+                    <div
+                        class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                        <div
+                            class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">analytics</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Business</h3>
+                            <p class="text-sm text-[#4c9a80]">85+ Courses</p>
+                        </div>
+                    </div>
+                    <div
+                        class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
+                        <div
+                            class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">trending_up</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Marketing</h3>
+                            <p class="text-sm text-[#4c9a80]">60+ Courses</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="px-6 py-14 max-w-6xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-gray-900">Certified Tutor Showcase</h2>
+                        <p class="text-gray-400 text-sm mt-1">Learn directly from verified experts who offer the highest
+                            bar
+                            for
+                            professional instruction.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="prevTutorBtnLanding"
+                            class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg
+                                class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg></button>
+                        <button id="nextTutorBtnLanding"
+                            class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg
+                                class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg></button>
+                    </div>
+                </div>
+
+                <% if (tutors && tutors.length> 0) { %>
+                    <div class="relative overflow-hidden">
+                        <div id="tutorCarouselLanding" class="flex gap-5 transition-transform duration-500 ease-out">
+                            <% tutors.forEach(tutor=> { %>
                                 <div
-                                    class="col-span-2 bg-primary/10 rounded-2xl border border-primary/20 flex items-center justify-center overflow-hidden relative">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent">
-                                    </div>
-                                </div>
-                                <div class="col-span-2 bg-primary/40 rounded-2xl flex items-center justify-center">
-                                    <span
-                                        class="material-symbols-outlined text-white text-5xl opacity-40">grid_guides</span>
-                                </div>
-                                <div class="col-span-1 bg-primary/20 rounded-2xl flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-primary/60">architecture</span>
-                                </div>
-                                <div
-                                    class="col-span-3 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center">
-                                    <span
-                                        class="material-symbols-outlined text-primary text-6xl opacity-40">blur_on</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="absolute -bottom-6 -right-6 bg-white dark:bg-[#1a3a30] p-6 rounded-2xl shadow-2xl border border-[#e7f3ef] dark:border-[#1a3a30] max-w-[240px]">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-primary">psychology</span>
-                            </div>
-                            <span class="text-sm font-bold">Expert Authority</span>
-                        </div>
-                        <p class="text-xs leading-relaxed opacity-70">Curated by 1% of industry experts who prioritize
-                            depth over breadth.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="px-6 md:px-20 py-24 bg-white dark:bg-[#0d1b17] border-y border-[#e7f3ef] dark:border-[#1a3a30]">
-            <div class="mb-16">
-                <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full mb-4">
-                    <span class="material-symbols-outlined text-sm">route</span>
-                    <span class="text-xs font-bold uppercase tracking-widest">Career Progression</span>
-                </div>
-                <h2 class="text-4xl font-black mb-4">Curated Learning Paths</h2>
-                <p class="text-[#4c9a80] max-w-2xl">Tailored tracks designed to bridge the gap between intermediate
-                    skillsets and senior professional mastery.</p>
-            </div>
-            <div class="flex flex-col gap-16">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div
-                        class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
-                        <div
-                            class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
-                            <span class="material-symbols-outlined text-8xl">design_services</span>
-                        </div>
-                        <div class="relative z-10">
-                            <h3 class="text-2xl font-black mb-2">UI/UX Mastery</h3>
-                            <p class="text-sm text-[#4c9a80] mb-6">Advanced system design, behavioral psychology, and
-                                high-fidelity prototyping.</p>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
-                                    Senior</span>
-                                <span class="text-primary material-symbols-outlined">arrow_forward</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
-                        <div
-                            class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
-                            <span class="material-symbols-outlined text-8xl">cloud_done</span>
-                        </div>
-                        <div class="relative z-10">
-                            <h3 class="text-2xl font-black mb-2">Cloud Architecture</h3>
-                            <p class="text-sm text-[#4c9a80] mb-6">Scalable infrastructure, serverless patterns, and
-                                cloud-native security protocols.</p>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
-                                    Specialist</span>
-                                <span class="text-primary material-symbols-outlined">arrow_forward</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="group relative p-8 rounded-[2rem] bg-white/60 dark:bg-[#1a3a30] border border-[#e7f3ef]/50 dark:border-transparent hover:border-primary/30 transition-all cursor-pointer overflow-hidden shadow-sm">
-                        <div
-                            class="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-transform">
-                            <span class="material-symbols-outlined text-8xl">terminal</span>
-                        </div>
-                        <div class="relative z-10">
-                            <h3 class="text-2xl font-black mb-2">Full-Stack Lead</h3>
-                            <p class="text-sm text-[#4c9a80] mb-6">Enterprise-grade architecture, CI/CD mastery, and
-                                technical team leadership.</p>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="text-xs font-bold bg-primary/20 text-primary px-3 py-1 rounded-full uppercase">Level:
-                                    Principal</span>
-                                <span class="text-primary material-symbols-outlined">arrow_forward</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between items-center mb-8">
-                        <h4 class="text-xl font-bold">Top Courses in UI/UX Mastery</h4>
-                        <div class="flex gap-2">
-                            <button
-                                class="w-10 h-10 rounded-full border border-[#e7f3ef] dark:border-[#1a3a30] flex items-center justify-center hover:bg-primary/10 transition-colors">
-                                <span class="material-symbols-outlined">chevron_left</span>
-                            </button>
-                            <button
-                                class="w-10 h-10 rounded-full border border-[#e7f3ef] dark:border-[#1a3a30] flex items-center justify-center hover:bg-primary/10 transition-colors">
-                                <span class="material-symbols-outlined">chevron_right</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex gap-6 overflow-x-auto hide-scrollbar pb-6">
-                        <% if (courses && courses.length> 0) { %>
-                            <% courses.forEach(course=> { %>
-                                <div
-                                    class="min-w-[320px] bg-white/60 dark:bg-[#1a3a30]/40 rounded-[2rem] p-6 border border-[#e7f3ef]/50 dark:border-[#1a3a30] group">
-                                    <div class="bg-primary/20 rounded-2xl h-40 mb-6 overflow-hidden">
-                                        <% if (course.thumbnail) { %>
-                                            <img alt="<%= course.title %>"
-                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-                                                src="<%= course.thumbnail %>" />
-                                            <% } else { %>
-                                                <div
-                                                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/30 to-primary/10 text-4xl font-bold text-primary">
-                                                    <%= course.title.substring(0, 2).toUpperCase() %>
-                                                </div>
-                                                <% } %>
-                                    </div>
-                                    <h5 class="text-lg font-black mb-2">
-                                        <%= course.title %>
-                                    </h5>
-                                    <p class="text-sm opacity-70 mb-4 line-clamp-2">
-                                        <%= course.description %>
-                                    </p>
+                                    class="tutor-card relative rounded-2xl overflow-hidden h-64 group flex-shrink-0 w-full md:w-[calc(33.333%-14px)]">
+                                    <img src="<%= tutor.avatar || '/images/default-avatar.png' %>"
+                                        class="w-full h-full object-cover" alt="<%= tutor.fullName %>" />
+                                    <span class="t-ribbon"></span>
+
                                     <div
-                                        class="flex items-center gap-4 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
-                                        <div class="flex items-center gap-1 text-primary">
-                                            <span class="material-symbols-outlined text-sm fill-current">star</span>
-                                            <span class="text-xs font-bold">
-                                                <%= course.rating || 0 %>
+                                        class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent">
+                                    </div>
+                                    <div
+                                        class="absolute bottom-2 right-2 bg-deep-forest/80 backdrop-blur-md border border-white/20 text-white p-4 rounded-2xl shadow-2xl flex flex-col items-center">
+                                        <div class="flex items-center gap-1.5 mb-1.5">
+                                            <span
+                                                class="material-symbols-outlined text-primary text-xl fill-current">verified</span>
+                                            <span
+                                                class="text-[11px] font-black uppercase tracking-widest text-primary">Verified
+                                                Expert</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-black">5.0 ★</span>
+                                            <div class="w-[1px] h-4 bg-white/20"></div>
+                                            <span class="text-[10px] font-bold opacity-80">2.1k Certified</span>
+                                        </div>
+                                    </div>
+                                    <div class="absolute bottom-4 left-4 right-4">
+                                        <div class="flex items-center gap-1 mb-1">
+                                            <span class="text-yellow-400 text-xs">★</span>
+                                            <span class="text-white text-xs font-bold">
+                                                <%= tutor.rating || 4.5 %>
+                                            </span>
+                                            <span class="text-gray-300 text-[10px] ml-1">
+                                                reviews
                                             </span>
                                         </div>
-                                        <span class="text-xs opacity-60">
-                                            <%= course.tutor ? course.tutor.fullName : 'Instructor' %>
-                                        </span>
-                                        <span class="text-xs font-black text-primary ml-auto">
-                                            ₹<%= course.price.toLocaleString() %>
-                                        </span>
+
+                                        <p class="text-white font-bold text-sm">
+                                            <%= tutor.fullName %>
+                                        </p>
+
+                                        <p class="text-gray-300 bioooo text-[10px] font-bold">
+                                            <%= tutor.bio || 'Expert Instructor' %>
+                                        </p>
+
+                                        <a href="/user/tutor/<%= tutor._id %>"
+                                            class="text-brand text-[10px] text-white font-bold hover:underline">
+                                            View Tutor Profile →
+                                        </a>
                                     </div>
                                 </div>
-                                <% }); %>
-                                    <% } else { %>
-                                        <div class="w-full text-center py-8">
-                                            <p class="text-sm opacity-60">No courses available yet</p>
-                                        </div>
-                                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="px-6 md:px-20 py-16">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h2 class="text-3xl font-bold tracking-tight mb-2">Advanced Curriculums</h2>
-                    <p class="text-[#4c9a80]">Systematic learning paths designed for professional depth.</p>
-                </div>
-                <button class="text-sm font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all">
-                    View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div
-                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
-                    <div
-                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <span class="material-symbols-outlined">palette</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold">Design</h3>
-                        <p class="text-sm text-[#4c9a80]">120+ Courses</p>
-                    </div>
-                </div>
-                <div
-                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
-                    <div
-                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <span class="material-symbols-outlined">code</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold">Development</h3>
-                        <p class="text-sm text-[#4c9a80]">150+ Courses</p>
-                    </div>
-                </div>
-                <div
-                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
-                    <div
-                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <span class="material-symbols-outlined">analytics</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold">Business</h3>
-                        <p class="text-sm text-[#4c9a80]">85+ Courses</p>
-                    </div>
-                </div>
-                <div
-                    class="group cursor-pointer flex flex-col gap-3 rounded-2xl border border-[#cfe7df] dark:border-[#1a3a30] bg-white dark:bg-[#0d1b17] p-6 hover:shadow-lg transition-all">
-                    <div
-                        class="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <span class="material-symbols-outlined">trending_up</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold">Marketing</h3>
-                        <p class="text-sm text-[#4c9a80]">60+ Courses</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <section class="px-6 py-14 max-w-6xl mx-auto">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-black text-gray-900">Certified Tutor Showcase</h2>
-                    <p class="text-gray-400 text-sm mt-1">Learn directly from verified experts who offer the highest bar
-                        for
-                        professional instruction.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button id="prevTutorBtnLanding"
-                        class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg
-                            class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg></button>
-                    <button id="nextTutorBtnLanding"
-                        class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg
-                            class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg></button>
-                </div>
-            </div>
-            
-            <% if (tutors && tutors.length> 0) { %>
-            <div class="relative overflow-hidden">
-                <div id="tutorCarouselLanding" class="flex gap-5 transition-transform duration-500 ease-out">
-                    <% tutors.forEach(tutor=> { %>
-                        <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group flex-shrink-0 w-full md:w-[calc(33.333%-14px)]">
-                            <img src="<%= tutor.avatar || '/images/default-avatar.png' %>"
-                                class="w-full h-full object-cover" alt="<%= tutor.fullName %>" />
-                            <span class="t-ribbon"></span>
-
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent">
-                            </div>
-                            <div
-                                class="absolute bottom-2 right-2 bg-deep-forest/80 backdrop-blur-md border border-white/20 text-white p-4 rounded-2xl shadow-2xl flex flex-col items-center">
-                                <div class="flex items-center gap-1.5 mb-1.5">
-                                    <span
-                                        class="material-symbols-outlined text-primary text-xl fill-current">verified</span>
-                                    <span class="text-[11px] font-black uppercase tracking-widest text-primary">Verified
-                                        Expert</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-sm font-black">5.0 ★</span>
-                                    <div class="w-[1px] h-4 bg-white/20"></div>
-                                    <span class="text-[10px] font-bold opacity-80">2.1k Certified</span>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-4 left-4 right-4">
-                                <div class="flex items-center gap-1 mb-1">
-                                    <span class="text-yellow-400 text-xs">★</span>
-                                    <span class="text-white text-xs font-bold">
-                                        <%= tutor.rating || 4.5 %>
-                                    </span>
-                                    <span class="text-gray-300 text-[10px] ml-1">
-                                        reviews
-                                    </span>
-                                </div>
-
-                                <p class="text-white font-bold text-sm">
-                                    <%= tutor.fullName %>
-                                </p>
-
-                                <p class="text-gray-300 bioooo text-[10px] font-bold">
-                                    <%= tutor.bio || 'Expert Instructor' %>
-                                </p>
-
-                                <a href="/user/tutor/<%= tutor._id %>"
-                                    class="text-brand text-[10px] text-white font-bold hover:underline">
-                                    View Tutor Profile →
-                                </a>
-                            </div>
+                                <% }) %>
                         </div>
-                    <% }) %>
-                </div>
-            </div>
-            
-            <script>
-                (function() {
-                    const carousel = document.getElementById('tutorCarouselLanding');
-                    const prevBtn = document.getElementById('prevTutorBtnLanding');
-                    const nextBtn = document.getElementById('nextTutorBtnLanding');
-                    const totalTutors = <%= tutors.length %>;
-                    let currentIndex = 0;
-                    const tutorsPerView = window.innerWidth >= 768 ? 3 : 1;
-                    const maxIndex = Math.max(0, totalTutors - tutorsPerView);
+                    </div>
 
-                    function updateCarousel() {
-                        const translateX = -(currentIndex * (100 / tutorsPerView));
-                        carousel.style.transform = `translateX(${translateX}%)`;
-                        
-                        prevBtn.disabled = currentIndex === 0;
-                        nextBtn.disabled = currentIndex >= maxIndex;
-                        
-                        prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
-                        nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
-                    }
+                    <script>
+                            (function () {
+                                const carousel = document.getElementById('tutorCarouselLanding');
+                                const prevBtn = document.getElementById('prevTutorBtnLanding');
+                                const nextBtn = document.getElementById('nextTutorBtnLanding');
+                                const totalTutors = <%= tutors.length %>;
+                                let currentIndex = 0;
+                                const tutorsPerView = window.innerWidth >= 768 ? 3 : 1;
+                                const maxIndex = Math.max(0, totalTutors - tutorsPerView);
 
-                    prevBtn.addEventListener('click', () => {
-                        if (currentIndex > 0) {
-                            currentIndex--;
-                            updateCarousel();
-                        }
-                    });
+                                function updateCarousel() {
+                                    const translateX = -(currentIndex * (100 / tutorsPerView));
+                                    carousel.style.transform = `translateX(${translateX}%)`;
 
-                    nextBtn.addEventListener('click', () => {
-                        if (currentIndex < maxIndex) {
-                            currentIndex++;
-                            updateCarousel();
-                        }
-                    });
+                                    prevBtn.disabled = currentIndex === 0;
+                                    nextBtn.disabled = currentIndex >= maxIndex;
 
-                    updateCarousel();
-                })();
-            </script>
-            <% } else { %>
-                <p class="text-gray-400 text-sm text-center py-8">No certified tutors available</p>
-            <% } %>
-        </section>
-        <section class="px-6 md:px-20 py-24">
-            <div
-                class="bg-deep-forest text-white rounded-[2.5rem] p-12 md:p-20 flex flex-col items-center text-center gap-8 relative overflow-hidden border border-primary/20">
-                <div class="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full"></div>
-                <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full"></div>
-                <h2 class="text-4xl md:text-5xl font-black max-w-2xl leading-tight">Elevate the next generation of
-                    professionals</h2>
-                <p class="text-[#a0c5ba] text-lg max-w-xl">
-                    We are looking for authority figures. If you have 10+ years of domain expertise, our platform offers
-                    the highest tier for specialized instruction.
-                </p>
-                <!-- <div class="flex flex-col sm:flex-row gap-4 relative z-10">
+                                    prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                                    nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+                                }
+
+                                prevBtn.addEventListener('click', () => {
+                                    if (currentIndex > 0) {
+                                        currentIndex--;
+                                        updateCarousel();
+                                    }
+                                });
+
+                                nextBtn.addEventListener('click', () => {
+                                    if (currentIndex < maxIndex) {
+                                        currentIndex++;
+                                        updateCarousel();
+                                    }
+                                });
+
+                                updateCarousel();
+                            })();
+                    </script>
+                    <% } else { %>
+                        <p class="text-gray-400 text-sm text-center py-8">No certified tutors available</p>
+                        <% } %>
+            </section>
+            <section class="px-6 md:px-20 py-24">
+                <div
+                    class="bg-deep-forest text-white rounded-[2.5rem] p-12 md:p-20 flex flex-col items-center text-center gap-8 relative overflow-hidden border border-primary/20">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full"></div>
+                    <h2 class="text-4xl md:text-5xl font-black max-w-2xl leading-tight">Elevate the next generation of
+                        professionals</h2>
+                    <p class="text-[#a0c5ba] text-lg max-w-xl">
+                        We are looking for authority figures. If you have 10+ years of domain expertise, our platform
+                        offers
+                        the highest tier for specialized instruction.
+                    </p>
+                    <!-- <div class="flex flex-col sm:flex-row gap-4 relative z-10">
                     <button
                     <a href="tutor/signup"
                         class="bg-primary text-[#0d1b17] px-10 py-4 rounded-xl font-bold text-lg hover:scale-[1.05] transition-transform">
@@ -783,137 +857,245 @@
                         Partnership Programs
                     </button>
                 </div> -->
-            </div>
-        </section>
-    </main>
-    <footer class="bg-white dark:bg-[#0d1b17] border-t border-[#e7f3ef] dark:border-[#1a3a30] pt-16 pb-8 px-6 md:px-20">
-        <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div class="flex flex-col gap-6">
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
-                            <circle cx="12" cy="12" r="1.5" fill="white" />
-                        </svg>
+                </div>
+            </section>
+        </main>
+        <footer
+            class="bg-white dark:bg-[#0d1b17] border-t border-[#e7f3ef] dark:border-[#1a3a30] pt-16 pb-8 px-6 md:px-20">
+            <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="flex flex-col gap-6">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                                <circle cx="12" cy="12" r="1.5" fill="white" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-xl font-bold">Learn</span>
+                                <span class="text-xl font-bold text-[#00d9b1]">ify</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex flex-col">
-                        <div class="flex items-center">
-                            <span class="text-xl font-bold">Learn</span>
-                            <span class="text-xl font-bold text-[#00d9b1]">ify</span>
+                    <p class="text-sm opacity-60 leading-relaxed">
+                        A premium repository for professional wisdom. Focused on mastery, longevity, and high-impact
+                        educational design.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6">Mastery Tracks</h4>
+                    <ul class="flex flex-col gap-4 text-sm opacity-70">
+                        <li><a class="hover:text-primary transition-colors" href="#">Expert Index</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Technical Blueprints</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Corporate Training</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Global Certifications</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6">Academic Support</h4>
+                    <ul class="flex flex-col gap-4 text-sm opacity-70">
+                        <li><a class="hover:text-primary transition-colors" href="#">Scholarships</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Research Ethics</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Privacy Hub</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Mentorship Terms</a></li>
+                    </ul>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <h4 class="font-bold">Ready to teach?</h4>
+                    <button class="bg-primary text-[#0d1b17] w-full py-3 rounded-xl font-bold text-sm">
+                        Apply to Mentor
+                    </button>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-background-light dark:bg-[#1a3a30] flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                            <span class="material-symbols-outlined text-lg">public</span>
+                        </div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-background-light dark:bg-[#1a3a30] flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                            <span class="material-symbols-outlined text-lg">share</span>
                         </div>
                     </div>
                 </div>
-                <p class="text-sm opacity-60 leading-relaxed">
-                    A premium repository for professional wisdom. Focused on mastery, longevity, and high-impact
-                    educational design.
-                </p>
             </div>
-            <div>
-                <h4 class="font-bold mb-6">Mastery Tracks</h4>
-                <ul class="flex flex-col gap-4 text-sm opacity-70">
-                    <li><a class="hover:text-primary transition-colors" href="#">Expert Index</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Technical Blueprints</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Corporate Training</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Global Certifications</a></li>
-                </ul>
+            <div
+                class="max-w-[1440px] mx-auto border-t border-[#e7f3ef] dark:border-[#1a3a30] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
+                <p>© 2024 Learnify Mastery Edition. All rights reserved.</p>
+                <p>Architected for the ambitious professional.</p>
             </div>
-            <div>
-                <h4 class="font-bold mb-6">Academic Support</h4>
-                <ul class="flex flex-col gap-4 text-sm opacity-70">
-                    <li><a class="hover:text-primary transition-colors" href="#">Scholarships</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Research Ethics</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Privacy Hub</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Mentorship Terms</a></li>
-                </ul>
-            </div>
-            <div class="flex flex-col gap-6">
-                <h4 class="font-bold">Ready to teach?</h4>
-                <button class="bg-primary text-[#0d1b17] w-full py-3 rounded-xl font-bold text-sm">
-                    Apply to Mentor
-                </button>
-                <div class="flex gap-4">
-                    <div
-                        class="w-10 h-10 rounded-full bg-background-light dark:bg-[#1a3a30] flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
-                        <span class="material-symbols-outlined text-lg">public</span>
-                    </div>
-                    <div
-                        class="w-10 h-10 rounded-full bg-background-light dark:bg-[#1a3a30] flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
-                        <span class="material-symbols-outlined text-lg">share</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div
-            class="max-w-[1440px] mx-auto border-t border-[#e7f3ef] dark:border-[#1a3a30] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
-            <p>© 2024 Learnify Mastery Edition. All rights reserved.</p>
-            <p>Architected for the ambitious professional.</p>
-        </div>
-    </footer>
+        </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const courseContainer = document.querySelector('.flex.gap-6.overflow-x-auto.hide-scrollbar');
-            const prevBtn = document.querySelector('.flex.gap-2 button:first-child');
-            const nextBtn = document.querySelector('.flex.gap-2 button:last-child');
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const track = document.getElementById('fanTrackLanding');
+                const dotsContainer = document.getElementById('fanDotsLanding');
+                const prevBtn = document.getElementById('fanPrevLanding');
+                const nextBtn = document.getElementById('fanNextLanding');
 
-            if (courseContainer && prevBtn && nextBtn) {
-                const scrollAmount = 350;
+                if (track && dotsContainer && prevBtn && nextBtn) {
+                    const cards = Array.from(track.querySelectorAll('.fan-card'));
+                    let current = 0;
+                    const total = cards.length;
+                    let autoTimer;
+                    let dragStartX = 0;
+                    let isDragging = false;
 
-                prevBtn.addEventListener('click', function () {
-                    courseContainer.scrollBy({
-                        left: -scrollAmount,
-                        behavior: 'smooth'
+                    function getPos(index) {
+                        let diff = index - current;
+                        if (diff > total / 2) diff -= total;
+                        if (diff < -total / 2) diff += total;
+                        return Math.max(-3, Math.min(3, diff));
+                    }
+
+                    function updateDots() {
+                        dotsContainer.querySelectorAll('.dot').forEach(function (dot, index) {
+                            dot.classList.toggle('active', index === current);
+                        });
+                    }
+
+                    function renderDots() {
+                        dotsContainer.innerHTML = '';
+                        cards.forEach(function (_, index) {
+                            const dot = document.createElement('div');
+                            dot.className = 'dot' + (index === current ? ' active' : '');
+                            dot.addEventListener('click', function () {
+                                goTo(index);
+                            });
+                            dotsContainer.appendChild(dot);
+                        });
+                    }
+
+                    function updatePositions() {
+                        cards.forEach(function (card, index) {
+                            card.dataset.pos = getPos(index);
+                        });
+                        updateDots();
+                    }
+
+                    function goTo(index) {
+                        current = ((index % total) + total) % total;
+                        updatePositions();
+
+                        setTimeout(function () {
+                            const center = track.querySelector('.fan-card[data-pos="0"]');
+                            if (center) {
+                                center.classList.remove('just-centered');
+                                void center.offsetWidth;
+                                center.classList.add('just-centered');
+                                setTimeout(function () {
+                                    center.classList.remove('just-centered');
+                                }, 500);
+                            }
+                        }, 50);
+                    }
+
+                    cards.forEach(function (card, index) {
+                        card.addEventListener('click', function () {
+                            if (getPos(index) !== 0) {
+                                goTo(index);
+                            } else if (card.dataset.courseUrl) {
+                                window.location.href = card.dataset.courseUrl;
+                            }
+                        });
                     });
-                });
 
-                nextBtn.addEventListener('click', function () {
-                    courseContainer.scrollBy({
-                        left: scrollAmount,
-                        behavior: 'smooth'
+                    prevBtn.addEventListener('click', function () {
+                        goTo(current - 1);
                     });
-                });
-            }
-        });
 
-        // Loading Screen Handler
-        window.addEventListener('load', function () {
-            const loadingScreen = document.getElementById('loadingScreen');
+                    nextBtn.addEventListener('click', function () {
+                        goTo(current + 1);
+                    });
 
-            // Wait for minimum display time and page load
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'ArrowLeft') goTo(current - 1);
+                        if (event.key === 'ArrowRight') goTo(current + 1);
+                    });
+
+                    track.addEventListener('mousedown', function (event) {
+                        isDragging = true;
+                        dragStartX = event.clientX;
+                        track.classList.add('dragging');
+                    });
+
+                    document.addEventListener('mouseup', function (event) {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        track.classList.remove('dragging');
+                        const delta = event.clientX - dragStartX;
+                        if (Math.abs(delta) > 50) {
+                            delta < 0 ? goTo(current + 1) : goTo(current - 1);
+                        }
+                    });
+
+                    track.addEventListener('touchstart', function (event) {
+                        dragStartX = event.touches[0].clientX;
+                    }, { passive: true });
+
+                    track.addEventListener('touchend', function (event) {
+                        const delta = event.changedTouches[0].clientX - dragStartX;
+                        if (Math.abs(delta) > 40) {
+                            delta < 0 ? goTo(current + 1) : goTo(current - 1);
+                        }
+                    }, { passive: true });
+
+                    function startAutoPlay() {
+                        autoTimer = setInterval(function () {
+                            goTo(current + 1);
+                        }, 4000);
+                    }
+
+                    track.addEventListener('mouseenter', function () {
+                        clearInterval(autoTimer);
+                    });
+
+                    track.addEventListener('mouseleave', startAutoPlay);
+
+                    renderDots();
+                    updatePositions();
+                    startAutoPlay();
+                }
+            });
+
+            // Loading Screen Handler
+            window.addEventListener('load', function () {
+                const loadingScreen = document.getElementById('loadingScreen');
+
+                // Wait for minimum display time and page load
+                setTimeout(function () {
+                    loadingScreen.classList.add('hidden');
+
+                    // Remove from DOM after transition
+                    setTimeout(function () {
+                        loadingScreen.remove();
+                    }, 600);
+                }, 1500); // Show for at least 1.5 seconds
+            });
+
+            // Fallback: Hide loading screen after maximum time
             setTimeout(function () {
-                loadingScreen.classList.add('hidden');
-
-                // Remove from DOM after transition
-                setTimeout(function () {
-                    loadingScreen.remove();
-                }, 600);
-            }, 1500); // Show for at least 1.5 seconds
-        });
-
-        // Fallback: Hide loading screen after maximum time
-        setTimeout(function () {
-            const loadingScreen = document.getElementById('loadingScreen');
-            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
-                loadingScreen.classList.add('hidden');
-                setTimeout(function () {
-                    loadingScreen.remove();
-                }, 600);
-            }
-        }, 5000); // Maximum 5 seconds
-    </script>
+                const loadingScreen = document.getElementById('loadingScreen');
+                if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+                    loadingScreen.classList.add('hidden');
+                    setTimeout(function () {
+                        loadingScreen.remove();
+                    }, 600);
+                }
+            }, 5000); // Maximum 5 seconds
+        </script>
 
 </body>
-  <style>
+<style>
     .tutor-card {
-      position: relative;
-      overflow: hidden;
-      transition: transform .3s, box-shadow .3s;
+        position: relative;
+        overflow: hidden;
+        transition: transform .3s, box-shadow .3s;
     }
 
     .tutor-card:hover {
-      transform: scale(0.97);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        transform: scale(0.97);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
     }
 
     /* .incard{
@@ -921,51 +1103,52 @@
     } */
 
     .tutor-card .t-ribbon {
-      position: absolute;
-      overflow: hidden;
-      width: 140px;
-      height: 140px;
-      top: -8px;
-      left: -8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      pointer-events: none;
+        position: absolute;
+        overflow: hidden;
+        width: 140px;
+        height: 140px;
+        top: -8px;
+        left: -8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        pointer-events: none;
     }
 
     .tutor-card .t-ribbon::before {
-      content: 'Expert Certified';
-      position: absolute;
-      width: 150%;
-      height: 34px;
-      background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%);
-      transform: rotate(-45deg) translateY(-18px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #0d1b17;
-      font-weight: 700;
-      font-size: 8px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        content: 'Expert Certified';
+        position: absolute;
+        width: 150%;
+        height: 34px;
+        background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%);
+        transform: rotate(-45deg) translateY(-18px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0d1b17;
+        font-weight: 700;
+        font-size: 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
-    .bioooo{
+
+    .bioooo {
         max-width: 7rem;
     }
 
     .tutor-card .t-ribbon::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      bottom: 0;
-      left: 0;
-      height: 8px;
-      z-index: -1;
-      box-shadow: 124px -124px #059669;
-      background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%);
+        content: '';
+        position: absolute;
+        width: 8px;
+        bottom: 0;
+        left: 0;
+        height: 8px;
+        z-index: -1;
+        box-shadow: 124px -124px #059669;
+        background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%);
     }
-  </style>
+</style>
 
 </html>

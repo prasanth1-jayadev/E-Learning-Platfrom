@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    
+    <%- include('../partials/user-navbar') %>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 mt-16">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">My Wishlist</h1>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">My Wishlist count <%=wishlistCourses.length %> </h1>
+
+            <p class="text-gray-600">Courses you've saved for later</p>
+        </div>
+
+        <% if (wishlistCourses && wishlistCourses.length > 0) { %>
+        <!-- Wishlist Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <% wishlistCourses.forEach(course => { %>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                <!-- Course Image -->
+                <div class="relative h-48 bg-gray-200">
+                    <% if (course.thumbnail) { %>
+                        <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-full h-full object-cover">
+                    <% } else { %>
+                        <div class="w-full h-full flex items-center justify-center bg-primary/10">
+                            <span class="material-icons-outlined text-primary text-5xl">menu_book</span>
+                        </div>
+                    <% } %>
+                    <!-- Remove Button -->
+                    <button onclick="removeFromWishlist('<%= course._id %>')" 
+                            class="absolute top-3 right-3 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-red-50 transition-colors group">
+                        <span class="material-icons-outlined text-gray-600 group-hover:text-red-600">delete</span>
+                    </button>
+                </div>
+
+                <!-- Course Info -->
+                <div class="p-5">
+                    <h3 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+                        <%= course.title %>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <span class="material-icons-outlined text-sm align-middle">person</span>
+                        <%= course.tutor?.fullName || 'Unknown' %>
+                    </p>
+                    
+                    <!-- Price -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <% if (course.discountPrice) { %>
+                                <span class="text-2xl font-bold text-primary">₹<%= course.discountPrice %></span>
+                                <span class="text-sm text-gray-500 line-through ml-2">₹<%= course.price %></span>
+                            <% } else { %>
+                                <span class="text-2xl font-bold text-primary">₹<%= course.price %></span>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-2">
+                        <a href="/user/course/<%= course._id %>" 
+                           class="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium text-center hover:bg-primary/90 transition-colors">
+                            View Course
+                        </a>
+                        <button onclick="addToCart('<%= course._id %>')" 
+                                class="px-4 py-2 border border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors">
+                            <span class="material-icons-outlined text-sm">shopping_cart</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        <% } else { %>
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="material-icons-outlined text-gray-400 text-5xl">favorite_border</span>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">Your wishlist is empty</h2>
+            <p class="text-gray-600 mb-8">Start adding courses you're interested in!</p>
+            <a href="/user/courses" 
+               class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                <span class="material-icons-outlined">explore</span>
+                Browse Courses
+            </a>
+        </div>
+        <% } %>
+    </main>
+
+    <script>
+        async function removeFromWishlist(courseId) {
+            try {
+                const response = await fetch(`/user/wishlist/remove/${courseId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to remove from wishlist');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong');
+            }
+        }
+
+        async function addToCart(courseId) {
+            try {
+                const response = await fetch('/user/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ courseId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show SweetAlert with options
+                    const result = await Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart!',
+                        text: 'Course has been added to your cart',
+                        showCancelButton: true,
+                        confirmButtonText: 'View Cart',
+                        cancelButtonText: 'Continue Shopping',
+                        confirmButtonColor: '#00d9b1',
+                        cancelButtonColor: '#6b7280'
+                    });
+
+                    // Remove from wishlist after adding to cart
+                    await removeFromWishlist(courseId);
+
+                    // If user clicks "View Cart", redirect to cart page
+                    if (result.isConfirmed) {
+                        window.location.href = '/user/cart';
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message || 'Failed to add to cart'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong'
+                });
+            }
+        }
+    </script>
+
+    <%- include('../partials/toast') %>
+</body>
+</html>

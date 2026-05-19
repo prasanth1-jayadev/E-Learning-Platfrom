@@ -27,11 +27,30 @@ const getDashboard = async (req, res) => {
         };
 
         let recentCourses = [];
+        let analytics = {
+            revenueData: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                revenue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                profit: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            coursePerformance: {
+                excellent: 0,
+                good: 0,
+                average: 0
+            },
+            keyMetrics: {
+                totalViews: 0,
+                totalEnrollments: 0,
+                totalCompletions: 0
+            }
+        };
 
         if (tutor.approvalStatus === 'approved') {
             stats = await courseService.getDashboardStats(req.session.tutorId);
             recentCourses = await courseService.getTutorCourses(req.session.tutorId, {});
             recentCourses = recentCourses.slice(0, 5); // get recent 5 courses
+            
+            analytics = await courseService.getTutorAnalytics(req.session.tutorId);
         }
 
         res.render('tutor/dashboard', {
@@ -40,7 +59,8 @@ const getDashboard = async (req, res) => {
             isApproved: tutor.approvalStatus === 'approved',
             currentPage: 'dashboard',
             stats,
-            recentCourses
+            recentCourses,
+            analytics
         });
     } catch (error) {
         console.error('Dashboard error:', error);
@@ -138,7 +158,6 @@ const postSendEmailChangeOTP = async (req, res) => {
             return res.status(400).json({ message: 'Email already in use' });
         }
 
-        // Send OTP to new email
         await tutorService.sendEmailChangeOTP(newEmailTrimmed);
 
         res.json({ success: true, message: 'OTP sent to new email' });
@@ -183,7 +202,6 @@ const postVerifyEmailChange = async (req, res) => {
 
         await tutorService.verifyEmailChangeOTP(newEmail, otp);
 
-        // Update tutor with new email
         const tutor = await Tutor.findById(req.session.tutorId);
         if (!tutor) {
             return res.status(404).json({ message: 'Tutor not found' });
@@ -262,6 +280,8 @@ const postChangePassword = async (req, res) => {
     }
 };
 
+
+
 const postUploadAvatar = async (req, res) => {
     try {
         if (!req.file) {
@@ -273,7 +293,6 @@ const postUploadAvatar = async (req, res) => {
             return res.status(404).json({ message: 'Tutor not found' });
         }
 
-        // Update avatar with Cloudinary URL
         tutor.avatar = req.file.path;
         await tutor.save();
 
@@ -355,14 +374,16 @@ const postSignup = async (req, res) => {
     }
 };
 
+
+
+
 const postOtp = async (req, res) => {
     try {
         const { otp } = req.body;
         const email = req.session.otpEmail;
         const purpose = req.session.otpPurpose || 'signup';
 
-        console.log('📥 OTP SUBMISSION');
-        console.log('========================================');
+       
         console.log('OTP from form:', otp);
         console.log('Email from session:', email);
         console.log('Purpose:', purpose);

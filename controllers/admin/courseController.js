@@ -111,9 +111,9 @@ const getCourseDetail = async (req, res) => {
     }
 };
 
-/**
- * Toggle course status (draft/published/archived)
- */
+
+
+
 const toggleCourseStatus = async (req, res) => {
     try {
         const { id } = req.params;

@@ -1,9 +1,8 @@
 import Payment from '../../models/Payment.js';
 import * as adminService from '../../service/adminService.js';
 
-/**
- * Get all orders with pagination, search, and filters
- */
+
+
 const getOrders = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -16,12 +15,10 @@ const getOrders = async (req, res) => {
         // Build query
         let query = {};
 
-        // Status filter
         if (status !== 'all') {
             query.status = status;
         }
 
-        // Date range filter
         if (dateRange !== 'all') {
             const now = new Date();
             let startDate;
@@ -43,10 +40,8 @@ const getOrders = async (req, res) => {
             }
         }
 
-        // Get total count for pagination
         const totalOrders = await Payment.countDocuments(query);
 
-        // Fetch orders with user and course details
         let orders = await Payment.find(query)
             .populate('user', 'fullName email')
             .populate('course', 'title thumbnail price')
@@ -54,7 +49,6 @@ const getOrders = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        // Search filter (applied after fetching because we need populated data)
         if (search) {
             orders = orders.filter(order => {
                 const searchLower = search.toLowerCase();
@@ -108,9 +102,7 @@ const getOrders = async (req, res) => {
     }
 };
 
-/**
- * Get single order detail
- */
+
 const getOrderDetail = async (req, res) => {
     try {
         const { id } = req.params;
@@ -144,9 +136,7 @@ const getOrderDetail = async (req, res) => {
     }
 };
 
-/**
- * Update order status
- */
+
 const updateOrderStatus = async (req, res) => {
     try {
         const { id } = req.params;
