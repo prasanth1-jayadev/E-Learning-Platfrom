@@ -88,10 +88,39 @@
                                 <span>Items (<%= cart.items.length %>)</span>
                                 <span>₹<%= total.toLocaleString() %></span>
                             </div>
+
+                            <!-- Coupon Section -->
+                            <% if (appliedCoupon) { %>
+                            <div class="flex justify-between text-green-600">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-tag text-xs"></i>
+                                    <%= appliedCoupon.code %>
+                                    <button onclick="removeCouponCode()" class="text-red-400 hover:text-red-600 ml-1 text-xs">✕</button>
+                                </span>
+                                <span>- ₹<%= appliedCoupon.discount.toLocaleString() %></span>
+                            </div>
+                            <% } else { %>
+                            <div class="flex gap-2">
+                                <input type="text" id="couponInput" placeholder="Enter coupon code"
+                                    class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 uppercase">
+                                <button onclick="applyCouponCode()"
+                                    class="bg-teal-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-teal-700">
+                                    Apply
+                                </button>
+                            </div>
+                            <% } %>
+
                             <div class="border-t pt-3 flex justify-between font-bold text-lg">
                                 <span>Total</span>
-                                <span class="text-teal-600">₹<%= total.toLocaleString() %></span>
+                                <span class="text-teal-600">
+                                    ₹<%= appliedCoupon ? appliedCoupon.finalTotal.toLocaleString() : total.toLocaleString() %>
+                                </span>
                             </div>
+                            <% if (appliedCoupon) { %>
+                            <p class="text-green-600 text-sm text-center font-medium">
+                                🎉 You save ₹<%= appliedCoupon.discount.toLocaleString() %>!
+                            </p>
+                            <% } %>
                         </div>
 
                         <button onclick="proceedToCheckout()" 
@@ -163,12 +192,50 @@
             }
         }
 
+        async function applyCouponCode() {
+            const code = document.getElementById('couponInput').value.trim();
+            if (!code) {
+                Swal.fire({ icon: 'warning', title: 'Enter a coupon code', confirmButtonColor: '#00d9b1' });
+                return;
+            }
+            try {
+                const res = await fetch('/user/cart/apply-coupon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Coupon Applied!', text: data.message, timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Invalid Coupon', text: data.message, confirmButtonColor: '#00d9b1' });
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to apply coupon' });
+            }
+        }
+
+        async function removeCouponCode() {
+            try {
+                await fetch('/user/cart/remove-coupon', { method: 'POST' });
+                location.reload();
+            } catch (err) {
+                console.error('Remove coupon error:', err);
+            }
+        }
+
         async function proceedToCheckout() {
             try {
                 const courseIds = <%- JSON.stringify(cart.items.map(item => item.course._id)) %>;
                 
                 if (courseIds.length === 0) {
-                    alert('Your cart is empty');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cart Empty',
+                        text: 'Your cart is empty',
+                        confirmButtonColor: '#00d9b1'
+                    });
                     return;
                 }
 
@@ -184,7 +251,12 @@
                 const data = await response.json();
 
                 if (!data.success) {
-                    alert(data.message || 'Failed to create order');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Order Failed',
+                        text: data.message || 'Failed to create order',
+                        confirmButtonColor: '#00d9b1'
+                    });
                     return;
                 }
 
@@ -248,7 +320,12 @@
 
             } catch (error) {
                 console.error('Checkout error:', error);
-                alert('Checkout failed. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Checkout Failed',
+                    text: 'Checkout failed. Please try again.',
+                    confirmButtonColor: '#00d9b1'
+                });
             }
         }
     </script>

@@ -563,72 +563,88 @@
                             <div class="fan-stage relative select-none" id="fanStageLanding">
                                 <div class="fan-track" id="fanTrackLanding">
                                     <% courses.forEach((course, index)=> { %>
-                                        <% const roundedRating = Math.round(course.rating || 0); %>
-                                        <% const tutorName = course.tutor && course.tutor.fullName ? String(course.tutor.fullName) : 'Instructor'; %>
-                                        <% const tutorInitials = tutorName.split(' ').map(namePart => namePart[0]).join('').substring(0, 2).toUpperCase(); %>
-                                        <% const courseTitle = course.title ? String(course.title) : 'Course'; %>
-                                        <% const coursePrice = course.price || 0; %>
-                                        <% const initialPos = Math.max(-3, Math.min(3, index)); %>
-                                        <div class="fan-card" data-course-url="/user/course/<%= course._id %>" data-index="<%= index %>" data-pos="<%= initialPos %>">
-                                            <div class="relative h-44 overflow-hidden bg-gradient-to-br from-primary/40 to-[#0d9e76]/60">
-                                                <% if (course.thumbnail) { %>
-                                                    <img alt="<%= courseTitle %>"
-                                                        class="w-full h-full object-cover"
-                                                        loading="lazy"
-                                                        src="<%= course.thumbnail %>" />
-                                                    <% } else { %>
-                                                        <div
-                                                            class="w-full h-full flex items-center justify-center text-4xl font-black text-white/40">
-                                                            <%= courseTitle.substring(0, 2).toUpperCase() %>
-                                                        </div>
-                                                        <% } %>
-                                                <div class="thumb-overlay absolute inset-0"></div>
-                                                <span
-                                                    class="absolute top-3 left-3 bg-black/40 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Course</span>
-                                                <div
-                                                    class="active-badge absolute top-3 right-3 items-center gap-1 bg-primary text-[#0d1b17] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
-                                                    <span>Live</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-5">
-                                                <h5 class="font-black text-[15px] mb-1.5 text-[#0d1b17] leading-snug line-clamp-2">
-                                                    <%= courseTitle %>
-                                                </h5>
-                                                <p class="text-xs text-[#6b9e8e] leading-relaxed mb-3 line-clamp-2">
-                                                    <%= course.description %>
-                                                </p>
-                                                <div class="flex items-center gap-3 mb-4">
-                                                    <div class="flex items-center gap-0.5">
-                                                        <% for (let star = 0; star < 5; star++) { %>
-                                                            <span class="<%= star < roundedRating ? 'star-fill' : 'text-gray-300' %> text-xs">★</span>
-                                                            <% } %>
-                                                    </div>
-                                                    <span class="text-xs font-bold text-[#0d1b17]">
-                                                        <%= course.rating || 0 %>
-                                                    </span>
-                                                </div>
-                                                <div class="flex items-center justify-between pt-3 border-t border-[#e7f3ef]">
-                                                    <div class="flex items-center gap-2">
-                                                        <div
-                                                            class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[9px] font-black text-primary">
-                                                            <%= tutorInitials || 'IN' %>
-                                                        </div>
-                                                        <span class="text-[11px] text-[#4c9a80] font-medium truncate max-w-[80px]">
-                                                            <%= tutorName %>
-                                                        </span>
-                                                    </div>
-                                                    <span class="text-base font-black text-[#0d1b17]">
-                                                        &#8377;<%= coursePrice.toLocaleString ? coursePrice.toLocaleString() : coursePrice %>
-                                                    </span>
-                                                </div>
-                                                <button
-                                                    class="card-cta w-full mt-4 bg-primary text-[#0d1b17] py-2.5 rounded-xl text-xs font-black hover:opacity-90 transition-opacity"
-                                                    onclick="event.stopPropagation(); window.location.href='/user/course/<%= course._id %>'">
-                                                    Enroll Now
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <% }); %>
+                                        <% const roundedRating=Math.round(course.rating || 0); %>
+                                            <% const tutorName=course.tutor && course.tutor.fullName ?
+                                                String(course.tutor.fullName) : 'Instructor' ; %>
+                                                <% const
+                                                    tutorInitials=tutorName.split(' ').map(namePart => namePart[0]).join('').substring(0, 2).toUpperCase(); %>
+                                        <% const courseTitle = course.title ? String(course.title) : ' Course'; %>
+                                                    <% const coursePrice=course.price || 0; %>
+                                                        <% const initialPos=Math.max(-3, Math.min(3, index)); %>
+                                                            <div class="fan-card"
+                                                                data-course-url="/user/course/<%= course._id %>"
+                                                                data-index="<%= index %>" data-pos="<%= initialPos %>">
+                                                                <div
+                                                                    class="relative h-44 overflow-hidden bg-gradient-to-br from-primary/40 to-[#0d9e76]/60">
+                                                                    <% if (course.thumbnail) { %>
+                                                                        <img alt="<%= courseTitle %>"
+                                                                            class="w-full h-full object-cover"
+                                                                            loading="lazy"
+                                                                            src="<%= course.thumbnail %>" />
+                                                                        <% } else { %>
+                                                                            <div
+                                                                                class="w-full h-full flex items-center justify-center text-4xl font-black text-white/40">
+                                                                                <%= courseTitle.substring(0,
+                                                                                    2).toUpperCase() %>
+                                                                            </div>
+                                                                            <% } %>
+                                                                                <div
+                                                                                    class="thumb-overlay absolute inset-0">
+                                                                                </div>
+                                                                                <span
+                                                                                    class="absolute top-3 left-3 bg-black/40 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Course</span>
+                                                                                <div
+                                                                                    class="active-badge absolute top-3 right-3 items-center gap-1 bg-primary text-[#0d1b17] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                                                    <span>Live</span>
+                                                                                </div>
+                                                                </div>
+                                                                <div class="p-5">
+                                                                    <h5
+                                                                        class="font-black text-[15px] mb-1.5 text-[#0d1b17] leading-snug line-clamp-2">
+                                                                        <%= courseTitle %>
+                                                                    </h5>
+                                                                    <p
+                                                                        class="text-xs text-[#6b9e8e] leading-relaxed mb-3 line-clamp-2">
+                                                                        <%= course.description %>
+                                                                    </p>
+                                                                    <div class="flex items-center gap-3 mb-4">
+                                                                        <div class="flex items-center gap-0.5">
+                                                                            <% for (let star=0; star < 5; star++) { %>
+                                                                                <span
+                                                                                    class="<%= star < roundedRating ? 'star-fill' : 'text-gray-300' %> text-xs">★</span>
+                                                                                <% } %>
+                                                                        </div>
+                                                                        <span class="text-xs font-bold text-[#0d1b17]">
+                                                                            <%= course.rating || 0 %>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="flex items-center justify-between pt-3 border-t border-[#e7f3ef]">
+                                                                        <div class="flex items-center gap-2">
+                                                                            <div
+                                                                                class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[9px] font-black text-primary">
+                                                                                <%= tutorInitials || 'IN' %>
+                                                                            </div>
+                                                                            <span
+                                                                                class="text-[11px] text-[#4c9a80] font-medium truncate max-w-[80px]">
+                                                                                <%= tutorName %>
+                                                                            </span>
+                                                                        </div>
+                                                                        <span
+                                                                            class="text-base font-black text-[#0d1b17]">
+                                                                            &#8377;<%= coursePrice.toLocaleString ?
+                                                                                coursePrice.toLocaleString() :
+                                                                                coursePrice %>
+                                                                        </span>
+                                                                    </div>
+                                                                    <button
+                                                                        class="card-cta w-full mt-4 bg-primary text-[#0d1b17] py-2.5 rounded-xl text-xs font-black hover:opacity-90 transition-opacity"
+                                                                        onclick="event.stopPropagation(); window.location.href='/user/course/<%= course._id %>'">
+                                                                        Enroll Now
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <% }); %>
                                 </div>
                                 <button class="nav-btn left" id="fanPrevLanding" aria-label="Previous course">
                                     <svg class="nav-icon w-5 h-5 text-[#4c9a80]" fill="none" viewBox="0 0 24 24"

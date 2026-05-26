@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
@@ -8,7 +9,9 @@ import passport from './config/passport.js';
 import userRouter from './routes/userRouter.js';
 import tutorRouter from './routes/tutorRouter.js';
 import adminRouter from './routes/adminRouter.js';
+import chatRouter from './routes/chatRoutes.js';
 import { initCronJobs } from './service/cronService.js';
+import { initializeSocket } from './config/socket.js';
 
 dotenv.config();
 
@@ -16,18 +19,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 connectDB();
-
 initCronJobs();
 
 const app = express();
+const server = http.createServer(app);
+
+// Initialize socket.io
+initializeSocket(server);
+
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-    
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -35,7 +42,7 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        sameSite: 'lax' 
+        sameSite: 'lax'
     }
 }));
 
@@ -52,16 +59,16 @@ app.use((req, res, next) => {
 app.use('/user', userRouter);
 app.use('/tutor', tutorRouter);
 app.use('/admin', adminRouter);
+app.use('/chat', chatRouter);
 
 app.get('/', (req, res) => res.redirect('/user/landing'));
-
 
 app.use((req, res) => {
     res.status(404).render('partials/404');
 });
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
-app.listen(5000, () => {
-    console.log(`server is running = http://localhost:${PORT}`);
-})
+server.listen(PORT, () => {
+    console.log(`Server is running = http://localhost:${PORT}`);
+});

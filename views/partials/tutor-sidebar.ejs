@@ -14,10 +14,17 @@
     </div>
     
     <div class="profile-section">
-        <div class="profile-avatar"><%= tutor.fullName.charAt(0).toUpperCase() %></div>
+        <div class="profile-avatar">
+            <% if (tutor.avatar) { %>
+                <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>">
+            <% } else { %>
+                <%= tutor.fullName.charAt(0).toUpperCase() %>
+            <% } %>
+        </div>
         <div class="profile-name"><%= tutor.fullName %></div>
-        <button class="share-profile-btn" onclick="window.location.href='/tutor/share-profile'">Share Profile</button>
+        <!-- <button class="share-profile-btn" onclick="window.location.href='/tutor/share-profile'">Share Profile</button> -->
     </div>
+    
     
     <nav>
         <ul class="nav-menu">
@@ -59,7 +66,7 @@
             </li>
             <li class="nav-item">
                 <% if (tutor.approvalStatus === 'approved') { %>
-                    <a href="/tutor/orders" class="nav-link">
+                    <a href="/tutor/orders" class="nav-link <%= currentPage === 'orders' ? 'active' : '' %>">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                         </svg>
@@ -79,7 +86,7 @@
             </li>
             <li class="nav-item">
                 <% if (tutor.approvalStatus === 'approved') { %>
-                    <a href="/tutor/wallet" class="nav-link">
+                    <a href="/tutor/wallet" class="nav-link <%= currentPage === 'wallet' ? 'active' : '' %>">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                         </svg>
@@ -96,7 +103,7 @@
                         </svg>
                     </a>
                 <% } %>
-            </li>
+            </li>   
             <li class="nav-item">
                 <% if (tutor.approvalStatus === 'approved') { %>
                     <a href="/tutor/chat" class="nav-link">
@@ -192,7 +199,8 @@ function showLockedMessage(event) {
     .logo-icon { width: 36px; height: 36px; background: #00d9b1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.25rem; }
     .logo-text { font-weight: 700; font-size: 1.05rem; }
     .profile-section { text-align: center; padding: 1rem 0.5rem; }
-    .profile-avatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.75rem; font-weight: 700; }
+    .profile-avatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.75rem; font-weight: 700; overflow: hidden; position: relative; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .profile-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.75rem; line-height: 1.3; }
     .share-profile-btn { background: #f0f0f0; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: background 0.3s; width: 100%; }
     .share-profile-btn:hover { background: #e0e0e0; }

@@ -243,6 +243,7 @@ const toggleTutorCertified = async (req, res) => {
 const postLogin = async (req, res) => {
     const { email, password } = req.body;
 
+
     if (!email || !password) {
         return res.status(400).json({ message: "All fields required" });
     }
@@ -266,6 +267,7 @@ const postLogin = async (req, res) => {
 
         if (req.headers['content-type']?.includes('application/json')) {
             return res.status(400).json({ message: errorMsg });
+            
         }
 
         res.redirect(`/admin/login?error=${encodeURIComponent(errorMsg)}`);

@@ -4,6 +4,7 @@ import * as categoryController from '../controllers/admin/categoryController.js'
 import * as courseController from '../controllers/admin/courseController.js';
 import * as orderController from '../controllers/admin/orderController.js';
 import * as walletController from '../controllers/admin/walletController.js';
+import * as couponController from '../controllers/admin/couponController.js';
 import { isAdmin, redirectIfAdmin } from '../middleware/authMiddleware.js';
 
 
@@ -45,6 +46,12 @@ router.post('/order/:id/update-status', isAdmin, orderController.updateOrderStat
 // Wallet routes
 router.get('/wallet', isAdmin, walletController.getWalletOverview);
 router.get('/wallet/tutor/:tutorId', isAdmin, walletController.getTutorWalletDetail);
+
+// Coupon routes
+router.get('/coupons', isAdmin, couponController.getCouponsPage);
+router.post('/coupons/create', isAdmin, couponController.createCoupon);
+router.post('/coupons/:id/toggle', isAdmin, couponController.toggleCouponStatus);
+router.post('/coupons/:id/delete', isAdmin, couponController.deleteCoupon);
 
 
 

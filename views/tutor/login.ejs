@@ -222,13 +222,38 @@
     const errorEl = document.getElementById('formError');
     errorEl.classList.add('hidden');
 
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    // Validate all fields are filled
+    if (!email || !password) {
+      errorEl.textContent = 'All fields are required.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      errorEl.textContent = 'Please enter a valid email address.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    
+    // Validate password length
+    if (password.length < 8) {
+      errorEl.textContent = 'Password must be at least 8 characters.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
     showLoader('Signing you in...');
     const res = await fetch('/tutor/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value
+        email: email,
+        password: password
       })
     });
     const data = await res.json();

@@ -16,21 +16,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-const getEditProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.session.userId);
-
-    if (!user) {
-      return res.redirect('/user/login');
-    }
-
-    res.render('user/edit-profile', { user });
-  } catch (error) {
-    console.error('Error loading edit profile:', error);
-    res.redirect('/user/profile');
-  }
-};
-
 const postUpdateProfile = async (req, res) => {
   try {
     const { fullName, phone } = req.body;
@@ -63,10 +48,16 @@ const postUploadAvatar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.avatar = req.file.path;
+    let rawPath = req.file.path || req.file.url || '';
+    let avatarPath = rawPath.replace(/\\/g, '/');
+    if (!avatarPath.startsWith('/') && !avatarPath.startsWith('http')) {
+      avatarPath = '/' + avatarPath;
+    }
+    
+    user.avatar = avatarPath;
     await user.save();
 
-    res.json({ success: true, message: 'Profile photo updated successfully', avatar: req.file.path });
+    res.json({ success: true, message: 'Profile photo updated successfully', avatar: avatarPath });
   } catch (error) {
     console.error('Upload avatar error:', error);
     res.status(400).json({ message: error.message });
@@ -205,7 +196,6 @@ const postChangePassword = async (req, res) => {
 
 export {
   getProfile,
-  getEditProfile,
   postUpdateProfile,
   postUploadAvatar,
   postSendEmailChangeOTP,

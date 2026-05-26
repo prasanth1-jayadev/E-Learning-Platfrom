@@ -9,6 +9,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
         
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
         .main-content { 
             margin-left: 260px; 
             flex: 1; 
@@ -88,13 +93,14 @@
                 <div class="form-section">
                     <div class="form-group">
                         <label>Course Title <span class="required">*</span></label>
-                        <input type="text" id="title" name="title" value="<%= course.title %>" required maxlength="200">
+                        <input type="text" id="title" name="title" value="<%= course.title %>" required minlength="5" maxlength="100">
+                        <span class="hint">5-100 characters</span>
                     </div>
 
                     <div class="form-group">
                         <label>Description <span class="required">*</span></label>
-                        <textarea id="description" name="description" required maxlength="2000"><%= course.description %></textarea>
-                        <span class="hint">Minimum 20 characters</span>
+                        <textarea id="description" name="description" required minlength="20" maxlength="1000"><%= course.description %></textarea>
+                        <span class="hint"><span id="descCount"><%= course.description.length %></span>/1000 characters (minimum 20)</span>
                     </div>
 
                     <div class="form-group">
@@ -178,10 +184,29 @@
 </div>
 
 <script>
-// Thumbnail preview
+// Character counter for description
+document.getElementById('description').addEventListener('input', function(e) {
+    document.getElementById('descCount').textContent = e.target.value.length;
+});
+
+// Thumbnail preview with validation
 document.getElementById('thumbnailInput')?.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Image size must be less than 5MB', 'error');
+            this.value = '';
+            return;
+        }
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showToast('Please upload a valid image file', 'error');
+            this.value = '';
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById('thumbnailPreview');
@@ -196,8 +221,9 @@ document.getElementById('editCourseForm').addEventListener('submit', async funct
     e.preventDefault();
     
     const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Updating...';
+    submitBtn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.5rem;"><svg style="width: 20px; height: 20px; animation: spin 1s linear infinite;" fill="none" viewBox="0 0 24 24"><circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Updating...</span>';
     
     // Get form data
     const title = document.getElementById('title').value.trim();
@@ -238,13 +264,13 @@ document.getElementById('editCourseForm').addEventListener('submit', async funct
         } else {
             showToast(data.message || 'Failed to update course', 'error');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Update Course';
+            submitBtn.innerHTML = originalText;
         }
     } catch (error) {
         console.error('Update course error:', error);
         showToast('Something went wrong', 'error');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Update Course';
+        submitBtn.innerHTML = originalText;
     }
 });
 

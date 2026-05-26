@@ -17,6 +17,8 @@ const router = express.Router();
 router.get('/', pageController.getLanding);
 router.get('/landing', pageController.getLanding);
 router.get('/home', isUser, pageController.getHome);
+router.get('/about', pageController.getAbout);
+router.get('/contact', pageController.getContact);
 
 // Authentication Routes
 router.get('/signup', redirectIfUser, authController.getSignup);
@@ -76,12 +78,17 @@ router.get('/cart', isUser, cartController.getCart);
 router.post('/cart/add', isUser, cartController.addToCart);
 router.post('/cart/remove/:courseId', isUser, cartController.removeFromCart);
 router.get('/cart/count', isUser, cartController.getCartCount);
+router.post('/cart/apply-coupon', isUser, cartController.applyCoupon);
+router.post('/cart/remove-coupon', isUser, cartController.removeCoupon);
 
 // Wishlist Routes
 router.get('/wishlist', isUser, wishlistController.getWishlist);
 router.post('/wishlist/add', isUser, wishlistController.addToWishlist);
 router.post('/wishlist/remove/:courseId', isUser, wishlistController.removeFromWishlist);
 router.get('/wishlist/check/:courseId', isUser, wishlistController.checkWishlist);
+
+// Chat Route
+router.get('/chat', isUser, (req, res) => res.redirect('/chat/user'));
 
 // Course Routes
 router.get('/courses', courseController.getCourses);
@@ -92,9 +99,19 @@ router.get('/tutors', tutorController.getTutors);
 router.get('/tutor/:id', tutorController.getTutorDetail);  // Use getTutorDetail instead  
 // Profile Routes
 router.get('/profile', isUser, profileController.getProfile);
-router.get('/edit-profile', isUser, profileController.getEditProfile);
 router.post('/update-profile', isUser, profileController.postUpdateProfile);
-router.post('/upload-avatar', isUser, upload.single('avatar'), profileController.postUploadAvatar);
+router.post('/upload-avatar', isUser, (req, res, next) => {
+    upload.single('avatar')(req, res, (err) => {
+        if (err) {
+            console.error('Multer error:', err);
+            return res.status(400).json({ 
+                success: false, 
+                message: err.message || 'File upload failed' 
+            });
+        }
+        next();
+    });
+}, profileController.postUploadAvatar);
 router.post('/send-email-change-otp', isUser, profileController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isUser, profileController.postVerifyEmailChange);
 router.post('/resend-email-otp', isUser, profileController.postResendEmailOTP);

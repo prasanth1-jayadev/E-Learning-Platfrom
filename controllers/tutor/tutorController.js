@@ -2,6 +2,10 @@ import * as tutorService from '../../service/tutorService.js';
 import * as courseService from '../../service/courseService.js';
 import Tutor from '../../models/Tutor.js';
 import Course from '../../models/Course.js';
+import Payment from '../../models/Payment.js';
+
+
+
 
 const getSignup = (req, res) => res.render('tutor/signup');
 const getLogin = (req, res) => res.render('tutor/login');
@@ -293,10 +297,16 @@ const postUploadAvatar = async (req, res) => {
             return res.status(404).json({ message: 'Tutor not found' });
         }
 
-        tutor.avatar = req.file.path;
+        let rawPath = req.file.path || req.file.url || '';
+        let avatarPath = rawPath.replace(/\\/g, '/');
+        if (!avatarPath.startsWith('/') && !avatarPath.startsWith('http')) {
+            avatarPath = '/' + avatarPath;
+        }
+
+        tutor.avatar = avatarPath;
         await tutor.save();
 
-        res.json({ success: true, message: 'Profile photo updated successfully', avatar: req.file.path });
+        res.json({ success: true, message: 'Profile photo updated successfully', avatar: avatarPath });
     } catch (error) {
         console.error('Upload avatar error:', error);
         res.status(400).json({ message: error.message });
@@ -656,6 +666,77 @@ const deleteLesson = async (req, res) => {
     }
 };
 
+const getOrders = async (req, res) => {
+    try {
+        const tutorId = req.session.tutorId;
+        const tutor = await Tutor.findById(tutorId);
+        
+        if (!tutor) {
+            return res.redirect('/tutor/login');
+        }
+
+        // 1. Find all courses owned by this tutor
+        const courses = await Course.find({ tutor: tutorId });
+        const courseIds = courses.map(c => c._id);
+
+        // Calculate metrics using all payments (without populating so it is fast)
+        const allPaymentsForStats = await Payment.find({ course: { $in: courseIds } }, 'amount status createdAt');
+        
+        let totalRevenue = 0;
+        let activeMonthSales = 0;
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        allPaymentsForStats.forEach(order => {
+            if (order.status === 'completed') {
+                totalRevenue += order.amount;
+                const orderDate = new Date(order.createdAt);
+                if (orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear) {
+                    activeMonthSales++;
+                }
+            }
+        });
+        
+        const totalSales = allPaymentsForStats.length;
+
+        // Pagination parameters
+        const page = parseInt(req.query.page) || 1;
+        const limit = 6;
+        const totalOrdersCount = await Payment.countDocuments({ course: { $in: courseIds } });
+        const totalPages = Math.ceil(totalOrdersCount / limit) || 1;
+        const skip = (page - 1) * limit;
+
+        // Fetch paginated payment transactions matching those courses
+        const orders = await Payment.find({ course: { $in: courseIds } })
+            .populate('course')
+            .populate('user')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        res.render('tutor/orders', {
+            tutor,
+            currentPage: 'orders',
+            orders,
+            totalRevenue,
+            totalSales,
+            activeMonthSales,
+            page,
+            totalPages
+        });
+    } catch (error) {
+        console.error('Error fetching tutor orders:', error);
+        res.redirect('/tutor/dashboard');
+    }
+};
+
+
+
+
+
+
+
+
 export {
     getSignup, postSignup,
     getLogin, postLogin, logout,
@@ -665,5 +746,5 @@ export {
     getDashboard, getCourses, getProfile,
     postUpdateProfile, postSendEmailChangeOTP, postVerifyEmailChange, postResendEmailOTP,
     postChangePassword, postUploadAvatar,
-    getAddLessonPage, addLesson, getEditLessonPage, updateLesson, deleteLesson
+    getAddLessonPage, addLesson, getEditLessonPage, updateLesson, deleteLesson,getOrders
 };

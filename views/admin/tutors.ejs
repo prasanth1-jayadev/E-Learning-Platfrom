@@ -229,7 +229,12 @@
             const title = document.getElementById('certificateTitle');
             
             if (!certificateUrl) {
-                alert('Certificate URL is missing');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Certificate Missing',
+                    text: 'Certificate URL is missing',
+                    confirmButtonColor: '#00d9b1'
+                });
                 return;
             }
             

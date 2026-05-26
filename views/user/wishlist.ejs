@@ -121,11 +121,21 @@
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message || 'Failed to remove from wishlist');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to remove from wishlist',
+                        confirmButtonColor: '#00d9b1'
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Something went wrong');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong',
+                    confirmButtonColor: '#00d9b1'
+                });
             }
         }
 

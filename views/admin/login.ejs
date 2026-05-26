@@ -112,7 +112,7 @@
                             <div class="relative">
                                 <input
                                     class="form-input flex w-full rounded-lg text-[#111816] focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#dbe6e2] dark:border-white/10 bg-white dark:bg-transparent focus:border-primary h-14 placeholder:text-[#61897c]/50 p-[15px] pl-11 text-base font-normal"
-                                    placeholder="admin@organiclearn.com" type="email" name="email" value="" required />
+                                    placeholder="admin@organiclearn.com" type="email" name="email" value="" />
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#61897c]">mail</span>
                             </div>
@@ -128,8 +128,7 @@
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#61897c] z-10">lock</span>
                                 <input
                                     class="form-input flex w-full rounded-lg text-[#111816] focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#dbe6e2] dark:border-white/10 bg-white dark:bg-transparent focus:border-primary h-14 placeholder:text-[#61897c]/50 p-[15px] pl-11 pr-12 text-base font-normal"
-                                    placeholder="Enter secure password" type="password" name="password" value=""
-                                    required />
+                                    placeholder="Enter secure password" type="password" name="password" value="" />
                                 <button
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-[#61897c] hover:text-background-dark focus:outline-none"
                                     type="button"
@@ -184,8 +183,22 @@
                     const email = document.querySelector('input[name="email"]').value.trim();
                     const password = document.querySelector('input[name="password"]').value.trim();
                     
+                    // Validate all fields are filled
                     if (!email || !password) {
-                        showToast('Please fill in all fields', 'error');
+                        showToast('All fields are required', 'error');
+                        return false;
+                    }
+                    
+                    // Validate email format
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        showToast('Please enter a valid email address', 'error');
+                        return false;
+                    }
+                    
+                    // Validate password length
+                    if (password.length < 8) {
+                        showToast('Password must be at least 8 characters', 'error');
                         return false;
                     }
                     

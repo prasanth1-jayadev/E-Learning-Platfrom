@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Failed - Learnify</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -231,7 +232,12 @@
                     console.log('Order created:', data);
                     
                     if (!data.success) {
-                        alert(data.message || 'Failed to create order');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Failed',
+                            text: data.message || 'Failed to create order',
+                            confirmButtonColor: '#00d9b1'
+                        });
                         return;
                     }
                     
@@ -289,12 +295,23 @@
                     
                 } catch (error) {
                     console.error('Payment error:', error);
-                    alert('Failed to initiate payment. Please try again.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Failed',
+                        text: 'Failed to initiate payment. Please try again.',
+                        confirmButtonColor: '#00d9b1'
+                    });
                 }
             <% } else { %>
                 console.log('No courses in cart');
-                alert('Your cart is empty. Please add courses first.');
-                window.location.href = '/user/courses';
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cart Empty',
+                    text: 'Your cart is empty. Please add courses first.',
+                    confirmButtonColor: '#00d9b1'
+                }).then(() => {
+                    window.location.href = '/user/courses';
+                });
             <% } %>
         }
     </script>

@@ -205,31 +205,32 @@
                                 <% if (course.tutor.avatar) { %>
                                     <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>"
                                         class="w-16 h-16 rounded-full object-cover hover:ring-4 hover:ring-primary/20 transition">
-                                <% } else { %>
-                                    <div class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center hover:ring-4 hover:ring-primary/20 transition">
-                                        <span class="text-teal-700 font-bold text-xl">
-                                            <%= course.tutor.fullName.charAt(0).toUpperCase() %>
-                                        </span>
-                                    </div>
-                                <% } %>
+                                    <% } else { %>
+                                        <div
+                                            class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center hover:ring-4 hover:ring-primary/20 transition">
+                                            <span class="text-teal-700 font-bold text-xl">
+                                                <%= course.tutor.fullName.charAt(0).toUpperCase() %>
+                                            </span>
+                                        </div>
+                                        <% } %>
                             </a>
 
-                                        <div>
-                                            <!-- Clickable Tutor Name -->
-                                            <a href="/user/tutor/<%= course.tutor._id %>"
-                                                class="text-lg font-bold text-gray-900 hover:text-teal-600 transition">
-                                                <%= course.tutor.fullName %>
-                                            </a>
+                            <div>
+                                <!-- Clickable Tutor Name -->
+                                <a href="/user/tutor/<%= course.tutor._id %>"
+                                    class="text-lg font-bold text-gray-900 hover:text-teal-600 transition">
+                                    <%= course.tutor.fullName %>
+                                </a>
 
-                                            <p class="text-sm text-gray-500">
-                                                Professional Instructor
-                                            </p>
+                                <p class="text-sm text-gray-500">
+                                    Professional Instructor
+                                </p>
 
-                                            <p class="text-sm text-gray-600 mt-2">
-                                                <%= course.tutor.bio || 'Expert in ' + course.category
-                                                    + ' with years of teaching experience' %>
-                                            </p>
-                                        </div>
+                                <p class="text-sm text-gray-600 mt-2">
+                                    <%= course.tutor.bio || 'Expert in ' + course.category
+                                        + ' with years of teaching experience' %>
+                                </p>
+                            </div>
 
                         </div>
                     </div>
@@ -343,6 +344,11 @@
                                                 class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
                                                 <i class="fas fa-play-circle mr-2"></i>Continue Learning
                                             </button>
+                                            <button onclick="startChat('<%= course._id %>', '<%= course.tutor._id %>')"
+                                                class="w-full border-2 border-teal-600 text-teal-600 font-semibold py-2 rounded-lg hover:bg-teal-50 transition mb-3">
+                                                <i class="fas fa-comments mr-1"></i>Chat with Tutor
+                                            </button>
+
                                             <% } else { %>
                                                 <!-- Not Purchased -->
                                                 <% if (!user) { %>
@@ -397,7 +403,8 @@
                                                                                 <button id="wishlistBtn"
                                                                                     onclick="toggleWishlist('<%= course._id %>')"
                                                                                     class="flex-1 border-2 border-gray-300 text-gray-600 font-semibold py-2 rounded-xl hover:bg-gray-50 transition flex items-center justify-center">
-                                                                                    <i id="wishlistIcon" class="fas fa-heart text-xl"></i>
+                                                                                    <i id="wishlistIcon"
+                                                                                        class="fas fa-heart text-xl"></i>
                                                                                 </button>
                                                                 </div>
                                                                 <% } %>
@@ -457,7 +464,11 @@
         </div>
 
 
+        
 
+
+
+        
 
 
         <!-- your entire page code -->
@@ -624,10 +635,10 @@
             // Toggle wishlist
             async function toggleWishlist(courseId) {
                 try {
-                    const url = isInWishlist 
-                        ? `/user/wishlist/remove/${courseId}` 
+                    const url = isInWishlist
+                        ? `/user/wishlist/remove/${courseId}`
                         : '/user/wishlist/add';
-                    
+
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -639,7 +650,7 @@
                     if (data.success) {
                         isInWishlist = !isInWishlist;
                         updateWishlistButton();
-                        
+
                         Swal.fire({
                             title: 'Success!',
                             text: data.message,
@@ -668,7 +679,7 @@
             function updateWishlistButton() {
                 const btn = document.getElementById('wishlistBtn');
                 const icon = document.getElementById('wishlistIcon');
-                
+
                 if (btn && icon) {
                     if (isInWishlist) {
                         btn.classList.remove('border-gray-300', 'text-gray-600');
@@ -697,7 +708,12 @@
                     const data = await response.json();
 
                     if (!data.success) {
-                        alert(data.message || 'Failed to create order');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Failed',
+                            text: data.message || 'Failed to create order',
+                            confirmButtonColor: '#00d9b1'
+                        });
                         return;
                     }
 
@@ -760,7 +776,12 @@
 
                 } catch (error) {
                     console.error('Payment error:', error);
-                    alert('Payment failed. Please try again.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Failed',
+                        text: 'Payment failed. Please try again.',
+                        confirmButtonColor: '#00d9b1'
+                    });
                 }
             }
 
@@ -778,16 +799,53 @@
                     const data = await response.json();
 
                     if (data.success) {
-                        alert('Successfully enrolled in the course!');
-                        window.location.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Successfully enrolled in the course!',
+                            confirmButtonColor: '#00d9b1'
+                        }).then(() => {
+                            window.location.reload();
+                        });
                     } else {
-                        alert(data.message || 'Enrollment failed');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Enrollment Failed',
+                            text: data.message || 'Enrollment failed',
+                            confirmButtonColor: '#00d9b1'
+                        });
                     }
                 } catch (error) {
                     console.error('Enrollment error:', error);
-                    alert('Enrollment failed. Please try again.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Enrollment failed. Please try again.',
+                        confirmButtonColor: '#00d9b1'
+                    });
                 }
             }
+
+async function startChat(courseId, tutorId) {
+    try {
+        const res = await fetch('/chat/conversation/individual', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ courseId, tutorId })
+        });
+        const data = await res.json();
+        if (data.success) {
+            window.location.href = '/user/chat';
+        } else {
+            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+        }
+    } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to start chat' });
+    }
+}
+
+
+
         </script>
 
 

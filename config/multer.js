@@ -1,8 +1,11 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import { createRequire } from 'module';
 import { cloudinary } from './cloudinary.js';
+
+const require = createRequire(import.meta.url);
+const CloudinaryStorage = require('multer-storage-cloudinary');
 
 // For certificates (local storage)
 const certificateStorage = multer.diskStorage({

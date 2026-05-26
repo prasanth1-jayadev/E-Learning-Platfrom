@@ -28,8 +28,20 @@ router.post('/reset-password', tutorController.postResetPassword);
 // Dashboard and profile
 router.get('/dashboard', isTutor, tutorController.getDashboard);
 router.get('/profile', isTutor, tutorController.getProfile);
+router.get('/orders', isTutor, isTutorApproved, tutorController.getOrders);
 router.post('/update-profile', isTutor, tutorController.postUpdateProfile);
-router.post('/upload-avatar', isTutor, upload.single('avatar'), tutorController.postUploadAvatar);
+router.post('/upload-avatar', isTutor, (req, res, next) => {
+    upload.single('avatar')(req, res, (err) => {
+        if (err) {
+            console.error('Multer error:', err);
+            return res.status(400).json({ 
+                success: false, 
+                message: err.message || 'File upload failed' 
+            });
+        }
+        next();
+    });
+}, tutorController.postUploadAvatar);
 router.post('/send-email-change-otp', isTutor, tutorController.postSendEmailChangeOTP);
 router.post('/verify-email-change', isTutor, tutorController.postVerifyEmailChange);
 router.post('/resend-email-otp', isTutor, tutorController.postResendEmailOTP);
@@ -76,6 +88,7 @@ router.get('/courses/:id/details', isTutor, courseController.getCourseDetails);
 // Wallet routes
 router.get('/wallet', isTutor, walletController.getWallet);
 router.post('/wallet/withdraw', isTutor, walletController.requestWithdrawal);
+router.get('/chat', isTutor, (req, res) => res.redirect('/chat/tutor'));
 
 // Google OAuth
 router.get('/auth/google', passport.authenticate('google-tutor'));

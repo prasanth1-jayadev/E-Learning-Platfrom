@@ -41,6 +41,7 @@ export const generateInvoice = (payment, user, courses) => {
 
       doc.fontSize(10).font('Helvetica-Bold')
          .text('Course', 50, 250)
+         .text('Tutor', 280, 250)
          .text('Price', 450, 250);
 
       doc.moveTo(50, 265).lineTo(550, 265).stroke();
@@ -50,8 +51,16 @@ export const generateInvoice = (payment, user, courses) => {
       doc.font('Helvetica');
 
       courses.forEach(course => {
-        doc.text(course.title, 50, yPosition, { width: 380 });
+        // Course title
+        doc.text(course.title, 50, yPosition, { width: 210 });
+        
+        // Tutor name
+        const tutorName = course.tutor?.fullName || 'N/A';
+        doc.text(tutorName, 280, yPosition, { width: 150 });
+        
+        // Price
         doc.text(`₹${course.price.toLocaleString('en-IN')}`, 450, yPosition);
+        
         total += course.price;
         yPosition += 25;
       });

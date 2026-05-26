@@ -62,7 +62,47 @@ const getHome = async (req, res) => {
   }
 };
 
+
+// Get Chat Page
+const getChat = async (req, res) => {
+  try {
+    res.render('user/chat', {
+      user: req.user,
+      title: 'Chat'
+    });
+  } catch (error) {
+    console.error('Get chat page error:', error);
+    res.status(500).render('partials/500');
+  }
+};
+
+
+// Get About Page
+const getAbout = async (req, res) => {
+  try {
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('user/about', { user, currentPage: 'about' });
+  } catch (error) {
+    console.error('Error loading about page:', error);
+    res.redirect('/user/home');
+  }
+};
+
+// Get Contact Page
+const getContact = async (req, res) => {
+  try {
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('user/contact', { user, currentPage: 'contact' });
+  } catch (error) {
+    console.error('Error loading contact page:', error);
+    res.redirect('/user/home');
+  }
+};
+
 export {
+  getChat,
   getLanding,
-  getHome
+  getHome,
+  getAbout,
+  getContact
 };

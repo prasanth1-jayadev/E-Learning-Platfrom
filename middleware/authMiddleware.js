@@ -20,6 +20,8 @@ const isUser = async (req, res, next) => {
                 req.session.destroy();
                 return res.redirect('/user/login?error=account_blocked');
             }
+            
+            req.user = user;
         } catch (error) {
             console.error('User block check error:', error);
             return res.redirect('/user/login');
@@ -133,4 +135,17 @@ const redirectIfAdmin = (req, res, next) => {
     next();
 };
 
-export { isUser, isTutor, isTutorApproved, isAdmin, redirectIfUser, redirectIfTutor, redirectIfAdmin };
+// Used by chat routes - works for both user and tutor
+const isAuthenticated = (req, res, next) => {
+    if (req.session && req.session.userId) {
+        req.user = { _id: req.session.userId, role: 'user' };
+        return next();
+    }
+    if (req.session && req.session.tutorId) {
+        req.user = { _id: req.session.tutorId, role: 'tutor' };
+        return next();
+    }
+    return res.status(401).json({ success: false, message: 'Please login first' });
+};
+
+export { isUser, isTutor, isTutorApproved, isAdmin, redirectIfUser, redirectIfTutor, redirectIfAdmin, isAuthenticated };

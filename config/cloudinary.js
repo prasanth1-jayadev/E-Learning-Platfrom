@@ -1,5 +1,5 @@
 import pkg from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import  CloudinaryStorage  from 'multer-storage-cloudinary';
 import multer from 'multer';
 import dotenv from 'dotenv';
 
@@ -14,7 +14,7 @@ cloudinary.config({
 });
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary: pkg,
   params: {
     folder: 'test',
     resource_type: 'auto'

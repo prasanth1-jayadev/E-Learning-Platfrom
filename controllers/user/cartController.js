@@ -1,5 +1,6 @@
 import * as cartService from '../../service/cartService.js';
 import User from '../../models/User.js';
+import Coupon from '../../models/coupon.js';
 
 export const getCart = async (req, res) => {
   try {
@@ -8,12 +9,14 @@ export const getCart = async (req, res) => {
     
     const cart = await cartService.getCart(userId);
     const total = cartService.getCartTotal(cart);
+    const appliedCoupon = req.session.appliedCoupon || null;
 
     res.render('user/cart', {
       cart,
       total,
       user,
-      currentPage: 'cart'
+      currentPage: 'cart',
+      appliedCoupon
     });
   } catch (error) {
     console.error('Get cart error:', error);
@@ -58,5 +61,74 @@ export const getCartCount = async (req, res) => {
   } catch (error) {
     console.error('Get cart count error:', error);
     res.json({ success: false, count: 0 });
+  }
+};
+
+export const applyCoupon = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const userId = req.session.userId;
+
+    const cart = await cartService.getCart(userId);
+    const total = cartService.getCartTotal(cart);
+
+    const coupon = await Coupon.findOne({ code: code.toUpperCase(), isActive: true });
+
+    if (!coupon) {
+      return res.status(400).json({ success: false, message: 'Invalid or inactive coupon code' });
+    }
+
+    if (new Date(coupon.expiryDate) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Coupon has expired' });
+    }
+
+    if (coupon.usedCount >= coupon.usageLimit) {
+      return res.status(400).json({ success: false, message: 'Coupon usage limit reached' });
+    }
+
+    if (total < coupon.minOrderValue) {
+      return res.status(400).json({ success: false, message: `Minimum order value is ₹${coupon.minOrderValue}` });
+    }
+
+    // Calculate discount
+    let discount = 0;
+    if (coupon.discountType === 'percentage') {
+      discount = Math.floor((total * coupon.discountValue) / 100);
+      if (coupon.maxDiscount) {
+        discount = Math.min(discount, coupon.maxDiscount);
+      }
+    } else {
+      discount = coupon.discountValue;
+    }
+
+    const finalTotal = total - discount;
+
+    // Store in session
+    req.session.appliedCoupon = {
+      code: coupon.code,
+      couponId: coupon._id,
+      discount,
+      finalTotal
+    };
+
+    res.json({
+      success: true,
+      message: `Coupon applied! You save ₹${discount}`,
+      discount,
+      finalTotal
+    });
+
+  } catch (error) {
+    console.error('Apply coupon error:', error);
+    res.status(500).json({ success: false, message: 'Failed to apply coupon' });
+  }
+};
+
+export const removeCoupon = async (req, res) => {
+  try {
+    req.session.appliedCoupon = null;
+    res.json({ success: true, message: 'Coupon removed' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to remove coupon' });
   }
 };
