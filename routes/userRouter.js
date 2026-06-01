@@ -86,6 +86,7 @@ router.get('/wishlist', isUser, wishlistController.getWishlist);
 router.post('/wishlist/add', isUser, wishlistController.addToWishlist);
 router.post('/wishlist/remove/:courseId', isUser, wishlistController.removeFromWishlist);
 router.get('/wishlist/check/:courseId', isUser, wishlistController.checkWishlist);
+router.get('/wishlist/count', isUser, wishlistController.getWishlistCount);
 
 // Chat Route
 router.get('/chat', isUser, (req, res) => res.redirect('/chat/user'));
@@ -117,5 +118,4 @@ router.post('/verify-email-change', isUser, profileController.postVerifyEmailCha
 router.post('/resend-email-otp', isUser, profileController.postResendEmailOTP);
 router.get('/my-courses', isUser, profileController.getMyCourses);
 router.post('/change-password', isUser, profileController.postChangePassword);
-
 export default router;

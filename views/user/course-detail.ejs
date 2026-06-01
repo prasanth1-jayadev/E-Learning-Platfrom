@@ -651,6 +651,10 @@
                         isInWishlist = !isInWishlist;
                         updateWishlistButton();
 
+                        if (typeof window.updateWishlistCount === 'function') {
+                            window.updateWishlistCount();
+                        }
+
                         Swal.fire({
                             title: 'Success!',
                             text: data.message,

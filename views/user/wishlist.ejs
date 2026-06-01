@@ -119,6 +119,9 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    if (typeof window.updateWishlistCount === 'function') {
+                        window.updateWishlistCount();
+                    }
                     location.reload();
                 } else {
                     Swal.fire({
@@ -139,7 +142,7 @@
             }
         }
 
-        async function addToCart(courseId) {
+               async function addToCart(courseId) {
             try {
                 const response = await fetch('/user/cart/add', {
                     method: 'POST',
@@ -150,7 +153,12 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Show SweetAlert with options
+                    // 1. Update the cart count in the navbar immediately
+                    if (typeof window.updateCartCount === 'function') {
+                        window.updateCartCount();
+                    }
+
+                    // Show SweetAlert
                     const result = await Swal.fire({
                         icon: 'success',
                         title: 'Added to Cart!',
@@ -165,7 +173,6 @@
                     // Remove from wishlist after adding to cart
                     await removeFromWishlist(courseId);
 
-                    // If user clicks "View Cart", redirect to cart page
                     if (result.isConfirmed) {
                         window.location.href = '/user/cart';
                     }
@@ -178,13 +185,9 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Something went wrong'
-                });
             }
         }
+
     </script>
 
     <%- include('../partials/toast') %>

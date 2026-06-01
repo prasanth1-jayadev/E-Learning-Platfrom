@@ -2,11 +2,15 @@ import User from '../models/User.js';
 import Course from '../models/Course.js';
 import Payment from '../models/Payment.js';
 import { addCredit } from './walletService.js';
+import Conversation from '../models/Conversation.js'
+import { sendNotification } from './notificationService.js';
+
+
 
 export const checkIfAlreadyPurchased = async (userId, courseId) => {
   const user = await User.findById(userId);
   if (!user) return false;
-  
+
   return user.enrolledCourses.some(id => id.toString() === courseId.toString());
 };
 
@@ -27,6 +31,25 @@ export const enrollUserInCourse = async (userId, courseId, paymentData) => {
 
   await Course.findByIdAndUpdate(courseId, {
     $addToSet: { enrolledStudents: userId }
+  });
+
+  // Add the student to the course's group chat (or create it if it doesn't exist)
+  await Conversation.findOneAndUpdate(
+    { type: 'group', courseId: courseId },
+    {
+      $setOnInsert: { tutorId: course.tutor },
+      $addToSet: { participants: { userId: userId, isActive: true } }
+    },
+    { upsert: true }
+  );
+  const student = await User.findById(userId);
+  await sendNotification({
+    recipientId: course.tutor,
+    recipientType: 'tutor',
+    title: 'Course Purchased!',
+    message: `Student "${student.fullName}" has purchased your course: "${course.title}"`,
+    type: 'course_purchased',
+    relatedId: course._id
   });
 
   const payment = new Payment({

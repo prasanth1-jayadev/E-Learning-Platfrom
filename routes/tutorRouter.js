@@ -34,9 +34,9 @@ router.post('/upload-avatar', isTutor, (req, res, next) => {
     upload.single('avatar')(req, res, (err) => {
         if (err) {
             console.error('Multer error:', err);
-            return res.status(400).json({ 
-                success: false, 
-                message: err.message || 'File upload failed' 
+            return res.status(400).json({
+                success: false,
+                message: err.message || 'File upload failed'
             });
         }
         next();
@@ -51,18 +51,41 @@ router.post('/change-password', isTutor, tutorController.postChangePassword);
 router.get('/courses', isTutor, courseController.getCourses);
 router.get('/courses/create', isTutor, isTutorApproved, courseController.getCreateCourse);
 router.get('/course/:id/add-lesson', isTutor, isTutorApproved, tutorController.getAddLessonPage);
-router.post('/course/:id/add-lesson', isTutor, isTutorApproved, uploadVideo.single('video'), tutorController.addLesson);
+router.post('/course/:id/add-lesson', isTutor, isTutorApproved, (req, res, next) => {
+    uploadVideo.single('video')(req, res, (err) => {
+        if (err) {
+            console.error('Multer video upload error:', err);
+            return res.status(400).json({
+                success: false,
+                message: err.message || 'Video upload failed'
+            });
+        }
+        next();
+    });
+}, tutorController.addLesson);
 router.get('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, tutorController.getEditLessonPage);
-router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, uploadVideo.single('video'), tutorController.updateLesson);
+router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, (req, res, next) => {
+    uploadVideo.single('video')(req, res, (err) => {
+        if (err) {
+            console.error('Multer video upload error:', err);
+            return res.status(400).json({
+                success: false,
+                message: err.message || 'Video upload failed'
+            });
+        }
+        next();
+    });
+}, tutorController.updateLesson);
 router.delete('/course/:id/lesson/:lessonId', isTutor, isTutorApproved, tutorController.deleteLesson);
+
 
 router.post('/courses/create', isTutor, isTutorApproved, (req, res, next) => {
     upload.single('thumbnail')(req, res, (err) => {
         if (err) {
             console.error('Multer error:', err);
-            return res.status(400).json({ 
+            return res.status(400).json({
                 success: false,
-                message: err.message || 'File upload failed' 
+                message: err.message || 'File upload failed'
             });
         }
         next();
@@ -73,9 +96,9 @@ router.post('/courses/:id/edit', isTutor, (req, res, next) => {
     upload.single('thumbnail')(req, res, (err) => {
         if (err) {
             console.error('Multer error:', err);
-            return res.status(400).json({ 
+            return res.status(400).json({
                 success: false,
-                message: err.message || 'File upload failed' 
+                message: err.message || 'File upload failed'
             });
         }
         next();

@@ -3,6 +3,7 @@ import * as courseService from '../../service/courseService.js';
 import Tutor from '../../models/Tutor.js';
 import Course from '../../models/Course.js';
 import Payment from '../../models/Payment.js';
+import { sendNotification } from '../../service/notificationService.js';
 
 
 
@@ -567,13 +568,28 @@ const addLesson = async (req, res) => {
             title,
             description,
             duration: videoDuration,
-            videoUrl: req.file ? req.file.path : '',
+            videoUrl: req.file ? (req.file.path || req.file.url || req.file.secure_url || '') : '',
             order: course.lessons.length + 1
         };
-
+        
         course.lessons.push(newLesson);
         await course.save();
 
+        const tutor = await Tutor.findById(req.session.tutorId);
+
+          if (course.enrolledStudents && course.enrolledStudents.length > 0) {
+            for (const studentId of course.enrolledStudents) {
+                await sendNotification({
+                    recipientId: studentId,
+                    recipientType: 'user',
+                    title: 'New Lesson Uploaded',
+                    message: `Tutor "${tutor.fullName}" added a new lesson "${title}" in course: "${course.title}"`,
+                    type: 'new_lesson',
+                    relatedId: course._id
+                });
+            }
+        }
+        
         res.json({ success: true, message: 'Lesson added successfully' });
     } catch (error) {
         console.error('Error adding lesson:', error);
@@ -627,7 +643,7 @@ const updateLesson = async (req, res) => {
         
 
         if (req.file) {
-            lesson.videoUrl = req.file.path;
+            lesson.videoUrl = req.file.path || req.file.url || req.file.secure_url;
             if(req.file.duration){
                 lesson.duration =Math.round(req.file.duration);
 

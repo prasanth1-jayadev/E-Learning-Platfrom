@@ -14,7 +14,7 @@ cloudinary.config({
 });
 
 const storage = new CloudinaryStorage({
-  cloudinary: pkg,
+  cloudinary: { v2: cloudinary },
   params: {
     folder: 'test',
     resource_type: 'auto'

@@ -60,7 +60,7 @@ export const removeFromCart = async (userId, courseId) => {
     throw new Error('Cart not found');
   }
 
-  cart.items = cart.items.filter(item => item.course.toString() !== courseId);
+  cart.items = cart.items.filter(item => item.course && item.course.toString() !== courseId);
   await cart.save();
 
   return cart;

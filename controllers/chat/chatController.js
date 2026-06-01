@@ -10,7 +10,6 @@ export const getChatPage = async (req, res) => {
         const User = (await import('../../models/User.js')).default;
         const user = await User.findById(userId).select('fullName email avatar');
 
-        // Get all conversations for this user
         const conversations = await Conversation.find({
             $or: [
                 { userId: userId, type: 'individual' },
@@ -22,9 +21,19 @@ export const getChatPage = async (req, res) => {
         .sort({ 'lastMessage.timestamp': -1 })
         .lean();
 
+
+         const conversationsWithUnread = await Promise.all(conversations.map(async (conv) => {
+            const unreadCount = await Message.countDocuments({
+                conversationId: conv._id,
+                senderType: 'tutor', // Unread messages sent by the tutor
+                isRead: false
+            });
+            return { ...conv, unreadCount };
+        }));
+
         res.render('user/chat', {
             user,
-            conversations,
+            conversations:conversationsWithUnread,
             currentPage: 'chat'
         });
     } catch (error) {
@@ -46,10 +55,22 @@ export const getTutorChatPage = async (req, res) => {
         .populate('userId', 'fullName avatar')
         .sort({ 'lastMessage.timestamp': -1 })
         .lean();
+      
+         
+          const conversationsWithUnread = await Promise.all(conversations.map(async (conv) => {
+            const unreadCount = await Message.countDocuments({
+                conversationId: conv._id,
+                senderType: 'user', // Unread messages sent by the student
+                isRead: false
+            });
+            return { ...conv, unreadCount };
+        }));
+
+
 
         res.render('tutor/chat', {
             tutor,
-            conversations,
+            conversations:conversationsWithUnread,
             currentPage: 'chat'
         });
     } catch (error) {
@@ -134,7 +155,18 @@ export const getMessages = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
 
+        // ========================================================
+        // ADD IT HERE (Right before fetching the messages)
+        // ========================================================
+        // Mark all messages from the other user as read
+        await Message.updateMany(
+            { conversationId, senderType: { $ne: userType }, isRead: false },
+            { $set: { isRead: true } }
+        );
+        // ========================================================
+
         const messages = await Message.find({ conversationId, isDeleted: false })
+            .populate('senderId', 'fullName avatar')
             .sort({ createdAt: 1 })
             .skip(skip)
             .limit(limit)
@@ -157,6 +189,7 @@ export const getMessages = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to fetch messages' });
     }
 };
+
 
 // GET - get all conversations (API)
 export const getConversations = async (req, res) => {
@@ -182,7 +215,15 @@ export const getConversations = async (req, res) => {
             .sort({ 'lastMessage.timestamp': -1 })
             .lean();
 
-        res.json({ success: true, conversations });
+           const conversationsWithUnread = await Promise.all(conversations.map(async (conv) => {
+            const unreadCount = await Message.countDocuments({
+                conversationId: conv._id,
+                senderType: userType === 'tutor' ? 'user' : 'tutor',
+                isRead: false
+            });
+            return { ...conv, unreadCount };
+        }));
+        res.json({ success: true, conversations: conversationsWithUnread });
 
     } catch (error) {
         console.error('Get conversations error:', error);

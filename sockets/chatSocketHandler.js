@@ -28,6 +28,14 @@ export const setupChatHandlers = (io) => {
         }
         
         socket.join(`conversation_${conversationId}`);
+
+
+        await Message.updateMany(
+          { conversationId, senderType: { $ne: socket.userType }, isRead: false },
+          { $set: { isRead: true } }
+        );
+        
+        socket.to(`conversation_${conversationId}`).emit('messages_read', { conversationId });
         socket.emit('joined_conversation', { conversationId });
         
       } catch (error) {
@@ -41,6 +49,22 @@ export const setupChatHandlers = (io) => {
       const { conversationId } = data;
       socket.leave(`conversation_${conversationId}`);
       socket.emit('left_conversation', { conversationId });
+    });
+
+    // Mark conversation as read in real-time
+    socket.on('read_conversation', async (data) => {
+      try {
+        const { conversationId } = data;
+        
+        await Message.updateMany(
+          { conversationId, senderType: { $ne: socket.userType }, isRead: false },
+          { $set: { isRead: true } }
+        );
+        
+        socket.to(`conversation_${conversationId}`).emit('messages_read', { conversationId });
+      } catch (error) {
+        console.error('Mark as read error:', error);
+      }
     });
 
     // Send message
@@ -89,7 +113,7 @@ export const setupChatHandlers = (io) => {
         // Populate sender info
         await message.populate({
           path: 'senderId',
-          select: 'name email profileImage'
+          select: 'fullName email avatar'
         });
 
         // Update conversation last message

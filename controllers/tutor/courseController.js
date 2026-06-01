@@ -278,7 +278,29 @@ const togglePublish = async (req, res) => {
     const courseId = req.params.id;
 
     const course = await courseService.togglePublishCourse(courseId, tutorId);
-
+   if (course.isPublished) {
+  const { sendNotification } = await import('../../service/notificationService.js');
+  const TutorModel = (await import('../../models/Tutor.js')).default;
+  const tutorObj = await TutorModel.findById(tutorId);
+  
+  // Find all unique students who have purchased any course from this tutor
+  const CourseModel = (await import('../../models/Course.js')).default;
+  const tutorCourses = await CourseModel.find({ tutor: tutorId });
+  const studentIds = new Set();
+  tutorCourses.forEach(c => {
+    c.enrolledStudents.forEach(sId => studentIds.add(sId.toString()));
+  });
+  for (const studentId of studentIds) {
+    await sendNotification({
+      recipientId: studentId,
+      recipientType: 'user',
+      title: 'New Course Published',
+      message: `Tutor "${tutorObj.fullName}" has published a new course: "${course.title}"`,
+      type: 'new_course',
+      relatedId: course._id
+    });
+  }
+}
     res.json({ 
       success: true, 
       message: course.isPublished ? 'Course published successfully' : 'Course unpublished',

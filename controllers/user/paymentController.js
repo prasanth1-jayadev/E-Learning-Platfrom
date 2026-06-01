@@ -31,6 +31,33 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid order amount" });
     }
 
+    let discount = 0;
+    if (req.session.appliedCoupon) {
+      const Coupon = (await import('../../models/coupon.js')).default;
+      const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
+      if (coupon && 
+          new Date(coupon.expiryDate) >= new Date() && 
+          coupon.usedCount < coupon.usageLimit && 
+          totalAmount >= coupon.minOrderValue) {
+        
+        if (coupon.discountType === 'percentage') {
+          discount = Math.floor((totalAmount * coupon.discountValue) / 100);
+          if (coupon.maxDiscount) {
+            discount = Math.min(discount, coupon.maxDiscount);
+          }
+        } else {
+          discount = coupon.discountValue;
+        }
+        
+        totalAmount = Math.max(0, totalAmount - discount);
+        
+        req.session.appliedCoupon.discount = discount;
+        req.session.appliedCoupon.finalTotal = totalAmount;
+      } else {
+        req.session.appliedCoupon = null;
+      }
+    }
+
     const options = {
       amount: totalAmount * 100,
       currency: "INR",
@@ -85,19 +112,66 @@ export const verifyPayment = async (req, res) => {
 
     console.log('Payment signature verified successfully');
 
-    let totalAmount = 0;
+    let originalTotal = 0;
+    const courses = [];
     for (const courseId of courseIds) {
       const course = await Course.findById(courseId);
       if (course) {
-        totalAmount += course.price;
-        await enrollUserInCourse(userId, courseId, {
-          orderId: razorpay_order_id,
-          paymentId: razorpay_payment_id,
-          signature: razorpay_signature,
-          amount: course.price
+        originalTotal += course.price;
+        courses.push(course);
+      }
+    }
+
+    let discount = 0;
+    if (req.session.appliedCoupon) {
+      const Coupon = (await import('../../models/coupon.js')).default;
+      const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
+      if (coupon && 
+          new Date(coupon.expiryDate) >= new Date() && 
+          coupon.usedCount < coupon.usageLimit && 
+          originalTotal >= coupon.minOrderValue) {
+        
+        if (coupon.discountType === 'percentage') {
+          discount = Math.floor((originalTotal * coupon.discountValue) / 100);
+          if (coupon.maxDiscount) {
+            discount = Math.min(discount, coupon.maxDiscount);
+          }
+        } else {
+          discount = coupon.discountValue;
+        }
+
+        // Increment coupon usedCount
+        await Coupon.findByIdAndUpdate(coupon._id, {
+          $inc: { usedCount: 1 }
         });
       }
     }
+
+    let totalAmount = 0;
+    let remainingDiscount = discount;
+    for (let i = 0; i < courses.length; i++) {
+      const course = courses[i];
+      let courseDiscount = 0;
+      if (discount > 0 && originalTotal > 0) {
+        if (i === courses.length - 1) {
+          courseDiscount = remainingDiscount;
+        } else {
+          courseDiscount = Math.round((course.price / originalTotal) * discount);
+          remainingDiscount -= courseDiscount;
+        }
+      }
+      const finalCoursePrice = Math.max(0, course.price - courseDiscount);
+      totalAmount += finalCoursePrice;
+
+      await enrollUserInCourse(userId, course._id, {
+        orderId: razorpay_order_id,
+        paymentId: razorpay_payment_id,
+        signature: razorpay_signature,
+        amount: finalCoursePrice
+      });
+    }
+
+    req.session.appliedCoupon = null;
 
     console.log('User enrolled in courses, total amount:', totalAmount);
 
@@ -250,7 +324,13 @@ export const downloadInvoice = async (req, res) => {
     }
 
     const payments = await Payment.find({ orderId, user: userId })
-      .populate('course')
+      .populate({
+        path: 'course',
+        populate: {
+          path: 'tutor',
+          select: 'fullName'
+        }
+      })
       .populate('user');
 
     console.log('Payments found:', payments.length);
@@ -275,7 +355,7 @@ export const downloadInvoice = async (req, res) => {
     }
 
     console.log('Generating invoice PDF...');
-    const filepath = await generateInvoice(payments[0], user, courses);
+    const filepath = await generateInvoice(payments, user);
     console.log('PDF generated at:', filepath);
 
     res.download(filepath, 'invoice-' + orderId + '.pdf', (err) => {

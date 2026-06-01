@@ -24,7 +24,7 @@ const certificateStorage = multer.diskStorage({
 
 // For videos (Cloudinary storage)
 const videoStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary: { v2: cloudinary },
   params: {
     folder: 'course-videos',
     resource_type: 'video',

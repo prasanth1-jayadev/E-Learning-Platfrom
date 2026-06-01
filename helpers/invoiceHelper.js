@@ -3,9 +3,11 @@ import fs from 'fs';
 import path from 'path';
 
 
-export const generateInvoice = (payment, user, courses) => {
+export const generateInvoice = (payments, user, courses) => {
   return new Promise((resolve, reject) => {
     try {
+      const payment = Array.isArray(payments) ? payments[0] : payments;
+      const paymentList = Array.isArray(payments) ? payments : [payments];
 
       const invoicesDir = path.join(process.cwd(), 'invoices');
       if (!fs.existsSync(invoicesDir)) {
@@ -50,7 +52,11 @@ export const generateInvoice = (payment, user, courses) => {
       let total = 0;
       doc.font('Helvetica');
 
-      courses.forEach(course => {
+      // Loop through the payments to get the correct course and actual paid price
+      paymentList.forEach(pay => {
+        const course = pay.course;
+        if (!course) return;
+
         // Course title
         doc.text(course.title, 50, yPosition, { width: 210 });
         
@@ -58,10 +64,10 @@ export const generateInvoice = (payment, user, courses) => {
         const tutorName = course.tutor?.fullName || 'N/A';
         doc.text(tutorName, 280, yPosition, { width: 150 });
         
-        // Price
-        doc.text(`₹${course.price.toLocaleString('en-IN')}`, 450, yPosition);
+        // Price (actual amount paid after coupon discount)
+        doc.text(`₹${pay.amount.toLocaleString('en-IN')}`, 450, yPosition);
         
-        total += course.price;
+        total += pay.amount;
         yPosition += 25;
       });
 

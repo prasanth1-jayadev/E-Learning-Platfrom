@@ -52,6 +52,8 @@
         <path stroke-linecap="round" stroke-linejoin="round"
           d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
       </svg>
+      <span id="wishlistCount"
+        class="absolute -top-1 -right-1 bg-[#00d9b1] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
     </a>
 
     <!-- Cart Icon with Badge -->
@@ -72,15 +74,29 @@
       </svg>
     </a>
 
-    <!-- Notifications Icon with Dot -->
-    <button class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Notifications">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg>
-      <span class="absolute top-1 right-1 bg-red-500 rounded-full w-2 h-2"></span>
-    </button>
+    <!-- Notifications Icon with Dropdown -->
+    <div class="relative inline-block text-left" id="notificationMenu">
+      <button onclick="toggleNotificationDropdown(event)" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Notifications">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+      </button>
 
+      <!-- Dropdown Panel -->
+      <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-150 py-2 z-50 origin-top-right">
+        <div class="px-4 py-2 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
+          <span class="font-bold text-gray-800 text-sm">Notifications</span>
+          <button onclick="markAllNotificationsAsRead(event)" class="text-xs text-[#00d9b1] hover:underline font-semibold">Mark all as read</button>
+        </div>
+        <div id="notifList" class="max-h-64 overflow-y-auto divide-y divide-gray-50 text-xs">
+          <div class="p-4 text-center text-gray-400">No notifications</div>
+        </div>
+      </div>
+    </div>
+
+  
     <!-- User Profile -->
     <% if (typeof user !== 'undefined' && user) { %>
       <a href="/user/profile"
@@ -111,7 +127,7 @@
 </nav>
 
 <!-- Mobile Menu -->
-<div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-lg">
+<div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-lg relative z-50">
   <div class="px-6 py-4 space-y-3">
     <a href="/user/home" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1]' : '' %>">
       Home
@@ -136,7 +152,7 @@
 
 <!-- Mobile Menu Toggle Script -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     
@@ -145,33 +161,168 @@
         mobileMenu.classList.toggle('hidden');
       });
     }
-
-    // Fetch and update cart count
+    // Fetch and update cart count on page load if user is logged in
     <% if (typeof user !== 'undefined' && user) { %>
       fetchCartCount();
+      fetchWishlistCount();
+      fetchUserNotifications();
+      initializeNotificationSocket();
     <% } %>
   });
-
-  // Function to fetch cart count
+  // Function to fetch cart count dynamically
   async function fetchCartCount() {
     try {
       const response = await fetch('/user/cart/count');
       const data = await response.json();
       
-      if (data.success && data.count > 0) {
-        const cartCountElement = document.getElementById('cartCount');
-        if (cartCountElement) {
+      const cartCountElement = document.getElementById('cartCount');
+      if (cartCountElement) {
+        if (data.success && data.count > 0) {
           cartCountElement.textContent = data.count;
-          cartCountElement.classList.remove('hidden');
+          cartCountElement.classList.remove('hidden'); // Show badge
+        } else {
+          cartCountElement.classList.add('hidden'); // Hide badge if cart is empty
         }
       }
     } catch (error) {
       console.error('Error fetching cart count:', error);
     }
   }
+  // Function to fetch wishlist count dynamically
+  async function fetchWishlistCount() {
+    try {
+      const response = await fetch('/user/wishlist/count');
+      const data = await response.json();
+      
+      const wishlistCountElement = document.getElementById('wishlistCount');
+      if (wishlistCountElement) {
+        if (data.success && data.count > 0) {
+          wishlistCountElement.textContent = data.count;
+          wishlistCountElement.classList.remove('hidden'); // Show badge
+        } else {
+          wishlistCountElement.classList.add('hidden'); // Hide badge if empty
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching wishlist count:', error);
+    }
+  }
+  
+  // Notification Dropdown logic
+  let notifOpen = false;
+  
+  function toggleNotificationDropdown(e) {
+    e.stopPropagation();
+    const dropdown = document.getElementById('notifDropdown');
+    notifOpen = !notifOpen;
+    if (notifOpen) {
+      dropdown.classList.remove('hidden');
+      fetchUserNotifications();
+    } else {
+      dropdown.classList.add('hidden');
+    }
+  }
 
-  // Make fetchCartCount available globally for other pages to update cart count
+  document.addEventListener('click', () => {
+    const dropdown = document.getElementById('notifDropdown');
+    if (dropdown) {
+      dropdown.classList.add('hidden');
+      notifOpen = false;
+    }
+  });
+
+  async function fetchUserNotifications() {
+    try {
+      const response = await fetch('/chat/notifications');
+      const data = await response.json();
+      if (data.success) {
+        updateNotificationUI(data.notifications, data.unreadCount);
+      }
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+    }
+  }
+
+  function updateNotificationUI(notifications, unreadCount) {
+    const badge = document.getElementById('notifBadge');
+    if (badge) {
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    const list = document.getElementById('notifList');
+    if (!list) return;
+
+    if (!notifications || notifications.length === 0) {
+      list.innerHTML = `<div class="p-4 text-center text-gray-400">No notifications</div>`;
+      return;
+    }
+
+    list.innerHTML = notifications.map(n => `
+      <div onclick="markNotificationAsRead(event, '${n._id}')" class="p-3 hover:bg-gray-50 cursor-pointer transition flex items-start gap-2 ${n.isRead ? '' : 'bg-blue-50/40'}">
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-gray-800 truncate ${n.isRead ? 'text-gray-600' : 'text-blue-900'}">${n.title}</p>
+          <p class="text-gray-600 mt-0.5 text-[11px] leading-relaxed break-words">${n.message}</p>
+          <span class="text-[9px] text-gray-400 block mt-1">${new Date(n.createdAt).toLocaleDateString()} ${new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        </div>
+        ${n.isRead ? '' : '<span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></span>'}
+      </div>
+    `).join('');
+  }
+
+  async function markNotificationAsRead(e, id) {
+    e.stopPropagation();
+    try {
+      await fetch(`/chat/notifications/${id}/read`, { method: 'POST' });
+      fetchUserNotifications();
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  }
+
+  async function markAllNotificationsAsRead(e) {
+    e.stopPropagation();
+    try {
+      await fetch('/chat/notifications/read-all', { method: 'POST' });
+      fetchUserNotifications();
+    } catch (err) {
+      console.error('Error marking all as read:', err);
+    }
+  }
+
+  // Load socket.io script dynamically if not present, and connect
+  function initializeNotificationSocket() {
+    if (typeof io === 'undefined') {
+      const script = document.createElement('script');
+      script.src = '/socket.io/socket.io.js';
+      script.onload = connectNotifSocket;
+      document.head.appendChild(script);
+    } else {
+      connectNotifSocket();
+    }
+  }
+
+  function connectNotifSocket() {
+    <% if (typeof user !== 'undefined' && user) { %>
+      const socket = io({
+        auth: {
+          userId: '<%= user._id %>',
+          userType: 'user'
+        }
+      });
+      socket.on('new_notification', () => {
+        fetchUserNotifications();
+      });
+    <% } %>
+  }
+
+  // Make the function available globally so other pages can trigger updates
   window.updateCartCount = fetchCartCount;
+  window.updateWishlistCount = fetchWishlistCount;
 </script>
 
 <style>

@@ -102,4 +102,16 @@ const checkWishlist = async (req, res) => {
     }
 };
 
-export { getWishlist, addToWishlist, removeFromWishlist, checkWishlist };
+const getWishlistCount = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const user = await User.findById(userId);
+        const count = user ? user.wishlist.length : 0;
+        res.json({ success: true, count });
+    } catch (error) {
+        console.error('Get wishlist count error:', error);
+        res.json({ success: false, count: 0 });
+    }
+};
+
+export { getWishlist, addToWishlist, removeFromWishlist, checkWishlist, getWishlistCount };
