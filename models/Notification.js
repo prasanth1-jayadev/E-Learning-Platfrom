@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
     recipientId:{
-        type:mongoose.Schema.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         required:true,
         index:true
     },
@@ -36,6 +36,6 @@ recipientType: {
 }, {
   timestamps: true
 });
-// Indexing for faster notification queries
+
 notificationSchema.index({ recipientId: 1, isRead: 1, createdAt: -1 });
 export default mongoose.models.Notification || mongoose.model('Notification', notificationSchema);

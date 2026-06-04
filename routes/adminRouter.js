@@ -5,6 +5,7 @@ import * as courseController from '../controllers/admin/courseController.js';
 import * as orderController from '../controllers/admin/orderController.js';
 import * as walletController from '../controllers/admin/walletController.js';
 import * as couponController from '../controllers/admin/couponController.js';
+import * as salesReportController from '../controllers/admin/salesReportController.js';
 import { isAdmin, redirectIfAdmin } from '../middleware/authMiddleware.js';
 
 
@@ -52,6 +53,11 @@ router.get('/coupons', isAdmin, couponController.getCouponsPage);
 router.post('/coupons/create', isAdmin, couponController.createCoupon);
 router.post('/coupons/:id/toggle', isAdmin, couponController.toggleCouponStatus);
 router.post('/coupons/:id/delete', isAdmin, couponController.deleteCoupon);
+
+// Sales Report routes
+router.get('/sales-report', isAdmin, salesReportController.getSalesReport);
+router.get('/sales-report/download-pdf', isAdmin, salesReportController.downloadPDF);
+router.get('/sales-report/download-excel', isAdmin, salesReportController.downloadExcel);
 
 
 

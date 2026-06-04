@@ -135,7 +135,6 @@ const redirectIfAdmin = (req, res, next) => {
     next();
 };
 
-// Used by chat routes - works for both user and tutor
 const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.userId) {
         req.user = { _id: req.session.userId, role: 'user' };

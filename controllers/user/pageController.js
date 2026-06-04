@@ -32,6 +32,8 @@ const getLanding = async (req, res) => {
 
 
 
+
+
 const getHome = async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
@@ -77,7 +79,7 @@ const getChat = async (req, res) => {
 };
 
 
-// Get About Page
+
 const getAbout = async (req, res) => {
   try {
     const user = req.session.userId ? await User.findById(req.session.userId) : null;
@@ -88,7 +90,6 @@ const getAbout = async (req, res) => {
   }
 };
 
-// Get Contact Page
 const getContact = async (req, res) => {
   try {
     const user = req.session.userId ? await User.findById(req.session.userId) : null;

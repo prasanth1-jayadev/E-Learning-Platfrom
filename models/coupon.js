@@ -26,7 +26,7 @@ const couponSchema = new mongoose.Schema({
   },
 
   maxDiscount: {
-    type: Number // useful for percentage coupons
+    type: Number 
   },
 
   expiryDate: {

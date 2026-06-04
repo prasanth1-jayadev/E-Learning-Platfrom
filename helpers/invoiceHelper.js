@@ -52,7 +52,6 @@ export const generateInvoice = (payments, user, courses) => {
       let total = 0;
       doc.font('Helvetica');
 
-      // Loop through the payments to get the correct course and actual paid price
       paymentList.forEach(pay => {
         const course = pay.course;
         if (!course) return;
@@ -60,11 +59,9 @@ export const generateInvoice = (payments, user, courses) => {
         // Course title
         doc.text(course.title, 50, yPosition, { width: 210 });
         
-        // Tutor name
         const tutorName = course.tutor?.fullName || 'N/A';
         doc.text(tutorName, 280, yPosition, { width: 150 });
         
-        // Price (actual amount paid after coupon discount)
         doc.text(`₹${pay.amount.toLocaleString('en-IN')}`, 450, yPosition);
         
         total += pay.amount;
@@ -73,7 +70,6 @@ export const generateInvoice = (payments, user, courses) => {
 
       doc.moveTo(50, yPosition + 10).lineTo(550, yPosition + 10).stroke();
 
-      // Total
       doc.fontSize(12).font('Helvetica-Bold')
          .text('Total Amount:', 350, yPosition + 30)
          .text(`₹${total.toLocaleString('en-IN')}`, 450, yPosition + 30);

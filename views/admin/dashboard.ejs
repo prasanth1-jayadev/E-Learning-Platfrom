@@ -133,13 +133,7 @@
           </div>
         </div>
 
-        <!-- Student Growth -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 class="text-base font-bold text-gray-900 mb-4">Tutor Registration Growth</h3>
-          <div class="h-64">
-            <canvas id="tutorChart"></canvas>
-          </div>
-        </div>
+        
 
         <!-- Top Selling Courses -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -374,41 +368,7 @@
     const tutorLabels = tutorData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
     const tutorValues = tutorData.map(d => d.newTutors);
 
-    // Tutor Growth Chart
-    const tutorCtx = document.getElementById('tutorChart').getContext('2d');
-    new Chart(tutorCtx, {
-      type: 'line',
-      data: {
-        labels: tutorLabels,
-        datasets: [{
-          label: 'New Tutors',
-          data: tutorValues,
-          borderColor: secondaryColor,
-          backgroundColor: secondaryColor + '30',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
-            }
-          }
-        }
-      }
-    });
-
+   
     // Top Courses Chart Data
     const topCoursesData = <%- JSON.stringify(analytics.topCourses) %>;
     const courseLabels = topCoursesData.map(d => d.courseTitle.length > 20 ? d.courseTitle.substring(0, 20) + '...' : d.courseTitle);

@@ -51,21 +51,7 @@
                     <div class="w-80 border-r border-gray-100 flex flex-col">
                         <div class="p-4 border-b border-gray-100">
                             <h2 class="text-xl font-bold text-gray-900">Messages</h2>
-                            <p class="text-xs text-gray-500 mt-1 mb-3">Chat with your tutors</p>
-                            <div class="flex gap-2">
-                                <button onclick="filterChats('all')" id="filter-all"
-                                    class="flex-1 px-3 py-2 bg-primary text-white rounded-lg text-xs font-semibold transition">
-                                    All
-                                </button>
-                                <button onclick="filterChats('individual')" id="filter-individual"
-                                    class="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition">
-                                    1-on-1
-                                </button>
-                                <button onclick="filterChats('group')" id="filter-group"
-                                    class="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition">
-                                    Group
-                                </button>
-                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Chat with your tutors</p>
                         </div>
 
                         <div id="conversations-list" class="flex-1 overflow-y-auto chat-scroll">
@@ -249,22 +235,6 @@
                 }
             }
 
-            // Filter chats
-            function filterChats(type) {
-                document.getElementById('filter-all').className = 'flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition';
-                document.getElementById('filter-individual').className = 'flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition';
-                document.getElementById('filter-group').className = 'flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition';
-
-                document.getElementById('filter-' + type).className = 'flex-1 px-3 py-2 bg-primary text-white rounded-lg text-xs font-semibold transition';
-
-                if (type === 'all') {
-                    renderConversations(allConversations);
-                } else {
-                    const filtered = allConversations.filter(c => c.type === type);
-                    renderConversations(filtered);
-                }
-            }
-
             // Render conversations
             function renderConversations(conversations) {
                 const container = document.getElementById('conversations-list');
@@ -291,17 +261,8 @@
                         ? `<span class="px-2 py-0.5 bg-red-500 text-white text-xs rounded-full font-semibold">${conv.unreadCount}</span>`
                         : '';
 
-                    const displayName = conv.type === 'individual'
-                        ? (conv.tutorId?.fullName || 'Tutor')
-                        : `${conv.courseId?.title || 'Course'} (Group)`;
-
-                    const avatarSrc = conv.type === 'individual'
-                        ? (conv.tutorId?.avatar || '/images/default-avatar.png')
-                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=00d9b1&color=fff&bold=true`;
-
-                    const typeBadge = conv.type === 'group'
-                        ? '<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-semibold">Group</span>'
-                        : '<span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-semibold">1-on-1</span>';
+                    const displayName = conv.tutorId?.fullName || 'Tutor';
+                    const avatarSrc = conv.tutorId?.avatar || '/images/default-avatar.png';
 
                     div.innerHTML = `
                     <div class="flex items-start gap-3">
@@ -313,7 +274,6 @@
                                 ${unreadBadge}
                             </div>
                             <div class="flex items-center gap-2 mb-1">
-                                ${typeBadge}
                                 <p class="text-xs text-gray-500 truncate">${conv.courseId?.title || ''}</p>
                             </div>
                             <p class="text-xs text-gray-400 truncate">${conv.lastMessage?.content || 'No messages yet'}</p>
@@ -328,13 +288,8 @@
             async function openConversation(conversationId, conv) {
                 currentConversationId = conversationId;
 
-                const displayName = conv.type === 'individual'
-                    ? (conv.tutorId?.fullName || 'Tutor')
-                    : `${conv.courseId?.title || 'Course'} (Group)`;
-
-                const avatarSrc = conv.type === 'individual'
-                    ? (conv.tutorId?.avatar || '/images/default-avatar.png')
-                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=00d9b1&color=fff&bold=true`;
+                const displayName = conv.tutorId?.fullName || 'Tutor';
+                const avatarSrc = conv.tutorId?.avatar || '/images/default-avatar.png';
 
                 // Update header
                 document.getElementById('chat-avatar').src = avatarSrc;
@@ -389,17 +344,8 @@
                     ? `<i class="fas fa-check-double ${message.isRead ? 'text-blue-500' : 'text-gray-300'} message-tick ml-1"></i>`
                     : '';
 
-                // Display sender name above message bubble if it is a group chat and someone else sent it
-                let senderNameHtml = '';
-                const currentConv = allConversations.find(c => c._id === currentConversationId);
-                if (currentConv && currentConv.type === 'group' && !isSent) {
-                    const name = message.senderId?.fullName || (message.senderType === 'tutor' ? 'Tutor' : 'Student');
-                    senderNameHtml = `<span class="text-xs text-gray-500 font-semibold mb-1 block">${name}</span>`;
-                }
-
                 div.innerHTML = `
                 <div class="max-w-xs lg:max-w-md">
-                    ${senderNameHtml}
                     <div class="${bubbleClass} rounded-2xl px-4 py-3 shadow-sm">
                         <p class="text-sm">${message.content}</p>
                     </div>

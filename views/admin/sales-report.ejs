@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1',
+                        'background-light': '#F9FAFB',
+                        'surface-light': '#FFFFFF'
+                    }
+                }
+            }
+        }
+    </script>
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-background-light">
+
+<%- include('../partials/admin-sidebar', { currentPage: 'sales-report', pendingCount: pendingCount }) %>
+
+<main class="ml-64 p-6 min-h-screen">
+
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Sales Report</h1>
+            <p class="text-gray-500 mt-1">Track revenue and order performance</p>
+        </div>
+        <!-- Download Buttons -->
+        <div class="flex gap-3">
+            <a href="/admin/sales-report/download-pdf?filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>"
+                class="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 text-sm">
+                <span class="material-icons-outlined text-sm">picture_as_pdf</span>
+                Download PDF
+            </a>
+            <a href="/admin/sales-report/download-excel?filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>"
+                class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 text-sm">
+                <span class="material-icons-outlined text-sm">table_view</span>
+                Download Excel
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <form method="GET" action="/admin/sales-report" class="flex flex-wrap items-end gap-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Filter By</label>
+                <div class="flex gap-2">
+                    <% ['today', 'week', 'month', 'year', 'custom'].forEach(f => { %>
+                    <button type="submit" name="filter" value="<%= f %>"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold border transition
+                        <%= filter === f ? 'bg-[#00d9b1] text-white border-[#00d9b1]' : 'bg-white text-gray-600 border-gray-300 hover:border-[#00d9b1]' %>">
+                        <%= f.charAt(0).toUpperCase() + f.slice(1) %>
+                    </button>
+                    <% }); %>
+
+                    <!-- Clear Filter Button -->
+                    <% if (filter && filter !== 'month') { %>
+                    <a href="/admin/sales-report"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold border border-red-300 text-red-500 hover:bg-red-50 transition flex items-center gap-1">
+                        <span class="material-icons-outlined text-sm">close</span>
+                        Clear
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+
+            <% if (filter === 'custom') { %>
+            <div class="flex items-end gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Start Date</label>
+                    <input type="date" name="startDate" value="<%= startDate %>"
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d9b1]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">End Date</label>
+                    <input type="date" name="endDate" value="<%= endDate %>"
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d9b1]">
+                </div>
+                <input type="hidden" name="filter" value="custom">
+                <button type="submit"
+                    class="px-4 py-2 bg-[#00d9b1] text-white rounded-lg text-sm font-semibold hover:bg-[#00b894]">
+                    Apply
+                </button>
+                <% if (startDate || endDate) { %>
+                <a href="/admin/sales-report"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold border border-red-300 text-red-500 hover:bg-red-50 transition flex items-center gap-1">
+                    <span class="material-icons-outlined text-sm">close</span>
+                    Clear
+                </a>
+                <% } %>
+            </div>
+            <% } %>
+        </form>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+            <p class="text-sm text-gray-500">Total Orders</p>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1"><%= totalOrders %></h3>
+            <p class="text-xs text-gray-400 mt-1">Filtered period</p>
+        </div>
+        <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+            <p class="text-sm text-gray-500">Total Revenue</p>
+            <h3 class="text-2xl font-bold text-green-600 mt-1">₹<%= totalRevenue.toLocaleString() %></h3>
+            <p class="text-xs text-gray-400 mt-1">Gross revenue</p>
+        </div>
+        <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+            <p class="text-sm text-gray-500">Platform Commission</p>
+            <h3 class="text-2xl font-bold text-blue-600 mt-1">₹<%= platformCommission.toLocaleString() %></h3>
+            <p class="text-xs text-gray-400 mt-1">20% of revenue</p>
+        </div>
+        <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+            <p class="text-sm text-gray-500">Tutor Earnings</p>
+            <h3 class="text-2xl font-bold text-purple-600 mt-1">₹<%= tutorEarnings.toLocaleString() %></h3>
+            <p class="text-xs text-gray-400 mt-1">80% of revenue</p>
+        </div>
+    </div>
+
+    <!-- Latest 10 Orders -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-gray-900">Latest 10 Orders</h2>
+            <a href="/admin/orders" class="text-sm text-[#00d9b1] hover:text-[#00b894] font-medium">View All →</a>
+        </div>
+        <% if (latestOrders && latestOrders.length > 0) { %>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Order ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Student</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Course</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% latestOrders.forEach(order => { %>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-mono text-gray-600"><%= (order.orderId || 'N/A').substring(0, 16) %>...</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900"><%= order.user?.fullName || 'N/A' %></div>
+                            <div class="text-xs text-gray-500"><%= order.user?.email || '' %></div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-700"><%= order.course?.title || 'N/A' %></td>
+                        <td class="px-6 py-4 text-sm font-semibold text-green-600">₹<%= (order.amount || 0).toLocaleString() %></td>
+                        <td class="px-6 py-4 text-sm text-gray-500"><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Completed</span>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } else { %>
+        <div class="p-12 text-center">
+            <span class="material-icons-outlined text-gray-300 text-6xl mb-4">receipt_long</span>
+            <p class="text-gray-500">No orders found</p>
+        </div>
+        <% } %>
+    </div>
+
+    <!-- Filtered Orders Table -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-gray-900">
+                Filtered Orders
+                <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded-full font-normal"><%= orders.length %> results</span>
+            </h2>
+        </div>
+        <% if (orders && orders.length > 0) { %>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">#</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Order ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Student</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Course</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% orders.forEach((order, i) => { %>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-500"><%= i + 1 %></td>
+                        <td class="px-6 py-4 text-sm font-mono text-gray-600"><%= (order.orderId || 'N/A').substring(0, 16) %>...</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900"><%= order.user?.fullName || 'N/A' %></div>
+                            <div class="text-xs text-gray-500"><%= order.user?.email || '' %></div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-700"><%= order.course?.title || 'N/A' %></td>
+                        <td class="px-6 py-4 text-sm font-semibold text-green-600">₹<%= (order.amount || 0).toLocaleString() %></td>
+                        <td class="px-6 py-4 text-sm text-gray-500"><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+                <tfoot class="bg-gray-50">
+                    <tr>
+                        <td colspan="4" class="px-6 py-3 text-sm font-bold text-gray-900">Total</td>
+                        <td class="px-6 py-3 text-sm font-bold text-green-600">₹<%= totalRevenue.toLocaleString() %></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <% } else { %>
+        <div class="p-12 text-center">
+            <span class="material-icons-outlined text-gray-300 text-6xl mb-4">search_off</span>
+            <p class="text-gray-500">No orders found for selected period</p>
+        </div>
+        <% } %>
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -19,12 +19,12 @@ const router = express.Router();
 router.get('/user', isUser, getChatPage);
 router.get('/tutor', isTutor, getTutorChatPage);
 
-// API routes
+// api routes
 router.get('/conversations', isAuthenticated, getConversations);
 router.post('/conversation/individual', isAuthenticated, getOrCreateIndividualConversation);
 router.get('/messages/:conversationId', isAuthenticated, getMessages);
 
-// Notification API routes
+// Notification 
 router.get('/notifications', isAuthenticated, getNotifications);
 router.post('/notifications/:id/read', isAuthenticated, markAsRead);
 router.post('/notifications/read-all', isAuthenticated, markAllAsRead);

@@ -24,7 +24,6 @@ initCronJobs();
 const app = express();
 const server = http.createServer(app);
 
-// Initialize socket.io
 initializeSocket(server);
 
 app.set('view engine', 'ejs');

@@ -16,7 +16,6 @@ export const setupChatHandlers = (io) => {
           return socket.emit('error', { message: 'Conversation not found' });
         }
         
-        // Check authorization
         const hasAccess = verifyConversationAccess(
           conversation,
           socket.userId,
@@ -44,14 +43,12 @@ export const setupChatHandlers = (io) => {
       }
     });
 
-    // Leave conversation room
     socket.on('leave_conversation', (data) => {
       const { conversationId } = data;
       socket.leave(`conversation_${conversationId}`);
       socket.emit('left_conversation', { conversationId });
     });
 
-    // Mark conversation as read in real-time
     socket.on('read_conversation', async (data) => {
       try {
         const { conversationId } = data;
@@ -110,13 +107,11 @@ export const setupChatHandlers = (io) => {
 
         await message.save();
 
-        // Populate sender info
         await message.populate({
           path: 'senderId',
           select: 'fullName email avatar'
         });
 
-        // Update conversation last message
         conversation.lastMessage = {
           content: messageType === 'text' ? content : `Sent a ${messageType}`,
           senderId: socket.userId,
@@ -127,7 +122,6 @@ export const setupChatHandlers = (io) => {
         conversation.metadata.totalMessages += 1;
         await conversation.save();
 
-        // Emit to conversation room
         io.to(`conversation_${conversationId}`).emit('new_message', {
           message,
           conversationId
@@ -139,7 +133,6 @@ export const setupChatHandlers = (io) => {
       }
     });
 
-    // Typing indicator
     socket.on('typing_start', (data) => {
       const { conversationId } = data;
       socket.to(`conversation_${conversationId}`).emit('user_typing', {
@@ -166,12 +159,6 @@ function verifyConversationAccess(conversation, userId, userType) {
   if (userType === 'tutor') {
     return conversation.tutorId.toString() === userId.toString();
   } else {
-    if (conversation.type === 'individual') {
-      return conversation.userId.toString() === userId.toString();
-    } else {
-      return conversation.participants.some(
-        p => p.userId.toString() === userId.toString() && p.isActive
-      );
-    }
+    return conversation.userId.toString() === userId.toString();
   }
 }

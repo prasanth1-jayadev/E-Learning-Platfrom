@@ -13,9 +13,10 @@ import * as paymentController from '../controllers/user/paymentController.js';
 
 const router = express.Router();
 
-// Landing & Home Pages
+// Landing & Home 
 router.get('/', pageController.getLanding);
 router.get('/landing', pageController.getLanding);
+router.get('/blocked',courseController.blockuser)
 router.get('/home', isUser, pageController.getHome);
 router.get('/about', pageController.getAbout);
 router.get('/contact', pageController.getContact);
@@ -97,7 +98,7 @@ router.get('/course/:id', courseController.getCourseDetail);
 
 // Tutor Routes
 router.get('/tutors', tutorController.getTutors);
-router.get('/tutor/:id', tutorController.getTutorDetail);  // Use getTutorDetail instead  
+router.get('/tutor/:id', tutorController.getTutorDetail); 
 // Profile Routes
 router.get('/profile', isUser, profileController.getProfile);
 router.post('/update-profile', isUser, profileController.postUpdateProfile);

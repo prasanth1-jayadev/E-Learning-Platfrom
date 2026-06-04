@@ -33,15 +33,7 @@ export const enrollUserInCourse = async (userId, courseId, paymentData) => {
     $addToSet: { enrolledStudents: userId }
   });
 
-  // Add the student to the course's group chat (or create it if it doesn't exist)
-  await Conversation.findOneAndUpdate(
-    { type: 'group', courseId: courseId },
-    {
-      $setOnInsert: { tutorId: course.tutor },
-      $addToSet: { participants: { userId: userId, isActive: true } }
-    },
-    { upsert: true }
-  );
+  
   const student = await User.findById(userId);
   await sendNotification({
     recipientId: course.tutor,

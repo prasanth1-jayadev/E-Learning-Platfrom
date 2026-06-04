@@ -3,7 +3,6 @@ import Message from '../../models/Message.js';
 import Payment from '../../models/Payment.js';
 import Course from '../../models/Course.js';
 
-// GET - render chat page (user side)
 export const getChatPage = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -11,10 +10,8 @@ export const getChatPage = async (req, res) => {
         const user = await User.findById(userId).select('fullName email avatar');
 
         const conversations = await Conversation.find({
-            $or: [
-                { userId: userId, type: 'individual' },
-                { 'participants.userId': userId, type: 'group' }
-            ]
+           userId:userId,
+           type:'individual'
         })
         .populate('courseId', 'title thumbnail')
         .populate('tutorId', 'fullName avatar')
@@ -25,7 +22,7 @@ export const getChatPage = async (req, res) => {
          const conversationsWithUnread = await Promise.all(conversations.map(async (conv) => {
             const unreadCount = await Message.countDocuments({
                 conversationId: conv._id,
-                senderType: 'tutor', // Unread messages sent by the tutor
+                senderType: 'tutor', // Unread message
                 isRead: false
             });
             return { ...conv, unreadCount };
@@ -42,14 +39,13 @@ export const getChatPage = async (req, res) => {
     }
 };
 
-// GET - render chat page (tutor side)
 export const getTutorChatPage = async (req, res) => {
     try {
         const tutorId = req.session.tutorId;
         const Tutor = (await import('../../models/Tutor.js')).default;
         const tutor = await Tutor.findById(tutorId);
 
-        // Get all conversations for this tutor
+        // get all conv
         const conversations = await Conversation.find({ tutorId })
         .populate('courseId', 'title thumbnail')
         .populate('userId', 'fullName avatar')
@@ -79,7 +75,6 @@ export const getTutorChatPage = async (req, res) => {
     }
 };
 
-// POST - get or create individual conversation
 export const getOrCreateIndividualConversation = async (req, res) => {
     try {
         const { tutorId, courseId } = req.body;
@@ -89,7 +84,6 @@ export const getOrCreateIndividualConversation = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Please login first' });
         }
 
-        // Check if user is enrolled in the course
         const User = (await import('../../models/User.js')).default;
         const user = await User.findById(userId);
         const isEnrolled = user?.enrolledCourses?.some(id => id.toString() === courseId.toString());
@@ -101,7 +95,6 @@ export const getOrCreateIndividualConversation = async (req, res) => {
             });
         }
 
-        // Check if conversation already exists
         let conversation = await Conversation.findOne({
             type: 'individual',
             userId,
@@ -133,7 +126,6 @@ export const getOrCreateIndividualConversation = async (req, res) => {
     }
 };
 
-// GET - get messages for a conversation
 export const getMessages = async (req, res) => {
     try {
         const { conversationId } = req.params;
@@ -144,7 +136,7 @@ export const getMessages = async (req, res) => {
         const userId = req.session.userId || req.user._id;
         const userType = req.session.userId ? 'user' : 'tutor';
 
-        // Verify access
+        //  access
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
             return res.status(404).json({ success: false, message: 'Conversation not found' });
@@ -155,15 +147,11 @@ export const getMessages = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
 
-        // ========================================================
-        // ADD IT HERE (Right before fetching the messages)
-        // ========================================================
-        // Mark all messages from the other user as read
+      
         await Message.updateMany(
             { conversationId, senderType: { $ne: userType }, isRead: false },
             { $set: { isRead: true } }
         );
-        // ========================================================
 
         const messages = await Message.find({ conversationId, isDeleted: false })
             .populate('senderId', 'fullName avatar')
@@ -191,7 +179,6 @@ export const getMessages = async (req, res) => {
 };
 
 
-// GET - get all conversations (API)
 export const getConversations = async (req, res) => {
     try {
         const userId = req.session.userId || req.user?._id;
@@ -202,10 +189,8 @@ export const getConversations = async (req, res) => {
         if (userType === 'tutor') {
             query.tutorId = tutorId;
         } else {
-            query.$or = [
-                { userId: userId, type: 'individual' },
-                { 'participants.userId': userId, type: 'group' }
-            ];
+            query.userId=userId;
+            query.type='individual'
         }
 
         const conversations = await Conversation.find(query)
@@ -237,8 +222,6 @@ function verifyAccess(conversation, userId, userType) {
     if (userType === 'tutor') {
         return conversation.tutorId.toString() === id;
     }
-    if (conversation.type === 'individual') {
-        return conversation.userId.toString() === id;
-    }
-    return conversation.participants.some(p => p.userId.toString() === id && p.isActive);
+   return conversation.userId.toString()===id;
+   
 }

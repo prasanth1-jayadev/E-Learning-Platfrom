@@ -148,6 +148,11 @@ const getCourses = async (req, res) => {
 };
 
 
+export  const blockuser = async(req,res)=>{
+  const reqblock = await User.find({role:"user"})
+  res.json(reqblock)
+}
+
 
 export {
   getCourses,

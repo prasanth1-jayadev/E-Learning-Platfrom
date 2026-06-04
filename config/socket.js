@@ -53,7 +53,7 @@ export const initializeSocket = (server) => {
     });
   });
 
-  // Setup chat event handlers
+  // Setup chatevent
   setupChatHandlers(io);
 
   return io;
