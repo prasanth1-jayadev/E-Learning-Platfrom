@@ -1,514 +1,843 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tutor Profile - Learnify</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
-    
-    /* Main Content Styles */
-    .main-content { 
-        margin-left: 260px; 
-        flex: 1; 
-        padding: 2rem; 
-        width: calc(100% - 260px);
-        min-height: 100vh;
-    }
-    
-    /* Profile Card */
-    .profile-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-    .profile-header h2 { font-size: 1.25rem; font-weight: 700; }
-    .edit-btn { background: #00d9b1; color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.3s; }
-    .edit-btn:hover { background: #00c29d; }
-    .edit-btn.cancel { background: #e5e7eb; color: #666; }
-    .edit-btn.cancel:hover { background: #d1d5db; }
-    
-    .avatar-section { text-align: center; margin-bottom: 2rem; position: relative; }
-    .avatar-large { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; border: 4px solid #e5e7eb; overflow: hidden; position: relative; }
-    .avatar-large img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-large #avatarInitial { font-size: 2.5rem; font-weight: 700; color: white; }
-    .avatar-upload-input { display: none; }
-    .avatar-section button:hover { background: #f9fafb; border-color: #d1d5db; }
-    
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 0.5rem; }
-    .form-group input, .form-group textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; font-family: Inter, sans-serif; transition: border-color 0.3s; }
-    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #00d9b1; }
-    .form-group input:read-only, .form-group textarea:read-only { background: #f9fafb; }
-    .form-group textarea { resize: vertical; min-height: 100px; }
-    .form-group .hint { font-size: 0.75rem; color: #9ca3af; margin-top: 0.35rem; }
-    .form-group .char-count { display: flex; justify-content: space-between; margin-top: 0.35rem; }
-    
-    .email-group { display: flex; gap: 0.75rem; }
-    .email-group input { flex: 1; }
-    .change-email-btn { background: white; border: 1px solid #00d9b1; color: #00d9b1; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
-    .change-email-btn:hover { background: #f0f9f6; }
-    
-    .save-section { padding-top: 1rem; display: none; }
-    .save-section.active { display: block; }
-    .save-btn { width: 100%; background: #00d9b1; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.3s; }
-    .save-btn:hover { background: #00c29d; }
-    
-    .change-password-section { text-align: center; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; margin-top: 1.5rem; }
-    .change-password-btn { background: white; border: 1px solid #e5e7eb; color: #666; padding: 0.7rem 1.5rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.3s; }
-    .change-password-btn:hover { background: #f9fafb; border-color: #d1d5db; }
-    
-    /* Modal Styles */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; }
-    .modal.active { display: flex; }
-    .modal-content { background: white; border-radius: 16px; padding: 2rem; max-width: 450px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-    .modal-header { margin-bottom: 1.5rem; }
-    .modal-header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .modal-header p { color: #666; font-size: 0.9rem; }
-    .modal-buttons { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
-    .modal-buttons button { flex: 1; padding: 0.85rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-    .btn-primary-modal { background: #00d9b1; color: white; border: none; }
-    .btn-primary-modal:hover { background: #00c29d; }
-    .btn-secondary-modal { background: #f3f4f6; color: #666; border: none; }
-    .btn-secondary-modal:hover { background: #e5e7eb; }
-    .error-text { color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; display: none; }
-    .error-text.active { display: block; }
-    
-    /* Responsive */
-    @media (max-width: 1439px) {
-        .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 1.75rem; }
-    }
-    
-    @media (max-width: 1023px) {
-        .main-content { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
-    }
-    
-    @media (max-width: 899px) {
-        .main-content { margin-left: 200px; width: calc(100% - 200px); padding: 1.25rem; }
-    }
-    
-    @media (max-width: 767px) {
-        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
-        .profile-card { padding: 1.25rem; }
-        .profile-header { flex-direction: column; gap: 1rem; align-items: stretch; }
-        .edit-btn { justify-content: center; }
-        .email-group { flex-direction: column; }
-        .change-email-btn { width: 100%; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutor Profile - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            background: #f5f7f6;
+            color: #1a1a1a;
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+            width: calc(100% - 260px);
+            min-height: 100vh;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .edit-btn {
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s;
+        }
+
+        .edit-btn:hover {
+            background: #00c29d;
+        }
+
+        .edit-btn.cancel {
+            background: #e5e7eb;
+            color: #666;
+        }
+
+        .edit-btn.cancel:hover {
+            background: #d1d5db;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            border: 4px solid #e5e7eb;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-large #avatarInitial {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .avatar-upload-input {
+            display: none;
+        }
+
+        .avatar-section button:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: Inter, sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00d9b1;
+        }
+
+        .form-group input:read-only,
+        .form-group textarea:read-only {
+            background: #f9fafb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group .hint {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.35rem;
+        }
+
+        .form-group .char-count {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.35rem;
+        }
+
+        .email-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .email-group input {
+            flex: 1;
+        }
+
+        .change-email-btn {
+            background: white;
+            border: 1px solid #00d9b1;
+            color: #00d9b1;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .change-email-btn:hover {
+            background: #f0f9f6;
+        }
+
+        .save-section {
+            padding-top: 1rem;
+            display: none;
+        }
+
+        .save-section.active {
+            display: block;
+        }
+
+        .save-btn {
+            width: 100%;
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #00c29d;
+        }
+
+        .change-password-section {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 1.5rem;
+        }
+
+        .change-password-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #666;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .change-password-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-modal {
+            background: #00d9b1;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary-modal:hover {
+            background: #00c29d;
+        }
+
+        .btn-secondary-modal {
+            background: #f3f4f6;
+            color: #666;
+            border: none;
+        }
+
+        .btn-secondary-modal:hover {
+            background: #e5e7eb;
+        }
+
+        .error-text {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-text.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1439px) {
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+                padding: 1.75rem;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 899px) {
+            .main-content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+                padding: 1.25rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .profile-card {
+                padding: 1.25rem;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .edit-btn {
+                justify-content: center;
+            }
+
+            .email-group {
+                flex-direction: column;
+            }
+
+            .change-email-btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'profile' }) %>
+    <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'profile' }) %>
 
-<!-- Profile Content -->
-<div class="main-content">
-    <div class="profile-card">
-      <div class="profile-header">
-        <h2>Profile Settings</h2>
-        <button id="editBtn" onclick="toggleEdit()" class="edit-btn">
-          <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-          <span id="editBtnText">Edit Profile</span>
-        </button>
-      </div>
+        <!-- Profile Content -->
+        <div class="main-content">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h2>Profile Settings</h2>
+                    <button id="editBtn" onclick="toggleEdit()" class="edit-btn">
+                        <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        <span id="editBtnText">Edit Profile</span>
+                    </button>
+                </div>
 
-      <div class="avatar-section">
-        <div class="avatar-large" id="avatarDisplay">
-          <% if (tutor.avatar) { %>
-            <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>" id="avatarImage">
-          <% } else { %>
-            <span id="avatarInitial"><%= tutor.fullName.charAt(0).toUpperCase() %></span>
-          <% } %>
-        </div>
-        <input type="file" id="avatarInput" class="avatar-upload-input" accept="image/jpeg,image/jpg,image/png,image/webp" onchange="previewAvatar(this)">
-        
-        <!-- Default button -->
-        <button type="button" id="selectPhotoBtn" onclick="document.getElementById('avatarInput').click()" style="margin-top: 1rem; background: white; border: 1px solid #e5e7eb; color: #666; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; margin-left: auto; margin-right: auto; transition: all 0.3s;">
-          <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          Change Photo
-        </button>
-        
-        <!-- Upload/Cancel buttons (hidden by default) -->
-        <div id="uploadButtons" style="display: none; margin-top: 1rem; gap: 0.5rem; justify-content: center;">
-          <button type="button" onclick="uploadAvatar()" style="background: #00d9b1; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-            Upload
-          </button>
-          <button type="button" onclick="cancelUpload()" style="background: #f3f4f6; color: #666; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-            Cancel
-          </button>
-        </div>
-      </div>
+                <div class="avatar-section">
+                    <div class="avatar-large" id="avatarDisplay">
+                        <% if (tutor.avatar) { %>
+                            <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>" id="avatarImage">
+                            <% } else { %>
+                                <span id="avatarInitial">
+                                    <%= tutor.fullName.charAt(0).toUpperCase() %>
+                                </span>
+                                <% } %>
+                    </div>
+                    <input type="file" id="avatarInput" class="avatar-upload-input"
+                        accept="image/jpeg,image/jpg,image/png,image/webp" onchange="previewAvatar(this)">
 
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" id="fullName" value="<%= tutor.fullName %>" readonly/>
-      </div>
+                    <!-- Default button -->
+                    <button type="button" id="selectPhotoBtn" onclick="document.getElementById('avatarInput').click()"
+                        style="margin-top: 1rem; background: white; border: 1px solid #e5e7eb; color: #666; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; margin-left: auto; margin-right: auto; transition: all 0.3s;">
+                        <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Change Photo
+                    </button>
 
-      <div class="form-group">
-        <label>Email</label>
-        <div class="email-group">
-          <input type="email" value="<%= tutor.email %>" readonly/>
-          <button onclick="openEmailModal()" class="change-email-btn">Change Email</button>
-        </div>
-        <div class="hint">
-          <svg style="width: 12px; height: 12px; display: inline; margin-right: 4px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Email changes require verification for security
-        </div>
-      </div>
+                    <!-- Upload/Cancel buttons (hidden by default) -->
+                    <div id="uploadButtons"
+                        style="display: none; margin-top: 1rem; gap: 0.5rem; justify-content: center;">
+                        <button type="button" onclick="uploadAvatar()"
+                            style="background: #00d9b1; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                            Upload
+                        </button>
+                        <button type="button" onclick="cancelUpload()"
+                            style="background: #f3f4f6; color: #666; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
 
-     
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="fullName" value="<%= tutor.fullName %>" readonly />
+                </div>
 
-      <div class="form-group">
-        <label>Subjects Teaching</label>
-        <input type="text" id="subjects" value="<%= tutor.subjects || '' %>" placeholder="e.g., Mathematics, Physics, Chemistry" readonly/>
-      </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="email-group">
+                        <input type="email" value="<%= tutor.email %>" readonly />
+                        <button onclick="openEmailModal()" class="change-email-btn">Change Email</button>
+                    </div>
+                    <div class="hint">
+                        <svg style="width: 12px; height: 12px; display: inline; margin-right: 4px;" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Email changes require verification for security
+                    </div>
+                </div>
 
-      <div class="form-group">
-        <label>Bio</label>
-        <textarea id="bio" placeholder="Tell students about yourself, your teaching experience, and approach..." readonly><%= tutor.bio || '' %></textarea>
-        <div class="char-count">
-          <span class="hint">Maximum 500 characters</span>
-          <span class="hint"><span id="bioCount">0</span>/500</span>
-        </div>
-      </div>
 
-      <div id="saveSection" class="save-section">
-        <button onclick="saveProfile()" class="save-btn">Save Changes</button>
-      </div>
 
-      <div class="change-password-section">
-        <button onclick="openPasswordModal()" class="change-password-btn">
-          <svg style="width: 16px; height: 16px; display: inline; margin-right: 6px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-          Change Password
-        </button>
-      </div>
-    </div>
-  </div>
+                <div class="form-group">
+                    <label>Subjects Teaching</label>
+                    <input type="text" id="subjects" value="<%= tutor.subjects || '' %>"
+                        placeholder="e.g., Mathematics, Physics, Chemistry" readonly />
+                </div>
 
-<!-- Email Change Modal -->
-<div id="emailModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Change Email</h2>
-            <p>Enter your new email address</p>
-        </div>
-        
-        <div class="form-group">
-            <label>New Email Address</label>
-            <input type="email" id="newEmail" placeholder="Enter new email"/>
-            <p id="emailError" class="error-text"></p>
-        </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="bio"
+                        placeholder="Tell students about yourself, your teaching experience, and approach..."
+                        readonly><%= tutor.bio || '' %></textarea>
+                    <div class="char-count">
+                        <span class="hint">Maximum 500 characters</span>
+                        <span class="hint"><span id="bioCount">0</span>/500</span>
+                    </div>
+                </div>
 
-        <div class="modal-buttons">
-            <button onclick="sendEmailOTP()" class="btn-primary-modal">Send OTP</button>
-            <button onclick="closeEmailModal()" class="btn-secondary-modal">Cancel</button>
-        </div>
-    </div>
-</div>
+                <div id="saveSection" class="save-section">
+                    <button onclick="saveProfile()" class="save-btn">Save Changes</button>
+                </div>
 
-<!-- OTP Verification Modal -->
-<div id="otpModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Verify Email</h2>
-            <p>We've sent a verification code to: <strong id="otpNewEmail" style="color: #00d9b1;"></strong></p>
-        </div>
-        
-        <div class="form-group">
-            <label>Enter OTP</label>
-            <input type="text" id="otpInput" maxlength="4" placeholder="0000" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;"/>
-            <p id="otpError" class="error-text"></p>
+                <div class="change-password-section">
+                    <button onclick="openPasswordModal()" class="change-password-btn">
+                        <svg style="width: 16px; height: 16px; display: inline; margin-right: 6px;" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                        Change Password
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="modal-buttons">
-            <button onclick="verifyEmailOTP()" class="btn-primary-modal">Verify</button>
-            <button id="resendBtn" onclick="resendEmailOTP()" class="btn-secondary-modal">
-                <span id="resendText">Resend OTP</span>
-            </button>
-        </div>
-        
-        <button onclick="closeOTPModal()" style="width: 100%; margin-top: 0.75rem; background: none; border: none; color: #9ca3af; cursor: pointer; padding: 0.5rem;">
-            Cancel
-        </button>
-    </div>
-</div>
+        <!-- Email Change Modal -->
+        <div id="emailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Change Email</h2>
+                    <p>Enter your new email address</p>
+                </div>
 
-<!-- Change Password Modal -->
-<div id="passwordModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Change Password</h2>
-            <p>Enter your current and new password</p>
-        </div>
-        
-        <div class="form-group">
-            <label>Current Password</label>
-            <input type="password" id="currentPassword" placeholder="Enter current password"/>
+                <div class="form-group">
+                    <label>New Email Address</label>
+                    <input type="email" id="newEmail" placeholder="Enter new email" />
+                    <p id="emailError" class="error-text"></p>
+                </div>
+
+                <div class="modal-buttons">
+                    <button onclick="sendEmailOTP()" class="btn-primary-modal">Send OTP</button>
+                    <button onclick="closeEmailModal()" class="btn-secondary-modal">Cancel</button>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="newPassword" placeholder="Enter new password"/>
+        <!-- OTP Verification Modal -->
+        <div id="otpModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Verify Email</h2>
+                    <p>We've sent a verification code to: <strong id="otpNewEmail" style="color: #00d9b1;"></strong></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Enter OTP</label>
+                    <input type="text" id="otpInput" maxlength="4" placeholder="0000"
+                        style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;" />
+                    <p id="otpError" class="error-text"></p>
+                </div>
+
+                <div class="modal-buttons">
+                    <button onclick="verifyEmailOTP()" class="btn-primary-modal">Verify</button>
+                    <button id="resendBtn" onclick="resendEmailOTP()" class="btn-secondary-modal">
+                        <span id="resendText">Resend OTP</span>
+                    </button>
+                </div>
+
+                <button onclick="closeOTPModal()"
+                    style="width: 100%; margin-top: 0.75rem; background: none; border: none; color: #9ca3af; cursor: pointer; padding: 0.5rem;">
+                    Cancel
+                </button>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Confirm New Password</label>
-            <input type="password" id="confirmPassword" placeholder="Confirm new password"/>
-            <p id="passwordError" class="error-text"></p>
-            <div class="hint" style="margin-top: 0.5rem;">Password must be at least 8 characters with uppercase, lowercase, and number</div>
+        <!-- Change Password Modal -->
+        <div id="passwordModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Change Password</h2>
+                    <p>Enter your current and new password</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password" />
+                </div>
+
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password" />
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password" />
+                    <p id="passwordError" class="error-text"></p>
+                    <div class="hint" style="margin-top: 0.5rem;">Password must be at least 8 characters with uppercase,
+                        lowercase, and number</div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button onclick="changePassword()" class="btn-primary-modal">Change Password</button>
+                    <button onclick="closePasswordModal()" class="btn-secondary-modal">Cancel</button>
+                </div>
+            </div>
         </div>
 
-        <div class="modal-buttons">
-            <button onclick="changePassword()" class="btn-primary-modal">Change Password</button>
-            <button onclick="closePasswordModal()" class="btn-secondary-modal">Cancel</button>
-        </div>
-    </div>
-</div>
+        <script>
+            // Profile Edit Functions
+            let isEditing = false;
 
-<script>
-// Profile Edit Functions
-let isEditing = false;
+            function toggleEdit() {
+                isEditing = !isEditing;
+                const fullNameInput = document.getElementById('fullName');
+                const subjectsInput = document.getElementById('subjects');
+                const bioInput = document.getElementById('bio');
+                const editBtn = document.getElementById('editBtn');
+                const editBtnText = document.getElementById('editBtnText');
+                const saveSection = document.getElementById('saveSection');
 
-function toggleEdit() {
-    isEditing = !isEditing;
-    const fullNameInput = document.getElementById('fullName');
-    const phoneInput = document.getElementById('phone');
-    const subjectsInput = document.getElementById('subjects');
-    const bioInput = document.getElementById('bio');
-    const editBtn = document.getElementById('editBtn');
-    const editBtnText = document.getElementById('editBtnText');
-    const saveSection = document.getElementById('saveSection');
+                if (isEditing) {
+                    fullNameInput.readOnly = false;
+                    subjectsInput.readOnly = false;
+                    bioInput.readOnly = false;
+                    editBtnText.textContent = 'Cancel';
+                    editBtn.classList.add('cancel');
+                    saveSection.classList.add('active');
+                    fullNameInput.focus();
+                    updateBioCount();
+                } else {
+                    fullNameInput.readOnly = true;
+                    subjectsInput.readOnly = true;
+                    bioInput.readOnly = true;
+                    editBtnText.textContent = 'Edit Profile';
+                    editBtn.classList.remove('cancel');
+                    saveSection.classList.remove('active');
+                    location.reload();
+                }
+            }
 
-    if (isEditing) {
-        fullNameInput.readOnly = false;
-        phoneInput.readOnly = false;
-        subjectsInput.readOnly = false;
-        bioInput.readOnly = false;
-        editBtnText.textContent = 'Cancel';
-        editBtn.classList.add('cancel');
-        saveSection.classList.add('active');
-        fullNameInput.focus();
-        updateBioCount();
-    } else {
-        fullNameInput.readOnly = true;
-        phoneInput.readOnly = true;
-        subjectsInput.readOnly = true;
-        bioInput.readOnly = true;
-        editBtnText.textContent = 'Edit Profile';
-        editBtn.classList.remove('cancel');
-        saveSection.classList.remove('active');
-        location.reload();
-    }
-}
+            function updateBioCount() {
+                const bio = document.getElementById('bio').value;
+                document.getElementById('bioCount').textContent = bio.length;
+            }
 
-function updateBioCount() {
-    const bio = document.getElementById('bio').value;
-    document.getElementById('bioCount').textContent = bio.length;
-}
+            document.addEventListener('DOMContentLoaded', function () {
+                const bioInput = document.getElementById('bio');
+                bioInput.addEventListener('input', updateBioCount);
+                updateBioCount();
+            });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const bioInput = document.getElementById('bio');
-    bioInput.addEventListener('input', updateBioCount);
-    updateBioCount();
-});
+            async function saveProfile() {
+                const fullName = document.getElementById('fullName').value.trim();
+                const subjects = document.getElementById('subjects').value.trim();
+                const bio = document.getElementById('bio').value.trim();
 
-async function saveProfile() {
-    const fullName = document.getElementById('fullName').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const subjects = document.getElementById('subjects').value.trim();
-    const bio = document.getElementById('bio').value.trim();
+                if (!fullName) {
+                    showToast('Name is required', 'error');
+                    document.getElementById('fullName').focus();
+                    return;
+                }
 
-    if (!fullName) {
-        showToast('Name is required', 'error');
-        return;
-    }
+                if (fullName.length < 2) {
+                    showToast('Name must be at least 2 characters', 'error');
+                    document.getElementById('fullName').focus();
+                    return;
+                }
 
-    if (bio.length > 500) {
-        showToast('Bio must be 500 characters or less', 'error');
-        return;
-    }
+                if (bio.length > 500) {
+                    showToast('Bio must be 500 characters or less', 'error');
+                    return;
+                }
 
-    try {
-        const response = await fetch('/tutor/update-profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fullName, phone, subjects, bio })
-        });
+                try {
+                    const response = await fetch('/tutor/update-profile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fullName, subjects, bio })
+                    });
 
-        const data = await response.json();
+                    const data = await response.json();
 
-        if (response.ok) {
-            showToast('Profile updated successfully!', 'success');
-            toggleEdit();
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showToast(data.message || 'Update failed', 'error');
-        }
-    } catch (error) {
-        showToast('Something went wrong', 'error');
-        console.error(error);
-    }
-}
+                    if (response.ok) {
+                        showToast('Profile updated successfully!', 'success');
+                        isEditing = false;
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast(data.message || 'Update failed', 'error');
+                    }
+                } catch (error) {
+                    showToast('Something went wrong', 'error');
+                    console.error(error);
+                }
+            }
 
-// Email Change Modal Functions
-function openEmailModal() {
-    document.getElementById('emailModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
+            // Email Change Modal Functions
+            function openEmailModal() {
+                document.getElementById('emailModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
 
-function closeEmailModal() {
-    document.getElementById('emailModal').classList.remove('active');
-    document.getElementById('newEmail').value = '';
-    document.getElementById('emailError').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
+            function closeEmailModal() {
+                document.getElementById('emailModal').classList.remove('active');
+                document.getElementById('newEmail').value = '';
+                document.getElementById('emailError').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
 
-async function sendEmailOTP() {
-    const newEmail = document.getElementById('newEmail').value.trim();
-    const emailError = document.getElementById('emailError');
+            async function sendEmailOTP() {
+                const newEmail = document.getElementById('newEmail').value.trim();
+                const emailError = document.getElementById('emailError');
 
-    if (!newEmail) {
-        emailError.textContent = 'Please enter a new email';
-        emailError.classList.add('active');
-        return;
-    }
+                if (!newEmail) {
+                    emailError.textContent = 'Please enter a new email';
+                    emailError.classList.add('active');
+                    return;
+                }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(newEmail)) {
-        emailError.textContent = 'Please enter a valid email';
-        emailError.classList.add('active');
-        return;
-    }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(newEmail)) {
+                    emailError.textContent = 'Please enter a valid email';
+                    emailError.classList.add('active');
+                    return;
+                }
 
-    try {
-        const response = await fetch('/tutor/send-email-change-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ newEmail })
-        });
+                try {
+                    const response = await fetch('/tutor/send-email-change-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ newEmail })
+                    });
 
-        const data = await response.json();
+                    const data = await response.json();
 
-        if (response.ok) {
-            showToast('OTP sent to your new email', 'success');
-            closeEmailModal();
-            openOTPModal(newEmail);
-        } else {
-            emailError.textContent = data.message || 'Failed to send OTP';
-            emailError.classList.add('active');
-        }
-    } catch (error) {
-        showToast('Something went wrong', 'error');
-        console.error(error);
-    }
-}
+                    if (response.ok) {
+                        showToast('OTP sent to your new email', 'success');
+                        closeEmailModal();
+                        openOTPModal(newEmail);
+                    } else {
+                        emailError.textContent = data.message || 'Failed to send OTP';
+                        emailError.classList.add('active');
+                    }
+                } catch (error) {
+                    showToast('Something went wrong', 'error');
+                    console.error(error);
+                }
+            }
 
-// OTP Modal Functions
-let currentNewEmail = '';
-let resendTimer = null;
+            // OTP Modal Functions
+            let currentNewEmail = '';
+            let resendTimer = null;
 
-function openOTPModal(newEmail) {
-    currentNewEmail = newEmail;
-    document.getElementById('otpModal').classList.add('active');
-    document.getElementById('otpNewEmail').textContent = newEmail;
-    startResendTimer();
-}
+            function openOTPModal(newEmail) {
+                currentNewEmail = newEmail;
+                document.getElementById('otpModal').classList.add('active');
+                document.getElementById('otpNewEmail').textContent = newEmail;
+                startResendTimer();
+            }
 
-function closeOTPModal() {
-    document.getElementById('otpModal').classList.remove('active');
-    document.getElementById('otpInput').value = '';
-    document.getElementById('otpError').classList.remove('active');
-    currentNewEmail = '';
-    if (resendTimer) clearInterval(resendTimer);
-    document.body.style.overflow = 'auto';
-}
+            function closeOTPModal() {
+                document.getElementById('otpModal').classList.remove('active');
+                document.getElementById('otpInput').value = '';
+                document.getElementById('otpError').classList.remove('active');
+                currentNewEmail = '';
+                if (resendTimer) clearInterval(resendTimer);
+                document.body.style.overflow = 'auto';
+            }
 
-async function verifyEmailOTP() {
-    const otp = document.getElementById('otpInput').value.trim();
-    const otpError = document.getElementById('otpError');
+            async function verifyEmailOTP() {
+                const otp = document.getElementById('otpInput').value.trim();
+                const otpError = document.getElementById('otpError');
 
-    if (!otp || otp.length !== 4) {
-        otpError.textContent = 'Please enter a valid 4-digit OTP';
-        otpError.classList.add('active');
-        return;
-    }
+                if (!otp || otp.length !== 4) {
+                    otpError.textContent = 'Please enter a valid 4-digit OTP';
+                    otpError.classList.add('active');
+                    return;
+                }
 
-    try {
-        const response = await fetch('/tutor/verify-email-change', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ otp, newEmail: currentNewEmail })
-        });
+                try {
+                    const response = await fetch('/tutor/verify-email-change', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ otp, newEmail: currentNewEmail })
+                    });
 
-        const data = await response.json();
+                    const data = await response.json();
 
-        if (response.ok) {
-            showToast('Email changed successfully!', 'success');
-            closeOTPModal();
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            otpError.textContent = data.message || 'Invalid OTP';
-            otpError.classList.add('active');
-        }
-    } catch (error) {
-        showToast('Verification failed', 'error');
-        console.error(error);
-    }
-}
+                    if (response.ok) {
+                        showToast('Email changed successfully!', 'success');
+                        closeOTPModal();
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        otpError.textContent = data.message || 'Invalid OTP';
+                        otpError.classList.add('active');
+                    }
+                } catch (error) {
+                    showToast('Verification failed', 'error');
+                    console.error(error);
+                }
+            }
 
-async function resendEmailOTP() {
-    try {
-        const response = await fetch('/tutor/resend-email-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: currentNewEmail })
-        });
+            async function resendEmailOTP() {
+                try {
+                    const response = await fetch('/tutor/resend-email-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: currentNewEmail })
+                    });
 
-        const data = await response.json();
+                    const data = await response.json();
 
-        if (response.ok) {
-            showToast('OTP resent successfully!', 'success');
-            document.getElementById('otpInput').value = '';
-            document.getElementById('otpError').classList.remove('active');
-            startResendTimer();
-        } else {
-            showToast(data.message || 'Failed to resend OTP', 'error');
-        }
-    } catch (error) {
-        showToast('Failed to resend OTP', 'error');
-        console.error(error);
-    }
-}
+                    if (response.ok) {
+                        showToast('OTP resent successfully!', 'success');
+                        document.getElementById('otpInput').value = '';
+                        document.getElementById('otpError').classList.remove('active');
+                        startResendTimer();
+                    } else {
+                        showToast(data.message || 'Failed to resend OTP', 'error');
+                    }
+                } catch (error) {
+                    showToast('Failed to resend OTP', 'error');
+                    console.error(error);
+                }
+            }
 
-function startResendTimer() {
-    let seconds = 60;
-    const resendBtn = document.getElementById('resendBtn');
-    const resendText = document.getElementById('resendText');
-    
-    resendBtn.disabled = true;
-    resendBtn.style.opacity = '0.5';
-    resendBtn.style.cursor = 'not-allowed';
-    
-    resendTimer = setInterval(() => {
-        seconds--;
-        resendText.textContent = `Resend OTP (${seconds}s)`;
-        
-        if (seconds <= 0) {
-            clearInterval(resendTimer);
-            resendBtn.disabled = false;
-            resendBtn.style.opacity = '1';
-            resendBtn.style.cursor = 'pointer';
-            resendText.textContent = 'Resend OTP';
-        }
-    }, 1000);
-}
+            function startResendTimer() {
+                let seconds = 60;
+                const resendBtn = document.getElementById('resendBtn');
+                const resendText = document.getElementById('resendText');
 
-function showToast(message, type) {
-    const toast = document.createElement('div');
-    toast.style.cssText = `
+                resendBtn.disabled = true;
+                resendBtn.style.opacity = '0.5';
+                resendBtn.style.cursor = 'not-allowed';
+
+                resendTimer = setInterval(() => {
+                    seconds--;
+                    resendText.textContent = `Resend OTP (${seconds}s)`;
+
+                    if (seconds <= 0) {
+                        clearInterval(resendTimer);
+                        resendBtn.disabled = false;
+                        resendBtn.style.opacity = '1';
+                        resendBtn.style.cursor = 'pointer';
+                        resendText.textContent = 'Resend OTP';
+                    }
+                }, 1000);
+            }
+
+            function showToast(message, type) {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -520,176 +849,177 @@ function showToast(message, type) {
         animation: slideIn 0.3s ease;
         ${type === 'success' ? 'background: #10b981; color: white;' : 'background: #ef4444; color: white;'}
     `;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
 
-// Avatar Upload Functions
-let selectedFile = null;
+            // Avatar Upload Functions
+            let selectedFile = null;
 
-function previewAvatar(input) {
-    const file = input.files[0];
-    if (!file) return;
+            function previewAvatar(input) {
+                const file = input.files[0];
+                if (!file) return;
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-        showToast('Please upload a valid image (JPG, PNG, or WEBP)', 'error');
-        input.value = '';
-        return;
-    }
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    showToast('Please upload a valid image (JPG, PNG, or WEBP)', 'error');
+                    input.value = '';
+                    return;
+                }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        showToast('Image size must be less than 5MB', 'error');
-        input.value = '';
-        return;
-    }
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Image size must be less than 5MB', 'error');
+                    input.value = '';
+                    return;
+                }
 
-    selectedFile = file;
+                selectedFile = file;
 
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const avatarDisplay = document.getElementById('avatarDisplay');
-        avatarDisplay.innerHTML = `<img src="${e.target.result}" alt="Preview" id="avatarImage" style="width: 100%; height: 100%; object-fit: cover;">`;
-    };
-    reader.readAsDataURL(file);
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const avatarDisplay = document.getElementById('avatarDisplay');
+                    avatarDisplay.innerHTML = `<img src="${e.target.result}" alt="Preview" id="avatarImage" style="width: 100%; height: 100%; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
 
-    // Show upload/cancel buttons, hide change photo button
-    document.getElementById('selectPhotoBtn').style.display = 'none';
-    document.getElementById('uploadButtons').style.display = 'flex';
-}
+                // Show upload/cancel buttons, hide change photo button
+                document.getElementById('selectPhotoBtn').style.display = 'none';
+                document.getElementById('uploadButtons').style.display = 'flex';
+            }
 
-async function uploadAvatar() {
-    if (!selectedFile) {
-        showToast('Please select an image first', 'error');
-        return;
-    }
+            async function uploadAvatar() {
+                if (!selectedFile) {
+                    showToast('Please select an image first', 'error');
+                    return;
+                }
 
-    const formData = new FormData();
-    formData.append('avatar', selectedFile);
+                const formData = new FormData();
+                formData.append('avatar', selectedFile);
 
-    // Show loading state
-    const uploadButtons = document.getElementById('uploadButtons');
-    uploadButtons.innerHTML = '<div style="text-align: center; color: #00d9b1; font-size: 0.85rem;">Uploading...</div>';
+                // Show loading state
+                const uploadButtons = document.getElementById('uploadButtons');
+                uploadButtons.innerHTML = '<div style="text-align: center; color: #00d9b1; font-size: 0.85rem;">Uploading...</div>';
 
-    try {
-        const response = await fetch('/tutor/upload-avatar', {
-            method: 'POST',
-            body: formData
-        });
+                try {
+                    const response = await fetch('/tutor/upload-avatar', {
+                        method: 'POST',
+                        body: formData
+                    });
 
-        const data = await response.json();
+                    const data = await response.json();
 
-        if (response.ok) {
-            showToast('Profile photo updated successfully!', 'success');
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showToast(data.message || 'Failed to upload photo', 'error');
-            cancelUpload();
-        }
-    } catch (error) {
-        showToast('Something went wrong', 'error');
-        console.error(error);
-        cancelUpload();
-    }
-}
+                    if (response.ok) {
+                        showToast('Profile photo updated successfully!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast(data.message || 'Failed to upload photo', 'error');
+                        cancelUpload();
+                    }
+                } catch (error) {
+                    showToast('Something went wrong', 'error');
+                    console.error(error);
+                    cancelUpload();
+                }
+            }
 
-function cancelUpload() {
-    selectedFile = null;
-    document.getElementById('avatarInput').value = '';
-    
-    // Restore original avatar
-    const avatarDisplay = document.getElementById('avatarDisplay');
-    const hasAvatar = <%- tutor.avatar ? 'true' : 'false' %>;
-    const avatarUrl = '<%- tutor.avatar || "" %>';
-    const tutorName = '<%- tutor.fullName || "" %>';
-    const tutorInitial = '<%- tutor.fullName.charAt(0).toUpperCase() %>';
-    
-    if (hasAvatar) {
-        avatarDisplay.innerHTML = '<img src="' + avatarUrl + '" alt="' + tutorName + '" id="avatarImage" style="width: 100%; height: 100%; object-fit: cover;">';
-    } else {
-        avatarDisplay.innerHTML = '<span id="avatarInitial">' + tutorInitial + '</span>';
-    }
-    
-    // Show change photo button, hide upload/cancel buttons
-    document.getElementById('selectPhotoBtn').style.display = 'flex';
-    document.getElementById('uploadButtons').style.display = 'none';
-}
+            function cancelUpload() {
+                selectedFile = null;
+                document.getElementById('avatarInput').value = '';
 
-// Password Change Modal Functions
-function openPasswordModal() {
-    document.getElementById('passwordModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
+                // Restore original avatar
+                const avatarDisplay = document.getElementById('avatarDisplay');
+                const hasAvatar = <%- tutor.avatar ? 'true' : 'false' %>;
+                const avatarUrl = '<%- tutor.avatar || "" %>';
+                const tutorName = '<%- tutor.fullName || "" %>';
+                const tutorInitial = '<%- tutor.fullName.charAt(0).toUpperCase() %>';
 
-function closePasswordModal() {
-    document.getElementById('passwordModal').classList.remove('active');
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmPassword').value = '';
-    document.getElementById('passwordError').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
+                if (hasAvatar) {
+                    avatarDisplay.innerHTML = '<img src="' + avatarUrl + '" alt="' + tutorName + '" id="avatarImage" style="width: 100%; height: 100%; object-fit: cover;">';
+                } else {
+                    avatarDisplay.innerHTML = '<span id="avatarInitial">' + tutorInitial + '</span>';
+                }
 
-async function changePassword() {
-    const currentPassword = document.getElementById('currentPassword').value.trim();
-    const newPassword = document.getElementById('newPassword').value.trim();
-    const confirmPassword = document.getElementById('confirmPassword').value.trim();
-    const passwordError = document.getElementById('passwordError');
+                // Show change photo button, hide upload/cancel buttons
+                document.getElementById('selectPhotoBtn').style.display = 'flex';
+                document.getElementById('uploadButtons').style.display = 'none';
+            }
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        passwordError.textContent = 'All fields are required';
-        passwordError.classList.add('active');
-        return;
-    }
+            // Password Change Modal Functions
+            function openPasswordModal() {
+                document.getElementById('passwordModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
 
-    if (newPassword !== confirmPassword) {
-        passwordError.textContent = 'New passwords do not match';
-        passwordError.classList.add('active');
-        return;
-    }
+            function closePasswordModal() {
+                document.getElementById('passwordModal').classList.remove('active');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                document.getElementById('passwordError').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
 
-    if (newPassword.length < 8) {
-        passwordError.textContent = 'Password must be at least 8 characters';
-        passwordError.classList.add('active');
-        return;
-    }
+            async function changePassword() {
+                const currentPassword = document.getElementById('currentPassword').value.trim();
+                const newPassword = document.getElementById('newPassword').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value.trim();
+                const passwordError = document.getElementById('passwordError');
 
-    const hasUpperCase = /[A-Z]/.test(newPassword);
-    const hasLowerCase = /[a-z]/.test(newPassword);
-    const hasNumbers = /\d/.test(newPassword);
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    passwordError.textContent = 'All fields are required';
+                    passwordError.classList.add('active');
+                    return;
+                }
 
-    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
-        passwordError.textContent = 'Password must contain uppercase, lowercase, and number';
-        passwordError.classList.add('active');
-        return;
-    }
+                if (newPassword !== confirmPassword) {
+                    passwordError.textContent = 'New passwords do not match';
+                    passwordError.classList.add('active');
+                    return;
+                }
 
-    try {
-        const response = await fetch('/tutor/change-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ currentPassword, newPassword })
-        });
+                if (newPassword.length < 8) {
+                    passwordError.textContent = 'Password must be at least 8 characters';
+                    passwordError.classList.add('active');
+                    return;
+                }
 
-        const data = await response.json();
+                const hasUpperCase = /[A-Z]/.test(newPassword);
+                const hasLowerCase = /[a-z]/.test(newPassword);
+                const hasNumbers = /\d/.test(newPassword);
 
-        if (response.ok) {
-            showToast('Password changed successfully!', 'success');
-            closePasswordModal();
-        } else {
-            passwordError.textContent = data.message || 'Failed to change password';
-            passwordError.classList.add('active');
-        }
-    } catch (error) {
-        showToast('Something went wrong', 'error');
-        console.error(error);
-    }
-}
-</script>
+                if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+                    passwordError.textContent = 'Password must contain uppercase, lowercase, and number';
+                    passwordError.classList.add('active');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/tutor/change-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ currentPassword, newPassword })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        showToast('Password changed successfully!', 'success');
+                        closePasswordModal();
+                    } else {
+                        passwordError.textContent = data.message || 'Failed to change password';
+                        passwordError.classList.add('active');
+                    }
+                } catch (error) {
+                    showToast('Something went wrong', 'error');
+                    console.error(error);
+                }
+            }
+        </script>
 
 </body>
+
 </html>

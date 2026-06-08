@@ -282,7 +282,7 @@ export const getPaymentSuccess = async (req, res) => {
 
 export const getPaymentFailure = async (req, res) => {
   try {
-    const { orderId, error } = req.query;
+    const { orderId, error,courseIds } = req.query;
     const userId = req.session.userId;
 
     if (!userId) {
@@ -290,10 +290,16 @@ export const getPaymentFailure = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-
-    const cart = await cartService.getCart(userId);
-    const courses = cart.items.map(item => item.course).filter(c => c);
-
+      
+     let courses = [];
+    if (courseIds) {
+      const ids = courseIds.split(',');
+      courses = await Course.find({ _id: { $in: ids } });
+    } else {
+      const cart = await cartService.getCart(userId);
+      courses = cart.items.map(item => item.course).filter(c => c);
+    }
+  
     res.render('user/payment-failure', {
       user: user,
       currentPage: 'payment',
@@ -305,7 +311,8 @@ export const getPaymentFailure = async (req, res) => {
 
   } catch (error) {
     console.error('Payment failure page error:', error);
-    res.redirect('/user/payment-payment-failure');
+    res.redirect('/user/payment/failure');
+
   }
 };
 

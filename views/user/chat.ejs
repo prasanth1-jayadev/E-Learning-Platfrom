@@ -262,7 +262,7 @@
                         : '';
 
                     const displayName = conv.tutorId?.fullName || 'Tutor';
-                    const avatarSrc = conv.tutorId?.avatar || '/images/default-avatar.png';
+                    const avatarSrc = conv.tutorId?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.tutorId?.fullName || 'T')}&background=00d9b1&color=fff&bold=true`;
 
                     div.innerHTML = `
                     <div class="flex items-start gap-3">
@@ -289,7 +289,7 @@
                 currentConversationId = conversationId;
 
                 const displayName = conv.tutorId?.fullName || 'Tutor';
-                const avatarSrc = conv.tutorId?.avatar || '/images/default-avatar.png';
+                const avatarSrc = conv.tutorId?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.tutorId?.fullName || 'T')}&background=00d9b1&color=fff&bold=true`;
 
                 // Update header
                 document.getElementById('chat-avatar').src = avatarSrc;

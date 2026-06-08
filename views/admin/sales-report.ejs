@@ -10,12 +10,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         primary: '#00d9b1',
                         'background-light': '#F9FAFB',
-                        'surface-light': '#FFFFFF'
+                        'background-dark': '#111827',
+                        'surface-light': '#FFFFFF',
+                        'surface-dark': '#1F2937'
                     }
                 }
             }
@@ -28,7 +31,7 @@
     </style>
 </head>
 
-<body class="bg-background-light">
+<body class="bg-background-light dark:bg-background-dark">
 
     <%- include('../partials/admin-sidebar', { currentPage: 'sales-report' , pendingCount: pendingCount }) %>
 

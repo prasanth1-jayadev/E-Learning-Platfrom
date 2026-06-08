@@ -9,8 +9,8 @@ const getCategories = async (req, res) => {
         
         
         const Tutor = (await import('../../models/Tutor.js')).default;
-        const pendingCount = await Tutor.countDocuments({ approvalStatus: 'pending' });
-       
+        const pendingCount = await Tutor.countDocuments({approvedStatus:'pending', isVerified:true})
+        
         
         res.render('admin/categories', { 
             categories, 

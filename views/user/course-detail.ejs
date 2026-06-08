@@ -94,11 +94,11 @@
                                                         <p class="text-xs text-gray-600 mt-1">
                                                             <%= lesson.description || 'Watch this free preview lesson'
                                                                 %>
-                                                         </p>
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <span class="text-xs text-gray-600 font-semibold">
-                                                   <%= Math.round((lesson.duration || 0) / 60) %> min
+                                                    <%= Math.round((lesson.duration || 0) / 60) %> min
                                                 </span>
                                             </div>
                                         </div>
@@ -951,7 +951,8 @@
                     const razorpay = new Razorpay(options);
                     razorpay.on('payment.failed', function (response) {
                         // Redirect to failure page on payment failure
-                        window.location.href = `/user/payment/failure?orderId=${response.error.metadata.order_id}&error=${encodeURIComponent(response.error.description)}&courseIds=${courseId}`;
+                        window.location.href = `/user/payment/failure?orderId=${response.error.metadata.order_id}&error=...&courseIds=${courseId}`;
+
                     });
                     razorpay.open();
 
