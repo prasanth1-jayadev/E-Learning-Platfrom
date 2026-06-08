@@ -1,5 +1,6 @@
 import * as userService from '../../service/userService.js';
 import User from '../../models/User.js';
+import { uploadToCloudinary } from '../../config/cloudinary.js';
 
 const getProfile = async (req, res) => {
   try {
@@ -19,6 +20,20 @@ const getProfile = async (req, res) => {
 const postUpdateProfile = async (req, res) => {
   try {
     const { fullName, phone } = req.body;
+
+    if (!fullName) {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+
+    const nameRegex = /^(?=.{2,50}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!nameRegex.test(fullName.trim())) {
+      return res.status(400).json({ message: 'Please enter a valid name' });
+    }
+
+    if (phone && !phoneRegex.test(phone.trim())) {
+      return res.status(400).json({ message: 'Please enter a valid 10-digit phone number' });
+    }
 
     const user = await User.findById(req.session.userId);
     if (!user) {
@@ -48,16 +63,11 @@ const postUploadAvatar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    let rawPath = req.file.path || req.file.url || '';
-    let avatarPath = rawPath.replace(/\\/g, '/');
-    if (!avatarPath.startsWith('/') && !avatarPath.startsWith('http')) {
-      avatarPath = '/' + avatarPath;
-    }
-    
-    user.avatar = avatarPath;
+    const result = await uploadToCloudinary(req.file.buffer, 'avatars', 'image');
+    user.avatar = result.secure_url;
     await user.save();
 
-    res.json({ success: true, message: 'Profile photo updated successfully', avatar: avatarPath });
+    res.json({ success: true, message: 'Profile photo updated successfully', avatar: result.secure_url });
   } catch (error) {
     console.error('Upload avatar error:', error);
     res.status(400).json({ message: error.message });
@@ -122,7 +132,7 @@ const postResendEmailOTP = async (req, res) => {
 const getMyCourses = async (req, res) => {
   try {
     const userId = req.session.userId;
-    
+
     if (!userId) {
       return res.redirect('/user/login');
     }

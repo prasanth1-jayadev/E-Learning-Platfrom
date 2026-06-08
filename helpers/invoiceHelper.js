@@ -44,17 +44,23 @@ export const generateInvoice = (payments, user, courses) => {
       doc.fontSize(10).font('Helvetica-Bold')
          .text('Course', 50, 250)
          .text('Tutor', 280, 250)
-         .text('Price', 450, 250);
+         .text('Price (Excl. Tax)', 450, 250);
 
       doc.moveTo(50, 265).lineTo(550, 265).stroke();
 
       let yPosition = 280;
-      let total = 0;
+      let subtotal = 0;
+      let taxTotal = 0;
+      let grandTotal = 0;
       doc.font('Helvetica');
 
       paymentList.forEach(pay => {
         const course = pay.course;
         if (!course) return;
+
+        const totalPaid = pay.amount;
+        const basePrice = totalPaid / 1.18; // 18% inclusive tax base price
+        const taxAmount = totalPaid - basePrice; // 18% inclusive tax amount
 
         // Course title
         doc.text(course.title, 50, yPosition, { width: 210 });
@@ -62,20 +68,35 @@ export const generateInvoice = (payments, user, courses) => {
         const tutorName = course.tutor?.fullName || 'N/A';
         doc.text(tutorName, 280, yPosition, { width: 150 });
         
-        doc.text(`₹${pay.amount.toLocaleString('en-IN')}`, 450, yPosition);
+        // Print base price
+        doc.text(`₹${basePrice.toFixed(2)}`, 450, yPosition);
         
-        total += pay.amount;
+        subtotal += basePrice;
+        taxTotal += taxAmount;
+        grandTotal += totalPaid;
         yPosition += 25;
       });
 
       doc.moveTo(50, yPosition + 10).lineTo(550, yPosition + 10).stroke();
 
-      doc.fontSize(12).font('Helvetica-Bold')
-         .text('Total Amount:', 350, yPosition + 30)
-         .text(`₹${total.toLocaleString('en-IN')}`, 450, yPosition + 30);
+      // Subtotal display
+      doc.fontSize(10).font('Helvetica-Bold')
+         .text('Subtotal:', 350, yPosition + 25)
+         .text(`₹${subtotal.toFixed(2)}`, 450, yPosition + 25);
 
+      // 18% GST display
+      doc.fontSize(10).font('Helvetica-Bold')
+         .text('GST (18%):', 350, yPosition + 40)
+         .text(`₹${taxTotal.toFixed(2)}`, 450, yPosition + 40);
+
+      // Grand Total display
+      doc.fontSize(12).font('Helvetica-Bold')
+         .text('Total Amount:', 350, yPosition + 60)
+         .text(`₹${grandTotal.toFixed(2)}`, 450, yPosition + 60);
+
+      // PAID status tag
       doc.fontSize(10).font('Helvetica')
-         .fillColor('green').text('PAID', 450, yPosition + 50)
+         .fillColor('green').text('PAID', 450, yPosition + 80)
          .fillColor('black');
 
       doc.fontSize(8)

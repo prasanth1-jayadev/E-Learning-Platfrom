@@ -95,6 +95,7 @@ router.get('/chat', isUser, (req, res) => res.redirect('/chat/user'));
 // Course Routes
 router.get('/courses', courseController.getCourses);
 router.get('/course/:id', courseController.getCourseDetail);
+router.post('/course/:id/review', isUser, courseController.addReview);
 
 // Tutor Routes
 router.get('/tutors', tutorController.getTutors);

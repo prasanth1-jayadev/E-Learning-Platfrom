@@ -1,6 +1,6 @@
 import pkg from 'cloudinary';
-import  CloudinaryStorage  from 'multer-storage-cloudinary';
 import multer from 'multer';
+import { Readable } from 'stream';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,14 +13,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: { v2: cloudinary },
-  params: {
-    folder: 'test',
-    resource_type: 'auto'
-  }
-});
+// Use memory storage — files are kept in memory as Buffer
+const memoryStorage = multer.memoryStorage();
+const upload = multer({ storage: memoryStorage });
 
-const upload = multer({ storage });
+// Helper: upload a Buffer to Cloudinary
+const uploadToCloudinary = (buffer, folder = 'uploads', resourceType = 'auto') => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: resourceType },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    const readable = new Readable();
+    readable.push(buffer);
+    readable.push(null);
+    readable.pipe(uploadStream);
+  });
+};
 
-export { upload, cloudinary };
+export { upload, cloudinary, uploadToCloudinary };

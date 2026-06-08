@@ -161,8 +161,9 @@
     
     <div class="form-group">
       <label>Lesson Title <span>*</span></label>
-      <input type="text" name="title" id="lessonTitle" placeholder="Enter lesson title" required minlength="3" maxlength="100"/>
+      <input type="text" name="title" id="lessonTitle" placeholder="Enter lesson title" maxlength="100"/>
       <small>3-100 characters</small>
+      <span id="titleError" style="display:none; color:#ef4444; font-size:0.8rem; margin-top:0.25rem;"></span>
     </div>
 
     <div class="form-group">
@@ -173,8 +174,8 @@
 
     <div class="form-group">
       <label>Lesson Duration</label>
-      <input type="text" name="duration" id="lessonDuration" placeholder="e.g., 15-30 minutes or 1-2 hours" />
-      <small>Estimated time to complete this lesson</small>
+      <input type="number" name="duration" id="lessonDuration" placeholder="Duration in minutes" min="1" />
+      <small>Duration in minutes (e.g. 15)</small>
     </div>
 
     <div class="form-group">
@@ -189,6 +190,7 @@
         <p>Drag and drop or click to upload</p>
         <input type="file" name="video" id="videoInput" accept="video/*" />
       </div>
+      <span id="videoError" style="display:none; color:#ef4444; font-size:0.8rem; margin-top:0.25rem;"></span>
       <div class="file-preview" id="videoPreview">
         <div class="icon">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -327,20 +329,62 @@
     videoPreview.classList.add('active');
   }
 
+  // --- Inline error helpers ---
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = msg; el.style.display = 'block'; }
+  }
+  function clearError(id) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.style.display = 'none'; }
+  }
+  function setFieldError(inputId, errorId, msg) {
+    const input = document.getElementById(inputId);
+    if (input) input.style.border = msg ? '1.5px solid #ef4444' : '1px solid #e5e7eb';
+    msg ? showError(errorId, msg) : clearError(errorId);
+  }
+
+  // Clear error on input
+  document.getElementById('lessonTitle').addEventListener('input', () => setFieldError('lessonTitle', 'titleError', ''));
+  document.getElementById('videoInput').addEventListener('change', () => setFieldError('videoInput', 'videoError', ''));
+
   document.getElementById('addLessonForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // --- JS Validation ---
+    let hasError = false;
+
+    const title = document.getElementById('lessonTitle').value.trim();
+    if (!title) {
+      setFieldError('lessonTitle', 'titleError', 'Lesson title is required.');
+      hasError = true;
+    } else if (title.length < 3) {
+      setFieldError('lessonTitle', 'titleError', 'Title must be at least 3 characters.');
+      hasError = true;
+    } else if (title.length > 100) {
+      setFieldError('lessonTitle', 'titleError', 'Title must not exceed 100 characters.');
+      hasError = true;
+    } else {
+      setFieldError('lessonTitle', 'titleError', '');
+    }
+
+    if (videoInput.files.length === 0) {
+      setFieldError('videoInput', 'videoError', 'Please upload a video for this lesson.');
+      hasError = true;
+    } else {
+      setFieldError('videoInput', 'videoError', '');
+    }
+
+    if (hasError) return;
 
     // Show loading overlay
     loadingOverlay.classList.add('active');
 
     const formData = new FormData();
-    formData.append('title', document.getElementById('lessonTitle').value);
+    formData.append('title', title);
     formData.append('description', document.getElementById('lessonDescription').value);
     formData.append('duration', document.getElementById('lessonDuration').value);
-    
-    if (videoInput.files.length > 0) {
-      formData.append('video', videoInput.files[0]);
-    }
+    formData.append('video', videoInput.files[0]);
 
     try {
       const response = await fetch(window.location.pathname, {
@@ -349,8 +393,6 @@
       });
 
       const data = await response.json();
-
-      // Hide loading overlay
       loadingOverlay.classList.remove('active');
 
       if (response.ok) {
@@ -359,9 +401,7 @@
           title: 'Success!',
           text: data.message || 'Lesson added successfully',
           confirmButtonColor: '#00d9b1'
-        }).then(() => {
-          window.location.reload();
-        });
+        }).then(() => { window.location.reload(); });
       } else {
         Swal.fire({
           icon: 'error',

@@ -68,10 +68,12 @@
 
           <!-- Upload/Cancel Buttons (hidden by default) -->
           <div id="uploadButtons" style="display: none; margin-top: 1rem; gap: 0.5rem; justify-content: center;">
-            <button type="button" onclick="uploadAvatar()" style="background: #00d9b1; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+            <button type="button" onclick="uploadAvatar()"
+              style="background: #00d9b1; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
               Upload
             </button>
-            <button type="button" onclick="cancelUpload()" style="background: #f3f4f6; color: #666; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+            <button type="button" onclick="cancelUpload()"
+              style="background: #f3f4f6; color: #666; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
               Cancel
             </button>
           </div>
@@ -287,10 +289,22 @@
         const fullName = document.getElementById('fullName').value.trim();
         const phone = document.getElementById('phone').value.trim();
 
-        if (!fullName) {
-          showToast('Name is required', 'error');
+
+
+        const nameRegex = /^(?=.{2,50}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/;
+        const phoneRegex = /^[0-9]{10}$/;
+
+        if (!nameRegex.test(fullName)) {
+          showToast('Please enter a valid name  ', 'error');
           return;
         }
+
+        if (phone && !phoneRegex.test(phone)) {
+          showToast('Please enter a valid 10-digit phone number', 'error');
+          return;
+        }
+
+
 
         try {
           const response = await fetch('/user/update-profile', {

@@ -4,9 +4,7 @@ import Tutor from '../../models/Tutor.js';
 import Course from '../../models/Course.js';
 import Payment from '../../models/Payment.js';
 import { sendNotification } from '../../service/notificationService.js';
-
-
-
+import { uploadToCloudinary } from '../../config/cloudinary.js';
 
 const getSignup = (req, res) => res.render('tutor/signup');
 const getLogin = (req, res) => res.render('tutor/login');
@@ -298,16 +296,11 @@ const postUploadAvatar = async (req, res) => {
             return res.status(404).json({ message: 'Tutor not found' });
         }
 
-        let rawPath = req.file.path || req.file.url || '';
-        let avatarPath = rawPath.replace(/\\/g, '/');
-        if (!avatarPath.startsWith('/') && !avatarPath.startsWith('http')) {
-            avatarPath = '/' + avatarPath;
-        }
-
-        tutor.avatar = avatarPath;
+        const result = await uploadToCloudinary(req.file.buffer, 'avatars', 'image');
+        tutor.avatar = result.secure_url;
         await tutor.save();
 
-        res.json({ success: true, message: 'Profile photo updated successfully', avatar: avatarPath });
+        res.json({ success: true, message: 'Profile photo updated successfully', avatar: result.secure_url });
     } catch (error) {
         console.error('Upload avatar error:', error);
         res.status(400).json({ message: error.message });
@@ -555,20 +548,22 @@ const addLesson = async (req, res) => {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
+        let videoUrl = '';
+        let videoDuration = duration || 0;
 
-       let videoDuration = duration || 0;
-        if (req.file && req.file.duration) {
-            videoDuration = Math.round(req.file.duration); // Cloudinary returns duration
+        if (req.file) {
+            const result = await uploadToCloudinary(req.file.buffer, 'course-videos', 'video');
+            videoUrl = result.secure_url;
+            if (result.duration) {
+                videoDuration = Math.round(result.duration);
+            }
         }
-
-
-
 
         const newLesson = {
             title,
             description,
             duration: videoDuration,
-            videoUrl: req.file ? (req.file.path || req.file.url || req.file.secure_url || '') : '',
+            videoUrl,
             order: course.lessons.length + 1
         };
         
@@ -640,16 +635,15 @@ const updateLesson = async (req, res) => {
 
         lesson.title = title;
         lesson.description = description;
-        
 
         if (req.file) {
-            lesson.videoUrl = req.file.path || req.file.url || req.file.secure_url;
-            if(req.file.duration){
-                lesson.duration =Math.round(req.file.duration);
-
+            const result = await uploadToCloudinary(req.file.buffer, 'course-videos', 'video');
+            lesson.videoUrl = result.secure_url;
+            if (result.duration) {
+                lesson.duration = Math.round(result.duration);
             }
-        }else{
-            lesson.duration = duration
+        } else {
+            lesson.duration = duration;
         }
 
         await course.save();

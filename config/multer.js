@@ -1,13 +1,8 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { createRequire } from 'module';
-import { cloudinary } from './cloudinary.js';
 
-const require = createRequire(import.meta.url);
-const CloudinaryStorage = require('multer-storage-cloudinary');
-
-// For certificates (local storage)
+// For certificates (local disk storage)
 const certificateStorage = multer.diskStorage({
   destination: function(req, file, cb) {
     const dir = 'uploads/certificates';
@@ -22,17 +17,10 @@ const certificateStorage = multer.diskStorage({
   }
 });
 
-// For videos (Cloudinary storage)
-const videoStorage = new CloudinaryStorage({
-  cloudinary: { v2: cloudinary },
-  params: {
-    folder: 'course-videos',
-    resource_type: 'video',
-    allowed_formats: ['mp4', 'mov', 'avi', 'mkv', 'webm'],
-  }
-});
+// For videos — use memory storage, then upload to Cloudinary via upload_stream in controller
+const memoryStorage = multer.memoryStorage();
 
 const uploadCertificate = multer({ storage: certificateStorage });
-const uploadVideo = multer({ storage: videoStorage });
+const uploadVideo = multer({ storage: memoryStorage });
 
 export { uploadCertificate, uploadVideo };

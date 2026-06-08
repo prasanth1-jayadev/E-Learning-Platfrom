@@ -94,11 +94,11 @@
                                                         <p class="text-xs text-gray-600 mt-1">
                                                             <%= lesson.description || 'Watch this free preview lesson'
                                                                 %>
-                                                        </p>
+                                                         </p>
                                                     </div>
                                                 </div>
                                                 <span class="text-xs text-gray-600 font-semibold">
-                                                    <%= lesson.duration || 0 %> min
+                                                   <%= Math.round((lesson.duration || 0) / 60) %> min
                                                 </span>
                                             </div>
                                         </div>
@@ -122,7 +122,7 @@
                                                         </div>
                                                     </div>
                                                     <span class="text-xs text-gray-500">
-                                                        <%= lesson.duration || 0 %> min
+                                                        <%= Math.round((lesson.duration || 0) / 60) %> min
                                                     </span>
                                                 </div>
                                             </div>
@@ -147,7 +147,7 @@
                                                             </div>
                                                         </div>
                                                         <span class="text-xs text-gray-500">
-                                                            <%= lesson.duration || 0 %> min
+                                                            <%= Math.round((lesson.duration || 0) / 60) %> min
                                                         </span>
                                                     </div>
                                                 </div>
@@ -169,9 +169,37 @@
                             <%= course.category %>
                         </span>
 
+
+
                         <h1 class="text-3xl font-bold text-gray-900 mb-3">
                             <%= course.title %>
                         </h1>
+
+                        <!-- Rating Stars -->
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex items-center text-amber-400">
+                                <% const fullStars=Math.floor(course.rating || 0); %>
+                                    <% const hasHalf=(course.rating || 0) % 1>= 0.5; %>
+                                        <% for(let i=1; i <=5; i++) { %>
+                                            <% if (i <=fullStars) { %>
+                                                <i class="fas fa-star"></i>
+                                                <% } else if (i===fullStars + 1 && hasHalf) { %>
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                    <% } else { %>
+                                                        <i class="far fa-star text-gray-300"></i>
+                                                        <% } %>
+                                                            <% } %>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700">
+                                <%= course.rating ? course.rating.toFixed(1) : '0.0' %>
+                            </span>
+                            <span class="text-xs text-gray-500">
+                                (<%= course.reviewCount || 0 %> reviews)
+                            </span>
+                        </div>
+
+
+
 
                         <p class="text-gray-600 mb-4">
                             <%= course.description %>
@@ -305,6 +333,155 @@
                                             </p>
                                         </div>
                         </div>
+                    </div>
+
+                    <!-- Reviews & Ratings Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 space-y-6">
+                        <div class="flex items-center justify-between border-b pb-4">
+                            <h2 class="text-xl font-bold text-gray-900">Student Reviews</h2>
+                            <div class="flex items-center gap-2">
+                                <span class="text-3xl font-extrabold text-teal-600">
+                                    <%= course.rating ? course.rating.toFixed(1) : '0.0' %>
+                                </span>
+                                <div class="text-sm">
+                                    <div class="flex text-amber-400">
+                                        <% for(let i=1; i <=5; i++) { %>
+                                            <% if (i <=Math.round(course.rating || 0)) { %>
+                                                <i class="fas fa-star"></i>
+                                                <% } else { %>
+                                                    <i class="far fa-star text-gray-300"></i>
+                                                    <% } %>
+                                                        <% } %>
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-0.5">
+                                        <%= course.reviewCount || 0 %> course ratings
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Write Review Form (Only visible to users who paid & haven't reviewed yet) -->
+                        <% if (isPurchased) { %>
+                            <% if (!hasReviewed) { %>
+                                <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                                    <h3 class="font-bold text-gray-800 mb-3 text-base">Rate & Review this Course</h3>
+                                    <form id="reviewForm" class="space-y-4">
+                                        <!-- Star Selector -->
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1">Your
+                                                Rating</label>
+                                            <div class="flex gap-2 text-2xl text-gray-300 cursor-pointer"
+                                                id="starSelector">
+                                                <i class="far fa-star hover:text-amber-400 star-btn" data-value="1"></i>
+                                                <i class="far fa-star hover:text-amber-400 star-btn" data-value="2"></i>
+                                                <i class="far fa-star hover:text-amber-400 star-btn" data-value="3"></i>
+                                                <i class="far fa-star hover:text-amber-400 star-btn" data-value="4"></i>
+                                                <i class="far fa-star hover:text-amber-400 star-btn" data-value="5"></i>
+                                            </div>
+                                            <input type="hidden" name="rating" id="ratingInput" value="0">
+                                        </div>
+
+                                        <!-- Review Comment -->
+                                        <div>
+                                            <label for="comment"
+                                                class="block text-sm font-semibold text-gray-700 mb-1">Your
+                                                Review</label>
+                                            <textarea id="comment" name="comment" rows="3" required
+                                                placeholder="Write your review here..."
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"></textarea>
+                                        </div>
+
+                                        <button type="submit"
+                                            class="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-5 py-2.5 rounded-lg transition text-sm shadow">
+                                            Submit Review
+                                        </button>
+                                    </form>
+                                </div>
+                                <% } else { %>
+                                    <div class="bg-teal-50 border border-teal-100 rounded-lg p-4 text-center">
+                                        <i class="fas fa-check-circle text-teal-600 text-xl mb-2"></i>
+                                        <h4 class="font-semibold text-teal-800 text-sm">Thank you for reviewing!</h4>
+                                        <p class="text-teal-700 text-xs mt-1">You have already submitted a rating for
+                                            this course.</p>
+                                    </div>
+                                    <% } %>
+                                        <% } else { %>
+                                            <div
+                                                class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center text-sm text-gray-500">
+                                                <i class="fas fa-lock text-gray-400 mb-1 text-lg"></i>
+                                                <p>You must purchase and enroll in this course to leave a review.</p>
+                                            </div>
+                                            <% } %>
+
+                                                <!-- Review List -->
+                                                <div class="space-y-4 pt-2">
+                                                    <% if (reviews && reviews.length> 0) { %>
+                                                        <% reviews.forEach(review=> { %>
+                                                            <div
+                                                                class="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
+                                                                <div class="flex items-start gap-3">
+                                                                    <!-- User Avatar -->
+                                                                    <% if (review.user.avatar) { %>
+                                                                        <img src="<%= review.user.avatar %>"
+                                                                            alt="<%= review.user.fullName %>"
+                                                                            class="w-10 h-10 rounded-full object-cover">
+                                                                        <% } else { %>
+                                                                            <div
+                                                                                class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center font-bold text-teal-700 text-sm">
+                                                                                <%= review.user.fullName.charAt(0).toUpperCase()
+                                                                                    %>
+                                                                            </div>
+                                                                            <% } %>
+
+                                                                                <div class="flex-1 min-w-0">
+                                                                                    <div
+                                                                                        class="flex items-center justify-between gap-2">
+                                                                                        <h4
+                                                                                            class="font-bold text-gray-900 text-sm">
+                                                                                            <%= review.user.fullName %>
+                                                                                        </h4>
+                                                                                        <span
+                                                                                            class="text-xs text-gray-400">
+                                                                                            <%= new
+                                                                                                Date(review.createdAt).toLocaleDateString('en-US',
+                                                                                                { month: 'short' ,
+                                                                                                day: 'numeric' ,
+                                                                                                year: 'numeric' }) %>
+                                                                                        </span>
+                                                                                    </div>
+
+                                                                                    <!-- Review Stars -->
+                                                                                    <div
+                                                                                        class="flex text-amber-400 text-xs my-1">
+                                                                                        <% for(let i=1; i <=5; i++) { %>
+                                                                                            <% if (i <=review.rating) {
+                                                                                                %>
+                                                                                                <i
+                                                                                                    class="fas fa-star"></i>
+                                                                                                <% } else { %>
+                                                                                                    <i
+                                                                                                        class="far fa-star text-gray-300"></i>
+                                                                                                    <% } %>
+                                                                                                        <% } %>
+                                                                                    </div>
+
+                                                                                    <p
+                                                                                        class="text-gray-700 text-sm mt-1 leading-relaxed">
+                                                                                        <%= review.comment %>
+                                                                                    </p>
+                                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            <% }); %>
+                                                                <% } else { %>
+                                                                    <div class="text-center py-6 text-gray-400 text-sm">
+                                                                        <i
+                                                                            class="far fa-comment-dots text-3xl mb-2 text-gray-300"></i>
+                                                                        <p>No reviews yet. Be the first to share your
+                                                                            thoughts!</p>
+                                                                    </div>
+                                                                    <% } %>
+                                                </div>
                     </div>
                 </div>
 
@@ -464,11 +641,11 @@
         </div>
 
 
-        
 
 
 
-        
+
+
 
 
         <!-- your entire page code -->
@@ -830,26 +1007,126 @@
                 }
             }
 
-async function startChat(courseId, tutorId) {
-    try {
-        const res = await fetch('/chat/conversation/individual', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ courseId, tutorId })
-        });
-        const data = await res.json();
-        if (data.success) {
-            window.location.href = '/user/chat';
-        } else {
-            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
-        }
-    } catch (err) {
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to start chat' });
-    }
-}
+            async function startChat(courseId, tutorId) {
+                try {
+                    const res = await fetch('/chat/conversation/individual', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ courseId, tutorId })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        window.location.href = '/user/chat';
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to start chat' });
+                }
+            }
 
+            // --- Interactive Star Selector & Submit Logic ---
+            document.addEventListener('DOMContentLoaded', () => {
+                const starSelector = document.getElementById('starSelector');
+                const ratingInput = document.getElementById('ratingInput');
+                const reviewForm = document.getElementById('reviewForm');
 
+                if (starSelector && ratingInput) {
+                    const stars = starSelector.querySelectorAll('.star-btn');
 
+                    stars.forEach(star => {
+                        // Highlight stars on mouse over
+                        star.addEventListener('mouseover', function () {
+                            const hoverVal = parseInt(this.getAttribute('data-value'));
+                            highlightStars(hoverVal);
+                        });
+
+                        // Reset to selected rating on mouse leave
+                        star.addEventListener('mouseleave', function () {
+                            const currentVal = parseInt(ratingInput.value);
+                            highlightStars(currentVal);
+                        });
+
+                        // Set rating on click
+                        star.addEventListener('click', function () {
+                            const clickVal = parseInt(this.getAttribute('data-value'));
+                            ratingInput.value = clickVal;
+                            highlightStars(clickVal);
+                        });
+                    });
+
+                    function highlightStars(count) {
+                        stars.forEach(s => {
+                            const val = parseInt(s.getAttribute('data-value'));
+                            if (val <= count) {
+                                s.classList.remove('far', 'text-gray-300');
+                                s.classList.add('fas', 'text-amber-400');
+                            } else {
+                                s.classList.remove('fas', 'text-amber-400');
+                                s.classList.add('far', 'text-gray-300');
+                            }
+                        });
+                    }
+                }
+
+                if (reviewForm) {
+                    reviewForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+
+                        const rating = parseInt(ratingInput.value);
+                        const comment = document.getElementById('comment').value.trim();
+
+                        if (!rating || rating === 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Rating Required',
+                                text: 'Please select a star rating (1 to 5 stars) before submitting.',
+                                confirmButtonColor: '#00d9b1'
+                            });
+                            return;
+                        }
+
+                        try {
+                            const courseId = '<%= course._id %>';
+                            const response = await fetch(`/user/course/${courseId}/review`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ rating, comment })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thank You!',
+                                    text: data.message,
+                                    confirmButtonColor: '#00d9b1'
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Submission Failed',
+                                    text: data.message || 'Something went wrong',
+                                    confirmButtonColor: '#00d9b1'
+                                });
+                            }
+                        } catch (err) {
+                            console.error('Review submit error:', err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unable to submit review. Please try again later.',
+                                confirmButtonColor: '#00d9b1'
+                            });
+                        }
+                    });
+                }
+            });
         </script>
 
 

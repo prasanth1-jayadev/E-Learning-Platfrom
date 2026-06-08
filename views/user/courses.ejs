@@ -18,6 +18,8 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         * {
             margin: 0;
@@ -706,337 +708,350 @@
             background: #00d9b1;
             color: white;
         }
-
     </style>
 </head>
 
 <body>
     <%- include('../partials/user-navbar') %>
 
-    <!-- Main Content -->
-    <main class="container">
-        <h1 class="page-title">Browse by Category</h1>
+        <!-- Main Content -->
+        <main class="container">
+            <h1 class="page-title">Browse by Category</h1>
 
 
-        <!-- Stunning Modern Search and Sort Bar -->
-        <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: stretch;">
-            <!-- Search Box with Icon - Animated -->
-            <div style="flex: 1; min-width: 300px; position: relative;">
-                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9ca3af; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);"
-                    id="searchIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input type="text" id="searchInput" placeholder="Search for courses..."
-                    value="<%= typeof search !== 'undefined' ? search : '' %>"
-                    style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 0.875rem; outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);"
-                    onfocus="this.style.borderColor='#00d9b1'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(0, 217, 177, 0.15), 0 10px 15px -3px rgba(0, 217, 177, 0.2)'; this.style.transform='translateY(-2px)'; document.getElementById('searchIcon').style.color='#00d9b1'; document.getElementById('searchIcon').style.transform='translateY(-50%) scale(1.1)'"
-                    onblur="this.style.borderColor='#e5e7eb'; this.style.background='linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'; this.style.transform='translateY(0)'; document.getElementById('searchIcon').style.color='#9ca3af'; document.getElementById('searchIcon').style.transform='translateY(-50%) scale(1)'">
-            </div>
-
-            <!-- Modern Sort Dropdown -->
-            <div class="modern-dropdown">
-                <input type="hidden" id="sortValue" value="<%= typeof sort !== 'undefined' ? sort : 'newest' %>">
-                <button type="button" class="dropdown-button" id="sortDropdownBtn" onclick="toggleDropdown()">
-                    <span id="sortLabel" style="color: #111827; font-size: 0.875rem;">
-                        <% const sortLabels={ 'newest' : 'Newest First' , 'oldest' : 'Oldest First' , 'price-low'
-                            : 'Price: Low to High' , 'price-high' : 'Price: High to Low' , 'title-az' : 'Title: A-Z'
-                            , 'title-za' : 'Title: Z-A' }; const currentSort=typeof sort !=='undefined' ? sort
-                            : 'newest' ; %>
-                            <%= sortLabels[currentSort] || 'Newest First' %>
-                    </span>
-                    <svg class="dropdown-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+            <!-- Stunning Modern Search and Sort Bar -->
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: stretch;">
+                <!-- Search Box with Icon - Animated -->
+                <div style="flex: 1; min-width: 300px; position: relative;">
+                    <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9ca3af; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);"
+                        id="searchIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
                     </svg>
-                </button>
-                <div class="dropdown-menu" id="sortDropdownMenu">
-                    <div class="dropdown-item <%= typeof sort === 'undefined' || sort === 'newest' ? 'selected' : '' %>"
-                        onclick="selectSort('newest', 'Newest First')">Newest First</div>
-                    <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'oldest' ? 'selected' : '' %>"
-                        onclick="selectSort('oldest', 'Oldest First')">Oldest First</div>
-                    <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'price-low' ? 'selected' : '' %>"
-                        onclick="selectSort('price-low', 'Price: Low to High')">Price: Low to High</div>
-                    <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'price-high' ? 'selected' : '' %>"
-                        onclick="selectSort('price-high', 'Price: High to Low')">Price: High to Low</div>
-                    <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'title-az' ? 'selected' : '' %>"
-                        onclick="selectSort('title-az', 'Title: A-Z')">Title: A-Z</div>
-                    <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'title-za' ? 'selected' : '' %>"
-                        onclick="selectSort('title-za', 'Title: Z-A')">Title: Z-A</div>
+                    <input type="text" id="searchInput" placeholder="Search for courses..."
+                        value="<%= typeof search !== 'undefined' ? search : '' %>"
+                        style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 0.875rem; outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);"
+                        onfocus="this.style.borderColor='#00d9b1'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(0, 217, 177, 0.15), 0 10px 15px -3px rgba(0, 217, 177, 0.2)'; this.style.transform='translateY(-2px)'; document.getElementById('searchIcon').style.color='#00d9b1'; document.getElementById('searchIcon').style.transform='translateY(-50%) scale(1.1)'"
+                        onblur="this.style.borderColor='#e5e7eb'; this.style.background='linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'; this.style.transform='translateY(0)'; document.getElementById('searchIcon').style.color='#9ca3af'; document.getElementById('searchIcon').style.transform='translateY(-50%) scale(1)'">
                 </div>
-            </div>
 
-            <!-- Search Button - Animated -->
-            <button onclick="applyFilters()"
-                style="padding: 0.75rem 1.75rem; background: linear-gradient(135deg, #00d9b1 0%, #00c29d 100%); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem; box-shadow: 0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3); white-space: nowrap; position: relative; overflow: hidden;"
-                onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 217, 177, 0.5), 0 4px 6px -2px rgba(0, 217, 177, 0.4)'"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3)'">
-                <span style="position: relative; z-index: 1;">Search</span>
-            </button>
-
-            <!-- Clear Filters Button - Animated -->
-            <% if ((typeof search !=='undefined' && search) || (typeof category !=='undefined' && category) || (typeof
-                sort !=='undefined' && sort !=='newest' )) { %>
-                <button onclick="clearFilters()"
-                    style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); color: #6b7280; border: 1px solid #e5e7eb; border-radius: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); white-space: nowrap;"
-                    onmouseover="this.style.background='linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)'; this.style.borderColor='#d1d5db'; this.style.color='#374151'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'"
-                    onmouseout="this.style.background='linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)'; this.style.borderColor='#e5e7eb'; this.style.color='#6b7280'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'">
-                    Clear
-                </button>
-                <% } %>
-        </div>
-
-        <!-- Category Tabs -->
-        <div class="category-tabs">
-            <button class="category-tab <%= typeof category === 'undefined' || !category ? 'active' : '' %>"
-                onclick="filterByCategory('')">All Categories</button>
-            <% if (typeof categories !=='undefined' && categories && categories.length> 0) { %>
-                <% categories.forEach(cat=> { %>
-                    <button
-                        class="category-tab <%= typeof category !== 'undefined' && category === cat.name ? 'active' : '' %>"
-                        onclick="filterByCategory('<%= cat.name %>')">
-                        <%= cat.name %>
+                <!-- Modern Sort Dropdown -->
+                <div class="modern-dropdown">
+                    <input type="hidden" id="sortValue" value="<%= typeof sort !== 'undefined' ? sort : 'newest' %>">
+                    <button type="button" class="dropdown-button" id="sortDropdownBtn" onclick="toggleDropdown()">
+                        <span id="sortLabel" style="color: #111827; font-size: 0.875rem;">
+                            <% const sortLabels={ 'newest' : 'Newest First' , 'oldest' : 'Oldest First' , 'price-low'
+                                : 'Price: Low to High' , 'price-high' : 'Price: High to Low' , 'title-az' : 'Title: A-Z'
+                                , 'title-za' : 'Title: Z-A' }; const currentSort=typeof sort !=='undefined' ? sort
+                                : 'newest' ; %>
+                                <%= sortLabels[currentSort] || 'Newest First' %>
+                        </span>
+                        <svg class="dropdown-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </button>
-                    <% }); %>
-                        <% } %>
-        </div>
+                    <div class="dropdown-menu" id="sortDropdownMenu">
+                        <div class="dropdown-item <%= typeof sort === 'undefined' || sort === 'newest' ? 'selected' : '' %>"
+                            onclick="selectSort('newest', 'Newest First')">Newest First</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'oldest' ? 'selected' : '' %>"
+                            onclick="selectSort('oldest', 'Oldest First')">Oldest First</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'price-low' ? 'selected' : '' %>"
+                            onclick="selectSort('price-low', 'Price: Low to High')">Price: Low to High</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'price-high' ? 'selected' : '' %>"
+                            onclick="selectSort('price-high', 'Price: High to Low')">Price: High to Low</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'title-az' ? 'selected' : '' %>"
+                            onclick="selectSort('title-az', 'Title: A-Z')">Title: A-Z</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'title-za' ? 'selected' : '' %>"
+                            onclick="selectSort('title-za', 'Title: Z-A')">Title: Z-A</div>
+                    </div>
+                </div>
 
-        <p class="results-count">Showing <%= courses.length %> of <%= typeof totalCourses !=='undefined' ? totalCourses
-                    : 0 %> courses</p>  
+                <!-- Search Button - Animated -->
+                <button onclick="applyFilters()"
+                    style="padding: 0.75rem 1.75rem; background: linear-gradient(135deg, #00d9b1 0%, #00c29d 100%); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem; box-shadow: 0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3); white-space: nowrap; position: relative; overflow: hidden;"
+                    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 217, 177, 0.5), 0 4px 6px -2px rgba(0, 217, 177, 0.4)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3)'">
+                    <span style="position: relative; z-index: 1;">Search</span>
+                </button>
 
-        <!-- Course Grid -->
-        <div class="course-grid">
-            <% if (courses && courses.length> 0) { %>
-                <% courses.forEach(course=> { %>
-                    <a href="/user/course/<%= course._id %>" class="course-card"
-                        style="text-decoration: none; color: inherit;">
-                        <div class="course-thumbnail"
-                            style="<%= course.thumbnail ? `background-image: url('${course.thumbnail}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem;' %>">
-                            <% if (!course.thumbnail) { %>
-                                <%= course.title.substring(0, 2).toUpperCase() %>
-                                    <% } %>
-                        </div>
-                        <div class="course-info">
-                            <% if (course.category) { %>
-                                <span class="course-category"
-                                    style="display: inline-block; background: #e8f5f1; color: #00d9b1; padding: 0.3rem 0.85rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    <%= course.category %>
-                                </span>
-                                <% } %>
-                                    <h3 class="course-title">
-                                        <%= course.title %>
-                                    </h3>
-                                    <div class="course-instructor">
-                                        
-                                        <% if (course.tutor?.avatar) { %>
-                                            
-                                            <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>"
-                                                class="instructor-avatar">
-                                            <% } else { %>
-                                                <div class="instructor-avatar"
-                                                    style="display:flex;align-items:center;justify-content:center;">
-                                                    <span style="font-size: 12px; font-weight: bold;">
-                                                        <%= course.tutor.fullName.charAt(0).toUpperCase() %>
-                                                    </span>
-                                                </div>
-                                                <% } %>
-
-                                                    <span class="instructor-name">
-                                                        <%= course.tutor ? course.tutor.fullName : 'Instructor' %>
-                                                    </span>
-                                    </div>
-                                    <div class="course-price">
-                                        <span class="current-price">₹<%= course.price.toLocaleString() %></span>
-                                    </div>
-                        </div>
-                    </a>
-                    <% }); %>
-                        <% } else { %>
-                            <div
-                                style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px;">
-                                <p style="color: #666; font-size: 1.1rem;">No courses available yet</p>
-                            </div>
-                            <% } %>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination">
-            <% const buildPageUrl=(pageNum)=> {
-                let url = `/user/courses?page=${pageNum}`;
-                if (typeof search !== 'undefined' && search) url += `&search=${encodeURIComponent(search)}`;
-                if (typeof category !== 'undefined' && category) url += `&category=${encodeURIComponent(category)}`;
-                if (typeof sort !== 'undefined' && sort) url += `&sort=${sort}`;
-                return url;
-                };
-                %>
-
-                <button class="page-btn" <%=page===1 ? 'disabled' : '' %> onclick="window.location.href='<%=
-                        buildPageUrl(page - 1) %>'">‹</button>
-
-                <% for (let i=1; i <=totalPages; i++) { %>
-                    <button class="page-btn <%= i === page ? 'active' : '' %>"
-                        onclick="window.location.href='<%= buildPageUrl(i) %>'">
-                        <%= i %>
+                <!-- Clear Filters Button - Animated -->
+                <% if ((typeof search !=='undefined' && search) || (typeof category !=='undefined' && category) ||
+                    (typeof sort !=='undefined' && sort !=='newest' )) { %>
+                    <button onclick="clearFilters()"
+                        style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); color: #6b7280; border: 1px solid #e5e7eb; border-radius: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); white-space: nowrap;"
+                        onmouseover="this.style.background='linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)'; this.style.borderColor='#d1d5db'; this.style.color='#374151'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'"
+                        onmouseout="this.style.background='linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)'; this.style.borderColor='#e5e7eb'; this.style.color='#6b7280'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'">
+                        Clear
                     </button>
                     <% } %>
+            </div>
 
-                        <button class="page-btn" <%=page===totalPages ? 'disabled' : '' %>
-                            onclick="window.location.href='<%= buildPageUrl(page + 1) %>'">›</button>
-        </div>
-    </main>
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab <%= typeof category === 'undefined' || !category ? 'active' : '' %>"
+                    onclick="filterByCategory('')">All Categories</button>
+                <% if (typeof categories !=='undefined' && categories && categories.length> 0) { %>
+                    <% categories.forEach(cat=> { %>
+                        <button
+                            class="category-tab <%= typeof category !== 'undefined' && category === cat.name ? 'active' : '' %>"
+                            onclick="filterByCategory('<%= cat.name %>')">
+                            <%= cat.name %>
+                        </button>
+                        <% }); %>
+                            <% } %>
+            </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div>
-                <div class="footer-logo" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-                    <div
-                        style="width: 32px; height: 32px; background: #00d9b1; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
-                        <svg style="width: 20px; height: 20px; color: white;" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
-                            <circle cx="12" cy="12" r="1.5" fill="white" />
-                        </svg>
+            <p class="results-count">Showing <%= courses.length %> of <%= typeof totalCourses !=='undefined' ?
+                        totalCourses : 0 %> courses</p>
+
+            <!-- Course Grid -->
+            <div class="course-grid">
+                <% if (courses && courses.length> 0) { %>
+                    <% courses.forEach(course=> { %>
+                        <a href="/user/course/<%= course._id %>" class="course-card"
+                            style="text-decoration: none; color: inherit;">
+                            <div class="course-thumbnail"
+                                style="<%= course.thumbnail ? `background-image: url('${course.thumbnail}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem;' %>">
+                                <% if (!course.thumbnail) { %>
+                                    <%= course.title.substring(0, 2).toUpperCase() %>
+                                        <% } %>
+                            </div>
+                            <div class="course-info">
+                                <% if (course.category) { %>
+                                    <span class="course-category"
+                                        style="display: inline-block; background: #e8f5f1; color: #00d9b1; padding: 0.3rem 0.85rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <%= course.category %>
+                                    </span>
+                                    <% } %>
+                                        <h3 class="course-title">
+                                            <%= course.title %>
+                                        </h3>
+                                        <div class="course-instructor">
+
+                                            <% if (course.tutor?.avatar) { %>
+
+                                                <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>"
+                                                    class="instructor-avatar">
+                                                <% } else { %>
+                                                    <div class="instructor-avatar"
+                                                        style="display:flex;align-items:center;justify-content:center;">
+                                                        <span style="font-size: 12px; font-weight: bold;">
+                                                            <%= course.tutor.fullName.charAt(0).toUpperCase() %>
+                                                        </span>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <span class="instructor-name">
+                                                            <%= course.tutor ? course.tutor.fullName : 'Instructor' %>
+                                                        </span>
+                                        </div>
+
+                                        <!-- Course Card Rating Stars -->
+                                        <div
+                                            style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: #fbbf24; margin: 0.5rem 0;">
+                                            <i class="fas fa-star"></i>
+                                            <span style="font-weight: 600; color: #1a1a1a;">
+                                                <%= course.rating ? course.rating.toFixed(1) : '0.0' %>
+                                            </span>
+                                            <span style="color: #6b7280; font-size: 0.75rem;">
+                                                (<%= course.reviewCount || 0 %>)
+                                            </span>
+                                        </div>
+
+                                        <div class="course-price">
+                                            <span class="current-price">₹<%= course.price.toLocaleString() %></span>
+                                        </div>
+                            </div>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <div
+                                    style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px;">
+                                    <p style="color: #666; font-size: 1.1rem;">No courses available yet</p>
+                                </div>
+                                <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <% const buildPageUrl=(pageNum)=> {
+                    let url = `/user/courses?page=${pageNum}`;
+                    if (typeof search !== 'undefined' && search) url += `&search=${encodeURIComponent(search)}`;
+                    if (typeof category !== 'undefined' && category) url += `&category=${encodeURIComponent(category)}`;
+                    if (typeof sort !== 'undefined' && sort) url += `&sort=${sort}`;
+                    return url;
+                    };
+                    %>
+
+                    <button class="page-btn" <%=page===1 ? 'disabled' : '' %> onclick="window.location.href='<%=
+                            buildPageUrl(page - 1) %>'">‹</button>
+
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                        <button class="page-btn <%= i === page ? 'active' : '' %>"
+                            onclick="window.location.href='<%= buildPageUrl(i) %>'">
+                            <%= i %>
+                        </button>
+                        <% } %>
+
+                            <button class="page-btn" <%=page===totalPages ? 'disabled' : '' %>
+                                onclick="window.location.href='<%= buildPageUrl(page + 1) %>'">›</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 py-12 border-t border-gray-100 bg-[#fcfdfd]">
+            <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                                <circle cx="12" cy="12" r="1.5" fill="white" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold text-gray-800">Learn</span>
+                                <span class="text-sm font-bold text-brand">ify</span>
+                            </div>
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center;">
-                        <span style="font-size: 16px; font-weight: 700; color: white;">Learn</span>
-                        <span style="font-size: 16px; font-weight: 700; color: #00d9b1;">ify</span>
+                    <p class="text-xs text-gray-400 leading-relaxed">A professional learning platform dedicated to
+                        depth, architectural excellence, and career mastery.</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Mastery Tracks</p>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="/user/courses" class="hover:text-brand transition">Course Library</a></li>
+                        <li><a href="/tutor/signup" class="hover:text-brand transition">Tutor at Organiclearn</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Certified Courses</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Curriculum Paths</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Academic Support</p>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="/user/about" class="hover:text-brand transition">About Us</a></li>
+                        <li><a href="/tutor/signup" class="hover:text-brand transition">Become a Tutor</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Whitepapers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Ready to Learn?</p>
+                    <div class="flex gap-2">
+                        <input type="email" placeholder="your@email.com"
+                            class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand/40" />
+                        <button
+                            class="px-3 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">Apply</button>
                     </div>
                 </div>
-                <p class="footer-description">
-                    A premium repository for professional wisdom. Focused on equality, longevity, and high-impact
-                    educational designs.
-                </p>
-                <div class="footer-social">
-                    <div class="social-icon">f</div>
-                    <div class="social-icon">→</div>
-                </div>
             </div>
+            <div
+                class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+                © 2026 Learnify — All Rights Reserved
+            </div>
+        </footer>
 
-            <div class="footer-section">
-                <h3>Expert Index</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Technical Blueprints</a></li>
-                    <li><a href="#">Creativity Training</a></li>
-                    <li><a href="#">Global Certifications</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>Scholarships</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Research Ethics</a></li>
-                    <li><a href="#">Privacy Hub</a></li>
-                    <li><a href="#">Mentorship Terms</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <div class="footer-cta">Apply to Mentor</div>
-            </div>
+        <!-- Scroll to Top -->
+        <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            ↑
         </div>
 
-        <div class="footer-bottom">
-            © 2024 Learnify Mastery Edition. All rights reserved. | Architected for the ambitious professional.
-        </div>
-    </footer>
+        <script>
+            // Modern Dropdown Functions
+            let dropdownOpen = false;
 
-    <!-- Scroll to Top -->
-    <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        ↑
-    </div>
+            function toggleDropdown() {
+                const menu = document.getElementById('sortDropdownMenu');
+                const btn = document.getElementById('sortDropdownBtn');
+                dropdownOpen = !dropdownOpen;
 
-    <script>
-        // Modern Dropdown Functions
-        let dropdownOpen = false;
-
-        function toggleDropdown() {
-            const menu = document.getElementById('sortDropdownMenu');
-            const btn = document.getElementById('sortDropdownBtn');
-            dropdownOpen = !dropdownOpen;
-
-            if (dropdownOpen) {
-                menu.classList.add('show');
-                btn.classList.add('active');
-            } else {
-                menu.classList.remove('show');
-                btn.classList.remove('active');
+                if (dropdownOpen) {
+                    menu.classList.add('show');
+                    btn.classList.add('active');
+                } else {
+                    menu.classList.remove('show');
+                    btn.classList.remove('active');
+                }
             }
-        }
 
-        function selectSort(value, label) {
-            document.getElementById('sortValue').value = value;
-            document.getElementById('sortLabel').textContent = label;
+            function selectSort(value, label) {
+                document.getElementById('sortValue').value = value;
+                document.getElementById('sortLabel').textContent = label;
 
-            // Update selected state
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
+                // Update selected state
+                document.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                event.target.classList.add('selected');
 
-            // Close dropdown
-            toggleDropdown();
-
-            // Apply filters
-            applyFilters();
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function (event) {
-            const dropdown = document.querySelector('.modern-dropdown');
-            if (dropdown && !dropdown.contains(event.target) && dropdownOpen) {
+                // Close dropdown
                 toggleDropdown();
-            }
-        });
 
-        // Apply filters function
-        function applyFilters() {
-            const search = document.getElementById('searchInput').value.trim();
-            const sort = document.getElementById('sortValue').value;
-            const category = '<%= typeof category !== "undefined" ? category : "" %>';
-
-            let url = '/user/courses?page=1';
-            if (search) url += `&search=${encodeURIComponent(search)}`;
-            if (category) url += `&category=${encodeURIComponent(category)}`;
-            if (sort) url += `&sort=${sort}`;
-
-            window.location.href = url;
-        }
-
-        // Filter by category
-        function filterByCategory(cat) {
-            const search = document.getElementById('searchInput').value.trim();
-            const sort = document.getElementById('sortValue').value;
-
-            let url = '/user/courses?page=1';
-            if (search) url += `&search=${encodeURIComponent(search)}`;
-            if (cat) url += `&category=${encodeURIComponent(cat)}`;
-            if (sort) url += `&sort=${sort}`;
-
-            window.location.href = url;
-        }
-
-        // Clear all filters
-        function clearFilters() {
-            window.location.href = '/user/courses';
-        }
-
-        // Search on Enter key
-        document.getElementById('searchInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
+                // Apply filters
                 applyFilters();
             }
-        });
 
-        // Show/hide scroll to top button
-        window.addEventListener('scroll', function () {
-            const scrollTop = document.querySelector('.scroll-top');
-            if (window.scrollY > 300) {
-                scrollTop.style.display = 'flex';
-            } else {
-                scrollTop.style.display = 'none';
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                const dropdown = document.querySelector('.modern-dropdown');
+                if (dropdown && !dropdown.contains(event.target) && dropdownOpen) {
+                    toggleDropdown();
+                }
+            });
+
+            // Apply filters function
+            function applyFilters() {
+                const search = document.getElementById('searchInput').value.trim();
+                const sort = document.getElementById('sortValue').value;
+                const category = '<%= typeof category !== "undefined" ? category : "" %>';
+
+                let url = '/user/courses?page=1';
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (category) url += `&category=${encodeURIComponent(category)}`;
+                if (sort) url += `&sort=${sort}`;
+
+                window.location.href = url;
             }
-        });
-    </script>
+
+            // Filter by category
+            function filterByCategory(cat) {
+                const search = document.getElementById('searchInput').value.trim();
+                const sort = document.getElementById('sortValue').value;
+
+                let url = '/user/courses?page=1';
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (cat) url += `&category=${encodeURIComponent(cat)}`;
+                if (sort) url += `&sort=${sort}`;
+
+                window.location.href = url;
+            }
+
+            // Clear all filters
+            function clearFilters() {
+                window.location.href = '/user/courses';
+            }
+
+            // Search on Enter key
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+
+            // Show/hide scroll to top button
+            window.addEventListener('scroll', function () {
+                const scrollTop = document.querySelector('.scroll-top');
+                if (window.scrollY > 300) {
+                    scrollTop.style.display = 'flex';
+                } else {
+                    scrollTop.style.display = 'none';
+                }
+            });
+        </script>
 </body>
 
 </html>

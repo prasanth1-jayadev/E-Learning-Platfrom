@@ -1,6 +1,7 @@
 import * as courseService from '../../service/courseService.js';
 import * as categoryService from '../../service/categoryService.js';
 import Tutor from '../../models/Tutor.js';
+import { uploadToCloudinary } from '../../config/cloudinary.js';
 
 const getCourses = async (req, res) => {
   try {
@@ -134,8 +135,9 @@ const postCreateCourse = async (req, res) => {
     };
 
     if (req.file) {
-      courseData.thumbnail = req.file.path;
-      console.log('Thumbnail uploaded successfully:', req.file.path);
+      const result = await uploadToCloudinary(req.file.buffer, 'course-thumbnails', 'image');
+      courseData.thumbnail = result.secure_url;
+      console.log('Thumbnail uploaded successfully:', courseData.thumbnail);
     }
 
     if (courseData.discountPrice && courseData.discountPrice >= courseData.price) {
@@ -228,8 +230,9 @@ const postUpdateCourse = async (req, res) => {
 
 
     if (req.file) {
-      updateData.thumbnail = req.file.path;
-      console.log('New thumbnail uploaded:', req.file.path);
+      const result = await uploadToCloudinary(req.file.buffer, 'course-thumbnails', 'image');
+      updateData.thumbnail = result.secure_url;
+      console.log('New thumbnail uploaded:', updateData.thumbnail);
     }
 
   

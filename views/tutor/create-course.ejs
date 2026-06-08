@@ -161,8 +161,9 @@
                     <div class="form-left">
                         <div class="form-group">
                             <label>Course Title <span class="required">*</span></label>
-                            <input type="text" id="title" name="title" placeholder="Enter course title">
+                            <input type="text" id="title" name="title" placeholder="Enter course title" maxlength="100">
                             <small>5-100 characters</small>
+                            <span id="titleErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
                         </div>
 
                         <div class="form-group">
@@ -177,6 +178,7 @@
                                     <option value="" disabled>No categories available - Please contact admin</option>
                                 <% } %>
                             </select>
+                            <span id="categoryErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
                         </div>
 
                         <div class="form-group">
@@ -190,21 +192,25 @@
 
                         <div class="form-group">
                             <label>Regular Price <span class="required">*</span></label>
-                            <input type="number" id="price" name="price" placeholder="Enter price in ₹" step="1">
+                            <input type="number" id="price" name="price" placeholder="Enter price in ₹" min="0" step="1">
+                            <small>Set 0 for free courses</small>
+                            <span id="priceErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
                         </div>
 
                         <div class="form-group">
-                            <label>Offer Percentage</label>
-                            <input type="number" id="discountPrice" name="discountPrice" placeholder="Enter discount percentage" step="1">
+                            <label>Offer Price (₹)</label>
+                            <input type="number" id="discountPrice" name="discountPrice" placeholder="Enter offer price in ₹" min="0" step="1">
+                            <span id="discountErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
                         </div>
-                    </div>
 
+
+                     
                     <!-- Right Column -->
                     <div class="form-right">
                         <div class="form-group">
                             <label>Upload Cover Image <span class="required">*</span></label>
                             <div class="upload-area" onclick="document.getElementById('thumbnailInput').click()">
-                                <input type="file" id="thumbnailInput" accept="image/*" required>
+                                <input type="file" id="thumbnailInput" accept="image/*">
                                 <div class="upload-icon">
                                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -214,12 +220,14 @@
                                 <p class="upload-hint">Click to upload image (JPG, PNG - Max 5MB)</p>
                                 <img id="thumbnailPreview" class="thumbnail-preview" style="display: none;">
                             </div>
+                            <span id="thumbnailErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
                         </div>
 
                         <div class="form-group">
                             <label>Description <span class="required">*</span></label>
-                            <textarea id="description" name="description" placeholder="Enter course description"></textarea>
+                            <textarea id="description" name="description" placeholder="Enter course description" maxlength="1000"></textarea>
                             <small><span id="descCount">0</span>/1000 characters (minimum 20)</small>
+                            <span id="descErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
                         </div>
                     </div>
 
@@ -267,89 +275,105 @@ document.getElementById('thumbnailInput').addEventListener('change', function(e)
     }
 });
 
-// Form submission with comprehensive validation
+// Simple helper: show/clear inline error
+function setErr(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+}
+function redBorder(id, on) {
+    const el = document.getElementById(id);
+    if (el) el.style.border = on ? '1.5px solid #ef4444' : '';
+}
+// Clear error when user edits field
+['title','category','price','discountPrice','description'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => { setErr(id+'Err',''); redBorder(id,false); });
+    if (el) el.addEventListener('change', () => { setErr(id+'Err',''); redBorder(id,false); });
+});
+document.getElementById('thumbnailInput').addEventListener('change', () => { setErr('thumbnailErr',''); });
+
+// Form submission
 document.getElementById('createCourseForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitBtn');
-    const originalText = submitBtn.textContent;
-    
-    // Get form data
-    const title = document.getElementById('title').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const category = document.getElementById('category').value;
-    const level = document.getElementById('level').value;
-    const price = document.getElementById('price').value;
+
+    const title        = document.getElementById('title').value.trim();
+    const description  = document.getElementById('description').value.trim();
+    const category     = document.getElementById('category').value;
+    const level        = document.getElementById('level').value;
+    const price        = document.getElementById('price').value;
     const discountPrice = document.getElementById('discountPrice').value;
     const thumbnailFile = document.getElementById('thumbnailInput').files[0];
-    
-    // Validate all required fields
-    if (!title || !description || !category || !level || !price || !thumbnailFile) {
-        showToast('All required fields must be filled', 'error');
-        return;
+
+    let hasError = false;
+
+    // Title
+    if (!title) {
+        setErr('titleErr', 'Course title is required.'); redBorder('title', true); hasError = true;
+    } else if (title.length < 5) {
+        setErr('titleErr', 'Title must be at least 5 characters.'); redBorder('title', true); hasError = true;
+    } else { setErr('titleErr', ''); redBorder('title', false); }
+
+    // Category
+    if (!category) {
+        setErr('categoryErr', 'Please select a category.'); redBorder('category', true); hasError = true;
+    } else { setErr('categoryErr', ''); redBorder('category', false); }
+
+    // Price (allow 0 for free courses)
+    if (price === '' || isNaN(price) || parseFloat(price) < 0) {
+        setErr('priceErr', 'Please enter a valid price (0 or more).'); redBorder('price', true); hasError = true;
+    } else { setErr('priceErr', ''); redBorder('price', false); }
+
+    // Offer price
+    if (discountPrice !== '') {
+        if (isNaN(discountPrice) || parseFloat(discountPrice) < 0) {
+            setErr('discountErr', 'Please enter a valid offer price.'); redBorder('discountPrice', true); hasError = true;
+        } else if (parseFloat(discountPrice) >= parseFloat(price)) {
+            setErr('discountErr', 'Offer price must be less than regular price.'); redBorder('discountPrice', true); hasError = true;
+        } else { setErr('discountErr', ''); redBorder('discountPrice', false); }
     }
-    
-    // Validate title length
-    if (title.length < 5 || title.length > 100) {
-        showToast('Course title must be between 5 and 100 characters', 'error');
-        return;
-    }
-    
-    // Validate description length
-    if (description.length < 20 || description.length > 1000) {
-        showToast('Description must be between 20 and 1000 characters', 'error');
-        return;
-    }
-    
-    // Validate price
-    if (isNaN(price) || parseFloat(price) < 0) {
-        showToast('Please enter a valid price', 'error');
-        return;
-    }
-    
-    // Validate discount percentage
-    if (discountPrice && (isNaN(discountPrice) || parseFloat(discountPrice) < 0 || parseFloat(discountPrice) > 100)) {
-        showToast('Discount percentage must be between 0 and 100', 'error');
-        return;
-    }
-    
+
+    // Thumbnail
+    if (!thumbnailFile) {
+        setErr('thumbnailErr', 'Please upload a course thumbnail.'); hasError = true;
+    } else { setErr('thumbnailErr', ''); }
+
+    // Description
+    if (!description) {
+        setErr('descErr', 'Description is required.'); redBorder('description', true); hasError = true;
+    } else if (description.length < 20) {
+        setErr('descErr', 'Description must be at least 20 characters.'); redBorder('description', true); hasError = true;
+    } else { setErr('descErr', ''); redBorder('description', false); }
+
+    if (hasError) return;
+
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.5rem;"><svg style="width: 20px; height: 20px; animation: spin 1s linear infinite;" fill="none" viewBox="0 0 24 24"><circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> CREATING...</span>';
-    
-    // Create FormData for file upload
+    submitBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem"><svg style="width:20px;height:20px;animation:spin 1s linear infinite" fill="none" viewBox="0 0 24 24"><circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> CREATING...</span>';
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('category', category);
     formData.append('level', level);
-    formData.append('price', price || 0);
-    if (discountPrice) {
-        formData.append('discountPrice', discountPrice);
-    }
-    if (thumbnailFile) {
-        formData.append('thumbnail', thumbnailFile);
-    }
-    
+    formData.append('price', price);
+    if (discountPrice) formData.append('discountPrice', discountPrice);
+    formData.append('thumbnail', thumbnailFile);
+
     try {
-        const response = await fetch('/tutor/courses/create', {
-            method: 'POST',
-            body: formData
-        });
-        
+        const response = await fetch('/tutor/courses/create', { method: 'POST', body: formData });
         const data = await response.json();
-        
         if (data.success) {
             showToast('Course created successfully!', 'success');
-            setTimeout(() => {
-                window.location.href = '/tutor/courses';
-            }, 1000);
+            setTimeout(() => { window.location.href = '/tutor/courses'; }, 1000);
         } else {
             showToast(data.message || 'Failed to create course', 'error');
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
     } catch (error) {
-        console.error('Create course error:', error);
         showToast('Something went wrong', 'error');
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
