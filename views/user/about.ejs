@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Learnify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: '#00d9b1' },
+          fontFamily: { display: ['Be Vietnam Pro', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-display bg-white text-gray-900 min-h-screen flex flex-col">
+
+  <%- include('../partials/user-navbar') %>
+
+  <!-- Dark Top Header Hero -->
+  <section class="bg-[#0b1714] text-white py-20 px-6 relative overflow-hidden text-center">
+    <div class="absolute inset-0 opacity-10" style="background: radial-gradient(ellipse at 50% 100%, #00d9b1 0%, transparent 70%);"></div>
+    <div class="max-w-4xl mx-auto relative z-10">
+      <!-- Icon badge (Learnify Book Icon Style) -->
+      <div class="w-12 h-12 rounded-2xl bg-[#00d9b1] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-brand/20">
+        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+          <circle cx="12" cy="12" r="1.5" fill="white" />
+        </svg>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black mb-4">
+        About Learn<span class="text-brand">ify</span>
+      </h1>
+      <p class="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+        Empowering learners worldwide through high-impact, professional education and elite mentorship.
+      </p>
+    </div>
+  </section>
+
+  <!-- Our Mission Section -->
+  <section class="py-16 md:py-24 px-6 bg-white">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="text-brand text-xs font-bold uppercase tracking-widest mb-3 block">OUR MISSION</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight mb-6">
+          Architecting the Future of <br class="hidden md:block"/>
+          <span class="text-brand">Digital Intellect</span>
+        </h2>
+        <div class="space-y-4 text-gray-600 text-sm md:text-base leading-relaxed">
+          <p>
+            At Learnify, we believe that quality education should be accessible to everyone. Our mission is to bridge the gap between learners and expert educators through innovative technology and personalized learning experiences.
+          </p>
+          <p>
+            We are committed to creating a platform where knowledge flows freely, where students can find the perfect tutor for their needs, and where educators can share their expertise with a global audience.
+          </p>
+        </div>
+        <div class="mt-8 flex items-center gap-3 bg-brand/5 border border-brand/10 rounded-xl p-4 max-w-md">
+          <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center flex-shrink-0">
+            <span class="material-icons text-brand text-sm">verified</span>
+          </div>
+          <span class="text-xs font-bold text-gray-800">Making quality education accessible worldwide</span>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -inset-2 bg-brand/10 rounded-3xl blur-md"></div>
+        <div class="relative rounded-2xl overflow-hidden shadow-xl border border-gray-100 bg-white">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="Students Collaborating" class="w-full h-80 object-cover"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact/Statistics Section -->
+  <section class="bg-gray-50 border-y border-gray-100 py-12 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <p class="text-3xl md:text-4xl font-black text-gray-900 mb-1">10,000+</p>
+        <p class="text-[10px] md:text-xs text-gray-400 font-semibold uppercase tracking-wider">Students Enrolled</p>
+      </div>
+      <div>
+        <p class="text-3xl md:text-4xl font-black text-gray-900 mb-1">500+</p>
+        <p class="text-[10px] md:text-xs text-gray-400 font-semibold uppercase tracking-wider">Expert Tutors</p>
+      </div>
+      <div>
+        <p class="text-3xl md:text-4xl font-black text-gray-900 mb-1">1,000+</p>
+        <p class="text-[10px] md:text-xs text-gray-400 font-semibold uppercase tracking-wider">Courses Available</p>
+      </div>
+      <div>
+        <p class="text-3xl md:text-4xl font-black text-gray-900 mb-1">95%</p>
+        <p class="text-[10px] md:text-xs text-gray-400 font-semibold uppercase tracking-wider">Success Rate</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Core Values Section -->
+  <section class="py-16 md:py-24 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-3">Our Core Values</h2>
+        <p class="text-gray-500 text-sm md:text-base max-w-lg mx-auto">
+          Professional excellence and student success are at the heart of our mission.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Value 1 -->
+        <div class="border border-gray-100 rounded-2xl p-6 bg-[#fcfdfd] shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center mb-4">
+            <span class="material-icons">school</span>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Pinnacle Education</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            We provide high-quality, relevant course content designed to help you achieve your most ambitious goals.
+          </p>
+        </div>
+        <!-- Value 2 -->
+        <div class="border border-gray-100 rounded-2xl p-6 bg-[#fcfdfd] shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center mb-4">
+            <span class="material-icons">hub</span>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Elite Mentorship</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Our platform connects you with certified, experienced experts from around the world to accelerate your learning.
+          </p>
+        </div>
+        <!-- Value 3 -->
+        <div class="border border-gray-100 rounded-2xl p-6 bg-[#fcfdfd] shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center mb-4">
+            <span class="material-icons">psychology</span>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Adaptive Pedagogy</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Every student learns differently. We offer personalized learning pathways tailored to your schedule and goals.
+          </p>
+        </div>
+        <!-- Value 4 -->
+        <div class="border border-gray-100 rounded-2xl p-6 bg-[#fcfdfd] shadow-sm hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center mb-4">
+            <span class="material-icons">language</span>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Global Synergy</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Join a diverse global community of learners and instructors to build lasting connections and share knowledge.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- CTA Box Section -->
+  <section class="px-6 py-12 max-w-6xl mx-auto w-full">
+    <div class="bg-[#0b1714] rounded-3xl px-10 py-14 text-center relative overflow-hidden">
+      <div class="absolute inset-0 opacity-20" style="background: radial-gradient(ellipse at 50% 0%, #00d9b1 0%, transparent 70%);"></div>
+      <div class="relative z-10">
+        <h2 class="text-3xl font-black text-white leading-tight mb-4">Ready to Start Learning?</h2>
+        <p class="text-gray-400 text-sm max-w-md mx-auto mb-8 leading-relaxed">
+          Join thousands of students who are already learning and growing with Learnify. Your journey to mastery starts here.
+        </p>
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+          <a href="/user/courses" class="px-6 py-3 bg-brand text-gray-900 font-bold text-sm rounded-full hover:brightness-110 transition">Browse Courses</a>
+          <a href="/user/tutors" class="px-6 py-3 border border-brand/40 text-brand font-bold text-sm rounded-full hover:bg-brand/10 transition">Find a Tutor</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="px-6 py-12 border-t border-gray-100 mt-6 bg-[#fcfdfd]">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+              <circle cx="12" cy="12" r="1.5" fill="white"/>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <span class="text-sm font-bold text-gray-800">Learn</span>
+              <span class="text-sm font-bold text-brand">ify</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed">A professional learning platform dedicated to depth, architectural excellence, and career mastery.</p>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Mastery Tracks</p>
+        <ul class="space-y-2 text-xs text-gray-400">
+          <li><a href="/user/courses" class="hover:text-brand transition">Course Library</a></li>
+          <li><a href="/tutor/signup" class="hover:text-brand transition">Tutor at Learnify</a></li>
+          <li><a href="#" class="hover:text-brand transition">Certified Courses</a></li>
+          <li><a href="#" class="hover:text-brand transition">Curriculum Paths</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Academic Support</p>
+        <ul class="space-y-2 text-xs text-gray-400">
+          <li><a href="/user/about" class="hover:text-brand transition">About Us</a></li>
+          <li><a href="/tutor/signup" class="hover:text-brand transition">Become a Tutor</a></li>
+          <li><a href="#" class="hover:text-brand transition">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-brand transition">Whitepapers</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Ready to Learn?</p>
+        <div class="flex gap-2">
+          <input type="email" placeholder="your@email.com"
+            class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <button class="px-3 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+      © 2026 Learnify — All Rights Reserved
+    </div>
+  </footer>
+
+</body>
+</html>

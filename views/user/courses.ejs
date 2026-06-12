@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #1a1a1a;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                padding: 3rem 2rem;
+            }
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        @media (min-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .page-title {
+                font-size: 1.75rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Modern Dropdown Styles - Stunning Edition */
+        .modern-dropdown {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .dropdown-button {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            outline: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            color: #111827;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 177, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .dropdown-button:hover::before {
+            left: 100%;
+        }
+
+        .dropdown-button:hover {
+            border-color: #00d9b1;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 217, 177, 0.2), 0 4px 6px -2px rgba(0, 217, 177, 0.1);
+        }
+
+        .dropdown-button.active {
+            border-color: #00d9b1;
+            background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+            box-shadow: 0 0 0 3px rgba(0, 217, 177, 0.15), 0 10px 15px -3px rgba(0, 217, 177, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .dropdown-icon {
+            position: absolute;
+            right: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: #6b7280;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-button:hover .dropdown-icon {
+            color: #00d9b1;
+        }
+
+        .dropdown-button.active .dropdown-icon {
+            transform: translateY(-50%) rotate(180deg);
+            color: #00d9b1;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes dropdownSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            color: #374151;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #00d9b1;
+            transform: scaleY(0);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%);
+            color: #111827;
+            padding-left: 1.25rem;
+        }
+
+        .dropdown-item.selected {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            color: #00d9b1;
+            font-weight: 600;
+        }
+
+        .dropdown-item.selected::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-item.selected::after {
+            content: '✓';
+            color: #00d9b1;
+            font-weight: 700;
+            font-size: 1rem;
+            animation: checkmarkPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes checkmarkPop {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Category Tabs - Stunning Edition */
+        .category-tabs {
+            display: flex;
+            gap: 0.625rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 0.625rem 1.25rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            color: #6b7280;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .category-tab:hover::before {
+            left: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .category-tab {
+                padding: 0.625rem 1.5rem;
+            }
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #00d9b1 0%, #00c29d 100%);
+            color: white;
+            border-color: #00d9b1;
+            box-shadow: 0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .category-tab.active::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .category-tab:hover:not(.active) {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-color: #00d9b1;
+            color: #374151;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .results-count {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 640px) {
+            .course-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.75rem;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-bottom: 3rem;
+            }
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid #f3f4f6;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #e5e7eb;
+        }
+
+        .course-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            background: #2a2a2a;
+            overflow: hidden;
+        }
+
+        @media (min-width: 640px) {
+            .course-thumbnail {
+                height: 170px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .course-thumbnail {
+                height: 180px;
+            }
+        }
+
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ef4444;
+            color: white;
+            padding: 0.35rem 0.7rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        @media (min-width: 768px) {
+            .discount-badge {
+                top: 10px;
+                right: 10px;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        .course-info {
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .course-info {
+                padding: 1.25rem;
+            }
+        }
+
+        .course-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .course-title {
+                font-size: 1rem;
+            }
+        }
+
+        .course-instructor {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .instructor-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e0e0e0;
+        }
+
+        .instructor-name {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .course-price {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .current-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #00d9b1;
+        }
+
+        .original-price {
+            font-size: 0.85rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        @media (min-width: 768px) {
+            .current-price {
+                font-size: 1.25rem;
+            }
+
+            .original-price {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .page-btn {
+            min-width: 38px;
+            height: 38px;
+            padding: 0 0.75rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .page-btn.active {
+            background: #00d9b1;
+            color: white;
+            border-color: #00d9b1;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a2332;
+            color: white;
+            padding: 2rem 1rem 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer {
+                padding: 2.5rem 1.5rem 2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .footer {
+                padding: 3rem 2rem 2rem;
+            }
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 640px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .footer-content {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+                gap: 3rem;
+                margin-bottom: 3rem;
+            }
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #00d9b1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .footer-description {
+            color: #a0a0a0;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00d9b1;
+        }
+
+        .footer-cta {
+            background: #00d9b1;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .footer-cta:hover {
+            background: #00c29d;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            background: #2a3544;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #00d9b1;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #2a3544;
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        @media (min-width: 768px) {
+            .scroll-top {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .scroll-top {
+                bottom: 2rem;
+                right: 2rem;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        .scroll-top:hover {
+            background: #00d9b1;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/user-navbar') %>
+
+        <!-- Main Content -->
+        <main class="container">
+            <h1 class="page-title">Browse by Category</h1>
+
+
+            <!-- Stunning Modern Search and Sort Bar -->
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: stretch;">
+                <!-- Search Box with Icon - Animated -->
+                <div style="flex: 1; min-width: 300px; position: relative;">
+                    <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9ca3af; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);"
+                        id="searchIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search for courses..."
+                        value="<%= typeof search !== 'undefined' ? search : '' %>"
+                        style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 0.875rem; outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);"
+                        onfocus="this.style.borderColor='#00d9b1'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(0, 217, 177, 0.15), 0 10px 15px -3px rgba(0, 217, 177, 0.2)'; this.style.transform='translateY(-2px)'; document.getElementById('searchIcon').style.color='#00d9b1'; document.getElementById('searchIcon').style.transform='translateY(-50%) scale(1.1)'"
+                        onblur="this.style.borderColor='#e5e7eb'; this.style.background='linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'; this.style.transform='translateY(0)'; document.getElementById('searchIcon').style.color='#9ca3af'; document.getElementById('searchIcon').style.transform='translateY(-50%) scale(1)'">
+                </div>
+
+                <!-- Modern Sort Dropdown -->
+                <div class="modern-dropdown">
+                    <input type="hidden" id="sortValue" value="<%= typeof sort !== 'undefined' ? sort : 'newest' %>">
+                    <button type="button" class="dropdown-button" id="sortDropdownBtn" onclick="toggleDropdown()">
+                        <span id="sortLabel" style="color: #111827; font-size: 0.875rem;">
+                            <% const sortLabels={ 'newest' : 'Newest First' , 'oldest' : 'Oldest First' , 'price-low'
+                                : 'Price: Low to High' , 'price-high' : 'Price: High to Low' , 'title-az' : 'Title: A-Z'
+                                , 'title-za' : 'Title: Z-A' }; const currentSort=typeof sort !=='undefined' ? sort
+                                : 'newest' ; %>
+                                <%= sortLabels[currentSort] || 'Newest First' %>
+                        </span>
+                        <svg class="dropdown-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu" id="sortDropdownMenu">
+                        <div class="dropdown-item <%= typeof sort === 'undefined' || sort === 'newest' ? 'selected' : '' %>"
+                            onclick="selectSort('newest', 'Newest First')">Newest First</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'oldest' ? 'selected' : '' %>"
+                            onclick="selectSort('oldest', 'Oldest First')">Oldest First</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'price-low' ? 'selected' : '' %>"
+                            onclick="selectSort('price-low', 'Price: Low to High')">Price: Low to High</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'price-high' ? 'selected' : '' %>"
+                            onclick="selectSort('price-high', 'Price: High to Low')">Price: High to Low</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'title-az' ? 'selected' : '' %>"
+                            onclick="selectSort('title-az', 'Title: A-Z')">Title: A-Z</div>
+                        <div class="dropdown-item <%= typeof sort !== 'undefined' && sort === 'title-za' ? 'selected' : '' %>"
+                            onclick="selectSort('title-za', 'Title: Z-A')">Title: Z-A</div>
+                    </div>
+                </div>
+
+                <!-- Search Button - Animated -->
+                <button onclick="applyFilters()"
+                    style="padding: 0.75rem 1.75rem; background: linear-gradient(135deg, #00d9b1 0%, #00c29d 100%); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem; box-shadow: 0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3); white-space: nowrap; position: relative; overflow: hidden;"
+                    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 217, 177, 0.5), 0 4px 6px -2px rgba(0, 217, 177, 0.4)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 217, 177, 0.4), 0 2px 4px -1px rgba(0, 217, 177, 0.3)'">
+                    <span style="position: relative; z-index: 1;">Search</span>
+                </button>
+
+                <!-- Clear Filters Button - Animated -->
+                <% if ((typeof search !=='undefined' && search) || (typeof category !=='undefined' && category) ||
+                    (typeof sort !=='undefined' && sort !=='newest' )) { %>
+                    <button onclick="clearFilters()"
+                        style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); color: #6b7280; border: 1px solid #e5e7eb; border-radius: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); white-space: nowrap;"
+                        onmouseover="this.style.background='linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)'; this.style.borderColor='#d1d5db'; this.style.color='#374151'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'"
+                        onmouseout="this.style.background='linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)'; this.style.borderColor='#e5e7eb'; this.style.color='#6b7280'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'">
+                        Clear
+                    </button>
+                    <% } %>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab <%= typeof category === 'undefined' || !category ? 'active' : '' %>"
+                    onclick="filterByCategory('')">All Categories</button>
+                <% if (typeof categories !=='undefined' && categories && categories.length> 0) { %>
+                    <% categories.forEach(cat=> { %>
+                        <button
+                            class="category-tab <%= typeof category !== 'undefined' && category === cat.name ? 'active' : '' %>"
+                            onclick="filterByCategory('<%= cat.name %>')">
+                            <%= cat.name %>
+                        </button>
+                        <% }); %>
+                            <% } %>
+            </div>
+
+            <p class="results-count">Showing <%= courses.length %> of <%= typeof totalCourses !=='undefined' ?
+                        totalCourses : 0 %> courses</p>
+
+            <!-- Course Grid -->
+            <div class="course-grid">
+                <% if (courses && courses.length> 0) { %>
+                    <% courses.forEach(course=> { %>
+                        <a href="/user/course/<%= course._id %>" class="course-card"
+                            style="text-decoration: none; color: inherit;">
+                            <div class="course-thumbnail"
+                                style="<%= course.thumbnail ? `background-image: url('${course.thumbnail}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem;' %>">
+                                <% if (!course.thumbnail) { %>
+                                    <%= course.title.substring(0, 2).toUpperCase() %>
+                                        <% } %>
+                            </div>
+                            <div class="course-info">
+                                <% if (course.category) { %>
+                                    <span class="course-category"
+                                        style="display: inline-block; background: #e8f5f1; color: #00d9b1; padding: 0.3rem 0.85rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <%= course.category %>
+                                    </span>
+                                    <% } %>
+                                        <h3 class="course-title">
+                                            <%= course.title %>
+                                        </h3>
+                                        <div class="course-instructor">
+
+                                            <% if (course.tutor?.avatar) { %>
+
+                                                <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>"
+                                                    class="instructor-avatar">
+                                                <% } else { %>
+                                                    <div class="instructor-avatar"
+                                                        style="display:flex;align-items:center;justify-content:center;">
+                                                        <span style="font-size: 12px; font-weight: bold;">
+                                                            <%= course.tutor.fullName.charAt(0).toUpperCase() %>
+                                                        </span>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <span class="instructor-name">
+                                                            <%= course.tutor ? course.tutor.fullName : 'Instructor' %>
+                                                        </span>
+                                        </div>
+
+                                        <!-- Course Card Rating Stars -->
+                                        <div
+                                            style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: #fbbf24; margin: 0.5rem 0;">
+                                            <i class="fas fa-star"></i>
+                                            <span style="font-weight: 600; color: #1a1a1a;">
+                                                <%= course.rating ? course.rating.toFixed(1) : '0.0' %>
+                                            </span>
+                                            <span style="color: #6b7280; font-size: 0.75rem;">
+                                                (<%= course.reviewCount || 0 %>)
+                                            </span>
+                                        </div>
+
+                                        <div class="course-price">
+                                            <span class="current-price">₹<%= course.price.toLocaleString() %></span>
+                                        </div>
+                            </div>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <div
+                                    style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px;">
+                                    <p style="color: #666; font-size: 1.1rem;">No courses available yet</p>
+                                </div>
+                                <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <% const buildPageUrl=(pageNum)=> {
+                    let url = `/user/courses?page=${pageNum}`;
+                    if (typeof search !== 'undefined' && search) url += `&search=${encodeURIComponent(search)}`;
+                    if (typeof category !== 'undefined' && category) url += `&category=${encodeURIComponent(category)}`;
+                    if (typeof sort !== 'undefined' && sort) url += `&sort=${sort}`;
+                    return url;
+                    };
+                    %>
+
+                    <button class="page-btn" <%=page===1 ? 'disabled' : '' %> onclick="window.location.href='<%=
+                            buildPageUrl(page - 1) %>'">‹</button>
+
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                        <button class="page-btn <%= i === page ? 'active' : '' %>"
+                            onclick="window.location.href='<%= buildPageUrl(i) %>'">
+                            <%= i %>
+                        </button>
+                        <% } %>
+
+                            <button class="page-btn" <%=page===totalPages ? 'disabled' : '' %>
+                                onclick="window.location.href='<%= buildPageUrl(page + 1) %>'">›</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 py-12 border-t border-gray-100 bg-[#fcfdfd]">
+            <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                                <circle cx="12" cy="12" r="1.5" fill="white" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold text-gray-800">Learn</span>
+                                <span class="text-sm font-bold text-brand">ify</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">A professional learning platform dedicated to
+                        depth, architectural excellence, and career mastery.</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Mastery Tracks</p>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="/user/courses" class="hover:text-brand transition">Course Library</a></li>
+                        <li><a href="/tutor/signup" class="hover:text-brand transition">Tutor at Organiclearn</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Certified Courses</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Curriculum Paths</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Academic Support</p>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="/user/about" class="hover:text-brand transition">About Us</a></li>
+                        <li><a href="/tutor/signup" class="hover:text-brand transition">Become a Tutor</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-brand transition">Whitepapers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Ready to Learn?</p>
+                    <div class="flex gap-2">
+                        <input type="email" placeholder="your@email.com"
+                            class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand/40" />
+                        <button
+                            class="px-3 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+                © 2026 Learnify — All Rights Reserved
+            </div>
+        </footer>
+
+        <!-- Scroll to Top -->
+        <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            ↑
+        </div>
+
+        <script>
+            // Modern Dropdown Functions
+            let dropdownOpen = false;
+
+            function toggleDropdown() {
+                const menu = document.getElementById('sortDropdownMenu');
+                const btn = document.getElementById('sortDropdownBtn');
+                dropdownOpen = !dropdownOpen;
+
+                if (dropdownOpen) {
+                    menu.classList.add('show');
+                    btn.classList.add('active');
+                } else {
+                    menu.classList.remove('show');
+                    btn.classList.remove('active');
+                }
+            }
+
+            function selectSort(value, label) {
+                document.getElementById('sortValue').value = value;
+                document.getElementById('sortLabel').textContent = label;
+
+                // Update selected state
+                document.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                event.target.classList.add('selected');
+
+                // Close dropdown
+                toggleDropdown();
+
+                // Apply filters
+                applyFilters();
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                const dropdown = document.querySelector('.modern-dropdown');
+                if (dropdown && !dropdown.contains(event.target) && dropdownOpen) {
+                    toggleDropdown();
+                }
+            });
+
+            // Apply filters function
+            function applyFilters() {
+                const search = document.getElementById('searchInput').value.trim();
+                const sort = document.getElementById('sortValue').value;
+                const category = '<%= typeof category !== "undefined" ? category : "" %>';
+
+                let url = '/user/courses?page=1';
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (category) url += `&category=${encodeURIComponent(category)}`;
+                if (sort) url += `&sort=${sort}`;
+
+                window.location.href = url;
+            }
+
+            // Filter by category
+            function filterByCategory(cat) {
+                const search = document.getElementById('searchInput').value.trim();
+                const sort = document.getElementById('sortValue').value;
+
+                let url = '/user/courses?page=1';
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (cat) url += `&category=${encodeURIComponent(cat)}`;
+                if (sort) url += `&sort=${sort}`;
+
+                window.location.href = url;
+            }
+
+            // Clear all filters
+            function clearFilters() {
+                window.location.href = '/user/courses';
+            }
+
+            // Search on Enter key
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+
+            // Show/hide scroll to top button
+            window.addEventListener('scroll', function () {
+                const scrollTop = document.querySelector('.scroll-top');
+                if (window.scrollY > 300) {
+                    scrollTop.style.display = 'flex';
+                } else {
+                    scrollTop.style.display = 'none';
+                }
+            });
+        </script>
+</body>
+
+</html>

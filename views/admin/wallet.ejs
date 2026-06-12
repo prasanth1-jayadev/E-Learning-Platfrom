@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Management - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1',
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                        'surface-light': '#FFFFFF',
+                        'surface-dark': '#1F2937'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark">
+
+<%- include('../partials/admin-sidebar', { currentPage: 'wallet', pendingCount: pendingCount }) %>
+
+<main class="ml-64 p-6 bg-background-light dark:bg-background-dark min-h-screen">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Wallet Management</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">Platform revenue and tutor earnings overview</p>
+    </div>
+
+    <!-- Platform Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white dark:bg-surface-dark rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Platform Revenue</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹<%= platformStats.totalRevenue.toLocaleString() %></h3>
+                </div>
+                <div class="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons-outlined text-green-600 dark:text-green-400">account_balance</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Platform Commission (20%)</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹<%= platformStats.platformCommission.toLocaleString() %></h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons-outlined text-blue-600 dark:text-blue-400">trending_up</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Tutor Earnings (80%)</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹<%= platformStats.tutorEarnings.toLocaleString() %></h3>
+                </div>
+                <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons-outlined text-purple-600 dark:text-purple-400">payments</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Tutor Balance</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹<%= platformStats.totalBalance.toLocaleString() %></h3>
+                </div>
+                <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons-outlined text-orange-600 dark:text-orange-400">account_balance_wallet</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Withdrawn</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹<%= platformStats.totalWithdrawn.toLocaleString() %></h3>
+                </div>
+                <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons-outlined text-red-600 dark:text-red-400">money_off</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Tutors</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1"><%= wallets.length %></h3>
+                </div>
+                <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons-outlined text-teal-600 dark:text-teal-400">person</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Wallets Table -->
+    <div class="bg-white dark:bg-surface-dark rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white">Tutor Wallets</h2>
+        </div>
+
+        <% if (wallets && wallets.length > 0) { %>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tutor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Balance</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Earnings</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Withdrawn</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Transactions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-surface-dark divide-y divide-gray-200 dark:divide-gray-700">
+                    <% wallets.forEach(wallet => { %>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900 dark:text-white"><%= wallet.tutor.fullName %></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                            <%= wallet.tutor.email %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-semibold text-green-600 dark:text-green-400">₹<%= wallet.balance.toLocaleString() %></span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">₹<%= wallet.totalEarnings.toLocaleString() %></span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-semibold text-red-600 dark:text-red-400">₹<%= wallet.totalWithdrawn.toLocaleString() %></span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                            <%= wallet.transactions.length %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <a href="/admin/wallet/tutor/<%= wallet.tutor._id %>" 
+                               class="text-[#00d9b1] hover:text-[#00b894] font-medium">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } else { %>
+        <div class="p-12 text-center">
+            <span class="material-icons-outlined text-gray-300 dark:text-gray-600 text-6xl mb-4">account_balance_wallet</span>
+            <p class="text-gray-500 dark:text-gray-400">No wallet data available</p>
+        </div>
+        <% } %>
+    </div>
+</main>
+
+</body>
+</html>

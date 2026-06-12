@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50">
+    <%- include('../partials/user-navbar') %>
+
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+
+
+            <% if (cart.items.length===0) { %>
+                <!-- Empty Cart -->
+                <div class="bg-white rounded-lg shadow-sm p-12 text-center">
+
+                    <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                    <h2 class="text-2xl font-bold text-gray-700 mb-2">Your cart is empty</h2>
+                    <p class="text-gray-500 mb-6">Add courses to your cart to get started</p>
+                    <a href="/user/courses"
+                        class="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">
+                        Browse Courses
+                    </a>
+                </div>
+                <% } else { %>
+                    <!-- Cart with Items -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Cart Items -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <% cart.items.forEach(item=> { %>
+                                <% if (item.course) { %>
+                                    <div class="bg-white rounded-lg shadow-sm p-4 flex gap-4">
+                                        <!-- Course Thumbnail -->
+                                        <div class="w-32 h-20 flex-shrink-0">
+                                            <% if (item.course.thumbnail) { %>
+                                                <img src="<%= item.course.thumbnail %>" alt="<%= item.course.title %>"
+                                                    class="w-full h-full object-cover rounded">
+                                                <% } else { %>
+                                                    <div
+                                                        class="w-full h-full bg-gradient-to-br from-teal-500 to-teal-700 rounded flex items-center justify-center">
+                                                        <i class="fas fa-book text-white text-2xl"></i>
+                                                    </div>
+                                                    <% } %>
+                                        </div>
+
+                                        <!-- Course Info -->
+                                        <div class="flex-1">
+                                            <h3 class="font-bold text-gray-900 mb-1">
+                                                <%= item.course.title %>
+                                            </h3>
+                                            <p class="text-sm text-gray-500 mb-2">By <%= item.course.tutor.fullName %>
+                                            </p>
+                                            <span
+                                                class="inline-block px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded">
+                                                <%= item.course.category %>
+                                            </span>
+                                        </div>
+
+                                        <!-- Price and Remove -->
+                                        <div class="flex flex-col items-end justify-between">
+                                            <p class="text-xl font-bold text-teal-600">₹<%=
+                                                    item.course.price.toLocaleString() %>
+                                            </p>
+                                            <button type="button"
+                                                onclick="removeFromCart('<%= item.course._id.toString() %>')"
+                                                class="text-red-600 hover:text-red-700 text-sm flex items-center gap-1 cursor-pointer">
+                                                <i class="fas fa-trash"></i>
+                                                <span>Remove</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% }); %>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+                                <h2 class="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
+
+                                <div class="space-y-3 mb-4">
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Items (<%= cart.items.length %>)</span>
+                                        <span>₹<%= total.toLocaleString() %></span>
+                                    </div>
+
+                                    <!-- Coupon Section -->
+                                    <% if (appliedCoupon) { %>
+                                        <div class="flex justify-between text-green-600">
+                                            <span class="flex items-center gap-1">
+                                                <i class="fas fa-tag text-xs"></i>
+                                                <%= appliedCoupon.code %>
+                                                    <button onclick="removeCouponCode()"
+                                                        class="text-red-400 hover:text-red-600 ml-1 text-xs">✕</button>
+                                            </span>
+                                            <span>- ₹<%= appliedCoupon.discount.toLocaleString() %></span>
+                                        </div>
+                                        <% } else { %>
+                                            <div class="flex gap-2">
+                                                <input type="text" id="couponInput" placeholder="Enter coupon code"
+                                                    class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 uppercase">
+                                                <button onclick="applyCouponCode()"
+                                                    class="bg-teal-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-teal-700">
+                                                    Apply
+                                                </button>
+                                            </div>
+                                            <% } %>
+
+                                                <div class="border-t pt-3 flex justify-between font-bold text-lg">
+                                                    <span>Total</span>
+                                                    <span class="text-teal-600">
+                                                        ₹<%= appliedCoupon ? appliedCoupon.finalTotal.toLocaleString() :
+                                                            total.toLocaleString() %>
+                                                    </span>
+                                                </div>
+                                                <% if (appliedCoupon) { %>
+                                                    <p class="text-green-600 text-sm text-center font-medium">
+                                                        🎉 You save ₹<%= appliedCoupon.discount.toLocaleString() %>!
+                                                    </p>
+                                                    <% } %>
+                                </div>
+
+                                <button onclick="proceedToCheckout()"
+                                    class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition mb-3">
+                                    <i class="fas fa-lock mr-2"></i>Proceed to Checkout
+                                </button>
+
+                                <a href="/user/courses"
+                                    class="block text-center text-teal-600 hover:text-teal-700 text-sm">
+                                    <i class="fas fa-arrow-left mr-1"></i>Continue Shopping
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+        </div>
+
+        <!-- Razorpay Checkout Script -->
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+        <script>
+            // Remove from Cart Function with SweetAlert
+            async function removeFromCart(courseId) {
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to remove this course from your cart?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9b1',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove it!',
+                    cancelButtonText: 'Cancel'
+                });
+
+                if (!result.isConfirmed) return;
+
+                try {
+                    const response = await fetch(`/user/cart/remove/${courseId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // 1. Update the cart count in the navbar immediately
+                        if (typeof window.updateCartCount === 'function') {
+                            window.updateCartCount();
+                        }
+
+                        await Swal.fire({
+                            title: 'Removed!',
+                            text: 'Course has been removed from your cart.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Failed to remove course from cart',
+                            confirmButtonColor: '#00d9b1'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Remove error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while removing the course',
+                        confirmButtonColor: '#00d9b1'
+                    });
+                }
+            }
+
+            async function applyCouponCode() {
+                const code = document.getElementById('couponInput').value.trim();
+                if (!code) {
+                    Swal.fire({ icon: 'warning', title: 'Enter a coupon code', confirmButtonColor: '#00d9b1' });
+                    return;
+                }
+                try {
+                    const res = await fetch('/user/cart/apply-coupon', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        Swal.fire({ icon: 'success', title: 'Coupon Applied!', text: data.message, timer: 1500, showConfirmButton: false })
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Invalid Coupon', text: data.message, confirmButtonColor: '#00d9b1' });
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to apply coupon' });
+                }
+            }
+
+            async function removeCouponCode() {
+                try {
+                    await fetch('/user/cart/remove-coupon', { method: 'POST' });
+                    location.reload();
+                } catch (err) {
+                    console.error('Remove coupon error:', err);
+                }
+            }
+
+            async function proceedToCheckout() {
+                try {
+                    const courseIds = <%- JSON.stringify(cart.items.map(item => item.course._id)) %>;
+
+                    if (courseIds.length === 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cart Empty',
+                            text: 'Your cart is empty',
+                            confirmButtonColor: '#00d9b1'
+                        });
+                        return;
+                    }
+
+                    // Create order
+                    const response = await fetch('/user/payment/create-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ courseIds })
+                    });
+
+                    const data = await response.json();
+
+                    if (!data.success) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Failed',
+                            text: data.message || 'Failed to create order',
+                            confirmButtonColor: '#00d9b1'
+                        });
+                        return;
+                    }
+
+                    // Razorpay options
+                    const options = {
+                        key: 'rzp_test_RXk9uJlrmjEW0r',
+                        amount: data.order.amount,
+                        currency: data.order.currency,
+                        name: 'Learnify',
+                        description: 'Course Purchase',
+                        order_id: data.order.id,
+                        handler: async function (response) {
+                            const verifyResponse = await fetch('/user/payment/verify', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    courseIds: courseIds
+                                })
+                            });
+
+                            const verifyData = await verifyResponse.json();
+
+                            console.log('Payment verification response:', verifyData);
+
+                            if (verifyData.success) {
+                                console.log('Redirecting to:', verifyData.redirectUrl);
+                                // Redirect to success page
+                                window.location.href = verifyData.redirectUrl || '/user/payment/success';
+                            } else {
+                                console.log('Payment failed, redirecting to failure page');
+                                // Redirect to failure page
+                                window.location.href = `/user/payment/failure?error=${encodeURIComponent(verifyData.message)}&courseIds=${courseIds.join(',')}`;
+                            }
+                        },
+                        prefill: {
+                            name: '<%= user.fullName %>',
+                            email: '<%= user.email %>'
+                        },
+                        theme: {
+                            color: '#00d9b1'
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                // Redirect to failure page if user closes modal
+                                window.location.href = `/user/payment/failure?error=Payment cancelled by user&courseIds=${courseIds.join(',')}`;
+                            }
+                        }
+                    };
+
+                    const razorpay = new Razorpay(options);
+                    razorpay.on('payment.failed', function (response) {
+                        // Redirect to failure page on payment failure
+                        window.location.href = `/user/payment/failure?orderId=${response.error.metadata.order_id}&error=${encodeURIComponent(response.error.description)}&courseIds=${courseIds.join(',')}`;
+                    });
+                    razorpay.open();
+
+                } catch (error) {
+                    console.error('Checkout error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Checkout Failed',
+                        text: 'Checkout failed. Please try again.',
+                        confirmButtonColor: '#00d9b1'
+                    });
+                }
+            }
+        </script>
+</body>
+
+</html>

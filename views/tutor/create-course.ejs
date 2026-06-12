@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Course - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .main-content { 
+            margin-left: 260px; 
+            flex: 1; 
+            padding: 2rem; 
+            width: calc(100% - 260px);
+            min-height: 100vh;
+        }
+        
+        .form-container { max-width: 900px; margin: 0 auto; }
+        .form-card { background: white; padding: 3rem; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        
+        .form-title { text-align: center; font-size: 1.75rem; font-weight: 700; margin-bottom: 3rem; color: #1a1a1a; }
+        
+        .form-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        
+        .form-left, .form-right { display: flex; flex-direction: column; gap: 1.5rem; }
+        
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+        .form-group label .required { color: #ef4444; margin-left: 2px; }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 0.75rem 1rem; 
+            border: 1px solid #d1d5db; 
+            border-radius: 8px; 
+            font-size: 0.9rem; 
+            font-family: Inter, sans-serif; 
+            transition: all 0.3s;
+            background: white;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+            outline: none; 
+            border-color: #00d9b1;
+            box-shadow: 0 0 0 3px rgba(0, 217, 177, 0.1);
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: #9ca3af;
+        }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        .upload-area:hover {
+            border-color: #00d9b1;
+            background: #f0f9f6;
+        }
+        .upload-area input {
+            display: none;
+        }
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: #e5e7eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-icon svg {
+            width: 32px;
+            height: 32px;
+            color: #9ca3af;
+        }
+        .upload-text {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+        .upload-hint {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .thumbnail-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .create-btn {
+            grid-column: 1 / -1;
+            background: #00d9b1;
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .create-btn:hover {
+            background: #00c29d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 217, 177, 0.3);
+        }
+        .create-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @media (max-width: 1439px) {
+            .main-content { margin-left: 240px; width: calc(100% - 240px); }
+        }
+        
+        @media (max-width: 1023px) {
+            .main-content { margin-left: 220px; width: calc(100% - 220px); }
+        }
+        
+        @media (max-width: 899px) {
+            .main-content { margin-left: 200px; width: calc(100% - 200px); }
+            .form-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+            .create-btn { grid-column: 1; }
+        }
+        
+        @media (max-width: 767px) {
+            .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+            .form-card { padding: 1.5rem; }
+            .form-title { font-size: 1.5rem; margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
+
+<div class="main-content">
+    <div class="form-container">
+        <div class="form-card">
+            <h1 class="form-title">Add New Course</h1>
+
+            <form id="createCourseForm">
+                <div class="form-layout">
+                    <!-- Left Column -->
+                    <div class="form-left">
+                        <div class="form-group">
+                            <label>Course Title <span class="required">*</span></label>
+                            <input type="text" id="title" name="title" placeholder="Enter course title" maxlength="100">
+                            <small>5-100 characters</small>
+                            <span id="titleErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Course Category <span class="required">*</span></label>
+                            <select id="category" name="category">
+                                <option value="">Select a category</option>
+                                <% if (typeof categories !== 'undefined' && categories && categories.length > 0) { %>
+                                    <% categories.forEach(category => { %>
+                                        <option value="<%= category.name %>"><%= category.name %></option>
+                                    <% }); %>
+                                <% } else { %>
+                                    <option value="" disabled>No categories available - Please contact admin</option>
+                                <% } %>
+                            </select>
+                            <span id="categoryErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Level <span class="required">*</span></label>
+                            <select id="level" name="level">
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Regular Price <span class="required">*</span></label>
+                            <input type="number" id="price" name="price" placeholder="Enter price in ₹" min="0" step="1">
+                            <small>Set 0 for free courses</small>
+                            <span id="priceErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Offer Price (₹)</label>
+                            <input type="number" id="discountPrice" name="discountPrice" placeholder="Enter offer price in ₹" min="0" step="1">
+                            <span id="discountErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
+                        </div>
+
+
+                     
+                    <!-- Right Column -->
+                    <div class="form-right">
+                        <div class="form-group">
+                            <label>Upload Cover Image <span class="required">*</span></label>
+                            <div class="upload-area" onclick="document.getElementById('thumbnailInput').click()">
+                                <input type="file" id="thumbnailInput" accept="image/*">
+                                <div class="upload-icon">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <p class="upload-text">Course Thumbnail</p>
+                                <p class="upload-hint">Click to upload image (JPG, PNG - Max 5MB)</p>
+                                <img id="thumbnailPreview" class="thumbnail-preview" style="display: none;">
+                            </div>
+                            <span id="thumbnailErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description <span class="required">*</span></label>
+                            <textarea id="description" name="description" placeholder="Enter course description" maxlength="1000"></textarea>
+                            <small><span id="descCount">0</span>/1000 characters (minimum 20)</small>
+                            <span id="descErr" style="display:none;color:#ef4444;font-size:0.8rem;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="create-btn" id="submitBtn">
+                        CREATE COURSE
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character counter for description
+document.getElementById('description').addEventListener('input', function(e) {
+    document.getElementById('descCount').textContent = e.target.value.length;
+});
+
+// Thumbnail preview with validation
+document.getElementById('thumbnailInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Image size must be less than 5MB', 'error');
+            this.value = '';
+            return;
+        }
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showToast('Please upload a valid image file', 'error');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('thumbnailPreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Simple helper: show/clear inline error
+function setErr(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+}
+function redBorder(id, on) {
+    const el = document.getElementById(id);
+    if (el) el.style.border = on ? '1.5px solid #ef4444' : '';
+}
+// Clear error when user edits field
+['title','category','price','discountPrice','description'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => { setErr(id+'Err',''); redBorder(id,false); });
+    if (el) el.addEventListener('change', () => { setErr(id+'Err',''); redBorder(id,false); });
+});
+document.getElementById('thumbnailInput').addEventListener('change', () => { setErr('thumbnailErr',''); });
+
+// Form submission
+document.getElementById('createCourseForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const title        = document.getElementById('title').value.trim();
+    const description  = document.getElementById('description').value.trim();
+    const category     = document.getElementById('category').value;
+    const level        = document.getElementById('level').value;
+    const price        = document.getElementById('price').value;
+    const discountPrice = document.getElementById('discountPrice').value;
+    const thumbnailFile = document.getElementById('thumbnailInput').files[0];
+
+    let hasError = false;
+
+    // Title
+    if (!title) {
+        setErr('titleErr', 'Course title is required.'); redBorder('title', true); hasError = true;
+    } else if (title.length < 5) {
+        setErr('titleErr', 'Title must be at least 5 characters.'); redBorder('title', true); hasError = true;
+    } else { setErr('titleErr', ''); redBorder('title', false); }
+
+    // Category
+    if (!category) {
+        setErr('categoryErr', 'Please select a category.'); redBorder('category', true); hasError = true;
+    } else { setErr('categoryErr', ''); redBorder('category', false); }
+
+    // Price (allow 0 for free courses)
+    if (price === '' || isNaN(price) || parseFloat(price) < 0) {
+        setErr('priceErr', 'Please enter a valid price (0 or more).'); redBorder('price', true); hasError = true;
+    } else { setErr('priceErr', ''); redBorder('price', false); }
+
+    // Offer price
+    if (discountPrice !== '') {
+        if (isNaN(discountPrice) || parseFloat(discountPrice) < 0) {
+            setErr('discountErr', 'Please enter a valid offer price.'); redBorder('discountPrice', true); hasError = true;
+        } else if (parseFloat(discountPrice) >= parseFloat(price)) {
+            setErr('discountErr', 'Offer price must be less than regular price.'); redBorder('discountPrice', true); hasError = true;
+        } else { setErr('discountErr', ''); redBorder('discountPrice', false); }
+    }
+
+    // Thumbnail
+    if (!thumbnailFile) {
+        setErr('thumbnailErr', 'Please upload a course thumbnail.'); hasError = true;
+    } else { setErr('thumbnailErr', ''); }
+
+    // Description
+    if (!description) {
+        setErr('descErr', 'Description is required.'); redBorder('description', true); hasError = true;
+    } else if (description.length < 20) {
+        setErr('descErr', 'Description must be at least 20 characters.'); redBorder('description', true); hasError = true;
+    } else { setErr('descErr', ''); redBorder('description', false); }
+
+    if (hasError) return;
+
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem"><svg style="width:20px;height:20px;animation:spin 1s linear infinite" fill="none" viewBox="0 0 24 24"><circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> CREATING...</span>';
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('level', level);
+    formData.append('price', price);
+    if (discountPrice) formData.append('discountPrice', discountPrice);
+    formData.append('thumbnail', thumbnailFile);
+
+    try {
+        const response = await fetch('/tutor/courses/create', { method: 'POST', body: formData });
+        const data = await response.json();
+        if (data.success) {
+            showToast('Course created successfully!', 'success');
+            setTimeout(() => { window.location.href = '/tutor/courses'; }, 1000);
+        } else {
+            showToast(data.message || 'Failed to create course', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    } catch (error) {
+        showToast('Something went wrong', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
+
+// Toast notification
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-weight: 600;
+        ${type === 'success' ? 'background: #10b981; color: white;' : 'background: #ef4444; color: white;'}
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+
+</body>
+</html>

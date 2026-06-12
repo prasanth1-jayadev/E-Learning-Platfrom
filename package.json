@@ -1,10 +1,12 @@
 {
   "name": "e-learning-site-in-ejs",
   "version": "1.0.0",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -12,16 +14,23 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "form-data": "^4.0.5",
     "mongoose": "^9.3.1",
     "multer": "^2.1.1",
+    "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^8.0.3",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "pdfkit": "^0.18.0",
+    "razorpay": "^2.9.6",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   }
 }

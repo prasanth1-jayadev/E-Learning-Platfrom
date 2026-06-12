@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes drawX {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .error-icon {
+            animation: scaleIn 0.5s ease-out, shake 0.5s ease-out 0.5s;
+        }
+
+        .x-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawX 0.6s ease-out 0.3s forwards;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-red-50 to-orange-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-2xl w-full">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 text-center">
+
+            <!-- Error Icon -->
+            <div class="mb-6 flex justify-center">
+                <svg class="error-icon" width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="54" fill="#ef4444" opacity="0.1" />
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#ef4444" stroke-width="4" />
+                    <path class="x-path" d="M 40 40 L 80 80" stroke="#ef4444" stroke-width="6" stroke-linecap="round" />
+                    <path class="x-path" d="M 80 40 L 40 80" stroke="#ef4444" stroke-width="6" stroke-linecap="round" style="animation-delay: 0.4s;" />
+                </svg>
+            </div>
+
+            <!-- Error Message -->
+            <div class="fade-in-up" style="animation-delay: 0.5s;">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Payment Failed</h1>
+                <p class="text-lg text-gray-600 mb-6">Unfortunately, your payment could not be processed.</p>
+            </div>
+
+            <!-- Error Details -->
+            <div class="fade-in-up bg-red-50 border-2 border-red-200 rounded-xl p-6 mb-6" style="animation-delay: 0.7s;">
+                <div class="flex items-start gap-3 text-left">
+                    <i class="fas fa-exclamation-circle text-red-500 text-xl mt-1"></i>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-900 mb-2">What went wrong?</h3>
+                        <p class="text-sm text-gray-700 mb-3">
+                            <%= errorMessage || 'The payment transaction was declined or cancelled. This could be due to insufficient funds, incorrect card details, or network issues.' %>
+                        </p>
+                        <% if (orderId) { %>
+                            <p class="text-xs text-gray-500">
+                                <span class="font-semibold">Reference ID:</span> <%= orderId %>
+                            </p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Common Reasons -->
+            <div class="fade-in-up text-left bg-gray-50 rounded-xl p-6 mb-6" style="animation-delay: 0.9s;">
+                <h3 class="font-bold text-gray-900 mb-4 text-center">Common Reasons for Payment Failure</h3>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-credit-card text-teal-600 mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 text-sm">Incorrect Card Details</p>
+                            <p class="text-xs text-gray-600">Check your card number, CVV, and expiry date</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-wallet text-teal-600 mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 text-sm">Insufficient Balance</p>
+                            <p class="text-xs text-gray-600">Ensure you have enough funds in your account</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-shield-alt text-teal-600 mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 text-sm">Bank Security Block</p>
+                            <p class="text-xs text-gray-600">Your bank may have blocked the transaction for security</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-wifi text-teal-600 mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 text-sm">Network Issues</p>
+                            <p class="text-xs text-gray-600">Poor internet connection during payment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses in Cart (if available) -->
+            <% if (courses && courses.length > 0) { %>
+                <div class="fade-in-up mb-6" style="animation-delay: 1.1s;">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Items in Your Cart</h3>
+                    <div class="space-y-3">
+                        <% courses.forEach(course => { %>
+                            <div class="bg-white border-2 border-gray-200 rounded-lg p-4 flex items-center gap-4">
+                                <% if (course.thumbnail) { %>
+                                    <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-16 h-16 rounded object-cover">
+                                <% } else { %>
+                                    <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-700 rounded flex items-center justify-center">
+                                        <i class="fas fa-book text-white text-xl"></i>
+                                    </div>
+                                <% } %>
+                                <div class="flex-1 text-left">
+                                    <h4 class="font-semibold text-gray-900"><%= course.title %></h4>
+                                    <p class="text-sm text-gray-500"><%= course.category %></p>
+                                </div>
+                                <p class="font-bold text-teal-600">₹<%= course.price.toLocaleString() %></p>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Action Buttons -->
+            <div class="fade-in-up flex flex-col sm:flex-row gap-4 justify-center" style="animation-delay: 1.3s;">
+                <button id="retryBtn" onclick="retryPayment()" class="inline-flex items-center justify-center px-8 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition shadow-lg hover:shadow-xl">
+                    <i class="fas fa-redo mr-2"></i>
+                    Try Again
+                </button>
+
+                <a href="/user/courses" class="inline-flex items-center justify-center px-8 py-3 bg-white text-gray-700 font-semibold rounded-lg border-2 border-gray-300 hover:border-teal-600 hover:text-teal-600 transition">
+                    <i class="fas fa-book mr-2"></i>
+                    Browse Courses
+                </a>
+            </div>
+
+            <!-- Help Section -->
+            <div class="fade-in-up mt-8 pt-6 border-t border-gray-200" style="animation-delay: 1.5s;">
+                <p class="text-sm text-gray-600 mb-3">
+                    <i class="fas fa-info-circle mr-2 text-teal-600"></i>
+                    Don't worry! No amount has been deducted from your account.
+                </p>
+                <p class="text-sm text-gray-500">
+                    Need assistance? <a href="#" class="text-teal-600 hover:text-teal-700 font-semibold">Contact Support</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Alternative Payment Methods -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-6 fade-in-up" style="animation-delay: 1.7s;">
+            <h3 class="font-bold text-gray-900 mb-4 text-center">Try Alternative Payment Methods</h3>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
+                    <i class="fas fa-credit-card text-teal-600"></i>
+                    <span class="text-sm text-gray-700">Credit/Debit Card</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
+                    <i class="fas fa-university text-teal-600"></i>
+                    <span class="text-sm text-gray-700">Net Banking</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
+                    <i class="fas fa-mobile-alt text-teal-600"></i>
+                    <span class="text-sm text-gray-700">UPI</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
+                    <i class="fas fa-wallet text-teal-600"></i>
+                    <span class="text-sm text-gray-700">Wallets</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        console.log('Payment failure page script loaded');
+
+        async function retryPayment() {
+            console.log('Retry payment clicked');
+            console.log('Function is executing');
+            
+            <% if (courses && courses.length > 0) { %>
+                const courseIds = <%- JSON.stringify(courses.map(c => c._id)) %>;
+                console.log('Course IDs:', courseIds);
+                
+                try {
+                    // Create order
+                    const response = await fetch('/user/payment/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ courseIds })
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Order created:', data);
+                    
+                    if (!data.success) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Failed',
+                            text: data.message || 'Failed to create order',
+                            confirmButtonColor: '#00d9b1'
+                        });
+                        return;
+                    }
+                    
+                    // Razorpay options
+                    const options = {
+                        key: 'rzp_test_RXk9uJlrmjEW0r',
+                        amount: data.order.amount,
+                        currency: data.order.currency,
+                        name: 'Learnify',
+                        description: 'Course Purchase',
+                        order_id: data.order.id,
+                        handler: async function (response) {
+                            console.log('Payment successful, verifying...');
+                            const verifyResponse = await fetch('/user/payment/verify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    courseIds: courseIds
+                                })
+                            });
+                            
+                            const verifyData = await verifyResponse.json();
+                            console.log('Verification response:', verifyData);
+                            
+                            if (verifyData.success) {
+                                window.location.href = verifyData.redirectUrl || '/user/payment/success';
+                            } else {
+                                window.location.href = `/user/payment/failure?error=${encodeURIComponent(verifyData.message)}&courseIds=${courseIds.join(',')}`;
+                            }
+                        },
+                        prefill: {
+                            name: '<%= user.fullName %>',
+                            email: '<%= user.email %>'
+                        },
+                        theme: {
+                            color: '#00d9b1'
+                        },
+                        modal: {
+                            ondismiss: function() {
+                                console.log('Payment modal dismissed');
+                                window.location.href = `/user/payment/failure?error=Payment cancelled by user&courseIds=${courseIds.join(',')}`;
+                            }
+                        }
+                    };
+                    
+                    const razorpay = new Razorpay(options);
+                    razorpay.on('payment.failed', function (response) {
+                        console.log('Payment failed:', response);
+                        window.location.href = `/user/payment/failure?orderId=${response.error.metadata.order_id}&error=${encodeURIComponent(response.error.description)}&courseIds=${courseIds.join(',')}`;
+                    });
+                    razorpay.open();
+                    
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Failed',
+                        text: 'Failed to initiate payment. Please try again.',
+                        confirmButtonColor: '#00d9b1'
+                    });
+                }
+            <% } else { %>
+                console.log('No courses in cart');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cart Empty',
+                    text: 'Your cart is empty. Please add courses first.',
+                    confirmButtonColor: '#00d9b1'
+                }).then(() => {
+                    window.location.href = '/user/courses';
+                });
+            <% } %>
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00d9b1'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f3;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* Fixed Sidebar Layout */
+        .page-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        @media (min-width: 768px) {
+            .page-container {
+                padding: 2rem 2rem;
+            }
+        }
+
+        /* Sidebar - Sticky/Fixed on Left */
+        aside {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 2rem;
+            align-self: flex-start;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+
+        /* Hide scrollbar for sidebar */
+        aside::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        aside::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        aside::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        aside::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        @media (max-width: 1023px) {
+            .page-container {
+                flex-direction: column;
+            }
+            
+            aside {
+                width: 100%;
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+        }
+
+        /* Minimal Header */
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+        }
+
+        @media (min-width: 768px) {
+            .page-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        .course-count {
+            font-size: 0.875rem;
+            color: white;
+            background: #00d9b1;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Minimal Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .course-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .course-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Minimal Course Card */
+        .course-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            border-color: #00d9b1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .course-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            background: #f3f4f6;
+            overflow: hidden;
+        }
+
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-content {
+            padding: 1rem;
+        }
+
+        .course-category {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #00d9b1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.4rem;
+        }
+
+        .course-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.65rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.5rem;
+        }
+
+        .course-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.65rem;
+            border-top: 1px solid #f3f4f6;
+            margin-bottom: 0.85rem;
+        }
+
+        .instructor-info {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .instructor-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.65rem;
+            color: #6b7280;
+            overflow: hidden;
+        }
+
+        .instructor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .instructor-name {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .lesson-count {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .continue-btn {
+            width: 100%;
+            padding: 0.5rem;
+            background: #00d9b1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size:  0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .continue-btn:hover {
+            background: #00c29d;
+        }
+
+        .continue-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Minimal Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-icon svg {
+            width: 40px;
+            height: 40px;
+            color: #9ca3af;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-description {
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 0.875rem 2rem;
+            background: #00d9b1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .browse-btn:hover {
+            background: #00c29d;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f9fafb;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/user-navbar') %>
+
+    <!-- Page Container with Fixed Sidebar -->
+    <div class="page-container">
+        <!-- Fixed Sidebar on Left -->
+        <%- include('../partials/user-profile-sidebar', { user: user, currentPage: 'my-courses' }) %>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+        <!-- Minimal Header -->
+        <div class="page-header">
+            <div class="header-top">
+                <h1 class="page-title">My Courses</h1>
+                <span class="course-count"><%= courses.length %> courses</span>
+            </div>
+            <p class="page-subtitle">Continue learning and track your progress</p>
+        </div>
+
+        <% if (courses && courses.length > 0) { %>
+            <!-- Course Grid -->
+            <div class="course-grid">
+                <% courses.forEach(course => { %>
+                    <div class="course-card" onclick="window.location.href='/user/course/<%= course._id %>'">
+                        <div class="course-thumbnail">
+                            <% if (course.thumbnail) { %>
+                                <img src="<%= course.thumbnail %>" alt="<%= course.title %>">
+                            <% } else { %>
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 700; font-size: 2rem;">
+                                    <%= course.title.substring(0, 2).toUpperCase() %>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="course-content">
+                            <% if (course.category) { %>
+                                <div class="course-category"><%= course.category %></div>
+                            <% } %>
+                            <h3 class="course-title"><%= course.title %></h3>
+                            <div class="course-meta">
+                                <div class="instructor-info">
+                                    <div class="instructor-avatar">
+                                        <% if (course.tutor && course.tutor.avatar) { %>
+                                            <img src="<%= course.tutor.avatar %>" alt="<%= course.tutor.fullName %>">
+                                        <% } else if (course.tutor && course.tutor.fullName) { %>
+                                            <%= course.tutor.fullName.charAt(0).toUpperCase() %>
+                                        <% } else { %>
+                                            ?
+                                        <% } %>
+                                    </div>
+                                    <span class="instructor-name">
+                                        <%= course.tutor ? course.tutor.fullName : 'Instructor' %>
+                                    </span>
+                                </div>
+                                <span class="lesson-count">
+                                    <%= course.lessons ? course.lessons.length : 0 %> lessons
+                                </span>
+                            </div>
+                            <button class="continue-btn">Continue Learning</button>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <!-- Minimal Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                </div>
+                <h2 class="empty-title">No courses yet</h2>
+                <p class="empty-description">
+                    Start your learning journey by exploring our course catalog and enrolling in courses that interest you.
+                </p>
+                <a href="/user/courses" class="browse-btn">Browse Courses</a>
+            </div>
+        <% } %>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            © 2024 Learnify. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+
+</html>

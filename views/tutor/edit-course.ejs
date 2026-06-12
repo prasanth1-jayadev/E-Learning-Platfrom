@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .main-content { 
+            margin-left: 260px; 
+            flex: 1; 
+            padding: 2rem; 
+            width: calc(100% - 260px);
+            min-height: 100vh;
+        }
+        
+        .page-header { background: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .page-header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .page-header p { color: #666; font-size: 0.95rem; }
+        
+        .form-container { max-width: 900px; margin: 0 auto; }
+        .form-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        
+        .form-section { margin-bottom: 2rem; }
+        .form-section:last-child { margin-bottom: 0; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+        .form-group label .required { color: #ef4444; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; font-family: Inter, sans-serif; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #00d9b1; }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .form-group .hint { font-size: 0.8rem; color: #9ca3af; margin-top: 0.35rem; }
+        
+        .thumbnail-upload { border: 2px dashed #e5e7eb; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .thumbnail-upload:hover { border-color: #00d9b1; background: #f0f9f6; }
+        .thumbnail-upload input { display: none; }
+        .thumbnail-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 1rem; }
+        
+        .form-actions { display: flex; gap: 1rem; padding-top: 2rem; border-top: 1px solid #e5e7eb; }
+        .btn { padding: 0.85rem 1.75rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-primary { background: #00d9b1; color: white; flex: 1; }
+        .btn-primary:hover { background: #00c29d; }
+        .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+        .btn-secondary { background: #f3f4f6; color: #666; }
+        .btn-secondary:hover { background: #e5e7eb; }
+        .btn-danger { background: #fee; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-danger:hover { background: #fecaca; }
+        
+        @media (max-width: 1439px) {
+            .main-content { margin-left: 240px; width: calc(100% - 240px); }
+        }
+        
+        @media (max-width: 1023px) {
+            .main-content { margin-left: 220px; width: calc(100% - 220px); }
+            .form-grid { grid-template-columns: 1fr; gap: 0; }
+        }
+        
+        @media (max-width: 899px) {
+            .main-content { margin-left: 200px; width: calc(100% - 200px); }
+        }
+        
+        @media (max-width: 767px) {
+            .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+            .form-card { padding: 1.5rem; }
+            .form-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>Edit Course</h1>
+        <p>Update your course information and settings</p>
+    </div>
+
+    <div class="form-container">
+        <div class="form-card">
+            <form id="editCourseForm">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label>Course Title <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" value="<%= course.title %>" maxlength="100">
+                        <span class="hint">5-100 characters</span>
+                        <span id="titleError" style="display:none; color:#ef4444; font-size:0.8rem;"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description <span class="required">*</span></label>
+                        <textarea id="description" name="description" maxlength="1000"><%= course.description %></textarea>
+                        <span class="hint"><span id="descCount"><%= course.description.length %></span>/1000 characters (minimum 20)</span>
+                        <span id="descError" style="display:none; color:#ef4444; font-size:0.8rem;"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Course Thumbnail</label>
+                        <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
+                            <input type="file" id="thumbnailInput" name="thumbnail" accept="image/*">
+                            <% if (course.thumbnail) { %>
+                                <img src="<%= course.thumbnail %>" class="thumbnail-preview" id="thumbnailPreview">
+                            <% } else { %>
+                                <div style="padding: 2rem; text-align: center; color: #9ca3af;">
+                                    <svg style="width: 48px; height: 48px; margin: 0 auto 0.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <p>Click to upload thumbnail</p>
+                                </div>
+                                <img class="thumbnail-preview" id="thumbnailPreview" style="display: none;">
+                            <% } %>
+                        </div>
+                        <span class="hint">Recommended size: 1280x720px</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Category <span class="required">*</span></label>
+                            <select id="category" name="category">
+                                <option value="">Select a category</option>
+                                <% if (categories && Array.isArray(categories) && categories.length > 0) { %>
+                                    <% categories.forEach(cat => { %>
+                                        <option value="<%= cat.name %>" <%= course.category === cat.name ? 'selected' : '' %>><%= cat.name %></option>
+                                    <% }); %>
+                                <% } else { %>
+                                    <% if (course.category) { %>
+                                        <option value="<%= course.category %>" selected><%= course.category %></option>
+                                    <% } %>
+                                <% } %>
+                            </select>
+                            <% if (!categories || categories.length === 0) { %>
+                                <span class="hint" style="color: #ef4444;">No categories available. Please contact admin to add categories.</span>
+                            <% } %>
+                            <span id="categoryError" style="display:none; color:#ef4444; font-size:0.8rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Level <span class="required">*</span></label>
+                            <select id="level" name="level" required>
+                                <option value="Beginner" <%= course.level === 'Beginner' ? 'selected' : '' %>>Beginner</option>
+                                <option value="Intermediate" <%= course.level === 'Intermediate' ? 'selected' : '' %>>Intermediate</option>
+                                <option value="Advanced" <%= course.level === 'Advanced' ? 'selected' : '' %>>Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Regular Price (₹) <span class="required">*</span></label>
+                            <input type="number" id="price" name="price" value="<%= course.price %>" min="0" step="1">
+                            <span class="hint">Set to 0 for free courses</span>
+                            <span id="priceError" style="display:none; color:#ef4444; font-size:0.8rem;"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Offer Price (₹)</label>
+                            <input type="number" id="discountPrice" name="discountPrice" value="<%= course.discountPrice || '' %>" min="0" step="1" placeholder="Optional">
+                            <span class="hint">Offer price (must be less than regular price)</span>
+                            <span id="discountError" style="display:none; color:#ef4444; font-size:0.8rem;"></span>
+                        </div>
+                    </div>
+                </div>
+                     
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        Update Course
+                    </button>
+                    <a href="/tutor/courses" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character counter for description
+document.getElementById('description').addEventListener('input', function(e) {
+    document.getElementById('descCount').textContent = e.target.value.length;
+});
+
+// Thumbnail preview with validation
+document.getElementById('thumbnailInput')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Image size must be less than 5MB', 'error');
+            this.value = '';
+            return;
+        }
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showToast('Please upload a valid image file', 'error');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('thumbnailPreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// --- Inline error helpers ---
+function setFieldError(inputId, errorId, msg) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errorId);
+    if (input) input.style.border = msg ? '1.5px solid #ef4444' : '1px solid #e5e7eb';
+    if (err) { err.textContent = msg; err.style.display = msg ? 'block' : 'none'; }
+}
+
+// Clear errors on input
+['title','description','category','price','discountPrice'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => setFieldError(id, id + 'Error', ''));
+    if (el) el.addEventListener('change', () => setFieldError(id, id + 'Error', ''));
+});
+
+document.getElementById('editCourseForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // --- JS Validation ---
+    let hasError = false;
+
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const category = document.getElementById('category').value;
+    const price = document.getElementById('price').value;
+    const discountPrice = document.getElementById('discountPrice').value;
+    const thumbnailFile = document.getElementById('thumbnailInput').files[0];
+
+    if (!title) {
+        setFieldError('title', 'titleError', 'Course title is required.');
+        hasError = true;
+    } else if (title.length < 5) {
+        setFieldError('title', 'titleError', 'Title must be at least 5 characters.');
+        hasError = true;
+    } else {
+        setFieldError('title', 'titleError', '');
+    }
+
+    if (!description) {
+        setFieldError('description', 'descError', 'Description is required.');
+        hasError = true;
+    } else if (description.length < 20) {
+        setFieldError('description', 'descError', 'Description must be at least 20 characters.');
+        hasError = true;
+    } else {
+        setFieldError('description', 'descError', '');
+    }
+
+    if (!category) {
+        setFieldError('category', 'categoryError', 'Please select a category.');
+        hasError = true;
+    } else {
+        setFieldError('category', 'categoryError', '');
+    }
+
+    if (price === '' || price === null || isNaN(price) || parseFloat(price) < 0) {
+        setFieldError('price', 'priceError', 'Please enter a valid price (0 or more).');
+        hasError = true;
+    } else {
+        setFieldError('price', 'priceError', '');
+    }
+
+    if (discountPrice) {
+        if (isNaN(discountPrice) || parseFloat(discountPrice) < 0) {
+            setFieldError('discountPrice', 'discountError', 'Please enter a valid offer price.');
+            hasError = true;
+        } else if (parseFloat(discountPrice) >= parseFloat(price)) {
+            setFieldError('discountPrice', 'discountError', 'Offer price must be less than regular price.');
+            hasError = true;
+        } else {
+            setFieldError('discountPrice', 'discountError', '');
+        }
+    }
+
+    if (hasError) return;
+
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.5rem;"><svg style="width: 20px; height: 20px; animation: spin 1s linear infinite;" fill="none" viewBox="0 0 24 24"><circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Updating...</span>';
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('level', document.getElementById('level').value);
+    formData.append('price', price);
+    if (discountPrice) formData.append('discountPrice', discountPrice);
+    if (thumbnailFile) formData.append('thumbnail', thumbnailFile);
+
+    try {
+        const response = await fetch('/tutor/courses/<%= course._id %>/edit', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Course updated successfully!', 'success');
+            setTimeout(() => { window.location.href = '/tutor/courses'; }, 1000);
+        } else {
+            showToast(data.message || 'Failed to update course', 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    } catch (error) {
+        console.error('Update course error:', error);
+        showToast('Something went wrong', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+});
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-weight: 600;
+        ${type === 'success' ? 'background: #10b981; color: white;' : 'background: #ef4444; color: white;'}
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+
+</body>
+</html>

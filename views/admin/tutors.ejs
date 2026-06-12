@@ -78,6 +78,7 @@
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Joined Date</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certificate</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certified</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -103,13 +104,13 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                 <% if (tutor.certificatePath) { %>
-                                <a href="/<%= tutor.certificatePath %>" target="_blank" 
-                                   class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
-                                    <span class="material-icons-outlined text-xs">description</span>
-                                    View
-                                </a>
+                                    <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')" 
+                                       class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
+                                        <span class="material-icons-outlined text-xs">description</span>
+                                        View
+                                    </button>
                                 <% } else { %>
-                                <span class="text-slate-400">N/A</span>
+                                    <span class="text-slate-400">N/A</span>
                                 <% } %>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -120,6 +121,17 @@
                                 <% } else { %>
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                                     ACTIVE
+                                </span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (tutor.isCertified) { %>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    ✓ CERTIFIED
+                                </span>
+                                <% } else { %>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                                    NOT CERTIFIED
                                 </span>
                                 <% } %>
                             </td>
@@ -136,9 +148,15 @@
                                         Block
                                     </button>
                                     <% } %>
-                                    <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                                        View
+                                    <button onclick="toggleCertified('<%= tutor._id %>')" 
+                                            class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white <%= tutor.isCertified ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700' %>">
+                                        <%= tutor.isCertified ? 'Remove' : 'Certify' %>
                                     </button>
+                                    <a href="/admin/tutor/<%= tutor._id %>" 
+                                       class="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50">
+                                        <span class="material-icons-outlined text-xs">visibility</span>
+                                        View
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -188,9 +206,83 @@
         <% } %>
     </main>
 
+     <div id="certificateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-800" id="certificateTitle">Certificate</h3>
+                <button onclick="closeCertificateModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-icons-outlined text-slate-600">close</span>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-4 overflow-auto max-h-[calc(90vh-80px)]">
+                <img id="certificateImage" src="" alt="Certificate" class="w-full h-auto rounded-lg" />
+            </div>
+        </div>
+    </div>
+
     <script>
+        function viewCertificate(certificateUrl, tutorName) {
+            const modal = document.getElementById('certificateModal');
+            const image = document.getElementById('certificateImage');
+            const title = document.getElementById('certificateTitle');
+            
+            if (!certificateUrl) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Certificate Missing',
+                    text: 'Certificate URL is missing',
+                    confirmButtonColor: '#00d9b1'
+                });
+                return;
+            }
+            
+            title.textContent = `${tutorName}'s Certificate`;
+            image.src = '';
+            image.alt = 'Loading certificate...';
+            image.src = certificateUrl.trim();
+            
+            image.onload = function() {
+                // Certificate loaded successfully
+            };
+            
+            image.onerror = function() {
+                const modalBody = image.parentElement;
+                modalBody.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <svg style="width: 64px; height: 64px; margin: 0 auto 1rem; color: #ef4444;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">Certificate Not Available</h3>
+                        <p style="color: #6b7280; margin-bottom: 1rem;">Failed to load the certificate image</p>
+                    </div>
+                `;
+            };
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCertificateModal() {
+            const modal = document.getElementById('certificateModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('certificateModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCertificateModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCertificateModal();
+            }
+        });
+        
         async function toggleBlock(tutorId) {
-            // First get the current status to show appropriate message
             const tutorRow = document.querySelector(`button[onclick="toggleBlock('${tutorId}')"]`);
             const isCurrentlyBlocked = tutorRow.textContent.trim() === 'Unblock';
             const action = isCurrentlyBlocked ? 'unblock' : 'block';
@@ -240,7 +332,59 @@
                     text: 'Error changing block status',
                     icon: 'error'
                 });
-                console.error(error);
+            }
+        }
+
+        async function toggleCertified(tutorId) {
+            const tutorRow = document.querySelector(`button[onclick="toggleCertified('${tutorId}')"]`);
+            const isCurrentlyCertified = tutorRow.textContent.trim() === 'Remove Certified';
+            const action = isCurrentlyCertified ? 'remove certification from' : 'certify';
+            
+            const result = await Swal.fire({
+                title: `${isCurrentlyCertified ? 'Remove Certification?' : 'Mark as Certified?'}`,
+                text: `Are you sure you want to ${action} this tutor?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: isCurrentlyCertified ? '#EF4444' : '#3B82F6',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: `Yes, ${action}!`,
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) return;
+            
+            try {
+                const response = await fetch(`/admin/toggle-certified/${tutorId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseData = await response.json();
+                
+                if (responseData.success) {
+                    await Swal.fire({
+                        title: 'Success!',
+                        text: responseData.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: responseData.message,
+                        icon: 'error'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error changing certified status',
+                    icon: 'error'
+                });
             }
         }
     </script>

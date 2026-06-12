@@ -1,7 +1,11 @@
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const multer = require('multer');
+import pkg from 'cloudinary';
+import multer from 'multer';
+import { Readable } from 'stream';
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+const cloudinary = pkg.v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,33 +13,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Use memory storage
+const memoryStorage = multer.memoryStorage();
+const upload = multer({ storage: memoryStorage });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'tutor-certificates',
-    allowed_formats: ['pdf', 'png', 'jpg', 'jpeg'],
-    resource_type: 'auto'
-  }
-});
-
-
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
-  
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Invalid file type. Only PDF, PNG, JPG allowed'), false);
-  }
+// Helper: upload a Buffer to Cloudinary
+const uploadToCloudinary = (buffer, folder = 'uploads', resourceType = 'auto') => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: resourceType },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    const readable = new Readable();
+    readable.push(buffer);
+    readable.push(null);
+    readable.pipe(uploadStream);
+  });
 };
 
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: { 
-    fileSize: 5 * 1024 * 1024 
-  }
-});
-
-module.exports = { cloudinary, upload };
+export { upload, cloudinary, uploadToCloudinary };

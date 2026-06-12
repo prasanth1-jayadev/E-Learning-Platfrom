@@ -1,0 +1,134 @@
+import * as cartService from '../../service/cartService.js';
+import User from '../../models/User.js';
+import Coupon from '../../models/coupon.js';
+
+export const getCart = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId).select('fullName email avatar');
+    
+    const cart = await cartService.getCart(userId);
+    const total = cartService.getCartTotal(cart);
+    const appliedCoupon = req.session.appliedCoupon || null;
+
+    res.render('user/cart', {
+      cart,
+      total,
+      user,
+      currentPage: 'cart',
+      appliedCoupon
+    });
+  } catch (error) {
+    console.error('Get cart error:', error);
+    res.redirect('/user/courses');
+  }
+};
+
+export const addToCart = async (req, res) => {
+  try {
+    const { courseId } = req.body;
+    const userId = req.session.userId;
+
+    await cartService.addToCart(userId, courseId);
+
+    res.json({ success: true, message: 'Course added to cart' });
+  } catch (error) {
+    console.error('Add to cart error:', error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const removeFromCart = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.session.userId;
+
+    await cartService.removeFromCart(userId, courseId);
+
+    res.json({ success: true, message: 'Course removed from cart' });
+  } catch (error) {
+    console.error('Remove from cart error:', error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const getCartCount = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const count = await cartService.getCartCount(userId);
+    
+    res.json({ success: true, count });
+  } catch (error) {
+    console.error('Get cart count error:', error);
+    res.json({ success: false, count: 0 });
+  }
+};
+
+export const applyCoupon = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const userId = req.session.userId;
+
+    const cart = await cartService.getCart(userId);
+    const total = cartService.getCartTotal(cart);
+
+    const coupon = await Coupon.findOne({ code: code.toUpperCase(), isActive: true });
+
+    if (!coupon) {
+      return res.status(400).json({ success: false, message: 'Invalid or inactive coupon code' });
+    }
+
+    if (new Date(coupon.expiryDate) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Coupon has expired' });
+    }
+
+    if (coupon.usedCount >= coupon.usageLimit) {
+      return res.status(400).json({ success: false, message: 'Coupon usage limit reached' });
+    }
+
+    if (total < coupon.minOrderValue) {
+      return res.status(400).json({ success: false, message: `Minimum order value is ₹${coupon.minOrderValue}` });
+    }
+
+    // Calculate discount
+    let discount = 0;
+    if (coupon.discountType === 'percentage') {
+      discount = Math.floor((total * coupon.discountValue) / 100);
+      if (coupon.maxDiscount) {
+        discount = Math.min(discount, coupon.maxDiscount);
+      }
+    } else {
+      discount = coupon.discountValue;
+    }
+
+    const finalTotal = total - discount;
+
+    // Store in session
+    req.session.appliedCoupon = {
+      code: coupon.code,
+      couponId: coupon._id,
+      discount,
+      finalTotal
+    };
+
+    res.json({
+      success: true,
+      message: `Coupon applied! You save ₹${discount}`,
+      discount,
+      finalTotal
+    });
+
+  } catch (error) {
+    console.error('Apply coupon error:', error);
+    res.status(500).json({ success: false, message: 'Failed to apply coupon' });
+  }
+};
+
+export const removeCoupon = async (req, res) => {
+  try {
+    req.session.appliedCoupon = null;
+    res.json({ success: true, message: 'Coupon removed' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to remove coupon' });
+  }
+};

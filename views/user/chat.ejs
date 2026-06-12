@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - Learnify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: '#2beead', primary: '#00d9b1' },
+                    fontFamily: { display: ['Be Vietnam Pro', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        .chat-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+
+<body class="font-display bg-gray-50">
+    <%- include('../partials/user-navbar') %>
+
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                style="height: calc(100vh - 200px);">
+                <div class="flex h-full">
+
+                    <!-- Conversations Sidebar -->
+                    <div class="w-80 border-r border-gray-100 flex flex-col">
+                        <div class="p-4 border-b border-gray-100">
+                            <h2 class="text-xl font-bold text-gray-900">Messages</h2>
+                            <p class="text-xs text-gray-500 mt-1">Chat with your tutors</p>
+                        </div>
+
+                        <div id="conversations-list" class="flex-1 overflow-y-auto chat-scroll">
+                            <!-- Conversations will be loaded here -->
+                            <div class="flex items-center justify-center h-full">
+                                <div class="text-center">
+                                    <i class="fas fa-spinner fa-spin text-3xl text-gray-300 mb-2"></i>
+                                    <p class="text-sm text-gray-400">Loading conversations...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Main Area -->
+                    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
+                        <!-- No Chat Selected -->
+                        <div id="no-chat-selected" class="flex-1 flex items-center justify-center">
+                            <div class="text-center">
+                                <div
+                                    class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-comments text-4xl text-gray-300"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-900 mb-2">Select a conversation</h3>
+                                <p class="text-sm text-gray-500">Choose a tutor to start chatting</p>
+                            </div>
+                        </div>
+
+                        <!-- Chat Area -->
+                        <div id="chat-area" class="hidden flex-1 flex flex-col min-h-0 overflow-hidden">
+                            <!-- Chat Header -->
+                            <div class="p-4 border-b border-gray-100 bg-white">
+                                <div class="flex items-center gap-3">
+                                    <img id="chat-avatar" src="" alt="" class="w-12 h-12 rounded-full object-cover">
+                                    <div class="flex-1">
+                                        <h3 id="chat-name" class="font-bold text-gray-900"></h3>
+                                        <p id="chat-course" class="text-xs text-gray-500"></p>
+                                    </div>
+                                    <button
+                                        class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
+                                        <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Messages Container -->
+                            <div id="messages-container" class="flex-1 overflow-y-auto chat-scroll p-4 bg-gray-50">
+                                <!-- Messages will be loaded here -->
+                            </div>
+
+                            <!-- Typing Indicator -->
+                            <div id="typing-indicator" class="hidden px-4 py-2 bg-gray-50">
+                                <div class="flex items-center gap-2 text-sm text-gray-500">
+                                    <div class="flex gap-1">
+                                        <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                            style="animation-delay: 0ms"></span>
+                                        <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                            style="animation-delay: 150ms"></span>
+                                        <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                            style="animation-delay: 300ms"></span>
+                                    </div>
+                                    <span id="typing-user"></span> is typing...
+                                </div>
+                            </div>
+
+                            <!-- Message Input -->
+                            <div class="p-4 border-t border-gray-100 bg-white">
+                                <div class="flex items-center gap-3">
+                                    <input type="text" id="message-input" placeholder="Type your message..."
+                                        class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm">
+                                    <button id="send-btn"
+                                        class="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition flex items-center gap-2">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <span>Send</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            let socket;
+            let currentConversationId = null;
+            let userId = '<%= user ? user._id : "" %>';
+            let userType = 'user';
+            let allConversations = [];
+
+            // Initialize Socket.IO
+            function initSocket() {
+                socket = io({
+                    auth: {
+                        userId: userId,
+                        userType: userType
+                    }
+                });
+
+
+                socket.on('connect', () => {
+                    console.log('Connected to chat server');
+                    if (currentConversationId) {
+                        socket.emit('join_conversation', { conversationId: currentConversationId });
+                    }
+                });
+
+                socket.on('new_message', (data) => {
+                    if (data.conversationId === currentConversationId) {
+                        // Extract the ID string safely whether populated as an object or a plain string
+                        const messageSenderId = typeof data.message.senderId === 'object' && data.message.senderId !== null
+                            ? data.message.senderId._id
+                            : data.message.senderId;
+
+                        // Check if the current user is the sender of this message
+                        const isSent = data.message.senderType === userType && messageSenderId === userId;
+
+                        appendMessage(data.message, isSent);
+                        scrollToBottom();
+
+                        // Emit read event back if the incoming message was received from the other party
+                        if (!isSent) {
+                            socket.emit('read_conversation', { conversationId: currentConversationId });
+                        }
+                    }
+                    loadConversations();
+                });
+
+                socket.on('messages_read', (data) => {
+                    if (data.conversationId === currentConversationId) {
+                        document.querySelectorAll('.message-tick').forEach(tick => {
+                            tick.classList.remove('text-gray-300');
+                            tick.classList.add('text-blue-500');
+                        });
+                    }
+                });
+
+                socket.on('new_message_notification', (data) => {
+                    loadConversations();
+                });
+
+
+
+
+                socket.on('user_typing', (data) => {
+                    if (data.conversationId === currentConversationId) {
+                        document.getElementById('typing-indicator').classList.remove('hidden');
+                        document.getElementById('typing-user').textContent = data.userName || 'Tutor';
+                    }
+                });
+
+                socket.on('user_stopped_typing', (data) => {
+                    if (data.conversationId === currentConversationId) {
+                        document.getElementById('typing-indicator').classList.add('hidden');
+                    }
+                });
+            }
+
+            // Load conversations
+            async function loadConversations() {
+                try {
+                    const response = await fetch('/chat/conversations?role=user');
+                    const data = await response.json();
+
+                    if (data.success) {
+                        allConversations = data.conversations;
+                        renderConversations(allConversations);
+                    }
+                } catch (error) {
+                    console.error('Error loading conversations:', error);
+                    document.getElementById('conversations-list').innerHTML = `
+                    <div class="p-4 text-center">
+                        <p class="text-sm text-red-500">Failed to load conversations</p>
+                    </div>
+                `;
+                }
+            }
+
+            // Render conversations
+            function renderConversations(conversations) {
+                const container = document.getElementById('conversations-list');
+
+                if (conversations.length === 0) {
+                    container.innerHTML = `
+                    <div class="p-8 text-center">
+                        <i class="fas fa-inbox text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-sm text-gray-500">No conversations yet</p>
+                        <p class="text-xs text-gray-400 mt-1">Purchase a course to chat with tutors</p>
+                    </div>
+                `;
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                conversations.forEach(conv => {
+                    const div = document.createElement('div');
+                    div.className = 'p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition';
+                    div.onclick = () => openConversation(conv._id, conv);
+
+                    const unreadBadge = conv.unreadCount > 0
+                        ? `<span class="px-2 py-0.5 bg-red-500 text-white text-xs rounded-full font-semibold">${conv.unreadCount}</span>`
+                        : '';
+
+                    const displayName = conv.tutorId?.fullName || 'Tutor';
+                    const avatarSrc = conv.tutorId?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.tutorId?.fullName || 'T')}&background=00d9b1&color=fff&bold=true`;
+
+                    div.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <img src="${avatarSrc}" 
+                             class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-gray-900 text-sm truncate">${displayName}</h4>
+                                ${unreadBadge}
+                            </div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <p class="text-xs text-gray-500 truncate">${conv.courseId?.title || ''}</p>
+                            </div>
+                            <p class="text-xs text-gray-400 truncate">${conv.lastMessage?.content || 'No messages yet'}</p>
+                        </div>
+                    </div>
+                `;
+                    container.appendChild(div);
+                });
+            }
+
+            // Open conversation
+            async function openConversation(conversationId, conv) {
+                if (currentConversationId && currentConversationId !== conversationId) {
+                    socket.emit('leave_conversation', { conversationId: currentConversationId });
+                }
+                currentConversationId = conversationId;
+
+                const displayName = conv.tutorId?.fullName || 'Tutor';
+                const avatarSrc = conv.tutorId?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.tutorId?.fullName || 'T')}&background=00d9b1&color=fff&bold=true`;
+
+                // Update header
+                document.getElementById('chat-avatar').src = avatarSrc;
+                document.getElementById('chat-name').textContent = displayName;
+                document.getElementById('chat-course').textContent = conv.courseId?.title || '';
+
+                // Join socket room
+                socket.emit('join_conversation', { conversationId });
+
+                // Load messages
+                try {
+                    const response = await fetch(`/chat/messages/${conversationId}?role=user`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        renderMessages(data.messages);
+                        document.getElementById('no-chat-selected').classList.add('hidden');
+                        document.getElementById('chat-area').classList.remove('hidden');
+                        loadConversations();
+                    }
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                }
+            }
+
+            // Render messages
+            function renderMessages(messages) {
+                const container = document.getElementById('messages-container');
+                container.innerHTML = '';
+
+                messages.forEach(msg => {
+                    const messageSenderId = typeof msg.senderId === 'object' && msg.senderId !== null
+                        ? msg.senderId._id
+                        : msg.senderId;
+                    appendMessage(msg, msg.senderType === userType && messageSenderId === userId);
+                });
+
+                scrollToBottom();
+            }
+
+            // Append single message
+            function appendMessage(message, isSent) {
+                const container = document.getElementById('messages-container');
+                const div = document.createElement('div');
+                div.className = `flex mb-4 ${isSent ? 'justify-end' : 'justify-start'}`;
+
+                const bubbleClass = isSent
+                    ? 'bg-primary text-white'
+                    : 'bg-white border border-gray-200 text-gray-900';
+
+                const tickHtml = isSent 
+                    ? `<i class="fas fa-check-double ${message.isRead ? 'text-blue-500' : 'text-gray-300'} message-tick ml-1"></i>`
+                    : '';
+
+                div.innerHTML = `
+                <div class="max-w-xs lg:max-w-md">
+                    <div class="${bubbleClass} rounded-2xl px-4 py-3 shadow-sm">
+                        <p class="text-sm">${message.content}</p>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center ${isSent ? 'justify-end' : 'justify-start'}">
+                        <span>${new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        ${tickHtml}
+                    </p>
+                </div>
+            `;
+
+                container.appendChild(div);
+            }
+
+            // Send message
+            document.getElementById('send-btn').addEventListener('click', sendMessage);
+            document.getElementById('message-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            function sendMessage() {
+                const input = document.getElementById('message-input');
+                const content = input.value.trim();
+
+                if (!content || !currentConversationId) return;
+
+                socket.emit('send_message', {
+                    conversationId: currentConversationId,
+                    content: content,
+                    messageType: 'text'
+                });
+
+                input.value = '';
+            }
+
+            // Typing indicator
+            let typingTimeout;
+            document.getElementById('message-input').addEventListener('input', () => {
+                if (currentConversationId) {
+                    socket.emit('typing_start', { conversationId: currentConversationId });
+
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        socket.emit('typing_stop', { conversationId: currentConversationId });
+                    }, 1000);
+                }
+            });
+
+            // Scroll to bottom
+            function scrollToBottom() {
+                const container = document.getElementById('messages-container');
+                container.scrollTop = container.scrollHeight;
+            }
+
+            // Initialize
+            initSocket();
+            loadConversations();
+        </script>
+</body>
+
+</html>

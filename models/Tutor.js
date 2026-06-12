@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const tutorSchema = new mongoose.Schema({
     fullName: { type: String, required: true, trim: true },
@@ -14,6 +14,7 @@ const tutorSchema = new mongoose.Schema({
         enum: ['pending', 'approved', 'rejected'], 
         default: 'pending' 
     },
+    isCertified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false }, 
     blockedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
     blockedAt: { type: Date },
@@ -27,4 +28,4 @@ const tutorSchema = new mongoose.Schema({
     approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Tutor', tutorSchema);
+export default mongoose.models.Tutor || mongoose.model('Tutor', tutorSchema);

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     fullName: { type: String, required: true, trim: true },
@@ -15,8 +15,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    enrolledCourses:[{
+       type:mongoose.Schema.Types.ObjectId,
+       ref:"Course"
     }
+    ],
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course'
+    }]
+
+
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.models.User || mongoose.model('User', userSchema);
  

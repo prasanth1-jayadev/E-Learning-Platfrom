@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Organic Learn - Home</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learnify - Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
   <script>
     tailwind.config = {
       theme: {
@@ -16,356 +18,1014 @@
       }
     }
   </script>
+
+  <style>
+    /* ═══════════════════════════════════════
+       ANTI-GRAVITY CANVAS — fixed background
+    ═══════════════════════════════════════ */
+    #ag-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body>*:not(#ag-canvas):not(nav):not(#mobileMenu) {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════
+       3-D BOOK
+    ═══════════════════════════════════════ */
+    .book-scene {
+      perspective: 1000px;
+      width: 240px;
+      height: 300px;
+      position: relative;
+    }
+
+    .book-body {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .book-spine {
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 16px;
+      background: linear-gradient(to right, #064e3b, #065f46, #064e3b);
+      border-radius: 3px 0 0 3px;
+      box-shadow: -4px 0 14px rgba(0, 0, 0, 0.4);
+      z-index: 5;
+    }
+
+    .book-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+      border-radius: 4px 12px 12px 4px;
+      box-shadow: 8px 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .book-pages-edge {
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      right: 0;
+      width: 14px;
+      background: repeating-linear-gradient(to bottom,
+          #f5f5ef 0px, #f5f5ef 3px,
+          #e0e0d8 3px, #e0e0d8 4px);
+      border-radius: 0 4px 4px 0;
+      box-shadow: 3px 0 8px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Front cover — flips open */
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transform: rotateY(0deg);
+      transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+    }
+
+    .book-cover.open {
+      transform: rotateY(-152deg);
+    }
+
+    .book-cover-front {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #059669 0%, #10b981 50%, #2beead 100%);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 18px;
+      backface-visibility: hidden;
+      box-shadow: 4px 0 22px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+    }
+
+    .book-cover-front::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(-45deg,
+          transparent 0px, transparent 16px,
+          rgba(255, 255, 255, 0.05) 16px, rgba(255, 255, 255, 0.05) 17px);
+    }
+
+    .book-cover-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #f0f0ea 0%, #e4e4dc 100%);
+      border-radius: 4px 12px 12px 4px;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+    }
+
+    /* Inner page lines */
+    .book-inner {
+      position: absolute;
+      inset: 6px 14px 6px 16px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      opacity: 0;
+      transition: opacity 0.5s ease 1.0s;
+    }
+
+    .book-inner.visible {
+      opacity: 1;
+    }
+
+    .page-line {
+      height: 7px;
+      border-radius: 2px;
+      background: #e2e8e4;
+    }
+
+    .page-line.accent {
+      background: rgba(43, 238, 173, 0.38);
+    }
+
+    .page-line.short {
+      width: 58%;
+    }
+
+    .page-line.medium {
+      width: 82%;
+    }
+
+    .page-line.heading {
+      height: 12px;
+      background: rgba(43, 238, 173, 0.55);
+      margin-bottom: 5px;
+      width: 72%;
+    }
+
+    .mini-chart {
+      margin-top: 10px;
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 42px;
+    }
+
+    .mini-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: rgba(43, 238, 173, 0.25);
+    }
+
+    .mini-bar:nth-child(2) {
+      background: rgba(43, 238, 173, 0.45);
+    }
+
+    .mini-bar:nth-child(3) {
+      background: rgba(43, 238, 173, 0.65);
+    }
+
+    .mini-bar:nth-child(4) {
+      background: rgba(43, 238, 173, 0.88);
+    }
+
+    .mini-bar:nth-child(5) {
+      background: rgba(43, 238, 173, 0.55);
+    }
+
+    /* Floating icons */
+    .float-icon {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      opacity: 0;
+      transform: scale(0.5) translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10);
+    }
+
+    .float-icon.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .fi-1 {
+      transition-delay: 1.15s;
+    }
+
+    .fi-2 {
+      transition-delay: 1.35s;
+    }
+
+    .fi-3 {
+      transition-delay: 1.55s;
+    }
+
+    .fi-4 {
+      transition-delay: 1.75s;
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: scale(1) translateY(0);
+      }
+
+      50% {
+        transform: scale(1) translateY(-9px);
+      }
+    }
+
+    @keyframes bob2 {
+
+      0%,
+      100% {
+        transform: scale(1) translateY(0) rotate(-4deg);
+      }
+
+      50% {
+        transform: scale(1) translateY(-11px) rotate(4deg);
+      }
+    }
+
+    @keyframes bob3 {
+
+      0%,
+      100% {
+        transform: scale(1) translateY(0) rotate(3deg);
+      }
+
+      50% {
+        transform: scale(1) translateY(-7px) rotate(-3deg);
+      }
+    }
+
+    .float-icon.visible.fi-1 {
+      animation: bob 3.4s ease-in-out infinite;
+    }
+
+    .float-icon.visible.fi-2 {
+      animation: bob2 4.0s ease-in-out infinite;
+    }
+
+    .float-icon.visible.fi-3 {
+      animation: bob 3.8s ease-in-out 0.4s infinite;
+    }
+
+    .float-icon.visible.fi-4 {
+      animation: bob3 3.6s ease-in-out 0.2s infinite;
+    }
+
+    /* Progress pill */
+    .progress-pill {
+      position: absolute;
+      background: white;
+      border-radius: 16px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease 1.5s, transform 0.6s ease 1.5s;
+    }
+
+    .progress-pill.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Glow */
+    .book-glow {
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(ellipse at 55% 60%, rgba(43, 238, 173, 0.20) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease 0.2s;
+    }
+
+    .book-glow.visible {
+      opacity: 1;
+    }
+  </style>
 </head>
+
 <body class="font-display bg-white text-gray-900">
 
-<!-- NAVBAR -->
-<nav class="sticky top-0 z-50 bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between">
-  <div class="flex items-center gap-8">
-    <div class="flex items-center gap-2">
-      <div class="w-7 h-7 bg-brand rounded-sm flex items-center justify-center">
-        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 48 48"><path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"/></svg>
-      </div>
-      <span class="font-bold text-sm text-gray-800">Organic Learn</span>
-    </div>
-    <div class="hidden md:flex items-center gap-6 text-sm text-gray-500 font-medium">
-      <a href="#" class="hover:text-gray-900 transition">Courses</a>
-      <a href="#" class="hover:text-gray-900 transition">Tutors</a>
-      <a href="#" class="hover:text-gray-900 transition">Mentors</a>
-    </div>
-  </div>
-  <div class="flex items-center gap-3">
-    <a href="/tutor/signup" class="px-4 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">
-  Become a Tutor
-</a>
-    <button class="p-2 text-gray-400 hover:text-gray-600"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
-    <button class="p-2 text-gray-400 hover:text-gray-600"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></button>
-    <a href="/user/profile" class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center hover:ring-2 hover:ring-brand transition">
-      <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-    </a>
-  </div>
-</nav>
+  <!-- Anti-gravity canvas — behind everything -->
+  <canvas id="ag-canvas"></canvas>
 
-<!-- HERO -->
-<section class="bg-[#f6f8f7] px-6 py-16 md:py-20">
-  <div class="max-w-6xl mx-auto flex items-center justify-between gap-12">
-    <div class="max-w-lg">
-      <span class="text-brand text-xs font-bold uppercase tracking-widest mb-3 block">— Redefine how you learn</span>
-      <h1 class="text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-4">
-        The art of <span class="text-brand italic">deep work</span><br/>starts here.
-      </h1>
-      <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm">
-        Beyond simple tutorials. We provide the workflows and blueprints for professional excellence through rigorous, expert-led curricula.
-      </p>
-      <div class="flex items-center gap-3 mb-8">
-        <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex-1 max-w-xs">
-          <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input type="text" placeholder="Explore what you want to learn..." class="text-xs text-gray-500 bg-transparent focus:outline-none w-full"/>
-        </div>
-        <button class="px-5 py-2.5 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition whitespace-nowrap">Start Learning</button>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="flex -space-x-2">
-          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
-          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
-          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
-        </div>
-        <span class="text-xs text-gray-500">Professional learners who started with us today</span>
-      </div>
-    </div>
-    <!-- Hero visual -->
-    <div class="hidden md:flex flex-col gap-3 flex-shrink-0">
-      <div class="w-64 h-48 bg-[#0d1b17] rounded-2xl grid grid-cols-2 gap-2 p-4">
-        <div class="bg-[#1a3a2e] rounded-xl"></div>
-        <div class="bg-[#1a3a2e] rounded-xl"></div>
-        <div class="bg-brand/20 rounded-xl col-span-2 flex items-center justify-center">
-          <div class="w-8 h-8 bg-brand/30 rounded-lg"></div>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl shadow-lg p-3 w-48 ml-auto">
-        <p class="text-[10px] font-bold text-gray-800 mb-1">Expert Academy</p>
-        <p class="text-[9px] text-gray-400 mb-2">Launching 12 of 24 courses<br/>for certified instructors</p>
-        <div class="w-full h-1.5 bg-gray-100 rounded-full"><div class="h-1.5 bg-brand rounded-full w-1/2"></div></div>
-      </div>
-    </div>
-  </div>
-</section>
+  <%- include('../partials/user-navbar') %>
 
-<!-- CURATED LEARNING PATHS -->
-<section class="px-6 py-14 max-w-6xl mx-auto">
-  <span class="text-brand text-xs font-bold uppercase tracking-widest mb-2 block">— Structured for mastery</span>
-  <div class="flex items-end justify-between mb-6">
-    <div>
-      <h2 class="text-2xl font-black text-gray-900">Curated Learning Paths</h2>
-      <p class="text-gray-400 text-sm mt-1 max-w-md">Seriously designed to help you learn the technical and business skills demanded by industry.</p>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
-      <div class="flex items-start justify-between mb-3">
+    <!-- HERO -->
+    <section class="bg-[#f6f8f7] px-6 py-16 md:py-20">
+      <div class="max-w-6xl mx-auto flex items-center justify-between gap-12">
+        <div class="max-w-lg">
+          <span class="text-brand text-xs font-bold uppercase tracking-widest mb-3 block">— Redefine how you
+            learn</span>
+          <h1 class="text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-4">
+            The art of <span class="text-brand italic">deep work</span><br />starts here.
+          </h1>
+          <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm">
+            Beyond simple tutorials. We provide the workflows and blueprints for professional excellence through
+            rigorous, expert-led curricula.
+          </p>
+          <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex-1 max-w-xs">
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input type="text" placeholder="Explore what you want to learn..."
+                class="text-xs text-gray-500 bg-transparent focus:outline-none w-full" />
+            </div>
+            <button
+              class="px-5 py-2.5 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition whitespace-nowrap">Start
+              Learning</button>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex -space-x-2">
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs"
+                class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user" />
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY"
+                class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user" />
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE"
+                class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user" />
+            </div>
+            <span class="text-xs text-gray-500">Professional learners who started with us today</span>
+          </div>
+        </div>
+        <!-- Hero visual -->
+        <div class="hidden md:flex flex-col gap-3 flex-shrink-0">
+          <div class="w-64 h-48 bg-[#0d1b17] rounded-2xl grid grid-cols-2 gap-2 p-4">
+            <div class="bg-[#1a3a2e] rounded-xl"></div>
+            <div class="bg-[#1a3a2e] rounded-xl"></div>
+            <div class="bg-brand/20 rounded-xl col-span-2 flex items-center justify-center">
+              <div class="w-8 h-8 bg-brand/30 rounded-lg"></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-lg p-3 w-48 ml-auto">
+            <p class="text-[10px] font-bold text-gray-800 mb-1">Expert Academy</p>
+            <p class="text-[9px] text-gray-400 mb-2">Launching 12 of 24 courses<br />for certified instructors</p>
+            <div class="w-full h-1.5 bg-gray-100 rounded-full">
+              <div class="h-1.5 bg-brand rounded-full w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CURATED LEARNING PATHS -->
+    <section class="px-6 py-14 max-w-6xl mx-auto">
+      <span class="text-brand text-xs font-bold uppercase tracking-widest mb-2 block">— Structured for mastery</span>
+      <div class="flex items-end justify-between mb-6">
         <div>
-          <h3 class="font-bold text-gray-900 text-sm">UI/UX Mastery</h3>
-          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Learn user-centered design methodology, prototyping, and design systems.</p>
-        </div>
-        <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
-          <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          <h2 class="text-2xl font-black text-gray-900">Curated Learning Paths</h2>
+          <p class="text-gray-400 text-sm mt-1 max-w-md">Seriously designed to help you learn the technical and business
+            skills demanded by industry.</p>
         </div>
       </div>
-      <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
-    </div>
-    <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
-      <div class="flex items-start justify-between mb-3">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm">UI/UX Mastery</h3>
+              <p class="text-xs text-gray-400 mt-1 leading-relaxed">Learn user-centered design methodology, prototyping,
+                and design systems.</p>
+            </div>
+            <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+            </div>
+          </div>
+          <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
+        </div>
+        <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm">Cloud Architecture</h3>
+              <p class="text-xs text-gray-400 mt-1 leading-relaxed">Master AWS, GCP and Azure infrastructure design for
+                scalable systems.</p>
+            </div>
+            <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+              </svg>
+            </div>
+          </div>
+          <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
+        </div>
+        <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm">Full-Stack Lead</h3>
+              <p class="text-xs text-gray-400 mt-1 leading-relaxed">Go from developer to technical lead with system
+                design and team skills.</p>
+            </div>
+            <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </div>
+          </div>
+          <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOP COURSES -->
+    <style>
+      .course-card {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .course-card .ribbon {
+        position: absolute;
+        overflow: hidden;
+        width: 120px;
+        height: 120px;
+        top: -6px;
+        left: -6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      .course-card .ribbon::before {
+        content: attr(data-label);
+        position: absolute;
+        width: 150%;
+        height: 34px;
+        background-image: linear-gradient(45deg, #ff6547 0%, #ffb144 51%, #ff7053 100%);
+        transform: rotate(-45deg) translateY(-18px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .course-card .ribbon::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        bottom: 0;
+        left: 0;
+        height: 8px;
+        z-index: -1;
+        box-shadow: 112px -112px #cc3f47;
+        background-image: linear-gradient(45deg, #FF512F 0%, #F09819 51%, #FF512F 100%);
+      }
+
+      .course-card .ribbon-free::before {
+        background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%);
+        content: 'FREE';
+      }
+
+      .course-card .ribbon-free::after {
+        box-shadow: 112px -112px #059669;
+        background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%);
+      }
+
+      .course-card {
+        transition: transform .3s, box-shadow .3s;
+      }
+
+      .course-card:hover {
+        transform: scale(0.97);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      }
+    </style>
+
+    <section class="px-6 py-10 max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-black text-gray-900">Top Courses</h2>
+        <div class="flex gap-2">
+          <button id="prevCourseBtn"
+            class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button id="nextCourseBtn"
+            class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <% if (courses && courses.length> 0) { %>
+          <% courses.forEach(course=> { %>
+            <a href="/user/course/<%= course._id %>"
+              class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden block">
+              <% if (course.thumbnail) { %>
+                <img src="<%= course.thumbnail %>" class="w-full h-28 object-cover" alt="<%= course.title %>" />
+                <% } else { %>
+                  <div
+                    class="w-full h-28 bg-gradient-to-br from-brand/20 to-brand/5 flex items-center justify-center text-2xl font-bold text-brand">
+                    <%= course.title.substring(0, 2).toUpperCase() %>
+                  </div>
+                  <% } %>
+                    <div class="p-3">
+                      <h4 class="text-xs font-bold text-gray-900 mb-1 line-clamp-1">
+                        <%= course.title %>
+                      </h4>
+                      <p class="text-[10px] text-gray-400 mb-2 leading-relaxed line-clamp-2">
+                        <%= course.description %>
+                      </p>
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                          <span class="text-yellow-400 text-xs">★</span>
+                          <span class="text-[10px] text-gray-500">
+                            <%= course.rating || 0 %>
+                          </span>
+                        </div>
+                        <span class="text-xs font-bold <%= course.price === 0 ? 'text-brand' : 'text-gray-900' %>">
+                          <% if (course.price===0) { %>Free<% } else { %>₹<%= course.price.toLocaleString() %>
+                                <% } %>
+                        </span>
+                      </div>
+                    </div>
+            </a>
+            <% }); %>
+              <% } else { %>
+                <div class="col-span-4 text-center py-8">
+                  <p class="text-sm text-gray-400">No courses available yet</p>
+                </div>
+                <% } %>
+      </div>
+    </section>
+
+    <!-- ADVANCED CURRICULUMS -->
+    <section class="bg-[#f6f8f7] px-6 py-14">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-black text-gray-900">Advanced Curriculums</h2>
+            <p class="text-gray-400 text-sm mt-1">Continuously evolving, intelligently designed for serious learners.
+            </p>
+          </div>
+          <a href="#" class="text-brand text-xs font-bold hover:underline">See All</a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+            <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-gray-900">Design</p>
+            <p class="text-[10px] text-gray-400 mt-1">48+ Courses</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+            <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-gray-900">Development</p>
+            <p class="text-[10px] text-gray-400 mt-1">72+ Courses</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+            <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-gray-900">Business</p>
+            <p class="text-[10px] text-gray-400 mt-1">36+ Courses</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
+            <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <svg class="w-5 h-5 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-gray-900">Marketing</p>
+            <p class="text-[10px] text-gray-400 mt-1">29+ Courses</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTIFIED TUTOR SHOWCASE -->
+    <style>
+      .tutor-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform .3s, box-shadow .3s;
+      }
+
+      .tutor-card:hover {
+        transform: scale(0.97);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      .tutor-card .t-ribbon {
+        position: absolute;
+        overflow: hidden;
+        width: 140px;
+        height: 140px;
+        top: -8px;
+        left: -8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      .tutor-card .t-ribbon::before {
+        content: 'Expert Certified';
+        position: absolute;
+        width: 150%;
+        height: 34px;
+        background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%);
+        transform: rotate(-45deg) translateY(-18px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0d1b17;
+        font-weight: 700;
+        font-size: 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .tutor-card .t-ribbon::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        bottom: 0;
+        left: 0;
+        height: 8px;
+        z-index: -1;
+        box-shadow: 124px -124px #059669;
+        background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%);
+      }
+    </style>
+
+    <section class="px-6 py-14 max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
         <div>
-          <h3 class="font-bold text-gray-900 text-sm">Cloud Architecture</h3>
-          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Master AWS, GCP and Azure infrastructure design for scalable systems.</p>
+          <h2 class="text-2xl font-black text-gray-900">Certified Tutor Showcase</h2>
+          <p class="text-gray-400 text-sm mt-1">Learn directly from verified experts who offer the highest bar for
+            professional instruction.</p>
         </div>
-        <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
-          <svg class="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+        <div class="flex gap-2">
+          <button id="prevTutorBtnHome"
+            class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button id="nextTutorBtnHome"
+            class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
-      <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
-    </div>
-    <div class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition bg-white">
-      <div class="flex items-start justify-between mb-3">
+
+      <% if (tutors && tutors.length> 0) { %>
+        <div class="relative overflow-hidden">
+          <div id="tutorCarouselHome" class="flex gap-5 transition-transform duration-500 ease-out">
+            <% tutors.forEach(tutor=> { %>
+              <div
+                class="tutor-card relative rounded-2xl overflow-hidden h-64 group flex-shrink-0 w-full md:w-[calc(33.333%-14px)]">
+                <img src="<%= tutor.avatar || '/images/default-avatar.png' %>" class="w-full h-full object-cover"
+                  alt="<%= tutor.fullName %>" />
+                <span class="t-ribbon"></span>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
+                <div class="absolute bottom-4 left-4 right-4">
+                  <div class="flex items-center gap-1 mb-1">
+                    <span class="text-yellow-400 text-xs">★</span>
+                    <span class="text-white text-xs font-bold">
+                      <%= tutor.rating || 4.5 %>
+                    </span>
+                    <span class="text-gray-300 text-[10px] ml-1">reviews</span>
+                  </div>
+                  <p class="text-white font-bold text-sm">
+                    <%= tutor.fullName %>
+                  </p>
+                  <p class="text-gray-300 text-[10px]">
+                    <%= tutor.bio || 'Expert Instructor' %>
+                  </p>
+                  <a href="/user/tutor/<%= tutor._id %>" class="text-brand text-[10px] font-bold hover:underline">View
+                    Tutor Profile →</a>
+                </div>
+              </div>
+              <% }) %>
+          </div>
+        </div>
+        <script>
+            (function () {
+              const carousel = document.getElementById('tutorCarouselHome');
+              const prevBtn = document.getElementById('prevTutorBtnHome');
+              const nextBtn = document.getElementById('nextTutorBtnHome');
+              const totalTutors = <%= tutors.length %>;
+              let currentIndex = 0;
+              const tutorsPerView = window.innerWidth >= 768 ? 3 : 1;
+              const maxIndex = Math.max(0, totalTutors - tutorsPerView);
+              function updateCarousel() {
+                carousel.style.transform = `translateX(${-(currentIndex * (100 / tutorsPerView))}%)`;
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex >= maxIndex;
+                prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+              }
+              prevBtn.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; updateCarousel(); } });
+              nextBtn.addEventListener('click', () => { if (currentIndex < maxIndex) { currentIndex++; updateCarousel(); } });
+              updateCarousel();
+            })();
+        </script>
+        <% } else { %>
+          <p class="text-gray-400 text-sm text-center py-8">No certified tutors available</p>
+          <% } %>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="px-6 py-6 max-w-6xl mx-auto">
+      <div class="bg-[#0d1b17] rounded-3xl px-10 py-14 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20"
+          style="background: radial-gradient(ellipse at 50% 0%, #2beead 0%, transparent 70%)"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl font-black text-white leading-tight mb-4">Elevate the next<br />generation
+            of<br />professionals</h2>
+          <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8 leading-relaxed">We're looking for ambitious figures of
+            tomorrow. 10+ years of domain expertise, our platform only offers the highest bar for specialized
+            instruction.</p>
+          <div class="flex items-center justify-center gap-4 flex-wrap">
+            <a href="/tutor/signup"
+              class="px-6 py-3 bg-brand text-gray-900 font-bold text-sm rounded-full hover:brightness-110 transition">Apply
+              as Master Mentor</a>
+            <a href="#"
+              class="px-6 py-3 border border-brand/40 text-brand font-bold text-sm rounded-full hover:bg-brand/10 transition">Partnership
+              Programs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="px-6 py-12 border-t border-gray-100 mt-6">
+      <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
-          <h3 class="font-bold text-gray-900 text-sm">Full-Stack Lead</h3>
-          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Go from developer to technical lead with system design and team skills.</p>
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                <circle cx="12" cy="12" r="1.5" fill="white" />
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center">
+                <span class="text-sm font-bold text-gray-800">Learn</span>
+                <span class="text-sm font-bold text-[#00d9b1]">ify</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 leading-relaxed">A professional learning platform dedicated to depth,
+            architectural excellence, and career mastery.</p>
         </div>
-        <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
-          <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        <div>
+          <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Mastery Tracks</p>
+          <ul class="space-y-2 text-xs text-gray-400">
+            <li><a href="#" class="hover:text-brand transition">Course Library</a></li>
+            <li><a href="#" class="hover:text-brand transition">Tutor at Organiclearn</a></li>
+            <li><a href="#" class="hover:text-brand transition">Certified Courses</a></li>
+            <li><a href="#" class="hover:text-brand transition">Curriculum Paths</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Academic Support</p>
+          <ul class="space-y-2 text-xs text-gray-400">
+            <li><a href="#" class="hover:text-brand transition">About Us</a></li>
+            <li><a href="#" class="hover:text-brand transition">Become a Tutor</a></li>
+            <li><a href="#" class="hover:text-brand transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-brand transition">Whitepapers</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Ready to Learn?</p>
+          <div class="flex gap-2">
+            <input type="email" placeholder="your@email.com"
+              class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand/40" />
+            <button
+              class="px-3 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">Apply</button>
+          </div>
         </div>
       </div>
-      <a href="#" class="text-brand text-xs font-bold hover:underline">View Pathway →</a>
-    </div>
-  </div>
-</section>
+      <div
+        class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+        © 2024 Learnify — All Rights Reserved
+      </div>
+    </footer>
 
-<!-- TOP COURSES -->
-<style>
-  .course-card { position: relative; overflow: hidden; }
-  .course-card .ribbon { position: absolute; overflow: hidden; width: 120px; height: 120px; top: -6px; left: -6px; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
-  .course-card .ribbon::before { content: attr(data-label); position: absolute; width: 150%; height: 34px; background-image: linear-gradient(45deg, #ff6547 0%, #ffb144 51%, #ff7053 100%); transform: rotate(-45deg) translateY(-18px); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-  .course-card .ribbon::after { content: ''; position: absolute; width: 8px; bottom: 0; left: 0; height: 8px; z-index: -1; box-shadow: 112px -112px #cc3f47; background-image: linear-gradient(45deg, #FF512F 0%, #F09819 51%, #FF512F 100%); }
-  .course-card .ribbon-free::before { background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%); content: 'FREE'; }
-  .course-card .ribbon-free::after { box-shadow: 112px -112px #059669; background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%); }
-  .course-card { transition: transform .3s, box-shadow .3s; }
-  .course-card:hover { transform: scale(0.97); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
-</style>
 
-<section class="px-6 py-10 max-w-6xl mx-auto">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="text-lg font-black text-gray-900">Top Courses in UI/UX Mastery</h2>
-    <div class="flex gap-2">
-      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
-      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
-    </div>
-  </div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon ribbon-free"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Design System Architecture</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Build scalable, consistent design systems for enterprise products.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.9</span></div>
-          <span class="text-xs font-bold text-brand">Free</span>
-        </div>
-      </div>
-    </div>
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon" data-label="Premium"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Psychology of Conversion</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Master behavioral design principles that drive user decisions.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.8</span></div>
-          <span class="text-xs font-bold text-gray-900">₹499</span>
-        </div>
-      </div>
-    </div>
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon" data-label="Premium"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Data-Driven UX Strategy</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Leverage analytics and testing to inform design decisions.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.7</span></div>
-          <span class="text-xs font-bold text-gray-900">₹799</span>
-        </div>
-      </div>
-    </div>
-    <div class="course-card bg-white border border-gray-100 rounded-2xl overflow-hidden">
-      <span class="ribbon" data-label="Premium"></span>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-28 object-cover" alt="course"/>
-      <div class="p-3">
-        <h4 class="text-xs font-bold text-gray-900 mb-1">Micro-Interaction Mastery</h4>
-        <p class="text-[10px] text-gray-400 mb-2 leading-relaxed">Top-tier delightful feedback design using modern animation.</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1"><span class="text-yellow-400 text-xs">★</span><span class="text-[10px] text-gray-500">4.9</span></div>
-          <span class="text-xs font-bold text-gray-900">₹999</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- ════════════════════════════════════════════════
+       SCRIPT A — SCROLL-TRIGGERED BOOK OPEN
+  ════════════════════════════════════════════════ -->
+    <script>
+      (function () {
+        const hero = document.getElementById('hero-section');
+        const bookCover = document.getElementById('bookCover');
+        const bookInner = document.getElementById('bookInner');
+        const bookGlow = document.getElementById('bookGlow');
+        const progressPill = document.getElementById('progressPill');
+        const floatIcons = document.querySelectorAll('.float-icon');
+        let opened = false;
 
-<!-- ADVANCED CURRICULUMS -->
-<section class="bg-[#f6f8f7] px-6 py-14">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="text-2xl font-black text-gray-900">Advanced Curriculums</h2>
-        <p class="text-gray-400 text-sm mt-1">Continuously evolving, intelligently designed for serious learners.</p>
-      </div>
-      <a href="#" class="text-brand text-xs font-bold hover:underline">See All</a>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
-        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
-        </div>
-        <p class="text-sm font-bold text-gray-900">Design</p>
-        <p class="text-[10px] text-gray-400 mt-1">48+ Courses</p>
-      </div>
-      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
-        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-        </div>
-        <p class="text-sm font-bold text-gray-900">Development</p>
-        <p class="text-[10px] text-gray-400 mt-1">72+ Courses</p>
-      </div>
-      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
-        <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        </div>
-        <p class="text-sm font-bold text-gray-900">Business</p>
-        <p class="text-[10px] text-gray-400 mt-1">36+ Courses</p>
-      </div>
-      <div class="bg-white rounded-2xl p-5 hover:shadow-md transition text-center">
-        <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <svg class="w-5 h-5 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
-        </div>
-        <p class="text-sm font-bold text-gray-900">Marketing</p>
-        <p class="text-[10px] text-gray-400 mt-1">29+ Courses</p>
-      </div>
-    </div>
-  </div>
-</section>
+        function openBook() {
+          if (opened) return;
+          opened = true;
+          bookGlow.classList.add('visible');
+          bookCover.classList.add('open');
+          bookInner.classList.add('visible');
+          progressPill.classList.add('visible');
+          floatIcons.forEach(ic => ic.classList.add('visible'));
+        }
 
-<!-- CERTIFIED TUTOR SHOWCASE -->
-<style>
-  .tutor-card { position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s; }
-  .tutor-card:hover { transform: scale(0.97); box-shadow: 0 16px 40px rgba(0,0,0,0.25); }
-  .tutor-card .t-ribbon { position: absolute; overflow: hidden; width: 140px; height: 140px; top: -8px; left: -8px; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
-  .tutor-card .t-ribbon::before { content: 'Expert Certified'; position: absolute; width: 150%; height: 34px; background-image: linear-gradient(45deg, #2beead 0%, #10b981 51%, #2beead 100%); transform: rotate(-45deg) translateY(-18px); display: flex; align-items: center; justify-content: center; color: #0d1b17; font-weight: 700; font-size: 8px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-  .tutor-card .t-ribbon::after { content: ''; position: absolute; width: 8px; bottom: 0; left: 0; height: 8px; z-index: -1; box-shadow: 124px -124px #059669; background-image: linear-gradient(45deg, #2beead 0%, #10b981 100%); }
-</style>
-<section class="px-6 py-14 max-w-6xl mx-auto">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h2 class="text-2xl font-black text-gray-900">Certified Tutor Showcase</h2>
-      <p class="text-gray-400 text-sm mt-1">Learn directly from verified experts who offer the highest bar for professional instruction.</p>
-    </div>
-    <div class="flex gap-2">
-      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
-      <button class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-    <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group">
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBERT5j7qOE5PddjlkpMKQbt9cpi3Rs3dE9sfcAN6ABttExD-0ojwo6icBBmMVsEmAVVr2zoJn5-RgHBsG2fftQk5L_9vzx5WHA9hWFzwyWofsp89JUvDBUkL9mFYl4jsTMGO1bzOeFfqFwgk657ThnknxCvsjmQjpAP_NjQSHsv8Id8wkeXTvclT__9ZmxQpEi_lu47aGNJSDOoTVUE6sU7_zHHn0M6gHAhjUVXyhPpLSDtt0oDbdarSGpbhsis34lQoz69v0NGCs" class="w-full h-full object-cover" alt="Alex Rivera"/>
-      <span class="t-ribbon"></span>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
-      <div class="absolute bottom-4 left-4 right-4">
-        <div class="flex items-center gap-1 mb-1"><span class="text-yellow-400 text-xs">★</span><span class="text-white text-xs font-bold">4.9</span><span class="text-gray-300 text-[10px] ml-1">124 reviews</span></div>
-        <p class="text-white font-bold text-sm">Alex Rivera</p>
-        <p class="text-gray-300 text-[10px]">Senior UX Lead at Google</p>
-        <a href="#" class="text-brand text-[10px] font-bold hover:underline">View Tutor Profile →</a>
-      </div>
-    </div>
-    <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group">
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKnuoa_svz67zWzI7e6nSYFd1DtWS-0Q3VuvQ0Y3dbDNYijHwlTGPfTVIhww14L6n06I4UYTfjJaq-H9lTE1v995Bg_2fmDatPLxMVGQvaxchvyo6FQD1Mpmz-0VOPC1RQJUcxLHK78sfHibIMuY_zr5aSGeSCzhk_a0iypofnq3ivpO_CKk_PAxb0TV65gafaJeObmFoSbCxX5D6Q90mQuQmBJrdacYKhcsistpo1MwmEqoGjc5PTAkV6dh6dZcQAZ4sbrBnm3rY" class="w-full h-full object-cover" alt="Sarah Chen"/>
-      <span class="t-ribbon"></span>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
-      <div class="absolute bottom-4 left-4 right-4">
-        <div class="flex items-center gap-1 mb-1"><span class="text-yellow-400 text-xs">★</span><span class="text-white text-xs font-bold">4.8</span><span class="text-gray-300 text-[10px] ml-1">98 reviews</span></div>
-        <p class="text-white font-bold text-sm">Sarah Chen</p>
-        <p class="text-gray-300 text-[10px]">Product Designer at Figma</p>
-        <a href="#" class="text-brand text-[10px] font-bold hover:underline">View Tutor Profile →</a>
-      </div>
-    </div>
-    <div class="tutor-card relative rounded-2xl overflow-hidden h-64 group">
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXqTcMxDdzsEleuhT33b0HIGwge2EOsNa2Bm0z9PqiUPB1-2hjlCr1YaI_TbhYeWN3uvtrzsXyNNleqm8fo3swfdkFAqIzqJXzpDeDstoqIGFrz4QeuVBGXjWyLUfwIF1s66C4S6uRyfDPzh2iG1CklETTjHB2r7k5eB1Cp7ZSvr6OOyFhuC5HNGVnPUIkrYvlcSy2-ck6zEPOomlhNJ-ydL7_6j7HWl1tQPgjZP4rCAO6jRI3OkzbSMpFPF9YrbFnwVFyioXLxE" class="w-full h-full object-cover" alt="Marcus Thorne"/>
-      <span class="t-ribbon"></span>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#0d1b17] via-transparent to-transparent"></div>
-      <div class="absolute bottom-4 left-4 right-4">
-        <div class="flex items-center gap-1 mb-1"><span class="text-yellow-400 text-xs">★</span><span class="text-white text-xs font-bold">5.0</span><span class="text-gray-300 text-[10px] ml-1">1 review</span></div>
-        <p class="text-white font-bold text-sm">Marcus Thorne</p>
-        <p class="text-gray-300 text-[10px]">Engineering Lead at Stripe</p>
-        <a href="#" class="text-brand text-[10px] font-bold hover:underline">View Tutor Profile →</a>
-      </div>
-    </div>
-  </div>
-</section>
+        // IntersectionObserver fires when 30% of hero is on screen
+        new IntersectionObserver(
+          entries => entries.forEach(e => { if (e.isIntersecting) openBook(); }),
+          { threshold: 0.30 }
+        ).observe(hero);
 
-<!-- CTA BANNER -->
-<section class="px-6 py-6 max-w-6xl mx-auto">
-  <div class="bg-[#0d1b17] rounded-3xl px-10 py-14 text-center relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20" style="background: radial-gradient(ellipse at 50% 0%, #2beead 0%, transparent 70%)"></div>
-    <div class="relative z-10">
-      <h2 class="text-3xl font-black text-white leading-tight mb-4">Elevate the next<br/>generation of<br/>professionals</h2>
-      <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8 leading-relaxed">We're looking for ambitious figures of tomorrow. 10+ years of domain expertise, our platform only offers the highest bar for specialized instruction.</p>
-      <div class="flex items-center justify-center gap-4 flex-wrap">
-        <a href="/tutor/signup" class="px-6 py-3 bg-brand text-gray-900 font-bold text-sm rounded-full hover:brightness-110 transition">Apply as Master Mentor</a>
-        <a href="#" class="px-6 py-3 border border-brand/40 text-brand font-bold text-sm rounded-full hover:bg-brand/10 transition">Partnership Programs</a>
-      </div>
-    </div>
-  </div>
-</section>
+        // Already visible on load?
+        if (hero.getBoundingClientRect().top < window.innerHeight * 0.7) openBook();
+      })();
+    </script>
 
-<!-- FOOTER -->
-<footer class="px-6 py-12 border-t border-gray-100 mt-6">
-  <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-    <div>
-      <div class="flex items-center gap-2 mb-3">
-        <div class="w-6 h-6 bg-brand rounded-sm"></div>
-        <span class="font-bold text-sm text-gray-800">Organic Learn</span>
-      </div>
-      <p class="text-xs text-gray-400 leading-relaxed">A professional learning platform dedicated to depth, architectural excellence, and career mastery.</p>
-    </div>
-    <div>
-      <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Mastery Tracks</p>
-      <ul class="space-y-2 text-xs text-gray-400">
-        <li><a href="#" class="hover:text-brand transition">Course Library</a></li>
-        <li><a href="#" class="hover:text-brand transition">Tutor at Organiclearn</a></li>
-        <li><a href="#" class="hover:text-brand transition">Certified Courses</a></li>
-        <li><a href="#" class="hover:text-brand transition">Curriculum Paths</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Academic Support</p>
-      <ul class="space-y-2 text-xs text-gray-400">
-        <li><a href="#" class="hover:text-brand transition">About Us</a></li>
-        <li><a href="#" class="hover:text-brand transition">Become a Tutor</a></li>
-        <li><a href="#" class="hover:text-brand transition">Privacy Policy</a></li>
-        <li><a href="#" class="hover:text-brand transition">Whitepapers</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Ready to Learn?</p>
-      <div class="flex gap-2">
-        <input type="email" placeholder="your@email.com" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand/40"/>
-        <button class="px-3 py-2 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">Apply</button>
-      </div>
-    </div>
-  </div>
-  <div class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
-    © 2024 Organic Learn — All Rights Reserved
-  </div>
-</footer>
+
+    <!-- ════════════════════════════════════════════════
+       SCRIPT B — ANTI-GRAVITY MAGNETIC CIRCLES
+       160 circles fixed to a grid; mouse proximity
+       launches them upward + sideways (repulsion +
+       anti-gravity lift); spring returns to home.
+  ════════════════════════════════════════════════ -->
+    <script>
+      (function () {
+        const canvas = document.getElementById('ag-canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        let mx = -9999, my = -9999;
+
+        function resize() {
+          W = canvas.width = window.innerWidth;
+          H = canvas.height = window.innerHeight;
+          rehome();
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        window.addEventListener('mouseleave', () => { mx = -9999; my = -9999; });
+
+        /* colour palette — brand teal / greens / grays */
+        const PAL = [
+          [43, 238, 173],
+          [16, 185, 129],
+          [0, 217, 177],
+          [134, 239, 172],
+          [167, 243, 208],
+          [156, 163, 175],
+        ];
+
+        const COLS_N = 18, ROWS_N = 12;
+        const circles = [];
+
+        /* Build grid */
+        for (let c = 0; c < COLS_N; c++) {
+          for (let r = 0; r < ROWS_N; r++) {
+            const col = PAL[Math.floor(Math.random() * PAL.length)];
+            const radius = 3 + Math.random() * 10;
+            circles.push({
+              hx: 0, hy: 0,      // set by rehome()
+              ci: c, ri: r,
+              x: 0, y: 0,
+              vx: 0, vy: 0,
+              radius,
+              col,
+              baseAlpha: 0.08 + Math.random() * 0.10,
+              alpha: 0,
+              phase: Math.random() * Math.PI * 2,
+            });
+          }
+        }
+
+        function rehome() {
+          circles.forEach(p => {
+            p.hx = (p.ci / (COLS_N - 1)) * (W || window.innerWidth);
+            p.hy = (p.ri / (ROWS_N - 1)) * (H || window.innerHeight);
+            if (p.x === 0 && p.y === 0) { p.x = p.hx; p.y = p.hy; }
+          });
+        }
+
+        resize(); // init canvas + home positions
+
+        /* Physics constants */
+        const REPEL_R = 140;   // influence radius (px)
+        const REPEL_F = 3.0;   // repulsion strength
+        const LIFT = 1.6;   // extra upward push factor
+        const SPRING = 0.052; // spring constant back to home
+        const DAMP = 0.80;  // velocity damping per frame
+        const IDLE_AMP = 0.45;  // idle bob amplitude
+        const IDLE_SPD = 0.0005;
+
+        function draw(ts) {
+          ctx.clearRect(0, 0, W, H);
+          const t = ts * IDLE_SPD;
+
+          circles.forEach(p => {
+            /* idle drift of home position */
+            const ix = p.hx + Math.cos(p.phase * 0.7 + t * 0.8) * IDLE_AMP;
+            const iy = p.hy + Math.sin(p.phase + t) * IDLE_AMP;
+
+            /* repulsion from mouse */
+            const dx = p.x - mx;
+            const dy = p.y - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < REPEL_R && dist > 1) {
+              const f = (1 - dist / REPEL_R) * REPEL_F;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              p.vx += nx * f;
+              p.vy += ny * f - LIFT * f * 0.55;   // anti-gravity upward bias
+            }
+
+            /* spring back */
+            p.vx += (ix - p.x) * SPRING;
+            p.vy += (iy - p.y) * SPRING;
+
+            /* damping */
+            p.vx *= DAMP;
+            p.vy *= DAMP;
+
+            p.x += p.vx;
+            p.y += p.vy;
+
+            /* alpha brightens when disturbed */
+            const disp = Math.sqrt((p.x - p.hx) ** 2 + (p.y - p.hy) ** 2);
+            const excite = Math.min(disp / 45, 1);
+            p.alpha = p.baseAlpha + excite * 0.32;
+
+            /* render */
+            const [r, g, b] = p.col;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`;
+            ctx.fill();
+          });
+
+          requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+      })();
+    </script>
 
 </body>
+
 </html>
