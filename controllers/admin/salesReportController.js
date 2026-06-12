@@ -40,7 +40,6 @@ const buildDateFilter = (filter, startDate, endDate) => {
 export const getSalesReport = async (req, res) => {
     try {
         const { filter = 'month', startDate, endDate } = req.query;
-        const pendingCount = 0;
 
         const dateFilter = buildDateFilter(filter, startDate, endDate);
         const query = { status: 'completed', ...dateFilter };
@@ -51,7 +50,6 @@ export const getSalesReport = async (req, res) => {
             .sort({ createdAt: -1 })
             .lean();
 
-        // Latest 10 orders
         const latestOrders = await Payment.find({ status: 'completed' })
             .populate('user', 'fullName email')
             .populate('course', 'title price')
@@ -91,8 +89,7 @@ export const getSalesReport = async (req, res) => {
             filter,
             startDate: startDate || '',
             endDate: endDate || '',
-            currentPage: 'sales-report',
-            pendingCount
+            currentPage: 'sales-report'
         });
 
     } catch (error) {

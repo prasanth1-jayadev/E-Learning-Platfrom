@@ -13,7 +13,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Use memory storage — files are kept in memory as Buffer
+// Use memory storage
 const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
 

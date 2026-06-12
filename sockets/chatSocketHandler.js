@@ -127,6 +127,19 @@ export const setupChatHandlers = (io) => {
           conversationId
         });
 
+        // Notify both sender and recipient personal rooms for real-time sidebar/badge updates
+        const recipientType = socket.userType === 'user' ? 'tutor' : 'user';
+        const recipientId = socket.userType === 'user' ? conversation.tutorId : conversation.userId;
+
+        io.to(`${socket.userType}_${socket.userId}`).emit('new_message_notification', {
+          conversationId,
+          message
+        });
+        io.to(`${recipientType}_${recipientId}`).emit('new_message_notification', {
+          conversationId,
+          message
+        });
+
       } catch (error) {
         console.error('Send message error:', error);
         socket.emit('error', { message: 'Failed to send message' });

@@ -5,8 +5,7 @@ export const getCouponsPage = async (req, res) => {
         const coupons = await Coupon.find().sort({ createdAt: -1 });
         res.render('admin/coupons', {
             coupons,
-            currentPage: 'coupons',
-            pendingCount: 0
+            currentPage: 'coupons'
         });
     } catch (err) {
         console.error('Get coupons error:', err);

@@ -7,9 +7,19 @@ import * as walletController from '../controllers/admin/walletController.js';
 import * as couponController from '../controllers/admin/couponController.js';
 import * as salesReportController from '../controllers/admin/salesReportController.js';
 import { isAdmin, redirectIfAdmin } from '../middleware/authMiddleware.js';
-
+import Tutor from '../models/Tutor.js';
 
 const router = express.Router();
+
+// Auto-attach pendingCount to every admin page
+router.use(async (req, res, next) => {
+    try {
+        res.locals.pendingCount = await Tutor.countDocuments({ approvalStatus: 'pending', isVerified: true });
+    } catch (e) {
+        res.locals.pendingCount = 0;
+    }
+    next();
+});
 
 router.get('/login', redirectIfAdmin, adminController.getLogin);
 router.post('/login', adminController.postLogin);

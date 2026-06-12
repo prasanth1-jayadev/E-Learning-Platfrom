@@ -51,12 +51,15 @@ export const getTutorChatPage = async (req, res) => {
         .populate('userId', 'fullName avatar')
         .sort({ 'lastMessage.timestamp': -1 })
         .lean();
+
+        
+        const validConversations = conversations.filter(conv => conv.userId);
       
          
-          const conversationsWithUnread = await Promise.all(conversations.map(async (conv) => {
+          const conversationsWithUnread = await Promise.all(validConversations.map(async (conv) => {
             const unreadCount = await Message.countDocuments({
                 conversationId: conv._id,
-                senderType: 'user', // Unread messages sent by the student
+                senderType: 'user', 
                 isRead: false
             });
             return { ...conv, unreadCount };
@@ -133,8 +136,9 @@ export const getMessages = async (req, res) => {
         const limit = 50;
         const skip = (page - 1) * limit;
 
-        const userId = req.session.userId || req.user._id;
-        const userType = req.session.userId ? 'user' : 'tutor';
+        const role = req.query.role;
+        const userType = role || (req.session.userId ? 'user' : 'tutor');
+        const userId = userType === 'user' ? req.session.userId : req.session.tutorId;
 
         //  access
         const conversation = await Conversation.findById(conversationId);
@@ -181,16 +185,17 @@ export const getMessages = async (req, res) => {
 
 export const getConversations = async (req, res) => {
     try {
-        const userId = req.session.userId || req.user?._id;
+        const role = req.query.role;
+        const userType = role || (req.session.tutorId ? 'tutor' : 'user');
+        const userId = req.session.userId;
         const tutorId = req.session.tutorId;
-        const userType = tutorId ? 'tutor' : 'user';
 
         let query = {};
         if (userType === 'tutor') {
             query.tutorId = tutorId;
         } else {
-            query.userId=userId;
-            query.type='individual'
+            query.userId = userId;
+            query.type = 'individual';
         }
 
         const conversations = await Conversation.find(query)
@@ -200,7 +205,16 @@ export const getConversations = async (req, res) => {
             .sort({ 'lastMessage.timestamp': -1 })
             .lean();
 
-           const conversationsWithUnread = await Promise.all(conversations.map(async (conv) => {
+        // Filter out conversations with missing or deleted users/tutors
+        const validConversations = conversations.filter(conv => {
+            if (userType === 'tutor') {
+                return conv.userId;
+            } else {
+                return conv.tutorId;
+            }
+        });
+
+           const conversationsWithUnread = await Promise.all(validConversations.map(async (conv) => {
             const unreadCount = await Message.countDocuments({
                 conversationId: conv._id,
                 senderType: userType === 'tutor' ? 'user' : 'tutor',

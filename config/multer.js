@@ -17,7 +17,7 @@ const certificateStorage = multer.diskStorage({
   }
 });
 
-// For videos — use memory storage, then upload to Cloudinary via upload_stream in controller
+
 const memoryStorage = multer.memoryStorage();
 
 const uploadCertificate = multer({ storage: certificateStorage });

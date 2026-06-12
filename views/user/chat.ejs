@@ -151,15 +151,6 @@
                     }
                 });
 
-                                socket.on('messages_read', (data) => {
-                    if (data.conversationId === currentConversationId) {
-                        document.querySelectorAll('.message-tick').forEach(tick => {
-                            tick.classList.remove('text-gray-300');
-                            tick.classList.add('text-blue-500');
-                        });
-                    }
-                });
-
 
                 socket.on('connect', () => {
                     console.log('Connected to chat server');
@@ -198,6 +189,10 @@
                     }
                 });
 
+                socket.on('new_message_notification', (data) => {
+                    loadConversations();
+                });
+
 
 
 
@@ -218,7 +213,7 @@
             // Load conversations
             async function loadConversations() {
                 try {
-                    const response = await fetch('/chat/conversations');
+                    const response = await fetch('/chat/conversations?role=user');
                     const data = await response.json();
 
                     if (data.success) {
@@ -286,6 +281,9 @@
 
             // Open conversation
             async function openConversation(conversationId, conv) {
+                if (currentConversationId && currentConversationId !== conversationId) {
+                    socket.emit('leave_conversation', { conversationId: currentConversationId });
+                }
                 currentConversationId = conversationId;
 
                 const displayName = conv.tutorId?.fullName || 'Tutor';
@@ -301,7 +299,7 @@
 
                 // Load messages
                 try {
-                    const response = await fetch(`/chat/messages/${conversationId}`);
+                    const response = await fetch(`/chat/messages/${conversationId}?role=user`);
                     const data = await response.json();
 
                     if (data.success) {

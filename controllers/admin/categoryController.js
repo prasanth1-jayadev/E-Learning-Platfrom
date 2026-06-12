@@ -8,21 +8,15 @@ const getCategories = async (req, res) => {
         const categories = await Category.find().sort({ createdAt: -1 });
         
         
-        const Tutor = (await import('../../models/Tutor.js')).default;
-        const pendingCount = await Tutor.countDocuments({approvedStatus:'pending', isVerified:true})
-        
-        
         res.render('admin/categories', { 
             categories, 
-            currentPage: 'categories',
-            pendingCount 
+            currentPage: 'categories'
         });
     } catch (error) {
         console.error('Get categories error:', error);
         res.render('admin/categories', { 
             categories: [], 
-            currentPage: 'categories',
-            pendingCount: 0 
+            currentPage: 'categories'
         });
     }
 };
