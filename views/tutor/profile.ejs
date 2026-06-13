@@ -26,10 +26,8 @@
 
         /* Main Content Styles */
         .main-content {
-            margin-left: 260px;
             flex: 1;
             padding: 2rem;
-            width: calc(100% - 260px);
             min-height: 100vh;
         }
 
@@ -340,34 +338,8 @@
         }
 
         /* Responsive */
-        @media (max-width: 1439px) {
-            .main-content {
-                margin-left: 240px;
-                width: calc(100% - 240px);
-                padding: 1.75rem;
-            }
-        }
-
-        @media (max-width: 1023px) {
-            .main-content {
-                margin-left: 220px;
-                width: calc(100% - 220px);
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 899px) {
-            .main-content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
-                padding: 1.25rem;
-            }
-        }
-
         @media (max-width: 767px) {
             .main-content {
-                margin-left: 0;
-                width: 100%;
                 padding: 1rem;
             }
 
@@ -401,7 +373,7 @@
     <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'profile' }) %>
 
         <!-- Profile Content -->
-        <div class="main-content">
+        <div class="tutor-main-content main-content">
             <div class="profile-card">
                 <div class="profile-header">
                     <h2>Profile Settings</h2>

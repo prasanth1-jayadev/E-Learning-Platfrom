@@ -1,12 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><%= tutor.fullName %> - Admin Dashboard</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        <%= tutor.fullName %> - Admin Dashboard
+    </title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -27,184 +31,217 @@
         };
     </script>
 </head>
-<body class="font-display bg-background-light text-slate-900 h-screen overflow-hidden flex">
-    
+
+<body class="font-display bg-background-light text-slate-900 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
+
     <%- include('../partials/admin-sidebar') %>
 
-    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-        <!-- Back Button -->
-        <div class="mb-6">
-            <a href="/admin/tutors" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900">
-                <span class="material-icons-outlined">arrow_back</span>
-                <span>Back to Tutors</span>
-            </a>
-        </div>
-
-        <!-- Tutor Profile Header -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
-            <div class="flex items-start gap-6">
-                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <% if (tutor.avatar) { %>
-                        <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>" class="w-full h-full rounded-full object-cover">
-                    <% } else { %>
-                        <span class="material-icons-outlined text-slate-400 text-5xl">person</span>
-                    <% } %>
-                </div>
-                <div class="flex-1">
-                    <div class="flex items-center gap-3 mb-2">
-                        <h2 class="text-2xl font-bold text-slate-800"><%= tutor.fullName %></h2>
-                        <% if (tutor.isCertified) { %>
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                            ✓ CERTIFIED
-                        </span>
-                        <% } %>
-                        <% if (tutor.isBlocked) { %>
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                            BLOCKED
-                        </span>
-                        <% } else { %>
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            ACTIVE
-                        </span>
-                        <% } %>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <p class="text-sm text-slate-500">Email</p>
-                            <p class="text-sm font-medium text-slate-900"><%= tutor.email %></p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-slate-500">Phone</p>
-                            <p class="text-sm font-medium text-slate-900"><%= tutor.phone || 'N/A' %></p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-slate-500">Joined Date</p>
-                            <p class="text-sm font-medium text-slate-900"><%= new Date(tutor.createdAt).toLocaleDateString() %></p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-slate-500">Subjects</p>
-                            <p class="text-sm font-medium text-slate-900"><%= tutor.subjects || 'N/A' %></p>
-                        </div>
-                    </div>
-                    <% if (tutor.bio) { %>
-                    <div class="mt-4">
-                        <p class="text-sm text-slate-500">Bio</p>
-                        <p class="text-sm text-slate-700 mt-1"><%= tutor.bio %></p>
-                    </div>
-                    <% } %>
-                </div>
+        <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 min-h-screen lg:h-screen lg:overflow-y-auto">
+            <!-- Back Button -->
+            <div class="mb-6">
+                <a href="/admin/tutors" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900">
+                    <span class="material-icons-outlined">arrow_back</span>
+                    <span>Back to Tutors</span>
+                </a>
             </div>
-        </div>
 
-        <!-- Certificate Section -->
-        <% if (tutor.certificatePath) { %>
-        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
-            <h3 class="text-lg font-semibold text-slate-800 mb-4">Certificate</h3>
-            <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')" 
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">
-                <span class="material-icons-outlined">description</span>
-                View Certificate
-            </button>
-        </div>
-        <% } %>
-
-        <!-- Courses Section -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-slate-800">Courses (<%= courses.length %>)</h3>
-            </div>
-            
-            <% if (courses.length > 0) { %>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <% courses.forEach(course => { %>
-                <div class="border border-slate-200 rounded-lg overflow-hidden hover:shadow-md transition">
-                    <div class="h-40 bg-slate-100 flex items-center justify-center overflow-hidden">
-                        <% if (course.thumbnail) { %>
-                            <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-full h-full object-cover">
-                        <% } else { %>
-                            <span class="material-icons-outlined text-slate-300 text-6xl">book</span>
-                        <% } %>
-                    </div>
-                    <div class="p-4">
-                        <h4 class="font-semibold text-slate-900 mb-2 line-clamp-2"><%= course.title %></h4>
-                        <p class="text-sm text-slate-500 mb-3 line-clamp-2"><%= course.description %></p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-semibold text-primary">₹<%= course.price %></span>
-                            <span class="text-xs text-slate-500">
-                                <% if (course.isPublished) { %>
-                                    <span class="text-green-600">● Published</span>
-                                <% } else { %>
-                                    <span class="text-orange-600">● Draft</span>
+            <!-- Tutor Profile Header -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+                <div class="flex items-start gap-6">
+                    <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <% if (tutor.avatar) { %>
+                            <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>"
+                                class="w-full h-full rounded-full object-cover">
+                            <% } else { %>
+                                <span class="material-icons-outlined text-slate-400 text-5xl">person</span>
                                 <% } %>
-                            </span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h2 class="text-2xl font-bold text-slate-800">
+                                <%= tutor.fullName %>
+                            </h2>
+                            <% if (tutor.isCertified) { %>
+                                <span
+                                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    ✓ CERTIFIED
+                                </span>
+                                <% } %>
+                                    <% if (tutor.isBlocked) { %>
+                                        <span
+                                            class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                            BLOCKED
+                                        </span>
+                                        <% } else { %>
+                                            <span
+                                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                ACTIVE
+                                            </span>
+                                            <% } %>
                         </div>
-                        <div class="mt-3 text-xs text-slate-500">
-                            <span><%= course.lessons ? course.lessons.length : 0 %> lessons</span>
-                            <span class="mx-2">•</span>
-                            <span><%= course.enrolledStudents ? course.enrolledStudents.length : 0 %> students</span>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <p class="text-sm text-slate-500">Email</p>
+                                <p class="text-sm font-medium text-slate-900">
+                                    <%= tutor.email %>
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Phone</p>
+                                <p class="text-sm font-medium text-slate-900">
+                                    <%= tutor.phone || 'N/A' %>
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Joined Date</p>
+                                <p class="text-sm font-medium text-slate-900">
+                                    <%= new Date(tutor.createdAt).toLocaleDateString() %>
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Subjects</p>
+                                <p class="text-sm font-medium text-slate-900">
+                                    <%= tutor.subjects || 'N/A' %>
+                                </p>
+                            </div>
                         </div>
+                        <% if (tutor.bio) { %>
+                            <div class="mt-4">
+                                <p class="text-sm text-slate-500">Bio</p>
+                                <p class="text-sm text-slate-700 mt-1">
+                                    <%= tutor.bio %>
+                                </p>
+                            </div>
+                            <% } %>
                     </div>
                 </div>
-                <% }); %>
             </div>
-            <% } else { %>
-            <div class="text-center py-12">
-                <span class="material-icons-outlined text-6xl text-slate-300 mb-4">school</span>
-                <h3 class="text-lg font-medium text-slate-600 mb-2">No courses yet</h3>
-                <p class="text-slate-500">This tutor hasn't created any courses</p>
+
+            <!-- Certificate Section -->
+            <% if (tutor.certificatePath) { %>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Certificate</h3>
+                    <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">
+                        <span class="material-icons-outlined">description</span>
+                        View Certificate
+                    </button>
+                </div>
+                <% } %>
+
+                    <!-- Courses Section -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-slate-800">Courses (<%= courses.length %>)</h3>
+                        </div>
+
+                        <% if (courses.length> 0) { %>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <% courses.forEach(course=> { %>
+                                    <div
+                                        class="border border-slate-200 rounded-lg overflow-hidden hover:shadow-md transition">
+                                        <div class="h-40 bg-slate-100 flex items-center justify-center overflow-hidden">
+                                            <% if (course.thumbnail) { %>
+                                                <img src="<%= course.thumbnail %>" alt="<%= course.title %>"
+                                                    class="w-full h-full object-cover">
+                                                <% } else { %>
+                                                    <span
+                                                        class="material-icons-outlined text-slate-300 text-6xl">book</span>
+                                                    <% } %>
+                                        </div>
+                                        <div class="p-4">
+                                            <h4 class="font-semibold text-slate-900 mb-2 line-clamp-2">
+                                                <%= course.title %>
+                                            </h4>
+                                            <p class="text-sm text-slate-500 mb-3 line-clamp-2">
+                                                <%= course.description %>
+                                            </p>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-primary">₹<%= course.price %>
+                                                </span>
+                                                <span class="text-xs text-slate-500">
+                                                    <% if (course.isPublished) { %>
+                                                        <span class="text-green-600">● Published</span>
+                                                        <% } else { %>
+                                                            <span class="text-orange-600">● Draft</span>
+                                                            <% } %>
+                                                </span>
+                                            </div>
+                                            <div class="mt-3 text-xs text-slate-500">
+                                                <span>
+                                                    <%= course.lessons ? course.lessons.length : 0 %> lessons
+                                                </span>
+                                                <span class="mx-2">•</span>
+                                                <span>
+                                                    <%= course.enrolledStudents ? course.enrolledStudents.length : 0 %>
+                                                        students
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                            <% } else { %>
+                                <div class="text-center py-12">
+                                    <span class="material-icons-outlined text-6xl text-slate-300 mb-4">school</span>
+                                    <h3 class="text-lg font-medium text-slate-600 mb-2">No courses yet</h3>
+                                    <p class="text-slate-500">This tutor hasn't created any courses</p>
+                                </div>
+                                <% } %>
+                    </div>
+        </main>
+
+        <!-- Certificate Modal -->
+        <div id="certificateModal"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+                <div class="flex items-center justify-between p-4 border-b border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800" id="certificateTitle">Certificate</h3>
+                    <button onclick="closeCertificateModal()"
+                        class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                        <span class="material-icons-outlined text-slate-600">close</span>
+                    </button>
+                </div>
+                <div class="p-4 overflow-auto max-h-[calc(90vh-80px)]">
+                    <img id="certificateImage" src="" alt="Certificate" class="w-full h-auto rounded-lg" />
+                </div>
             </div>
-            <% } %>
         </div>
-    </main>
 
-    <!-- Certificate Modal -->
-    <div id="certificateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
-            <div class="flex items-center justify-between p-4 border-b border-slate-200">
-                <h3 class="text-lg font-semibold text-slate-800" id="certificateTitle">Certificate</h3>
-                <button onclick="closeCertificateModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                    <span class="material-icons-outlined text-slate-600">close</span>
-                </button>
-            </div>
-            <div class="p-4 overflow-auto max-h-[calc(90vh-80px)]">
-                <img id="certificateImage" src="" alt="Certificate" class="w-full h-auto rounded-lg" />
-            </div>
-        </div>
-    </div>
+        <script>
+            function viewCertificate(certificateUrl, tutorName) {
+                const modal = document.getElementById('certificateModal');
+                const image = document.getElementById('certificateImage');
+                const title = document.getElementById('certificateTitle');
 
-    <script>
-        function viewCertificate(certificateUrl, tutorName) {
-            const modal = document.getElementById('certificateModal');
-            const image = document.getElementById('certificateImage');
-            const title = document.getElementById('certificateTitle');
-            
-            title.textContent = `${tutorName}'s Certificate`;
-            image.src = certificateUrl;
-            
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
+                title.textContent = `${tutorName}'s Certificate`;
+                image.src = certificateUrl;
 
-        function closeCertificateModal() {
-            const modal = document.getElementById('certificateModal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        document.getElementById('certificateModal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCertificateModal();
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             }
-        });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeCertificateModal();
+            function closeCertificateModal() {
+                const modal = document.getElementById('certificateModal');
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
             }
-        });
-    </script>
 
-    <!-- Admin Session Management Script -->
-    <script src="/js/admin-session.js"></script>
+            document.getElementById('certificateModal')?.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeCertificateModal();
+                }
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeCertificateModal();
+                }
+            });
+        </script>
+
+        <!-- Admin Session Management Script -->
+        <script src="/js/admin-session.js"></script>
 </body>
+
 </html>

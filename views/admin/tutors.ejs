@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Tutors - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -28,228 +30,264 @@
         };
     </script>
 </head>
-<body class="font-display bg-background-light text-slate-900 h-screen overflow-hidden flex">
-    
+
+<body class="font-display bg-background-light text-slate-900 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
+
     <%- include('../partials/admin-sidebar') %>
 
-    
-    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-        <header class="mb-8">
-            <h2 class="text-3xl font-bold text-slate-800">Approved Tutors</h2>
-            <p class="text-slate-500 mt-1">Manage all approved tutors in the system</p>
-        </header>
 
-        <!-- Search and Filters -->
-        <div class="bg-white p-4 rounded-xl border border-slate-200 mb-6">
-            <form method="GET" class="flex gap-4 items-end">
-                <div class="flex-1">
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Search Tutors</label>
-                    <input type="text" name="search" value="<%= search %>" 
-                           placeholder="Search by name or email..." 
-                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
-                    <select name="blocked" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
-                        <option value="all" <%= blocked === 'all' ? 'selected' : '' %>>All Tutors</option>
-                        <option value="active" <%= blocked === 'active' ? 'selected' : '' %>>Active</option>
-                        <option value="blocked" <%= blocked === 'blocked' ? 'selected' : '' %>>Blocked</option>
-                    </select>
-                </div>
-                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-green-600 flex items-center gap-2">
-                    <span class="material-icons-outlined text-sm">search</span>
-                    Search
-                </button>
-                <a href="/admin/tutors" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200">
-                    Clear
-                </a>
-            </form>
-        </div>
+        <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 min-h-screen lg:h-screen lg:overflow-y-auto">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800">Approved Tutors</h2>
+                <p class="text-slate-500 mt-1">Manage all approved tutors in the system</p>
+            </header>
 
-        <!-- Tutors Table -->
-        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-slate-50 border-b border-slate-200">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">S.No</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Email</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Joined Date</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certificate</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Certified</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-slate-200">
-                        <% tutors.forEach((tutor, index) => { %>
-                        <tr class="hover:bg-slate-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                                <%= (page - 1) * 12 + index + 1 %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-3">
-                                        <span class="material-icons-outlined text-slate-600 text-sm">person</span>
-                                    </div>
-                                    <div class="text-sm font-medium text-slate-900"><%= tutor.fullName %></div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                <%= tutor.email %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                <%= new Date(tutor.createdAt).toLocaleDateString() %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                <% if (tutor.certificatePath) { %>
-                                    <button onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')" 
-                                       class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
-                                        <span class="material-icons-outlined text-xs">description</span>
-                                        View
-                                    </button>
-                                <% } else { %>
-                                    <span class="text-slate-400">N/A</span>
-                                <% } %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <% if (tutor.isBlocked) { %>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                    BLOCKED
-                                </span>
-                                <% } else { %>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                    ACTIVE
-                                </span>
-                                <% } %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <% if (tutor.isCertified) { %>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    ✓ CERTIFIED
-                                </span>
-                                <% } else { %>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
-                                    NOT CERTIFIED
-                                </span>
-                                <% } %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex gap-2">
-                                    <% if (tutor.isBlocked) { %>
-                                    <button onclick="toggleBlock('<%= tutor._id %>')" 
-                                            class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-                                        Unblock
-                                    </button>
-                                    <% } else { %>
-                                    <button onclick="toggleBlock('<%= tutor._id %>')" 
-                                            class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
-                                        Block
-                                    </button>
-                                    <% } %>
-                                    <button onclick="toggleCertified('<%= tutor._id %>')" 
-                                            class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white <%= tutor.isCertified ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700' %>">
-                                        <%= tutor.isCertified ? 'Remove' : 'Certify' %>
-                                    </button>
-                                    <a href="/admin/tutor/<%= tutor._id %>" 
-                                       class="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50">
-                                        <span class="material-icons-outlined text-xs">visibility</span>
-                                        View
+            <!-- Search and Filters -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-6">
+                <form method="GET" class="flex gap-4 items-end">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Search Tutors</label>
+                        <input type="text" name="search" value="<%= search %>" placeholder="Search by name or email..."
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                        <select name="blocked"
+                            class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                            <option value="all" <%=blocked==='all' ? 'selected' : '' %>>All Tutors</option>
+                            <option value="active" <%=blocked==='active' ? 'selected' : '' %>>Active</option>
+                            <option value="blocked" <%=blocked==='blocked' ? 'selected' : '' %>>Blocked</option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-green-600 flex items-center gap-2">
+                        <span class="material-icons-outlined text-sm">search</span>
+                        Search
+                    </button>
+                    <a href="/admin/tutors" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200">
+                        Clear
+                    </a>
+                </form>
+            </div>
+
+            <!-- Tutors Table -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    S.No</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Name</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Email</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Joined Date</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Certificate</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Certified</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <% tutors.forEach((tutor, index)=> { %>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        <%= (page - 1) * 12 + index + 1 %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div
+                                                class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-3">
+                                                <span
+                                                    class="material-icons-outlined text-slate-600 text-sm">person</span>
+                                            </div>
+                                            <div class="text-sm font-medium text-slate-900">
+                                                <%= tutor.fullName %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                        <%= tutor.email %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                        <%= new Date(tutor.createdAt).toLocaleDateString() %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                        <% if (tutor.certificatePath) { %>
+                                            <button
+                                                onclick="viewCertificate('<%= tutor.certificatePath %>', '<%= tutor.fullName %>')"
+                                                class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">
+                                                <span class="material-icons-outlined text-xs">description</span>
+                                                View
+                                            </button>
+                                            <% } else { %>
+                                                <span class="text-slate-400">N/A</span>
+                                                <% } %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <% if (tutor.isBlocked) { %>
+                                            <span
+                                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                                BLOCKED
+                                            </span>
+                                            <% } else { %>
+                                                <span
+                                                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                    ACTIVE
+                                                </span>
+                                                <% } %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <% if (tutor.isCertified) { %>
+                                            <span
+                                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                ✓ CERTIFIED
+                                            </span>
+                                            <% } else { %>
+                                                <span
+                                                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                                                    NOT CERTIFIED
+                                                </span>
+                                                <% } %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex gap-2">
+                                            <% if (tutor.isBlocked) { %>
+                                                <button onclick="toggleBlock('<%= tutor._id %>')"
+                                                    class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                                                    Unblock
+                                                </button>
+                                                <% } else { %>
+                                                    <button onclick="toggleBlock('<%= tutor._id %>')"
+                                                        class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                                                        Block
+                                                    </button>
+                                                    <% } %>
+                                                        <button onclick="toggleCertified('<%= tutor._id %>')"
+                                                            class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white <%= tutor.isCertified ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700' %>">
+                                                            <%= tutor.isCertified ? 'Remove' : 'Certify' %>
+                                                        </button>
+                                                        <a href="/admin/tutor/<%= tutor._id %>"
+                                                            class="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50">
+                                                            <span
+                                                                class="material-icons-outlined text-xs">visibility</span>
+                                                            View
+                                                        </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <% if (tutors.length===0) { %>
+                    <div class="text-center py-12">
+                        <span class="material-icons-outlined text-6xl text-slate-300 mb-4">co_present</span>
+                        <h3 class="text-lg font-medium text-slate-600 mb-2">No tutors found</h3>
+                        <p class="text-slate-500">Try adjusting your search criteria</p>
+                    </div>
+                    <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <% if (pages> 1) { %>
+                <div class="flex items-center justify-between mt-6">
+                    <div class="text-sm text-slate-700">
+                        Showing <span class="font-medium">
+                            <%= (page - 1) * 12 + 1 %>
+                        </span> to <span class="font-medium">
+                            <%= Math.min(page * 12, total) %>
+                        </span> of <span class="font-medium">
+                            <%= total %>
+                        </span> results
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <% if (page> 1) { %>
+                            <a href="?page=<%= page - 1 %>&search=<%= search %>&blocked=<%= blocked %>"
+                                class="px-3 py-2 text-sm bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 rounded-md">
+                                Previous
+                            </a>
+                            <% } %>
+
+                                <% for (let i=Math.max(1, page - 2); i <=Math.min(pages, page + 2); i++) { %>
+                                    <a href="?page=<%= i %>&search=<%= search %>&blocked=<%= blocked %>"
+                                        class="px-3 py-2 text-sm <%= i === page ? 'bg-primary text-white' : 'bg-white text-slate-700 hover:bg-slate-50' %> border border-slate-300 rounded-md">
+                                        <%= i %>
                                     </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    </tbody>   
-                </table>
+                                    <% } %>
+
+                                        <% if (page < pages) { %>
+                                            <a href="?page=<%= page + 1 %>&search=<%= search %>&blocked=<%= blocked %>"
+                                                class="px-3 py-2 text-sm bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 rounded-md">
+                                                Next
+                                            </a>
+                                            <% } %>
+                    </div>
+                </div>
+                <% } %>
+        </main>
+
+        <div id="certificateModal"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-4 border-b border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800" id="certificateTitle">Certificate</h3>
+                    <button onclick="closeCertificateModal()"
+                        class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                        <span class="material-icons-outlined text-slate-600">close</span>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-4 overflow-auto max-h-[calc(90vh-80px)]">
+                    <img id="certificateImage" src="" alt="Certificate" class="w-full h-auto rounded-lg" />
+                </div>
             </div>
-            
-            <% if (tutors.length === 0) { %>
-            <div class="text-center py-12">
-                <span class="material-icons-outlined text-6xl text-slate-300 mb-4">co_present</span>
-                <h3 class="text-lg font-medium text-slate-600 mb-2">No tutors found</h3>
-                <p class="text-slate-500">Try adjusting your search criteria</p>
-            </div>
-            <% } %>
         </div>
 
-        <!-- Pagination -->
-        <% if (pages > 1) { %>
-        <div class="flex items-center justify-between mt-6">
-            <div class="text-sm text-slate-700">
-                Showing <span class="font-medium"><%= (page - 1) * 12 + 1 %></span> to <span class="font-medium"><%= Math.min(page * 12, total) %></span> of <span class="font-medium"><%= total %></span> results
-            </div>
-            <div class="flex items-center gap-2">
-                <% if (page > 1) { %>
-                <a href="?page=<%= page - 1 %>&search=<%= search %>&blocked=<%= blocked %>" 
-                   class="px-3 py-2 text-sm bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 rounded-md">
-                    Previous
-                </a>
-                <% } %>
-                
-                <% for (let i = Math.max(1, page - 2); i <= Math.min(pages, page + 2); i++) { %>
-                <a href="?page=<%= i %>&search=<%= search %>&blocked=<%= blocked %>" 
-                   class="px-3 py-2 text-sm <%= i === page ? 'bg-primary text-white' : 'bg-white text-slate-700 hover:bg-slate-50' %> border border-slate-300 rounded-md">
-                    <%= i %>
-                </a>
-                <% } %>
-                
-                <% if (page < pages) { %>
-                <a href="?page=<%= page + 1 %>&search=<%= search %>&blocked=<%= blocked %>" 
-                   class="px-3 py-2 text-sm bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 rounded-md">
-                    Next
-                </a>
-                <% } %>
-            </div>
-        </div>
-        <% } %>
-    </main>
+        <script>
+            function viewCertificate(certificateUrl, tutorName) {
+                const modal = document.getElementById('certificateModal');
+                const image = document.getElementById('certificateImage');
+                const title = document.getElementById('certificateTitle');
 
-     <div id="certificateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 border-b border-slate-200">
-                <h3 class="text-lg font-semibold text-slate-800" id="certificateTitle">Certificate</h3>
-                <button onclick="closeCertificateModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                    <span class="material-icons-outlined text-slate-600">close</span>
-                </button>
-            </div>
-            <!-- Modal Body -->
-            <div class="p-4 overflow-auto max-h-[calc(90vh-80px)]">
-                <img id="certificateImage" src="" alt="Certificate" class="w-full h-auto rounded-lg" />
-            </div>
-        </div>
-    </div>
+                if (!certificateUrl) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Certificate Missing',
+                        text: 'Certificate URL is missing',
+                        confirmButtonColor: '#00d9b1'
+                    });
+                    return;
+                }
 
-    <script>
-        function viewCertificate(certificateUrl, tutorName) {
-            const modal = document.getElementById('certificateModal');
-            const image = document.getElementById('certificateImage');
-            const title = document.getElementById('certificateTitle');
-            
-            if (!certificateUrl) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Certificate Missing',
-                    text: 'Certificate URL is missing',
-                    confirmButtonColor: '#00d9b1'
-                });
-                return;
-            }
-            
-            title.textContent = `${tutorName}'s Certificate`;
-            image.src = '';
-            image.alt = 'Loading certificate...';
-            image.src = certificateUrl.trim();
-            
-            image.onload = function() {
-                // Certificate loaded successfully
-            };
-            
-            image.onerror = function() {
-                const modalBody = image.parentElement;
-                modalBody.innerHTML = `
+                title.textContent = `${tutorName}'s Certificate`;
+                image.src = '';
+                image.alt = 'Loading certificate...';
+                image.src = certificateUrl.trim();
+
+                image.onload = function () {
+                    // Certificate loaded successfully
+                };
+
+                image.onerror = function () {
+                    const modalBody = image.parentElement;
+                    modalBody.innerHTML = `
                     <div style="text-align: center; padding: 3rem;">
                         <svg style="width: 64px; height: 64px; margin: 0 auto 1rem; color: #ef4444;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -258,145 +296,140 @@
                         <p style="color: #6b7280; margin-bottom: 1rem;">Failed to load the certificate image</p>
                     </div>
                 `;
-            };
-            
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
+                };
 
-        function closeCertificateModal() {
-            const modal = document.getElementById('certificateModal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        document.getElementById('certificateModal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCertificateModal();
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             }
-        });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeCertificateModal();
+            function closeCertificateModal() {
+                const modal = document.getElementById('certificateModal');
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
             }
-        });
-        
-        async function toggleBlock(tutorId) {
-            const tutorRow = document.querySelector(`button[onclick="toggleBlock('${tutorId}')"]`);
-            const isCurrentlyBlocked = tutorRow.textContent.trim() === 'Unblock';
-            const action = isCurrentlyBlocked ? 'unblock' : 'block';
-            
-            const result = await Swal.fire({
-                title: `${action.charAt(0).toUpperCase() + action.slice(1)} Tutor?`,
-                text: `Are you sure you want to ${action} this tutor?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: isCurrentlyBlocked ? '#10B981' : '#EF4444',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: `Yes, ${action}!`,
-                cancelButtonText: 'Cancel'
+
+            document.getElementById('certificateModal')?.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeCertificateModal();
+                }
             });
 
-            if (!result.isConfirmed) return;
-            
-            try {
-                const response = await fetch(`/admin/toggle-block/${tutorId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeCertificateModal();
+                }
+            });
+
+            async function toggleBlock(tutorId) {
+                const tutorRow = document.querySelector(`button[onclick="toggleBlock('${tutorId}')"]`);
+                const isCurrentlyBlocked = tutorRow.textContent.trim() === 'Unblock';
+                const action = isCurrentlyBlocked ? 'unblock' : 'block';
+
+                const result = await Swal.fire({
+                    title: `${action.charAt(0).toUpperCase() + action.slice(1)} Tutor?`,
+                    text: `Are you sure you want to ${action} this tutor?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: isCurrentlyBlocked ? '#10B981' : '#EF4444',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: `Yes, ${action}!`,
+                    cancelButtonText: 'Cancel'
                 });
-                
-                const responseData = await response.json();
-                
-                if (responseData.success) {
-                    await Swal.fire({
-                        title: 'Success!',
-                        text: `Tutor ${action}ed successfully!`,
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
+
+                if (!result.isConfirmed) return;
+
+                try {
+                    const response = await fetch(`/admin/toggle-block/${tutorId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     });
-                    location.reload();
-                } else {
+
+                    const responseData = await response.json();
+
+                    if (responseData.success) {
+                        await Swal.fire({
+                            title: 'Success!',
+                            text: `Tutor ${action}ed successfully!`,
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: responseData.message,
+                            icon: 'error'
+                        });
+                    }
+                } catch (error) {
                     Swal.fire({
                         title: 'Error!',
-                        text: responseData.message,
+                        text: 'Error changing block status',
                         icon: 'error'
                     });
                 }
-            } catch (error) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error changing block status',
-                    icon: 'error'
-                });
             }
-        }
 
-        async function toggleCertified(tutorId) {
-            const tutorRow = document.querySelector(`button[onclick="toggleCertified('${tutorId}')"]`);
-            const isCurrentlyCertified = tutorRow.textContent.trim() === 'Remove Certified';
-            const action = isCurrentlyCertified ? 'remove certification from' : 'certify';
-            
-            const result = await Swal.fire({
-                title: `${isCurrentlyCertified ? 'Remove Certification?' : 'Mark as Certified?'}`,
-                text: `Are you sure you want to ${action} this tutor?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: isCurrentlyCertified ? '#EF4444' : '#3B82F6',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: `Yes, ${action}!`,
-                cancelButtonText: 'Cancel'
-            });
+            async function toggleCertified(tutorId) {
+                const tutorRow = document.querySelector(`button[onclick="toggleCertified('${tutorId}')"]`);
+                const isCurrentlyCertified = tutorRow.textContent.trim() === 'Remove Certified';
+                const action = isCurrentlyCertified ? 'remove certification from' : 'certify';
 
-            if (!result.isConfirmed) return;
-            
-            try {
-                const response = await fetch(`/admin/toggle-certified/${tutorId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                const result = await Swal.fire({
+                    title: `${isCurrentlyCertified ? 'Remove Certification?' : 'Mark as Certified?'}`,
+                    text: `Are you sure you want to ${action} this tutor?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: isCurrentlyCertified ? '#EF4444' : '#3B82F6',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: `Yes, ${action}!`,
+                    cancelButtonText: 'Cancel'
                 });
-                
-                const responseData = await response.json();
-                
-                if (responseData.success) {
-                    await Swal.fire({
-                        title: 'Success!',
-                        text: responseData.message,
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
+
+                if (!result.isConfirmed) return;
+
+                try {
+                    const response = await fetch(`/admin/toggle-certified/${tutorId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     });
-                    location.reload();
-                } else {
+
+                    const responseData = await response.json();
+
+                    if (responseData.success) {
+                        await Swal.fire({
+                            title: 'Success!',
+                            text: responseData.message,
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: responseData.message,
+                            icon: 'error'
+                        });
+                    }
+                } catch (error) {
                     Swal.fire({
                         title: 'Error!',
-                        text: responseData.message,
+                        text: 'Error changing certified status',
                         icon: 'error'
                     });
                 }
-            } catch (error) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error changing certified status',
-                    icon: 'error'
-                });
             }
-        }
-    </script>
+        </script>
 
-    <!-- Admin Session Management Script -->
-    <script src="/js/admin-session.js"></script>
-<%- include('../partials/toast') %>
+        <!-- Admin Session Management Script -->
+        <script src="/js/admin-session.js"></script>
+        <%- include('../partials/toast') %>
 </body>
+
 </html>
-
-
-
-
-
-

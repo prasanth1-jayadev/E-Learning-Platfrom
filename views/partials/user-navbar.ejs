@@ -126,41 +126,85 @@
   </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-lg relative z-50">
-  <div class="px-6 py-4 space-y-3">
-    <a href="/user/home" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1]' : '' %>">
+<!-- Mobile Drawer Backdrop -->
+<div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden opacity-0 transition-opacity duration-300"></div>
+
+<!-- Mobile Menu Drawer -->
+<div id="mobileMenuDrawer" class="fixed inset-y-0 right-0 z-[100] w-72 max-w-[80vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+  <!-- Drawer Header -->
+  <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+    <span class="font-bold text-gray-900 text-lg">Menu</span>
+    <button id="closeMobileMenuBtn" class="p-2 text-gray-500 hover:text-gray-900 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Drawer Content -->
+  <div class="px-6 py-6 space-y-4 flex-1 overflow-y-auto">
+    <a href="/user/home" class="block text-base font-semibold text-gray-700 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1]' : '' %>">
       Home
     </a>
-    <a href="/user/courses" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1]' : '' %>">
+    <a href="/user/courses" class="block text-base font-semibold text-gray-700 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1]' : '' %>">
       Courses
     </a>
-    <a href="/user/tutors" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1]' : '' %>">
+    <a href="/user/tutors" class="block text-base font-semibold text-gray-700 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1]' : '' %>">
       Tutors
     </a>
-    <a href="/user/about" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1]' : '' %>">
+    <a href="/user/about" class="block text-base font-semibold text-gray-700 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1]' : '' %>">
       About Us
     </a>
-    <a href="/user/contact" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1]' : '' %>">
+    <a href="/user/contact" class="block text-base font-semibold text-gray-700 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1]' : '' %>">
       Contact
     </a>
-    <a href="/tutor/signup" class="block px-4 py-2 bg-[#00d9b1] text-gray-900 text-sm font-bold rounded-lg hover:brightness-110 transition text-center">
-      Become a Tutor
-    </a>
+    <div class="pt-4 border-t border-gray-100">
+      <a href="/tutor/signup" class="block w-full py-3 bg-[#00d9b1] text-gray-900 text-sm font-bold rounded-xl hover:brightness-110 transition text-center shadow-lg shadow-brand/20">
+        Become a Tutor
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- Mobile Menu Toggle Script -->
 <script>
- document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+    const mobileMenuDrawer = document.getElementById('mobileMenuDrawer');
+    const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
     
-    if (mobileMenuBtn && mobileMenu) {
-      mobileMenuBtn.addEventListener('click', function() {
-        mobileMenu.classList.toggle('hidden');
-      });
+    function openMenu() {
+      mobileMenuBackdrop.classList.remove('hidden');
+      void mobileMenuBackdrop.offsetWidth; // Force reflow
+      mobileMenuBackdrop.classList.remove('opacity-0');
+      mobileMenuBackdrop.classList.add('opacity-100');
+      
+      mobileMenuDrawer.classList.remove('translate-x-full');
+      mobileMenuDrawer.classList.add('translate-x-0');
+      document.body.style.overflow = 'hidden';
     }
+    
+    function closeMenu() {
+      mobileMenuBackdrop.classList.remove('opacity-100');
+      mobileMenuBackdrop.classList.add('opacity-0');
+      
+      mobileMenuDrawer.classList.remove('translate-x-0');
+      mobileMenuDrawer.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+      
+      setTimeout(() => {
+        if (mobileMenuDrawer.classList.contains('translate-x-full')) {
+          mobileMenuBackdrop.classList.add('hidden');
+        }
+      }, 300);
+    }
+    
+    if (mobileMenuBtn && mobileMenuDrawer && mobileMenuBackdrop && closeMobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', openMenu);
+      closeMobileMenuBtn.addEventListener('click', closeMenu);
+      mobileMenuBackdrop.addEventListener('click', closeMenu);
+    }
+
     // Fetch and update cart count on page load if user is logged in
     <% if (typeof user !== 'undefined' && user) { %>
       fetchCartCount();

@@ -35,7 +35,12 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 1.5rem 1rem;
+        }
+        @media (min-width: 768px) {
+            .container {
+                padding: 3rem 2rem;
+            }
         }
 
         .hero-section {
@@ -310,9 +315,15 @@
         /* Tutor Grid */
         .tutor-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
             margin-bottom: 3rem;
+        }
+        @media (min-width: 640px) {
+            .tutor-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 2rem;
+            }
         }
 
         .tutor-card {
@@ -577,7 +588,8 @@
             }
 
             .search-box,
-            .filter-select {
+            .dropdown-wrapper,
+            .clear-filters-btn {
                 width: 100%;
             }
 

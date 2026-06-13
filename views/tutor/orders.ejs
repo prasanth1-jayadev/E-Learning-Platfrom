@@ -1,276 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Orders - Learnify</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; }
-    
-    .main-content { 
-        margin-left: 260px; 
-        flex: 1; 
-        padding: 2rem; 
-        width: calc(100% - 260px);
-    }
-    
-    .page-header { margin-bottom: 2rem; }
-    .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .page-header p { color: #666; }
-    
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .stat-card .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .stat-card .icon.green { background: #d1fae5; color: #065f46; }
-    .stat-card .icon.blue { background: #dbeafe; color: #1e40af; }
-    .stat-card .icon.purple { background: #e9d5ff; color: #6b21a8; }
-    .stat-card h3 { font-size: 0.875rem; color: #666; margin-bottom: 0.5rem; }
-    .stat-card .value { font-size: 1.75rem; font-weight: 700; }
-    
-    .content-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-    .content-card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
-    
-    table { width: 100%; border-collapse: collapse; }
-    table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 600; color: #666; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
-    table td { padding: 1rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
-    
-    .badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
-    .badge.completed { background: #d1fae5; color: #065f46; }
-    .badge.pending { background: #fef3c7; color: #92400e; }
-    .badge.failed { background: #fee2e2; color: #991b1b; }
-    
-    .student-info { display: flex; align-items: center; gap: 0.75rem; }
-    .student-avatar { width: 36px; height: 36px; border-radius: 50%; background: #00d9b1; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; }
-    .student-details { display: flex; flex-direction: column; }
-    .student-name { font-weight: 600; font-size: 0.9rem; }
-    .student-email { font-size: 0.8rem; color: #666; }
 
-    .course-title { font-weight: 500; font-size: 0.9rem; }
-    
-    .empty-state { text-align: center; padding: 4rem 2rem; color: #9ca3af; }
-    .empty-state .material-icons { font-size: 64px; margin-bottom: 1rem; color: #d1d5db; }
-    
-    @media (max-width: 767px) {
-        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
-        .stats-grid { grid-template-columns: 1fr; }
-        table th, table td { padding: 0.5rem; font-size: 0.8rem; }
-        .student-avatar { display: none; }
-    }
-    
-    /* Pagination Styles */
-    .pagination-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #f3f4f6;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-    .pagination-info {
-        font-size: 0.875rem;
-        color: #666;
-    }
-    .pagination-buttons {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .pagination-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 6px;
-        background: white;
-        color: #4b5563;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        transition: all 0.2s;
-        cursor: pointer;
-    }
-    .pagination-btn:hover:not(.disabled) {
-        border-color: #00d9b1;
-        color: #00d9b1;
-        background: #f0fdfa;
-    }
-    .pagination-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background: #f9fafb;
-    }
-    .pagination-pages {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-    .pagination-page {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        border: 1px solid #e5e7eb;
-        color: #4b5563;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
-    .pagination-page:hover:not(.active) {
-        border-color: #00d9b1;
-        color: #00d9b1;
-    }
-    .pagination-page.active {
-        background: #00d9b1;
-        border-color: #00d9b1;
-        color: white;
-    }
-  </style>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orders - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            background: #f5f7f6;
+            color: #1a1a1a;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .icon.green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .stat-card .icon.blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .stat-card .icon.purple {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .content-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .content-card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .student-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #00d9b1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .student-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .student-email {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .course-title {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #9ca3af;
+        }
+
+        .empty-state .material-icons {
+            font-size: 64px;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+
+        @media (max-width: 767px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table th,
+            table td {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .student-avatar {
+                display: none;
+            }
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f3f4f6;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pagination-info {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .pagination-btn:hover:not(.disabled) {
+            border-color: #00d9b1;
+            color: #00d9b1;
+            background: #f0fdfa;
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f9fafb;
+        }
+
+        .pagination-pages {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .pagination-page {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .pagination-page:hover:not(.active) {
+            border-color: #00d9b1;
+            color: #00d9b1;
+        }
+
+        .pagination-page.active {
+            background: #00d9b1;
+            border-color: #00d9b1;
+            color: white;
+        }
+    </style>
 </head>
+
 <body>
 
-<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'orders' }) %>
+    <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'orders' }) %>
 
-<div class="main-content">
-    <div class="page-header">
-        <h1>Orders & Sales</h1>
-        <p>Track student enrollments and course purchases</p>
-    </div>
-
-    <!-- Metrics are calculated on server side -->
-
-    <!-- Stats Dashboard Cards -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="icon green">
-                <span class="material-icons">monetization_on</span>
+        <div class="tutor-main-content main-content">
+            <div class="page-header">
+                <h1>Orders & Sales</h1>
+                <p>Track student enrollments and course purchases</p>
             </div>
-            <h3>Total Sales Revenue</h3>
-            <div class="value">₹<%= totalRevenue.toLocaleString('en-IN') %></div>
-        </div>
-        <div class="stat-card">
-            <div class="icon blue">
-                <span class="material-icons">people</span>
-            </div>
-            <h3>Total Enrollments</h3>
-            <div class="value"><%= totalSales %></div>
-        </div>
-        <div class="stat-card">
-            <div class="icon purple">
-                <span class="material-icons">calendar_month</span>
-            </div>
-            <h3>Sales This Month</h3>
-            <div class="value"><%= activeMonthSales %></div>
-        </div>
-    </div>
 
-    <!-- Orders Table List -->
-    <div class="content-card">
-        <h2>Recent Sales Transactions</h2>
-        <% if (orders && orders.length > 0) { %>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Student</th>
-                        <th>Course Purchased</th>
-                        <th>Amount Paid</th>
-                        <th>Transaction Info</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% orders.forEach(order => { %>
-                    <tr>
-                        <td><%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
-                        <td>
-                            <div class="student-info">
-                                <div class="student-avatar">
-                                    <%= order.user && order.user.fullName ? order.user.fullName.charAt(0).toUpperCase() : 'S' %>
-                                </div>
-                                <div class="student-details">
-                                    <span class="student-name"><%= order.user ? order.user.fullName : 'Unknown Student' %></span>
-                                    <span class="student-email"><%= order.user ? order.user.email : '' %></span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="course-title"><%= order.course ? order.course.title : 'Deleted Course' %></span>
-                        </td>
-                        <td style="font-weight: 600;">₹<%= order.amount.toLocaleString('en-IN') %></td>
-                        <td>
-                            <div style="font-size: 0.8rem; color: #555; line-height: 1.4;">
-                                <div><strong>Order ID:</strong> <%= order.orderId %></div>
-                                <div><strong>Payment ID:</strong> <%= order.paymentId %></div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge <%= order.status %>">
-                                <%= order.status.toUpperCase() %>
-                            </span>
-                        </td>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
+            <!-- Metrics are calculated on server side -->
 
-        <!-- Pagination Controls -->
-        <% if (totalPages > 1) { %>
-        <div class="pagination-container">
-            <div class="pagination-info">
-                Showing page <strong><%= page %></strong> of <strong><%= totalPages %></strong>
-            </div>
-            <div class="pagination-buttons">
-                <% if (page > 1) { %>
-                    <a href="/tutor/orders?page=<%= page - 1 %>" class="pagination-btn">
-                        <span class="material-icons">chevron_left</span> Previous
-                    </a>
-                <% } else { %>
-                    <span class="pagination-btn disabled">
-                        <span class="material-icons">chevron_left</span> Previous
-                    </span>
-                <% } %>
-
-                <div class="pagination-pages">
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                        <% if (i === page) { %>
-                            <span class="pagination-page active"><%= i %></span>
-                        <% } else { %>
-                            <a href="/tutor/orders?page=<%= i %>" class="pagination-page"><%= i %></a>
-                        <% } %>
-                    <% } %>
+            <!-- Stats Dashboard Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon green">
+                        <span class="material-icons">monetization_on</span>
+                    </div>
+                    <h3>Total Sales Revenue</h3>
+                    <div class="value">₹<%= totalRevenue.toLocaleString('en-IN') %>
+                    </div>
                 </div>
+                <div class="stat-card">
+                    <div class="icon blue">
+                        <span class="material-icons">people</span>
+                    </div>
+                    <h3>Total Enrollments</h3>
+                    <div class="value">
+                        <%= totalSales %>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon purple">
+                        <span class="material-icons">calendar_month</span>
+                    </div>
+                    <h3>Sales This Month</h3>
+                    <div class="value">
+                        <%= activeMonthSales %>
+                    </div>
+                </div>
+            </div>
 
-                <% if (page < totalPages) { %>
-                    <a href="/tutor/orders?page=<%= page + 1 %>" class="pagination-btn">
-                        Next <span class="material-icons">chevron_right</span>
-                    </a>
-                <% } else { %>
-                    <span class="pagination-btn disabled">
-                        Next <span class="material-icons">chevron_right</span>
-                    </span>
-                <% } %>
+            <!-- Orders Table List -->
+            <div class="content-card">
+                <h2>Recent Sales Transactions</h2>
+                <% if (orders && orders.length> 0) { %>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Student</th>
+                                    <th>Course Purchased</th>
+                                    <th>Amount Paid</th>
+                                    <th>Transaction Info</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% orders.forEach(order=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric' ,
+                                                month: 'short' , year: 'numeric' }) %>
+                                        </td>
+                                        <td>
+                                            <div class="student-info">
+                                                <div class="student-avatar">
+                                                    <%= order.user && order.user.fullName ?
+                                                        order.user.fullName.charAt(0).toUpperCase() : 'S' %>
+                                                </div>
+                                                <div class="student-details">
+                                                    <span class="student-name">
+                                                        <%= order.user ? order.user.fullName : 'Unknown Student' %>
+                                                    </span>
+                                                    <span class="student-email">
+                                                        <%= order.user ? order.user.email : '' %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="course-title">
+                                                <%= order.course ? order.course.title : 'Deleted Course' %>
+                                            </span>
+                                        </td>
+                                        <td style="font-weight: 600;">₹<%= order.amount.toLocaleString('en-IN') %>
+                                        </td>
+                                        <td>
+                                            <div style="font-size: 0.8rem; color: #555; line-height: 1.4;">
+                                                <div><strong>Order ID:</strong>
+                                                    <%= order.orderId %>
+                                                </div>
+                                                <div><strong>Payment ID:</strong>
+                                                    <%= order.paymentId %>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge <%= order.status %>">
+                                                <%= order.status.toUpperCase() %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <% if (totalPages> 1) { %>
+                        <div class="pagination-container">
+                            <div class="pagination-info">
+                                Showing page <strong>
+                                    <%= page %>
+                                </strong> of <strong>
+                                    <%= totalPages %>
+                                </strong>
+                            </div>
+                            <div class="pagination-buttons">
+                                <% if (page> 1) { %>
+                                    <a href="/tutor/orders?page=<%= page - 1 %>" class="pagination-btn">
+                                        <span class="material-icons">chevron_left</span> Previous
+                                    </a>
+                                    <% } else { %>
+                                        <span class="pagination-btn disabled">
+                                            <span class="material-icons">chevron_left</span> Previous
+                                        </span>
+                                        <% } %>
+
+                                            <div class="pagination-pages">
+                                                <% for (let i=1; i <=totalPages; i++) { %>
+                                                    <% if (i===page) { %>
+                                                        <span class="pagination-page active">
+                                                            <%= i %>
+                                                        </span>
+                                                        <% } else { %>
+                                                            <a href="/tutor/orders?page=<%= i %>"
+                                                                class="pagination-page">
+                                                                <%= i %>
+                                                            </a>
+                                                            <% } %>
+                                                                <% } %>
+                                            </div>
+
+                                            <% if (page < totalPages) { %>
+                                                <a href="/tutor/orders?page=<%= page + 1 %>" class="pagination-btn">
+                                                    Next <span class="material-icons">chevron_right</span>
+                                                </a>
+                                                <% } else { %>
+                                                    <span class="pagination-btn disabled">
+                                                        Next <span class="material-icons">chevron_right</span>
+                                                    </span>
+                                                    <% } %>
+                            </div>
+                        </div>
+                        <% } %>
+                            <% } else { %>
+                                <div class="empty-state">
+                                    <span class="material-icons">shopping_bag</span>
+                                    <p>No orders or student enrollments recorded yet</p>
+                                </div>
+                                <% } %>
             </div>
         </div>
-        <% } %>
-        <% } else { %>
-        <div class="empty-state">
-            <span class="material-icons">shopping_bag</span>
-            <p>No orders or student enrollments recorded yet</p>
-        </div>
-        <% } %>
-    </div>
-</div>
 
 </body>
+
 </html>

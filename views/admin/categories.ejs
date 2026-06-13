@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="en">
 
 <head>
@@ -6,7 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Category Management - Learnify</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = {
@@ -32,134 +33,157 @@
     </script>
 </head>
 
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex">
+<body
+    class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
 
     <%- include('../partials/admin-sidebar') %>
 
-    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-        <header class="flex justify-between items-center mb-8">
-            <div>
-                <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Category Management</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-1">Organize and manage your platform's learning categories</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
-                <!-- <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+        <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 min-h-screen lg:h-screen lg:overflow-y-auto">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Category Management</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Organize and manage your platform's learning
+                        categories</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <!-- <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
                     <span class="material-icons-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
                 </button> -->
-            </div>
-        </header>
+                </div>
+            </header>
 
-        <!-- Search and Add Button -->
-        <div class="flex justify-between items-center gap-4 mb-6">
-            <div class="relative flex-1 max-w-md">
-                <span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                <input type="text" id="searchInput" placeholder="Search categories..." class="w-full pl-11 pr-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
+            <!-- Search and Add Button -->
+            <div class="flex justify-between items-center gap-4 mb-6">
+                <div class="relative flex-1 max-w-md">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input type="text" id="searchInput" placeholder="Search categories..."
+                        class="w-full pl-11 pr-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
+                </div>
+                <button onclick="showAddModal()"
+                    class="px-5 py-2.5 bg-primary hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                    <span class="material-icons-outlined text-xl">add</span>
+                    Add Category
+                </button>
             </div>
-            <button onclick="showAddModal()" class="px-5 py-2.5 bg-primary hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
-                <span class="material-icons-outlined text-xl">add</span>
-                Add Category
-            </button>
-        </div>
 
-        <!-- Categories List -->
-        <div class="space-y-3">
-            <% if (categories && categories.length > 0) { %>
-                <% 
-                const iconMap = {
-                    'game': { icon: 'sports_esports', color: 'bg-blue-100 text-blue-600' },
-                    'secondary': { icon: 'school', color: 'bg-purple-100 text-purple-600' },
-                    'system': { icon: 'star', color: 'bg-purple-100 text-purple-600' },
-                    'design': { icon: 'palette', color: 'bg-amber-100 text-amber-600' },
-                    'ui': { icon: 'design_services', color: 'bg-amber-100 text-amber-600' },
-                    'ux': { icon: 'design_services', color: 'bg-amber-100 text-amber-600' },
-                    'web': { icon: 'code', color: 'bg-blue-100 text-blue-600' },
-                    'mobile': { icon: 'phone_android', color: 'bg-green-100 text-green-600' },
-                    'data': { icon: 'analytics', color: 'bg-indigo-100 text-indigo-600' },
-                    'business': { icon: 'business_center', color: 'bg-slate-100 text-slate-600' }
-                };
-                
-                categories.forEach(category => { 
-                    const nameLower = category.name.toLowerCase();
-                    let iconData = { icon: 'category', color: 'bg-slate-100 text-slate-600' };
-                    
-                    for (const [key, value] of Object.entries(iconMap)) {
+            <!-- Categories List -->
+            <div class="space-y-3">
+                <% if (categories && categories.length> 0) { %>
+                    <% const iconMap={ 'game' : { icon: 'sports_esports' , color: 'bg-blue-100 text-blue-600'
+                        }, 'secondary' : { icon: 'school' , color: 'bg-purple-100 text-purple-600' }, 'system' : {
+                        icon: 'star' , color: 'bg-purple-100 text-purple-600' }, 'design' : { icon: 'palette' ,
+                        color: 'bg-amber-100 text-amber-600' }, 'ui' : { icon: 'design_services' ,
+                        color: 'bg-amber-100 text-amber-600' }, 'ux' : { icon: 'design_services' ,
+                        color: 'bg-amber-100 text-amber-600' }, 'web' : { icon: 'code' ,
+                        color: 'bg-blue-100 text-blue-600' }, 'mobile' : { icon: 'phone_android' ,
+                        color: 'bg-green-100 text-green-600' }, 'data' : { icon: 'analytics' ,
+                        color: 'bg-indigo-100 text-indigo-600' }, 'business' : { icon: 'business_center' ,
+                        color: 'bg-slate-100 text-slate-600' } }; categories.forEach(category=> {
+                        const nameLower = category.name.toLowerCase();
+                        let iconData = { icon: 'category', color: 'bg-slate-100 text-slate-600' };
+
+                        for (const [key, value] of Object.entries(iconMap)) {
                         if (nameLower.includes(key)) {
-                            iconData = value;
-                            break;
+                        iconData = value;
+                        break;
                         }
-                    }
-                %>
-                    <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4 hover:border-slate-200 dark:hover:border-slate-700 transition-all">
-                        <!-- Icon -->
-                        <div class="w-12 h-12 <%= iconData.color %> rounded-xl flex items-center justify-center flex-shrink-0">
-                            <span class="material-icons-outlined text-2xl">
-                                <%= iconData.icon %>
-                            </span>
-                        </div>
-
-                        <!-- Category Info -->
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <h3 class="text-base font-semibold text-slate-800 dark:text-white"><%= category.name %></h3>
-                                <span class="px-2 py-0.5 text-xs font-medium rounded-md <%= category.status === 'listed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' %>">
-                                    <%= category.status === 'listed' ? 'Listed' : 'Unlisted' %>
+                        }
+                        %>
+                        <div
+                            class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4 hover:border-slate-200 dark:hover:border-slate-700 transition-all">
+                            <!-- Icon -->
+                            <div
+                                class="w-12 h-12 <%= iconData.color %> rounded-xl flex items-center justify-center flex-shrink-0">
+                                <span class="material-icons-outlined text-2xl">
+                                    <%= iconData.icon %>
                                 </span>
                             </div>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 truncate"><%= category.description || 'Under this ' + category.name + ' courses will be uploaded' %></p>
-                        </div>
 
-                        <!-- Actions -->
-                        <div class="flex items-center gap-2 flex-shrink-0">
-                            <button onclick="editCategory('<%= category._id %>', '<%= category.name %>', '<%= category.description %>')" class="px-3 py-1.5 text-sm font-medium text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-lg flex items-center gap-1.5 transition-colors">
-                                <span class="material-icons-outlined text-[18px]">edit</span>
-                                Edit
-                            </button>
-                            <button onclick="toggleStatus('<%= category._id %>', '<%= category.status %>')" class="px-3 py-1.5 text-sm font-medium <%= category.status === 'listed' ? 'text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20' : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' %> rounded-lg flex items-center gap-1.5 transition-colors">
-                                <span class="material-icons-outlined text-[18px]"><%= category.status === 'listed' ? 'visibility_off' : 'visibility' %></span>
-                                <%= category.status === 'listed' ? 'Unlist' : 'List' %>
-                            </button>
-                            <button onclick="window.location.href='/admin/courses?category=<%= category.name %>'" class="px-3 py-1.5 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg flex items-center gap-1.5 transition-colors">
-                                <span class="material-icons-outlined text-[18px]">visibility</span>
-                                View
-                            </button>
-                        </div>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <div class="bg-surface-light dark:bg-surface-dark p-12 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
-                    <span class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4">category</span>
-                    <p class="text-slate-500 dark:text-slate-400 text-lg">No categories found</p>
-                </div>
-            <% } %>
-        </div>
+                            <!-- Category Info -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <h3 class="text-base font-semibold text-slate-800 dark:text-white">
+                                        <%= category.name %>
+                                    </h3>
+                                    <span
+                                        class="px-2 py-0.5 text-xs font-medium rounded-md <%= category.status === 'listed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' %>">
+                                        <%= category.status==='listed' ? 'Listed' : 'Unlisted' %>
+                                    </span>
+                                </div>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 truncate">
+                                    <%= category.description || 'Under this ' + category.name
+                                        + ' courses will be uploaded' %>
+                                </p>
+                            </div>
 
-        <!-- Pagination -->
-        <div class="flex justify-between items-center mt-8">
-            <p class="text-sm text-slate-500 dark:text-slate-400">Showing <%= categories.length %> of <%= categories.length %> categories</p>
-            <div class="flex items-center gap-2">
-                <button class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_left</span>
-                </button>
-                <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white font-medium text-sm">1</button>
-                <button class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium">2</button>
-                <button class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium">3</button>
-                <button class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_right</span>
-                </button>
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button
+                                    onclick="editCategory('<%= category._id %>', '<%= category.name %>', '<%= category.description %>')"
+                                    class="px-3 py-1.5 text-sm font-medium text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-lg flex items-center gap-1.5 transition-colors">
+                                    <span class="material-icons-outlined text-[18px]">edit</span>
+                                    Edit
+                                </button>
+                                <button onclick="toggleStatus('<%= category._id %>', '<%= category.status %>')"
+                                    class="px-3 py-1.5 text-sm font-medium <%= category.status === 'listed' ? 'text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20' : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' %> rounded-lg flex items-center gap-1.5 transition-colors">
+                                    <span class="material-icons-outlined text-[18px]">
+                                        <%= category.status==='listed' ? 'visibility_off' : 'visibility' %>
+                                    </span>
+                                    <%= category.status==='listed' ? 'Unlist' : 'List' %>
+                                </button>
+                                <button onclick="window.location.href='/admin/courses?category=<%= category.name %>'"
+                                    class="px-3 py-1.5 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg flex items-center gap-1.5 transition-colors">
+                                    <span class="material-icons-outlined text-[18px]">visibility</span>
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                        <% }); %>
+                            <% } else { %>
+                                <div
+                                    class="bg-surface-light dark:bg-surface-dark p-12 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                    <span
+                                        class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4">category</span>
+                                    <p class="text-slate-500 dark:text-slate-400 text-lg">No categories found</p>
+                                </div>
+                                <% } %>
             </div>
-        </div>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function showAddModal() {
-            Swal.fire({
-                title: 'Add New Category',
-                html: `
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-8">
+                <p class="text-sm text-slate-500 dark:text-slate-400">Showing <%= categories.length %> of <%=
+                            categories.length %> categories</p>
+                <div class="flex items-center gap-2">
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_left</span>
+                    </button>
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white font-medium text-sm">1</button>
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium">2</button>
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium">3</button>
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function showAddModal() {
+                Swal.fire({
+                    title: 'Add New Category',
+                    html: `
                     <div class="text-left space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Category Name</label>
@@ -171,62 +195,75 @@
                         </div>
                     </div>
                 `,
-                showCancelButton: true,
-                confirmButtonColor: '#34D399',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Add Category',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    popup: 'rounded-xl',
-                    confirmButton: 'rounded-lg px-6 py-2.5',
-                    cancelButton: 'rounded-lg px-6 py-2.5'
-                },
-                preConfirm: () => {
-                    const name = document.getElementById('categoryName').value.trim();
-                    const description = document.getElementById('categoryDesc').value.trim();
-                    if (!name) {
-                        Swal.showValidationMessage('Category name is required');
-                        return false;
-                    }
-                    return { name, description };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    addCategory(result.value);
-                }
-            });
-        }
-
-        async function addCategory(data) {
-            try {
-                console.log('📤 Sending category data:', data);
-                
-                const response = await fetch('/admin/categories/add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                console.log('📥 Response status:', response.status);
-                const result = await response.json();
-                console.log('📥 Response data:', result);
-                
-                if (result.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Category added successfully',
-                        confirmButtonColor: '#34D399',
-                        customClass: {
-                            popup: 'rounded-xl',
-                            confirmButton: 'rounded-lg px-6 py-2.5'
+                    showCancelButton: true,
+                    confirmButtonColor: '#34D399',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Add Category',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        popup: 'rounded-xl',
+                        confirmButton: 'rounded-lg px-6 py-2.5',
+                        cancelButton: 'rounded-lg px-6 py-2.5'
+                    },
+                    preConfirm: () => {
+                        const name = document.getElementById('categoryName').value.trim();
+                        const description = document.getElementById('categoryDesc').value.trim();
+                        if (!name) {
+                            Swal.showValidationMessage('Category name is required');
+                            return false;
                         }
-                    }).then(() => location.reload());
-                } else {
+                        return { name, description };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        addCategory(result.value);
+                    }
+                });
+            }
+
+            async function addCategory(data) {
+                try {
+                    console.log('📤 Sending category data:', data);
+
+                    const response = await fetch('/admin/categories/add', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    console.log('📥 Response status:', response.status);
+                    const result = await response.json();
+                    console.log('📥 Response data:', result);
+
+                    if (result.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Category added successfully',
+                            confirmButtonColor: '#34D399',
+                            customClass: {
+                                popup: 'rounded-xl',
+                                confirmButton: 'rounded-lg px-6 py-2.5'
+                            }
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: result.message || 'Failed to add category',
+                            confirmButtonColor: '#34D399',
+                            customClass: {
+                                popup: 'rounded-xl',
+                                confirmButton: 'rounded-lg px-6 py-2.5'
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('❌ Add category error:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
-                        text: result.message || 'Failed to add category',
+                        text: 'Something went wrong: ' + error.message,
                         confirmButtonColor: '#34D399',
                         customClass: {
                             popup: 'rounded-xl',
@@ -234,25 +271,12 @@
                         }
                     });
                 }
-            } catch (error) {
-                console.error('❌ Add category error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Something went wrong: ' + error.message,
-                    confirmButtonColor: '#34D399',
-                    customClass: {
-                        popup: 'rounded-xl',
-                        confirmButton: 'rounded-lg px-6 py-2.5'
-                    }
-                });
             }
-        }
 
-        function editCategory(id, name, description) {
-            Swal.fire({
-                title: 'Edit Category',
-                html: `
+            function editCategory(id, name, description) {
+                Swal.fire({
+                    title: 'Edit Category',
+                    html: `
                     <div class="text-left space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Category Name</label>
@@ -264,109 +288,45 @@
                         </div>
                     </div>
                 `,
-                showCancelButton: true,
-                confirmButtonColor: '#34D399',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Update',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    popup: 'rounded-xl',
-                    confirmButton: 'rounded-lg px-6 py-2.5',
-                    cancelButton: 'rounded-lg px-6 py-2.5'
-                },
-                preConfirm: () => {
-                    const name = document.getElementById('categoryName').value.trim();
-                    const description = document.getElementById('categoryDesc').value.trim();
-                    if (!name) {
-                        Swal.showValidationMessage('Category name is required');
-                        return false;
-                    }
-                    return { name, description };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    updateCategory(id, result.value);
-                }
-            });
-        }
-
-        async function updateCategory(id, data) {
-            try {
-                const response = await fetch(`/admin/categories/${id}/edit`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Category updated successfully',
-                        confirmButtonColor: '#34D399',
-                        customClass: {
-                            popup: 'rounded-xl',
-                            confirmButton: 'rounded-lg px-6 py-2.5'
-                        }
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: result.message,
-                        confirmButtonColor: '#34D399',
-                        customClass: {
-                            popup: 'rounded-xl',
-                            confirmButton: 'rounded-lg px-6 py-2.5'
-                        }
-                    });
-                }
-            } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Something went wrong',
+                    showCancelButton: true,
                     confirmButtonColor: '#34D399',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Update',
+                    cancelButtonText: 'Cancel',
                     customClass: {
                         popup: 'rounded-xl',
-                        confirmButton: 'rounded-lg px-6 py-2.5'
+                        confirmButton: 'rounded-lg px-6 py-2.5',
+                        cancelButton: 'rounded-lg px-6 py-2.5'
+                    },
+                    preConfirm: () => {
+                        const name = document.getElementById('categoryName').value.trim();
+                        const description = document.getElementById('categoryDesc').value.trim();
+                        if (!name) {
+                            Swal.showValidationMessage('Category name is required');
+                            return false;
+                        }
+                        return { name, description };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        updateCategory(id, result.value);
                     }
                 });
             }
-        }
 
-        async function toggleStatus(id, currentStatus) {
-            const newStatus = currentStatus === 'listed' ? 'unlisted' : 'listed';
-            const action = newStatus === 'listed' ? 'list' : 'unlist';
-
-            const result = await Swal.fire({
-                title: `${action.charAt(0).toUpperCase() + action.slice(1)} Category`,
-                text: `Are you sure you want to ${action} this category?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#34D399',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: `Yes, ${action} it`,
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    popup: 'rounded-xl',
-                    confirmButton: 'rounded-lg px-6 py-2.5',
-                    cancelButton: 'rounded-lg px-6 py-2.5'
-                }
-            });
-
-            if (result.isConfirmed) {
+            async function updateCategory(id, data) {
                 try {
-                    const response = await fetch(`/admin/categories/${id}/toggle-status`, {
+                    const response = await fetch(`/admin/categories/${id}/edit`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
                     });
-                    const data = await response.json();
-                    if (data.success) {
+                    const result = await response.json();
+                    if (result.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
-                            text: `Category ${action}ed successfully`,
+                            text: 'Category updated successfully',
                             confirmButtonColor: '#34D399',
                             customClass: {
                                 popup: 'rounded-xl',
@@ -377,7 +337,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: data.message,
+                            text: result.message,
                             confirmButtonColor: '#34D399',
                             customClass: {
                                 popup: 'rounded-xl',
@@ -398,26 +358,90 @@
                     });
                 }
             }
-        }
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            const cards = document.querySelectorAll('.bg-surface-light.dark\\:bg-surface-dark.p-5');
-            cards.forEach(card => {
-                const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
-                if (name.includes(searchTerm) || desc.includes(searchTerm)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
+            async function toggleStatus(id, currentStatus) {
+                const newStatus = currentStatus === 'listed' ? 'unlisted' : 'listed';
+                const action = newStatus === 'listed' ? 'list' : 'unlist';
+
+                const result = await Swal.fire({
+                    title: `${action.charAt(0).toUpperCase() + action.slice(1)} Category`,
+                    text: `Are you sure you want to ${action} this category?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#34D399',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: `Yes, ${action} it`,
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        popup: 'rounded-xl',
+                        confirmButton: 'rounded-lg px-6 py-2.5',
+                        cancelButton: 'rounded-lg px-6 py-2.5'
+                    }
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/admin/categories/${id}/toggle-status`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: `Category ${action}ed successfully`,
+                                confirmButtonColor: '#34D399',
+                                customClass: {
+                                    popup: 'rounded-xl',
+                                    confirmButton: 'rounded-lg px-6 py-2.5'
+                                }
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: data.message,
+                                confirmButtonColor: '#34D399',
+                                customClass: {
+                                    popup: 'rounded-xl',
+                                    confirmButton: 'rounded-lg px-6 py-2.5'
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Something went wrong',
+                            confirmButtonColor: '#34D399',
+                            customClass: {
+                                popup: 'rounded-xl',
+                                confirmButton: 'rounded-lg px-6 py-2.5'
+                            }
+                        });
+                    }
                 }
-            });
-        });
-    </script>
+            }
 
-    <!-- Admin Session Management Script -->
-    <script src="/js/admin-session.js"></script>
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.bg-surface-light.dark\\:bg-surface-dark.p-5');
+                cards.forEach(card => {
+                    const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                    const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
+                    if (name.includes(searchTerm) || desc.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        </script>
+
+        <!-- Admin Session Management Script -->
+        <script src="/js/admin-session.js"></script>
 </body>
 
 </html>

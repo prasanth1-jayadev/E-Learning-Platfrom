@@ -10,10 +10,8 @@
     body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
     
     .main-content { 
-        margin-left: 260px; 
         flex: 1; 
         padding: 2rem; 
-        width: calc(100% - 260px);
         min-height: 100vh;
     }
     
@@ -111,20 +109,8 @@
         font-size: 0.9rem;
     }
     
-    @media (max-width: 1439px) {
-        .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 1.75rem; }
-    }
-    
-    @media (max-width: 1023px) {
-        .main-content { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
-    }
-    
-    @media (max-width: 899px) {
-        .main-content { margin-left: 200px; width: calc(100% - 200px); padding: 1.25rem; }
-    }
-    
     @media (max-width: 767px) {
-        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+        .main-content { padding: 1rem; }
         .page-header { padding: 1rem; }
         .page-header h1 { font-size: 1.25rem; }
         .form-card { padding: 1rem; }
@@ -137,7 +123,7 @@
 
 <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
 
-<div class="main-content">
+<div class="tutor-main-content main-content">
   <div class="page-header">
     <h1>Edit Lesson</h1>
     <p>Update lesson details for <%= course.title %></p>

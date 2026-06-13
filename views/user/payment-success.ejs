@@ -115,7 +115,7 @@
     
     <!-- Success Modal Popup -->
     <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-custom bg-black/40">
-        <div class="success-modal bg-white rounded-2xl shadow-2xl max-w-md w-full p-10 text-center">
+        <div class="success-modal bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-10 text-center">
             
             <!-- Success Icon -->
             <div class="mb-6 flex justify-center">
@@ -196,7 +196,7 @@
             <div class="p-6">
                 <div class="space-y-4">
                     <% courses.forEach(course => { %>
-                    <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-teal-300 hover:shadow-sm transition">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-teal-300 hover:shadow-sm transition">
                         <% if (course.thumbnail) { %>
                             <img src="<%= course.thumbnail %>" alt="<%= course.title %>" class="w-20 h-20 rounded-lg object-cover">
                         <% } else { %>

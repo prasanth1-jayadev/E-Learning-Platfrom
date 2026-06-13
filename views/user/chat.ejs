@@ -48,7 +48,7 @@
                 <div class="flex h-full">
 
                     <!-- Conversations Sidebar -->
-                    <div class="w-80 border-r border-gray-100 flex flex-col">
+                    <div id="conversations-sidebar" class="w-full md:w-80 md:flex-shrink-0 border-r border-gray-100 flex flex-col">
                         <div class="p-4 border-b border-gray-100">
                             <h2 class="text-xl font-bold text-gray-900">Messages</h2>
                             <p class="text-xs text-gray-500 mt-1">Chat with your tutors</p>
@@ -66,7 +66,7 @@
                     </div>
 
                     <!-- Chat Main Area -->
-                    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <div id="chat-main-area" class="flex-1 hidden md:flex flex-col min-h-0 overflow-hidden">
                         <!-- No Chat Selected -->
                         <div id="no-chat-selected" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
@@ -84,10 +84,13 @@
                             <!-- Chat Header -->
                             <div class="p-4 border-b border-gray-100 bg-white">
                                 <div class="flex items-center gap-3">
+                                    <button onclick="closeChat()" class="md:hidden mr-1 p-2 text-gray-500 hover:text-gray-900 transition flex-shrink-0">
+                                        <i class="fas fa-arrow-left text-lg"></i>
+                                    </button>
                                     <img id="chat-avatar" src="" alt="" class="w-12 h-12 rounded-full object-cover">
-                                    <div class="flex-1">
-                                        <h3 id="chat-name" class="font-bold text-gray-900"></h3>
-                                        <p id="chat-course" class="text-xs text-gray-500"></p>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 id="chat-name" class="font-bold text-gray-900 truncate"></h3>
+                                        <p id="chat-course" class="text-xs text-gray-500 truncate"></p>
                                     </div>
                                     <button
                                         class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
@@ -297,6 +300,12 @@
                 // Join socket room
                 socket.emit('join_conversation', { conversationId });
 
+                // Toggle mobile view
+                if (window.innerWidth < 768) {
+                    document.getElementById('conversations-sidebar').classList.add('hidden');
+                    document.getElementById('chat-main-area').classList.remove('hidden');
+                }
+
                 // Load messages
                 try {
                     const response = await fetch(`/chat/messages/${conversationId}?role=user`);
@@ -310,6 +319,21 @@
                     }
                 } catch (error) {
                     console.error('Error loading messages:', error);
+                }
+            }
+
+            // Close conversation (for mobile back button)
+            function closeChat() {
+                if (currentConversationId) {
+                    socket.emit('leave_conversation', { conversationId: currentConversationId });
+                }
+                currentConversationId = null;
+                document.getElementById('no-chat-selected').classList.remove('hidden');
+                document.getElementById('chat-area').classList.add('hidden');
+
+                if (window.innerWidth < 768) {
+                    document.getElementById('conversations-sidebar').classList.remove('hidden');
+                    document.getElementById('chat-main-area').classList.add('hidden');
                 }
             }
 

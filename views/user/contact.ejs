@@ -19,7 +19,12 @@
   </script>
   <style>
     .floating-card-shift {
-      margin-top: -3.5rem;
+      margin-top: -2rem;
+    }
+    @media (min-width: 640px) {
+      .floating-card-shift {
+        margin-top: -3.5rem;
+      }
     }
     .accordion-content {
       max-height: 0;
@@ -228,7 +233,7 @@
 
   <!-- Footer -->
   <footer class="px-6 py-12 border-t border-gray-100 bg-[#fcfdfd]">
-    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       <div>
         <div class="flex items-center gap-2 mb-3">
           <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
