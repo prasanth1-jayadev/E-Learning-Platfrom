@@ -36,19 +36,22 @@ export const createOrder = async (req, res) => {
       const Coupon = (await import('../../models/coupon.js')).default;
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
       if (coupon && 
+          (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
           new Date(coupon.expiryDate) >= new Date() && 
           coupon.usedCount < coupon.usageLimit && 
           totalAmount >= coupon.minOrderValue) {
         
         if (coupon.discountType === 'percentage') {
           discount = Math.floor((totalAmount * coupon.discountValue) / 100);
-          if (coupon.maxDiscount) {
-            discount = Math.min(discount, coupon.maxDiscount);
-          }
         } else {
           discount = coupon.discountValue;
         }
         
+        if (coupon.maxDiscount) {
+          discount = Math.min(discount, coupon.maxDiscount);
+        }
+        
+        discount = Math.min(discount, totalAmount);
         totalAmount = Math.max(0, totalAmount - discount);
         
         req.session.appliedCoupon.discount = discount;
@@ -127,18 +130,22 @@ export const verifyPayment = async (req, res) => {
       const Coupon = (await import('../../models/coupon.js')).default;
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
       if (coupon && 
+          (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
           new Date(coupon.expiryDate) >= new Date() && 
           coupon.usedCount < coupon.usageLimit && 
           originalTotal >= coupon.minOrderValue) {
         
         if (coupon.discountType === 'percentage') {
           discount = Math.floor((originalTotal * coupon.discountValue) / 100);
-          if (coupon.maxDiscount) {
-            discount = Math.min(discount, coupon.maxDiscount);
-          }
         } else {
           discount = coupon.discountValue;
         }
+
+        if (coupon.maxDiscount) {
+          discount = Math.min(discount, coupon.maxDiscount);
+        }
+
+        discount = Math.min(discount, originalTotal);
 
         // Increment coupon usedCount
         await Coupon.findByIdAndUpdate(coupon._id, {

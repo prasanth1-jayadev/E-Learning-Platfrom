@@ -15,10 +15,18 @@ export const getCouponsPage = async (req, res) => {
 
 export const createCoupon = async (req, res) => {
     try {
-        const { code, discountType, discountValue, minOrderValue, maxDiscount, expiryDate, usageLimit } = req.body;
+        const { code, discountType, discountValue, minOrderValue, maxDiscount, startDate, expiryDate, usageLimit } = req.body;
 
         if (!code || !discountType || !discountValue || !expiryDate) {
             return res.status(400).json({ success: false, message: 'Missing required fields' });
+        }
+
+        if (startDate && expiryDate && new Date(startDate) > new Date(expiryDate)) {
+            return res.status(400).json({ success: false, message: 'Start date cannot be after expiry date' });
+        }
+
+        if (discountType === 'flat' && Number(minOrderValue || 0) <= Number(discountValue)) {
+            return res.status(400).json({ success: false, message: 'Minimum order value must be higher than the discount value for flat coupons' });
         }
 
         const existing = await Coupon.findOne({ code: code.toUpperCase() });
@@ -32,6 +40,7 @@ export const createCoupon = async (req, res) => {
             discountValue: Number(discountValue),
             minOrderValue: Number(minOrderValue) || 0,
             maxDiscount: maxDiscount ? Number(maxDiscount) : null,
+            startDate: startDate ? new Date(startDate) : undefined,
             expiryDate,
             usageLimit: Number(usageLimit) || 1
         });

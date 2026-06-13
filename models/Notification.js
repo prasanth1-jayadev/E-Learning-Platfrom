@@ -22,7 +22,7 @@ recipientType: {
   },
   type: {
     type: String,
-    enum: ['new_lesson', 'new_course', 'course_purchased'],
+    enum: ['new_lesson', 'new_course', 'course_purchased','withdrawal_request', 'funds_released'],
     required: true
   },
   relatedId: {

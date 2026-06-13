@@ -34,8 +34,9 @@ const addCategory = async (req, res) => {
         }
 
     
+        const escapedName = name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const existing = await Category.findOne({ 
-            name: { $regex: new RegExp(`^${name.trim()}$`, 'i') } 
+            name: { $regex: new RegExp(`^${escapedName}$`, 'i') } 
         });
         
         if (existing) {
@@ -80,7 +81,12 @@ const editCategory = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Category not found' });
         }
 
-        const existing = await Category.findOne({ name: name.trim(), _id: { $ne: id } });
+        const escapedName = name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const existing = await Category.findOne({ 
+            name: { $regex: new RegExp(`^${escapedName}$`, 'i') }, 
+            _id: { $ne: id } 
+        });
+        
         if (existing) {
             return res.status(400).json({ success: false, message: 'Category name already exists' });
         }
@@ -92,6 +98,9 @@ const editCategory = async (req, res) => {
         res.json({ success: true, message: 'Category updated successfully' });
     } catch (error) {
         console.error('Edit category error:', error);
+        if (error.code === 11000) {
+            return res.status(400).json({ success: false, message: 'Category name already exists' });
+        }
         res.status(500).json({ success: false, message: 'Failed to update category' });
     }
 };
