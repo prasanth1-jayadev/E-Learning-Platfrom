@@ -154,8 +154,8 @@ const updateOrderStatus = async (req, res) => {
         order.status = status;
         await order.save();
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             message: `Order status updated to ${status}`,
             status: order.status
         });

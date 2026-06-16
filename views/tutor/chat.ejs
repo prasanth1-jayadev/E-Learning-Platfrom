@@ -48,8 +48,7 @@
                 <p class="text-gray-600">Chat with your students</p>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-                style="height: calc(100vh - 180px); min-height: 450px;">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-150px)] md:h-[calc(100vh-180px)] min-h-[450px]">
                 <div class="flex h-full w-full">
 
                     <!-- Conversations Sidebar -->
@@ -224,6 +223,7 @@
                     if (data.success) {
                         allConversations = data.conversations;
                         renderConversations(allConversations);
+                        if (window.fetchUnreadMessageCount) window.fetchUnreadMessageCount();
                     }
                 } catch (error) {
                     console.error('Error loading conversations:', error);

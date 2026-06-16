@@ -13,6 +13,7 @@ import chatRouter from './routes/chatRoutes.js';
 import { initCronJobs } from './service/cronService.js';
 import { initializeSocket } from './config/socket.js';
 
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +55,8 @@ app.use((req, res, next) => {
     res.set('Expires', '0');
     next();
 });
+
+
 
 app.use('/user', userRouter);
 app.use('/tutor', tutorRouter);

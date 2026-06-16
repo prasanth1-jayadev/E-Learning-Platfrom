@@ -230,6 +230,49 @@ export const getConversations = async (req, res) => {
     }
 };
 
+export const getUnreadCount = async (req, res) => {
+    try {
+        const role = req.query.role;
+        const userType = role || (req.session.userId ? 'user' : 'tutor');
+        const userId = userType === 'user' ? req.session.userId : req.session.tutorId;
+
+        console.log(`[Unread Count API] Role: ${role}, UserType: ${userType}, Session userId: ${req.session.userId}, Session tutorId: ${req.session.tutorId}`);
+
+        if (!userId) {
+            console.log(`[Unread Count API] Unauthorized: no userId found for type ${userType}`);
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+
+        let query = {};
+        let senderType = '';
+        if (userType === 'tutor') {
+            query.tutorId = userId;
+            senderType = 'user';
+        } else {
+            query.userId = userId;
+            query.type = 'individual';
+            senderType = 'tutor';
+        }
+
+        const conversations = await Conversation.find(query).select('_id');
+        const convIds = conversations.map(c => c._id);
+        const count = await Message.countDocuments({
+            conversationId: { $in: convIds },
+            senderType,
+            isRead: false
+        });
+
+        console.log(`[Unread Count API] Found ${convIds.length} conversations, unread messages count: ${count}`);
+
+        res.json({ success: true, count });
+    } catch (error) {
+        console.error('Get unread count error:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch unread count' });
+    }
+};
+
+
+
 // Helper
 function verifyAccess(conversation, userId, userType) {
     const id = userId.toString();

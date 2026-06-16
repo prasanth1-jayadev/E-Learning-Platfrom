@@ -59,6 +59,11 @@ export const setupChatHandlers = (io) => {
         );
         
         socket.to(`conversation_${conversationId}`).emit('messages_read', { conversationId });
+        
+        // Notify the reader's own room to update their unread message badge count in real-time
+        io.to(`${socket.userType}_${socket.userId}`).emit('new_message_notification', {
+          conversationId
+        });
       } catch (error) {
         console.error('Mark as read error:', error);
       }

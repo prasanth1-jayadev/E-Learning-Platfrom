@@ -4,7 +4,8 @@ import {
     getTutorChatPage,
     getConversations,
     getOrCreateIndividualConversation,
-    getMessages
+    getMessages,
+    getUnreadCount
 } from '../controllers/chat/chatController.js';
 import {
     getNotifications,
@@ -23,6 +24,7 @@ router.get('/tutor', isTutor, getTutorChatPage);
 router.get('/conversations', isAuthenticated, getConversations);
 router.post('/conversation/individual', isAuthenticated, getOrCreateIndividualConversation);
 router.get('/messages/:conversationId', isAuthenticated, getMessages);
+router.get('/unread-count', isAuthenticated, getUnreadCount);
 
 // Notification 
 router.get('/notifications', isAuthenticated, getNotifications);
