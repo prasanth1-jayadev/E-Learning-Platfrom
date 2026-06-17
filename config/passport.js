@@ -28,7 +28,7 @@ passport.deserializeUser(async (obj, done) => {
 passport.use('google-user', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/user/auth/google/callback",
+    callbackURL: process.env.GOOGLE_USER_CALLBACK_URL,
     scope: ['profile', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
@@ -42,7 +42,7 @@ passport.use('google-user', new GoogleStrategy({
                 googleId: profile.id,
                 fullName: profile.displayName,
                 email: profile.emails[0].value,
-                isVerified: true,
+                isVerified: true,   
                 role: 'user'
             });
         }
@@ -60,7 +60,7 @@ passport.use('google-user', new GoogleStrategy({
 passport.use('google-tutor', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/tutor/auth/google/callback",
+    callbackURL:  process.env.GOOGLE_TUTOR_CALLBACK_URL,
     scope: ['profile', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
