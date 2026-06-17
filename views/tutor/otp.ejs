@@ -174,24 +174,45 @@
                         });
                         boxes[0].focus();
 
-                        // 60s resend timer
+                        // 60s resend timer with localStorage persistence
                         let timerInterval;
-                        function startTimer() {
-                            let seconds = 60;
+                        function startTimer(forceNew = false) {
                             const btn = document.getElementById('tutorResendBtn');
-                            btn.disabled = true;
-                            btn.textContent = `Resend in ${seconds}s`;
-                            btn.classList.add('opacity-50', 'cursor-not-allowed');
-                            timerInterval = setInterval(() => {
-                                seconds--;
-                                btn.textContent = `Resend in ${seconds}s`;
-                                if (seconds <= 0) {
+                            
+                            if (forceNew) {
+                                localStorage.removeItem('tutorOtpExpiry');
+                            }
+                            
+                            let expiryTime = localStorage.getItem('tutorOtpExpiry');
+                            const now = Date.now();
+                            
+                            if (!expiryTime || parseInt(expiryTime) < now) {
+                                expiryTime = now + 60 * 1000;
+                                localStorage.setItem('tutorOtpExpiry', expiryTime);
+                            } else {
+                                expiryTime = parseInt(expiryTime);
+                            }
+
+                            function updateCountdown() {
+                                const currentNow = Date.now();
+                                const secondsLeft = Math.ceil((expiryTime - currentNow) / 1000);
+
+                                if (secondsLeft <= 0) {
                                     clearInterval(timerInterval);
                                     btn.disabled = false;
                                     btn.textContent = 'Resend Code';
                                     btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                                    localStorage.removeItem('tutorOtpExpiry');
+                                } else {
+                                    btn.disabled = true;
+                                    btn.textContent = `Resend in ${secondsLeft}s`;
+                                    btn.classList.add('opacity-50', 'cursor-not-allowed');
                                 }
-                            }, 1000);
+                            }
+
+                            updateCountdown();
+                            clearInterval(timerInterval);
+                            timerInterval = setInterval(updateCountdown, 1000);
                         }
                         startTimer();
 
@@ -208,7 +229,10 @@
                             const data = await res.json();
                             hideLoader();
                             if (res.ok) {
-                                showToast('OTP verified successfully!', 'success');
+                                localStorage.removeItem('tutorOtpExpiry');
+                                const isReset = data.redirect && data.redirect.includes('reset-password');
+                                const msg = isReset ? 'OTP verified successfully!' : 'Account created successfully!';
+                                showToast(msg, 'success');
                                 setTimeout(() => window.location.href = data.redirect || '/tutor/login', 1200);
                             } else {
                                 showToast(data.message || 'Invalid OTP. Try again.', 'error');
@@ -219,7 +243,10 @@
                         document.getElementById('tutorResendBtn').addEventListener('click', async function () {
                             const res = await fetch('/tutor/resend-otp', { method: 'POST' });
                             const data = await res.json();
-                            if (res.ok) { showToast('OTP resent to your email!', 'info'); startTimer(); }
+                            if (res.ok) { 
+                                showToast('OTP resent to your email!', 'info'); 
+                                startTimer(true); 
+                            }
                             else showToast(data.message || 'Failed to resend.', 'error');
                         });
                     </script>

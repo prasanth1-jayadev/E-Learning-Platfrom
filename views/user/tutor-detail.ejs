@@ -341,8 +341,13 @@
                                     </span>
                                 </div>
                                 <div class="course-footer">
-                                    <span class="course-price">₹<%= course.price || 0 %></span>
-                                    <button class="enroll-btn">Enroll Now</button>
+                                    <% if (course.isPurchased) { %>
+                                        <span class="text-emerald-500 font-semibold text-sm">✓ Enrolled</span>
+                                        <button class="enroll-btn !bg-emerald-500 hover:!bg-emerald-600">Go to Course</button>
+                                    <% } else { %>
+                                        <span class="course-price">₹<%= course.price || 0 %></span>
+                                        <button class="enroll-btn">Enroll Now</button>
+                                    <% } %>
                                 </div>
                             </div>
                         </a>

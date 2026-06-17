@@ -231,7 +231,7 @@
                                 return;
                             }
 
-                            showLoader('Creating your account...');
+                            showLoader('Sending OTP...');
                             const res = await fetch('/user/signup', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -240,7 +240,7 @@
                             const data = await res.json();
                             hideLoader();
                             if (res.ok) {
-                                showToast('Account created! Check your email for OTP.', 'success');
+                                showToast('OTP sent! Check your email for verification.', 'success');
                                 setTimeout(() => window.location.href = data.redirect, 1500);
                             } else {
                                 showToast(data.message || 'Signup failed.', 'error');
