@@ -107,6 +107,16 @@ const getTutorDetail = async (req, res) => {
       .select('title description price thumbnail lessons')
       .lean();
 
+    const coursesWithStatus = courses.map(course => {
+      const isPurchased = user && user.enrolledCourses && user.enrolledCourses.some(
+        cId => cId.toString() === course._id.toString()
+      );
+      return {
+        ...course,
+        isPurchased: !!isPurchased
+      };
+    });
+
     const tutorDataMap = {
       'riveratutor': { rating: 5.0, reviewCount: 48 },
       'alextutor': { rating: 4.9, reviewCount: 42 },
@@ -122,7 +132,7 @@ const getTutorDetail = async (req, res) => {
         ...tutor,
         ...ratingData
       },
-      courses,
+      courses: coursesWithStatus,
       user,
       currentPage: 'tutors'
     });
