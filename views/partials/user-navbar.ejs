@@ -1,271 +1,341 @@
 <!-- User Navbar -->
-<nav class="sticky top-0 z-50 bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between shadow-sm">
-  <div class="flex items-center gap-8">
-    <!-- Logo -->
-    <a href="/user/home" class="flex items-center gap-2">
-      <div class="w-10 h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center flex-shrink-0">
-        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
-          <circle cx="12" cy="12" r="1.5" fill="white" />
-        </svg>
-      </div>
-      <div class="flex flex-col">
+<nav class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14 md:h-16">
+
+    <!-- LEFT: Logo + Desktop Nav Links -->
+    <div class="flex items-center gap-6 lg:gap-8 min-w-0">
+      <!-- Logo -->
+      <a href="/user/home" class="flex items-center gap-2 flex-shrink-0">
+        <div class="w-8 h-8 md:w-10 md:h-10 bg-[#00d9b1] rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+            <circle cx="12" cy="12" r="1.5" fill="white" />
+          </svg>
+        </div>
         <div class="flex items-center">
-          <span class="text-xl font-bold text-gray-900">Learn</span>
-          <span class="text-xl font-bold text-[#00d9b1]">ify</span>
+          <span class="text-lg md:text-xl font-bold text-gray-900">Learn</span>
+          <span class="text-lg md:text-xl font-bold text-[#00d9b1]">ify</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links (hidden on mobile) -->
+      <div class="hidden md:flex items-center gap-5 lg:gap-6 text-sm text-gray-600 font-medium">
+        <a href="/user/home" class="hover:text-[#00d9b1] transition-colors whitespace-nowrap <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1] font-semibold' : '' %>">Home</a>
+        <a href="/user/courses" class="hover:text-[#00d9b1] transition-colors whitespace-nowrap <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1] font-semibold' : '' %>">Courses</a>
+        <a href="/user/tutors" class="hover:text-[#00d9b1] transition-colors whitespace-nowrap <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1] font-semibold' : '' %>">Tutors</a>
+        <a href="/user/about" class="hover:text-[#00d9b1] transition-colors whitespace-nowrap <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1] font-semibold' : '' %>">About Us</a>
+        <a href="/user/contact" class="hover:text-[#00d9b1] transition-colors whitespace-nowrap <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1] font-semibold' : '' %>">Contact</a>
+      </div>
+    </div>
+
+    <!-- RIGHT: Actions -->
+    <div class="flex items-center gap-1 sm:gap-2">
+
+      <!-- Become a Tutor (desktop only) -->
+      <a href="/tutor/signup" class="hidden md:flex px-4 py-2 bg-[#00d9b1] text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition whitespace-nowrap">
+        Become a Tutor
+      </a>
+
+      <!-- Wishlist (desktop only) -->
+      <a href="/user/wishlist" class="hidden md:flex p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Wishlist">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <span id="wishlistCount" class="absolute -top-1 -right-1 bg-[#00d9b1] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+      </a>
+
+      <!-- Cart (always visible, shows badge) -->
+      <a href="/user/cart" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Cart">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span id="cartCount" class="absolute -top-1 -right-1 bg-[#00d9b1] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+      </a>
+
+      <!-- Chat (desktop only) -->
+      <a href="/user/chat" class="hidden md:flex p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Messages">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span id="navbarUserChatBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">
+          0
+        </span>
+      </a>
+
+      <!-- Notifications (desktop only) -->
+      <div class="hidden md:block relative" id="notificationMenu">
+        <button onclick="toggleNotificationDropdown(event)" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Notifications">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+        </button>
+        <!-- Dropdown Panel -->
+        <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 origin-top-right">
+          <div class="px-4 py-2 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
+            <span class="font-bold text-gray-800 text-sm">Notifications</span>
+            <button onclick="markAllNotificationsAsRead(event)" class="text-xs text-[#00d9b1] hover:underline font-semibold">Mark all as read</button>
+          </div>
+          <div id="notifList" class="max-h-64 overflow-y-auto divide-y divide-gray-50 text-xs">
+            <div class="p-4 text-center text-gray-400">No notifications</div>
+          </div>
         </div>
       </div>
-    </a>
 
-    <!-- Navigation Links -->
-    <div class="hidden md:flex items-center gap-6 text-sm text-gray-600 font-medium">
-      <a href="/user/home" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1] font-semibold' : '' %>">
-        Home
-      </a>
-      <a href="/user/courses" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1] font-semibold' : '' %>">
-        Courses
-      </a>
-      <a href="/user/tutors" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1] font-semibold' : '' %>">
-        Tutors
-      </a>
-      <a href="/user/about" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1] font-semibold' : '' %>">
-        About Us
-      </a>
-      <a href="/user/contact" class="hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1] font-semibold' : '' %>">
-        Contact
-      </a>
+      <!-- User Profile / Login -->
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/user/profile" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:ring-2 hover:ring-[#00d9b1] transition overflow-hidden flex-shrink-0">
+          <% if (user.avatar) { %>
+            <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
+          <% } else { %>
+            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+            </svg>
+          <% } %>
+        </a>
+      <% } else { %>
+        <a href="/user/login" class="hidden md:flex px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200 transition whitespace-nowrap">
+          Login
+        </a>
+      <% } %>
+
+      <!-- Mobile Hamburger (mobile only) -->
+      <button id="mobileMenuBtn" class="md:hidden flex items-center justify-center p-2 text-gray-600 hover:text-[#00d9b1] focus:outline-none flex-shrink-0 relative w-10 h-10 z-[101] transition-colors duration-300" aria-label="Toggle Menu">
+        <div class="relative w-6 h-4 flex flex-col justify-between pointer-events-none">
+          <span class="block w-full h-[2px] bg-current rounded-full transition-all duration-300 ease-in-out origin-center" id="bar1"></span>
+          <span class="block w-full h-[2px] bg-current rounded-full transition-all duration-300 ease-in-out" id="bar2"></span>
+          <span class="block w-full h-[2px] bg-current rounded-full transition-all duration-300 ease-in-out origin-center" id="bar3"></span>
+        </div>
+      </button>
     </div>
   </div>
 
-  <!-- Right Side Actions -->
-  <div class="flex items-center gap-3">
-    <!-- Become a Tutor Button -->
-    <a href="/tutor/signup"
-      class="hidden sm:flex px-4 py-2 bg-[#00d9b1] text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition">
-      Become a Tutor
-    </a>
+  <!-- Mobile Drawer Backdrop -->
+  <div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden opacity-0 transition-opacity duration-300"></div>
 
-    <!-- Wishlist Icon -->
-    <a href="/user/wishlist" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Wishlist">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
-      <span id="wishlistCount"
-        class="absolute -top-1 -right-1 bg-[#00d9b1] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
-    </a>
-
-    <!-- Cart Icon with Badge -->
-    <a href="/user/cart" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Cart">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-      </svg>
-      <span id="cartCount"
-        class="absolute -top-1 -right-1 bg-[#00d9b1] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
-    </a>
-
-    <!-- Chat/Messages Icon -->
-    <a href="/user/chat" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Messages">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-      </svg>
-    </a>
-
-    <!-- Notifications Icon with Dropdown -->
-    <div class="relative inline-block text-left" id="notificationMenu">
-      <button onclick="toggleNotificationDropdown(event)" class="p-2 text-gray-400 hover:text-[#00d9b1] transition relative" title="Notifications">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-        <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
-      </button>
-
-      <!-- Dropdown Panel -->
-      <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-150 py-2 z-50 origin-top-right">
-        <div class="px-4 py-2 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
-          <span class="font-bold text-gray-800 text-sm">Notifications</span>
-          <button onclick="markAllNotificationsAsRead(event)" class="text-xs text-[#00d9b1] hover:underline font-semibold">Mark all as read</button>
+  <!-- Mobile Menu Drawer -->
+  <div id="mobileMenuDrawer" class="hidden fixed inset-y-0 right-0 z-[100] w-72 max-w-[85vw] bg-white shadow-2xl flex flex-col" style="transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+    <!-- Drawer Header -->
+    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50 h-14">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 bg-[#00d9b1] rounded-md flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.65-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+          </svg>
         </div>
-        <div id="notifList" class="max-h-64 overflow-y-auto divide-y divide-gray-50 text-xs">
-          <div class="p-4 text-center text-gray-400">No notifications</div>
+        <span class="font-bold text-gray-900">Learnify</span>
+      </div>
+      <!-- Right space for overlapping animated hamburger toggle button -->
+      <div class="w-10 h-10 flex-shrink-0"></div>
+    </div>
+
+    <!-- Drawer Content -->
+    <div class="flex-1 overflow-y-auto">
+      <!-- Nav Links -->
+      <div class="px-5 py-4 space-y-1">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Navigation</p>
+        <a href="/user/home" class="drawer-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'bg-[#00d9b1]/10 text-[#00d9b1]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#00d9b1]' %>">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Home
+        </a>
+        <a href="/user/courses" class="drawer-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'bg-[#00d9b1]/10 text-[#00d9b1]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#00d9b1]' %>">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Courses
+        </a>
+        <a href="/user/tutors" class="drawer-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'bg-[#00d9b1]/10 text-[#00d9b1]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#00d9b1]' %>">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Tutors
+        </a>
+        <a href="/user/about" class="drawer-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'bg-[#00d9b1]/10 text-[#00d9b1]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#00d9b1]' %>">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          About Us
+        </a>
+        <a href="/user/contact" class="drawer-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'bg-[#00d9b1]/10 text-[#00d9b1]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#00d9b1]' %>">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Contact
+        </a>
+      </div>
+
+      <!-- Quick Links (mobile shortcuts) -->
+      <div class="drawer-item px-5 py-2 border-t border-gray-100">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Access</p>
+        <div class="grid grid-cols-3 gap-2">
+          <a href="/user/wishlist" class="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 hover:bg-[#00d9b1]/10 transition text-gray-600 hover:text-[#00d9b1]">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <span class="text-[10px] font-semibold">Wishlist</span>
+          </a>
+          <a href="/user/chat" class="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 hover:bg-[#00d9b1]/10 transition text-gray-600 hover:text-[#00d9b1] relative">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            <span class="text-[10px] font-semibold">Chat</span>
+            <span id="mobileDrawerUserChatBadge" class="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">
+              0
+            </span>
+          </a>
+          <a href="/user/my-courses" class="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 hover:bg-[#00d9b1]/10 transition text-gray-600 hover:text-[#00d9b1]">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <span class="text-[10px] font-semibold">My Courses</span>
+          </a>
         </div>
       </div>
     </div>
 
-  
-    <!-- User Profile -->
-    <% if (typeof user !== 'undefined' && user) { %>
-      <a href="/user/profile"
-        class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:ring-2 hover:ring-[#00d9b1] transition overflow-hidden">
-        <% if (user.avatar) { %>
-          <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
-        <% } else { %>
-          <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-            <path
-              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-          </svg>
-        <% } %>
+    <!-- Drawer Footer -->
+    <div class="drawer-item px-5 py-4 border-t border-gray-100 space-y-3">
+      <a href="/tutor/signup" class="block w-full py-3 bg-[#00d9b1] text-gray-900 text-sm font-bold rounded-xl hover:brightness-110 transition text-center">
+        Become a Tutor
       </a>
-    <% } else { %>
-      <a href="/user/login"
-        class="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200 transition">
-        Login
-      </a>
-    <% } %>
-
-    <!-- Mobile Menu Button -->
-    <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-600 hover:text-gray-900">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/user/profile" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+          <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+            <% if (user.avatar) { %>
+              <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
+            <% } else { %>
+              <div class="w-full h-full flex items-center justify-center">
+                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+              </div>
+            <% } %>
+          </div>
+          <div class="min-w-0">
+            <p class="font-bold text-gray-900 text-xs truncate"><%= user.fullName %></p>
+            <p class="text-[10px] text-gray-400 truncate"><%= user.email %></p>
+          </div>
+        </a>
+      <% } else { %>
+        <a href="/user/login" class="block w-full py-2.5 bg-gray-100 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-200 transition text-center">
+          Login
+        </a>
+      <% } %>
+    </div>
   </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-lg relative z-50">
-  <div class="px-6 py-4 space-y-3">
-    <a href="/user/home" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'text-[#00d9b1]' : '' %>">
-      Home
-    </a>
-    <a href="/user/courses" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'courses' ? 'text-[#00d9b1]' : '' %>">
-      Courses
-    </a>
-    <a href="/user/tutors" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'tutors' ? 'text-[#00d9b1]' : '' %>">
-      Tutors
-    </a>
-    <a href="/user/about" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'text-[#00d9b1]' : '' %>">
-      About Us
-    </a>
-    <a href="/user/contact" class="block text-sm font-medium text-gray-600 hover:text-[#00d9b1] transition-colors <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'text-[#00d9b1]' : '' %>">
-      Contact
-    </a>
-    <a href="/tutor/signup" class="block px-4 py-2 bg-[#00d9b1] text-gray-900 text-sm font-bold rounded-lg hover:brightness-110 transition text-center">
-      Become a Tutor
-    </a>
-  </div>
-</div>
-
-<!-- Mobile Menu Toggle Script -->
 <script>
- document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    if (mobileMenuBtn && mobileMenu) {
-      mobileMenuBtn.addEventListener('click', function() {
-        mobileMenu.classList.toggle('hidden');
-      });
+    const mobileMenuDrawer = document.getElementById('mobileMenuDrawer');
+    const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+
+    function openMenu() {
+      if (mobileMenuBtn) mobileMenuBtn.classList.add('active');
+      if (mobileMenuDrawer) mobileMenuDrawer.classList.add('active');
+      if (mobileMenuBackdrop) {
+        mobileMenuBackdrop.classList.remove('hidden');
+        void mobileMenuBackdrop.offsetWidth; // force reflow
+        mobileMenuBackdrop.classList.remove('opacity-0');
+        mobileMenuBackdrop.classList.add('opacity-100');
+      }
+      if (mobileMenuDrawer) {
+        mobileMenuDrawer.classList.remove('hidden');
+        void mobileMenuDrawer.offsetWidth; // force reflow
+        mobileMenuDrawer.style.transform = 'translateX(0)';
+      }
+      document.body.style.overflow = 'hidden';
     }
-    // Fetch and update cart count on page load if user is logged in
+
+    function closeMenu() {
+      if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+      if (mobileMenuDrawer) mobileMenuDrawer.classList.remove('active');
+      if (mobileMenuBackdrop) {
+        mobileMenuBackdrop.classList.remove('opacity-100');
+        mobileMenuBackdrop.classList.add('opacity-0');
+      }
+      if (mobileMenuDrawer) {
+        mobileMenuDrawer.style.transform = 'translateX(100%)';
+      }
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        if (mobileMenuBackdrop) mobileMenuBackdrop.classList.add('hidden');
+        if (mobileMenuDrawer) mobileMenuDrawer.classList.add('hidden');
+      }, 400);
+    }
+
+    function toggleMenu() {
+      if (mobileMenuBtn) {
+        const isOpen = mobileMenuBtn.classList.contains('active');
+        if (isOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      }
+    }
+
+    if (mobileMenuBtn && mobileMenuDrawer && mobileMenuBackdrop) {
+      mobileMenuBtn.addEventListener('click', toggleMenu);
+      mobileMenuBackdrop.addEventListener('click', closeMenu);
+    }
+
     <% if (typeof user !== 'undefined' && user) { %>
       fetchCartCount();
       fetchWishlistCount();
       fetchUserNotifications();
       initializeNotificationSocket();
+      fetchUnreadMessageCount();
     <% } %>
   });
-  // Function to fetch cart count dynamically
+
   async function fetchCartCount() {
     try {
       const response = await fetch('/user/cart/count');
       const data = await response.json();
-      
-      const cartCountElement = document.getElementById('cartCount');
-      if (cartCountElement) {
-        if (data.success && data.count > 0) {
-          cartCountElement.textContent = data.count;
-          cartCountElement.classList.remove('hidden'); // Show badge
-        } else {
-          cartCountElement.classList.add('hidden'); // Hide badge if cart is empty
-        }
+      const el = document.getElementById('cartCount');
+      if (el) {
+        if (data.success && data.count > 0) { el.textContent = data.count; el.classList.remove('hidden'); }
+        else { el.classList.add('hidden'); }
       }
-    } catch (error) {
-      console.error('Error fetching cart count:', error);
-    }
+    } catch (e) { console.error('Cart count error:', e); }
   }
-  // Function to fetch wishlist count dynamically
+
   async function fetchWishlistCount() {
     try {
       const response = await fetch('/user/wishlist/count');
       const data = await response.json();
-      
-      const wishlistCountElement = document.getElementById('wishlistCount');
-      if (wishlistCountElement) {
-        if (data.success && data.count > 0) {
-          wishlistCountElement.textContent = data.count;
-          wishlistCountElement.classList.remove('hidden'); // Show badge
-        } else {
-          wishlistCountElement.classList.add('hidden'); // Hide badge if empty
-        }
+      const el = document.getElementById('wishlistCount');
+      if (el) {
+        if (data.success && data.count > 0) { el.textContent = data.count; el.classList.remove('hidden'); }
+        else { el.classList.add('hidden'); }
       }
-    } catch (error) {
-      console.error('Error fetching wishlist count:', error);
-    }
+    } catch (e) { console.error('Wishlist count error:', e); }
   }
-  
-  // Notification Dropdown logic
+
   let notifOpen = false;
-  
   function toggleNotificationDropdown(e) {
     e.stopPropagation();
     const dropdown = document.getElementById('notifDropdown');
     notifOpen = !notifOpen;
-    if (notifOpen) {
-      dropdown.classList.remove('hidden');
-      fetchUserNotifications();
-    } else {
-      dropdown.classList.add('hidden');
-    }
+    if (notifOpen) { dropdown.classList.remove('hidden'); fetchUserNotifications(); }
+    else { dropdown.classList.add('hidden'); }
   }
 
   document.addEventListener('click', () => {
     const dropdown = document.getElementById('notifDropdown');
-    if (dropdown) {
-      dropdown.classList.add('hidden');
-      notifOpen = false;
-    }
+    if (dropdown) { dropdown.classList.add('hidden'); notifOpen = false; }
   });
 
   async function fetchUserNotifications() {
     try {
       const response = await fetch('/chat/notifications');
       const data = await response.json();
-      if (data.success) {
-        updateNotificationUI(data.notifications, data.unreadCount);
-      }
-    } catch (err) {
-      console.error('Error fetching notifications:', err);
-    }
+      if (data.success) updateNotificationUI(data.notifications, data.unreadCount);
+    } catch (err) { console.error('Notifications error:', err); }
   }
 
   function updateNotificationUI(notifications, unreadCount) {
     const badge = document.getElementById('notifBadge');
     if (badge) {
-      if (unreadCount > 0) {
-        badge.textContent = unreadCount;
-        badge.classList.remove('hidden');
-      } else {
-        badge.classList.add('hidden');
-      }
+      if (unreadCount > 0) { badge.textContent = unreadCount; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
     }
-
     const list = document.getElementById('notifList');
     if (!list) return;
-
     if (!notifications || notifications.length === 0) {
       list.innerHTML = `<div class="p-4 text-center text-gray-400">No notifications</div>`;
       return;
     }
-
     list.innerHTML = notifications.map(n => `
       <div onclick="markNotificationAsRead(event, '${n._id}')" class="p-3 hover:bg-gray-50 cursor-pointer transition flex items-start gap-2 ${n.isRead ? '' : 'bg-blue-50/40'}">
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-gray-800 truncate ${n.isRead ? 'text-gray-600' : 'text-blue-900'}">${n.title}</p>
+          <p class="font-semibold truncate ${n.isRead ? 'text-gray-600' : 'text-blue-900'}">${n.title}</p>
           <p class="text-gray-600 mt-0.5 text-[11px] leading-relaxed break-words">${n.message}</p>
           <span class="text-[9px] text-gray-400 block mt-1">${new Date(n.createdAt).toLocaleDateString()} ${new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
         </div>
@@ -276,58 +346,123 @@
 
   async function markNotificationAsRead(e, id) {
     e.stopPropagation();
-    try {
-      await fetch(`/chat/notifications/${id}/read`, { method: 'POST' });
-      fetchUserNotifications();
-    } catch (err) {
-      console.error('Error marking notification as read:', err);
-    }
+    try { await fetch(`/chat/notifications/${id}/read`, { method: 'POST' }); fetchUserNotifications(); }
+    catch (err) { console.error(err); }
   }
 
   async function markAllNotificationsAsRead(e) {
     e.stopPropagation();
+    try { await fetch('/chat/notifications/read-all', { method: 'POST' }); fetchUserNotifications(); }
+    catch (err) { console.error(err); }
+  }
+
+  async function fetchUnreadMessageCount() {
     try {
-      await fetch('/chat/notifications/read-all', { method: 'POST' });
-      fetchUserNotifications();
+      const response = await fetch('/chat/unread-count?role=user');
+      const data = await response.json();
+      if (data.success) {
+        const navbarBadge = document.getElementById('navbarUserChatBadge');
+        if (navbarBadge) {
+          navbarBadge.textContent = data.count;
+          if (data.count > 0) {
+            navbarBadge.classList.remove('hidden');
+            navbarBadge.classList.add('flex');
+          } else {
+            navbarBadge.classList.add('hidden');
+            navbarBadge.classList.remove('flex');
+          }
+        }
+        const drawerBadge = document.getElementById('mobileDrawerUserChatBadge');
+        if (drawerBadge) {
+          drawerBadge.textContent = data.count;
+          if (data.count > 0) {
+            drawerBadge.classList.remove('hidden');
+            drawerBadge.classList.add('flex');
+          } else {
+            drawerBadge.classList.add('hidden');
+            drawerBadge.classList.remove('flex');
+          }
+        }
+        const sidebarBadge = document.getElementById('sidebarUserChatBadge');
+        if (sidebarBadge) {
+          sidebarBadge.textContent = data.count;
+          if (data.count > 0) {
+            sidebarBadge.classList.remove('hidden');
+            sidebarBadge.classList.add('flex');
+          } else {
+            sidebarBadge.classList.add('hidden');
+            sidebarBadge.classList.remove('flex');
+          }
+        }
+      }
     } catch (err) {
-      console.error('Error marking all as read:', err);
+      console.error('Error fetching unread message count:', err);
     }
   }
 
-  // Load socket.io script dynamically if not present, and connect
   function initializeNotificationSocket() {
     if (typeof io === 'undefined') {
       const script = document.createElement('script');
       script.src = '/socket.io/socket.io.js';
       script.onload = connectNotifSocket;
       document.head.appendChild(script);
-    } else {
-      connectNotifSocket();
-    }
+    } else { connectNotifSocket(); }
   }
 
   function connectNotifSocket() {
     <% if (typeof user !== 'undefined' && user) { %>
-      const socket = io({
-        auth: {
-          userId: '<%= user._id %>',
-          userType: 'user'
-        }
-      });
-      socket.on('new_notification', () => {
-        fetchUserNotifications();
-      });
+      const socket = io({ auth: { userId: '<%= user._id %>', userType: 'user' } });
+      socket.on('new_notification', () => { fetchUserNotifications(); });
+      socket.on('new_message_notification', () => { fetchUnreadMessageCount(); });
     <% } %>
   }
 
-  // Make the function available globally so other pages can trigger updates
   window.updateCartCount = fetchCartCount;
   window.updateWishlistCount = fetchWishlistCount;
+  window.fetchUnreadMessageCount = fetchUnreadMessageCount;
 </script>
 
 <style>
-  /* Tailwind config for brand color */
   .bg-brand { background-color: #00d9b1; }
   .text-brand { color: #00d9b1; }
   .ring-brand { --tw-ring-color: #00d9b1; }
+
+  /* Prevent horizontal scroll globally across all pages */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Hamburger Animation */
+  #mobileMenuBtn.active #bar1 {
+    transform: translateY(7px) rotate(45deg);
+  }
+  #mobileMenuBtn.active #bar2 {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  #mobileMenuBtn.active #bar3 {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Drawer Stagger Slide-in Animation */
+  .drawer-item {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #mobileMenuDrawer.active .drawer-item {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  #mobileMenuDrawer.active .drawer-item:nth-child(1) { transition-delay: 0.05s; }
+  #mobileMenuDrawer.active .drawer-item:nth-child(2) { transition-delay: 0.1s; }
+  #mobileMenuDrawer.active .drawer-item:nth-child(3) { transition-delay: 0.15s; }
+  #mobileMenuDrawer.active .drawer-item:nth-child(4) { transition-delay: 0.2s; }
+  #mobileMenuDrawer.active .drawer-item:nth-child(5) { transition-delay: 0.25s; }
+  #mobileMenuDrawer.active .drawer-item:nth-child(6) { transition-delay: 0.3s; }
+  #mobileMenuDrawer.active .drawer-item:nth-child(7) { transition-delay: 0.35s; }
 </style>

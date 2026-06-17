@@ -15,10 +15,8 @@
         }
         
         .main-content { 
-            margin-left: 260px; 
             flex: 1; 
             padding: 2rem; 
-            width: calc(100% - 260px);
             min-height: 100vh;
         }
         
@@ -57,21 +55,12 @@
         .btn-danger { background: #fee; color: #dc2626; border: 1px solid #fecaca; }
         .btn-danger:hover { background: #fecaca; }
         
-        @media (max-width: 1439px) {
-            .main-content { margin-left: 240px; width: calc(100% - 240px); }
-        }
-        
         @media (max-width: 1023px) {
-            .main-content { margin-left: 220px; width: calc(100% - 220px); }
             .form-grid { grid-template-columns: 1fr; gap: 0; }
         }
         
-        @media (max-width: 899px) {
-            .main-content { margin-left: 200px; width: calc(100% - 200px); }
-        }
-        
         @media (max-width: 767px) {
-            .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+            .main-content { padding: 1rem; }
             .form-card { padding: 1.5rem; }
             .form-actions { flex-direction: column; }
         }
@@ -81,7 +70,7 @@
 
 <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
 
-<div class="main-content">
+<div class="tutor-main-content main-content">
     <div class="page-header">
         <h1>Edit Course</h1>
         <p>Update your course information and settings</p>

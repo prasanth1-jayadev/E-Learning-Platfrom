@@ -1,5 +1,7 @@
-import Tutor from '../models/Tutor.js';
-import OTP from '../models/OTP.js';
+import Tutor   from '../models/Tutor.js';
+import OTP     from '../models/OTP.js';
+import Course  from '../models/Course.js';
+import Payment from '../models/Payment.js';
 import { hashPassword, comparePassword } from '../helpers/passwordHelper.js';
 import { generateOTP, otpExpiry, logOTP } from '../helpers/otpHelper.js';
 import { sendOTPEmail } from './emailService.js';
@@ -119,6 +121,95 @@ const verifyEmailChangeOTP = async (email, otp) => {
     await OTP.deleteMany({ email, purpose: 'email-change' });
 };
 
+// ---------------------------------------------------------------------------
+// Profile / account DB helpers — used by profileController & lessonController
+// ---------------------------------------------------------------------------
+
+const getTutorById = async (id) => {
+    return await Tutor.findById(id);
+};
+
+const updateTutorProfile = async (id, { fullName, phone, subjects, bio }) => {
+    const tutor = await Tutor.findById(id);
+    if (!tutor) throw new Error('Tutor not found');
+    tutor.fullName = fullName;
+    tutor.phone    = phone    ?? null;
+    tutor.subjects = subjects ?? null;
+    tutor.bio      = bio      ?? null;
+    await tutor.save();
+    return tutor;
+};
+
+const updateTutorEmail = async (id, email) => {
+    const tutor = await Tutor.findById(id);
+    if (!tutor) throw new Error('Tutor not found');
+    tutor.email = email.trim().toLowerCase();
+    await tutor.save();
+    return tutor;
+};
+
+const updateTutorPassword = async (id, hashedPassword) => {
+    const tutor = await Tutor.findById(id);
+    if (!tutor) throw new Error('Tutor not found');
+    tutor.password = hashedPassword;
+    await tutor.save();
+};
+
+const updateTutorAvatar = async (id, avatarUrl) => {
+    const tutor = await Tutor.findById(id);
+    if (!tutor) throw new Error('Tutor not found');
+    tutor.avatar = avatarUrl;
+    await tutor.save();
+    return tutor;
+};
+
+/**
+ * Fetch paginated orders + revenue stats for a tutor.
+ * @returns {{ tutor, orders, totalRevenue, totalSales, activeMonthSales, page, totalPages }}
+ */
+const getTutorOrders = async (tutorId, page = 1, limit = 6) => {
+    const tutor = await Tutor.findById(tutorId);
+    if (!tutor) throw new Error('Tutor not found');
+
+    const courses    = await Course.find({ tutor: tutorId });
+    const courseIds  = courses.map(c => c._id);
+
+    const currentMonth = new Date().getMonth();
+    const currentYear  = new Date().getFullYear();
+
+    const allPayments = await Payment.find(
+        { course: { $in: courseIds } },
+        'amount status createdAt'
+    );
+
+    let totalRevenue     = 0;
+    let activeMonthSales = 0;
+
+    allPayments.forEach(order => {
+        if (order.status === 'completed') {
+            totalRevenue += order.amount;
+            const d = new Date(order.createdAt);
+            if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+                activeMonthSales++;
+            }
+        }
+    });
+
+    const totalSales       = allPayments.length;
+    const totalOrdersCount = await Payment.countDocuments({ course: { $in: courseIds } });
+    const totalPages       = Math.ceil(totalOrdersCount / limit) || 1;
+    const skip             = (page - 1) * limit;
+
+    const orders = await Payment.find({ course: { $in: courseIds } })
+        .populate('course')
+        .populate('user')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    return { tutor, orders, totalRevenue, totalSales, activeMonthSales, page, totalPages };
+};
+
 export {
     registerTutor,
     verifyOtp,
@@ -129,5 +220,12 @@ export {
     sendEmailChangeOTP,
     verifyEmailChangeOTP,
     hashPassword,
-    comparePassword
+    comparePassword,
+    // Profile / account helpers
+    getTutorById,
+    updateTutorProfile,
+    updateTutorEmail,
+    updateTutorPassword,
+    updateTutorAvatar,
+    getTutorOrders,
 };

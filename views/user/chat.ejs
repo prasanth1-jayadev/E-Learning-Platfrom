@@ -43,12 +43,11 @@
     <%- include('../partials/user-navbar') %>
 
         <div class="max-w-7xl mx-auto px-4 py-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
-                style="height: calc(100vh - 200px);">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-120px)] md:h-[calc(100vh-200px)]">
                 <div class="flex h-full">
 
                     <!-- Conversations Sidebar -->
-                    <div class="w-80 border-r border-gray-100 flex flex-col">
+                    <div id="conversations-sidebar" class="w-full md:w-80 md:flex-shrink-0 border-r border-gray-100 flex flex-col min-h-0 overflow-hidden">
                         <div class="p-4 border-b border-gray-100">
                             <h2 class="text-xl font-bold text-gray-900">Messages</h2>
                             <p class="text-xs text-gray-500 mt-1">Chat with your tutors</p>
@@ -66,7 +65,7 @@
                     </div>
 
                     <!-- Chat Main Area -->
-                    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <div id="chat-main-area" class="flex-1 hidden md:flex flex-col min-h-0 overflow-hidden">
                         <!-- No Chat Selected -->
                         <div id="no-chat-selected" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
@@ -84,10 +83,13 @@
                             <!-- Chat Header -->
                             <div class="p-4 border-b border-gray-100 bg-white">
                                 <div class="flex items-center gap-3">
+                                    <button onclick="closeChat()" class="md:hidden mr-1 p-2 text-gray-500 hover:text-gray-900 transition flex-shrink-0">
+                                        <i class="fas fa-arrow-left text-lg"></i>
+                                    </button>
                                     <img id="chat-avatar" src="" alt="" class="w-12 h-12 rounded-full object-cover">
-                                    <div class="flex-1">
-                                        <h3 id="chat-name" class="font-bold text-gray-900"></h3>
-                                        <p id="chat-course" class="text-xs text-gray-500"></p>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 id="chat-name" class="font-bold text-gray-900 truncate"></h3>
+                                        <p id="chat-course" class="text-xs text-gray-500 truncate"></p>
                                     </div>
                                     <button
                                         class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
@@ -219,6 +221,7 @@
                     if (data.success) {
                         allConversations = data.conversations;
                         renderConversations(allConversations);
+                        if (window.fetchUnreadMessageCount) window.fetchUnreadMessageCount();
                     }
                 } catch (error) {
                     console.error('Error loading conversations:', error);
@@ -279,6 +282,41 @@
                 });
             }
 
+            // Mobile view toggling logic
+            function updateMobileChatView() {
+                const isMobile = window.innerWidth < 768;
+                const sidebar = document.getElementById('conversations-sidebar');
+                const mainArea = document.getElementById('chat-main-area');
+                
+                if (isMobile) {
+                    if (currentConversationId) {
+                        if (sidebar) sidebar.classList.add('hidden');
+                        if (mainArea) {
+                            mainArea.classList.remove('hidden');
+                            mainArea.classList.add('flex');
+                        }
+                    } else {
+                        if (sidebar) {
+                            sidebar.classList.remove('hidden');
+                            sidebar.classList.add('flex');
+                        }
+                        if (mainArea) {
+                            mainArea.classList.add('hidden');
+                            mainArea.classList.remove('flex');
+                        }
+                    }
+                } else {
+                    if (sidebar) {
+                        sidebar.classList.remove('hidden');
+                        sidebar.classList.add('flex');
+                    }
+                    if (mainArea) {
+                        mainArea.classList.remove('hidden');
+                        mainArea.classList.add('flex');
+                    }
+                }
+            }
+
             // Open conversation
             async function openConversation(conversationId, conv) {
                 if (currentConversationId && currentConversationId !== conversationId) {
@@ -307,10 +345,22 @@
                         document.getElementById('no-chat-selected').classList.add('hidden');
                         document.getElementById('chat-area').classList.remove('hidden');
                         loadConversations();
+                        updateMobileChatView();
                     }
                 } catch (error) {
                     console.error('Error loading messages:', error);
                 }
+            }
+
+            // Close conversation (for mobile back button)
+            function closeChat() {
+                if (currentConversationId) {
+                    socket.emit('leave_conversation', { conversationId: currentConversationId });
+                }
+                currentConversationId = null;
+                document.getElementById('no-chat-selected').classList.remove('hidden');
+                document.getElementById('chat-area').classList.add('hidden');
+                updateMobileChatView();
             }
 
             // Render messages
@@ -397,9 +447,13 @@
                 container.scrollTop = container.scrollHeight;
             }
 
+            // Window resize listener
+            window.addEventListener('resize', updateMobileChatView);
+
             // Initialize
             initSocket();
             loadConversations();
+            updateMobileChatView();
         </script>
 </body>
 

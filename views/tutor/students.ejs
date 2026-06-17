@@ -20,7 +20,7 @@
 <body class="font-display bg-[#f0f4f3] min-h-screen flex flex-col">
 
 <!-- Navbar -->
-<nav class="bg-white border-b border-gray-100 px-8 py-3 flex items-center justify-between sticky top-0 z-50">
+<nav class="hidden md:flex bg-white border-b border-gray-100 px-4 sm:px-8 py-3 items-center justify-between sticky top-0 z-50">
   <div class="flex items-center gap-2">
     <div class="w-7 h-7 bg-primary/20 rounded-lg flex items-center justify-center">
       <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 48 48"><path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"/></svg>
@@ -43,14 +43,12 @@
   </div>
 </nav>
 
+<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'students' }) %>
+
 <!-- Main -->
-<div class="flex-1 max-w-5xl mx-auto w-full px-6 py-8 flex gap-6 items-start">
-
-  <%- include('../partials/tutor-sidebar') %>
-
+<main class="tutor-main-content px-6 py-8 flex-1 max-w-5xl mx-auto w-full">
   <!-- Students Content -->
-  <div class="flex-1">
-    <div class="bg-white rounded-2xl shadow-sm p-7">
+  <div class="bg-white rounded-2xl shadow-sm p-7">
       <h2 class="text-xl font-bold text-gray-900 mb-6">My Students</h2>
       
       <div class="text-center py-12">
@@ -61,12 +59,11 @@
         <p class="text-gray-500">Students will appear here when they enroll in your courses</p>
       </div>
     </div>
-  </div>
-</div>
+</main>
 
 <!-- Footer -->
-<footer class="bg-white border-t border-gray-100 mt-8">
-  <div class="max-w-5xl mx-auto px-6 py-10 grid grid-cols-4 gap-8">
+<footer class="tutor-main-content bg-white border-t border-gray-100 mt-8">
+  <div class="max-w-5xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
     <div>
       <div class="flex items-center gap-2 mb-3">
         <div class="w-6 h-6 bg-primary/20 rounded-lg flex items-center justify-center">

@@ -111,6 +111,51 @@ const verifyEmailChangeOTP = async (email, otp) => {
     await OTP.deleteMany({ email, purpose: 'email-change' });
 };
 
+const getUserById = async (id) => {
+    return await User.findById(id);
+};
+
+const updateUserProfile = async (id, { fullName, phone }) => {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User not found');
+    user.fullName = fullName;
+    if (phone !== undefined) user.phone = phone;
+    await user.save();
+    return user;
+};
+
+const updateUserEmail = async (id, email) => {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User not found');
+    user.email = email.trim().toLowerCase();
+    await user.save();
+    return user;
+};
+
+const updateUserPassword = async (id, hashedPassword) => {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User not found');
+    user.password = hashedPassword;
+    await user.save();
+};
+
+const updateUserAvatar = async (id, avatarUrl) => {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User not found');
+    user.avatar = avatarUrl;
+    await user.save();
+    return user;
+};
+
+const getEnrolledCourses = async (userId) => {
+    const user = await User.findById(userId).populate({
+        path: 'enrolledCourses',
+        populate: { path: 'tutor', select: 'fullName avatar' }
+    });
+    if (!user) throw new Error('User not found');
+    return { user, courses: user.enrolledCourses || [] };
+};
+
 export {
     registerUser,
     verifyOtp,
@@ -122,7 +167,14 @@ export {
     sendEmailChangeOTP,
     verifyEmailChangeOTP,
     hashPassword,
-    comparePassword
+    comparePassword,
+    // Profile helpers
+    getUserById,
+    updateUserProfile,
+    updateUserEmail,
+    updateUserPassword,
+    updateUserAvatar,
+    getEnrolledCourses,
 };
 
 

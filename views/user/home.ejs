@@ -326,7 +326,7 @@
   </style>
 </head>
 
-<body class="font-display bg-white text-gray-900">
+<body class="font-display bg-white text-gray-900 overflow-x-hidden">
 
   <!-- Anti-gravity canvas — behind everything -->
   <canvas id="ag-canvas"></canvas>
@@ -335,7 +335,7 @@
 
     <!-- HERO -->
     <section class="bg-[#f6f8f7] px-6 py-16 md:py-20">
-      <div class="max-w-6xl mx-auto flex items-center justify-between gap-12">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
         <div class="max-w-lg">
           <span class="text-brand text-xs font-bold uppercase tracking-widest mb-3 block">— Redefine how you
             learn</span>
@@ -346,8 +346,8 @@
             Beyond simple tutorials. We provide the workflows and blueprints for professional excellence through
             rigorous, expert-led curricula.
           </p>
-          <div class="flex items-center gap-3 mb-8">
-            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex-1 max-w-xs">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8">
+            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex-1 max-w-full sm:max-w-xs">
               <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -356,7 +356,7 @@
                 class="text-xs text-gray-500 bg-transparent focus:outline-none w-full" />
             </div>
             <button
-              class="px-5 py-2.5 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition whitespace-nowrap">Start
+              class="px-5 py-2.5 bg-brand text-gray-900 text-xs font-bold rounded-lg hover:brightness-110 transition whitespace-nowrap w-full sm:w-auto text-center">Start
               Learning</button>
           </div>
           <div class="flex items-center gap-3">

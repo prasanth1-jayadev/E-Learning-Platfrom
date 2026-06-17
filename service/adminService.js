@@ -414,6 +414,91 @@ const getRecentOrders = async (limit = 10) => {
     }
 };
 
+// ---------------------------------------------------------------------------
+// Student management
+// ---------------------------------------------------------------------------
+
+/**
+ * Paginated student list with optional search and blocked-status filter.
+ */
+const getStudents = async (page = 1, limit = 10, search = '', blocked = 'all') => {
+    const skip = (page - 1) * limit;
+
+    let query = { role: 'user' };
+
+    if (search) {
+        query.$or = [
+            { fullName: { $regex: search, $options: 'i' } },
+            { email:    { $regex: search, $options: 'i' } }
+        ];
+    }
+
+    if (blocked !== 'all') {
+        query.isBlocked = blocked === 'blocked';
+    }
+
+    const totalStudents = await User.countDocuments(query);
+    const students      = await User.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    const totalPages = Math.ceil(totalStudents / limit);
+
+    return {
+        students,
+        totalStudents,
+        totalPages,
+        page,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+        nextPage: page + 1,
+        prevPage: page - 1
+    };
+};
+
+/**
+ * Toggle a student's blocked status.
+ * @returns {{ student, action: 'blocked'|'unblocked' }}
+ */
+const toggleStudentBlock = async (studentId, adminId) => {
+    const student = await User.findById(studentId);
+    if (!student || student.role !== 'user') {
+        throw new Error('Student not found');
+    }
+
+    student.isBlocked = !student.isBlocked;
+    student.blockedBy = student.isBlocked ? adminId : null;
+    student.blockedAt = student.isBlocked ? new Date() : null;
+    await student.save();
+
+    return { student, action: student.isBlocked ? 'blocked' : 'unblocked' };
+};
+
+// ---------------------------------------------------------------------------
+// Platform-wide stats (used on the admin dashboard)
+// ---------------------------------------------------------------------------
+
+/**
+ * Count total students, courses and compute total completed revenue.
+ */
+const getPlatformStats = async () => {
+    const [students, courses, revenueResult] = await Promise.all([
+        User.countDocuments({ role: 'user' }),
+        Course.countDocuments(),
+        Payment.aggregate([
+            { $match: { status: 'completed' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ])
+    ]);
+
+    return {
+        totalStudents: students,
+        totalCourses:  courses,
+        totalRevenue:  revenueResult[0]?.total || 0
+    };
+};
+
 export {
     loginAdmin,
     getTutorApplications,
@@ -426,5 +511,10 @@ export {
     getTutorDetail,
     getDashboardAnalytics,
     getRecentOrders,
-    getTutorRegistrationStats
+    getTutorRegistrationStats,
+    // Student management
+    getStudents,
+    toggleStudentBlock,
+    // Platform stats
+    getPlatformStats,
 };

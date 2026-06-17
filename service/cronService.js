@@ -1,28 +1,29 @@
 import cron from 'node-cron';
 import Wallet from '../models/Wallet.js';
+import { sendNotification } from './notificationService.js';
 
 
 export const releasePendingFunds = async () => {
     try {
         console.log('Running pending funds release job...');
-        
+
         const now = new Date();
-        
+
         const wallets = await Wallet.find({
             'transactions.status': 'pending'
         });
-        
+
         let totalReleased = 0;
         let walletsUpdated = 0;
-        
+
         for (const wallet of wallets) {
             let walletModified = false;
             let amountToRelease = 0;
-            
+
             wallet.transactions.forEach(transaction => {
                 if (
-                    transaction.status === 'pending' &&    
-                    transaction.releaseDate && 
+                    transaction.status === 'pending' &&
+                    transaction.releaseDate &&
                     transaction.releaseDate <= now
                 ) {
                     transaction.status = 'completed';
@@ -30,22 +31,33 @@ export const releasePendingFunds = async () => {
                     walletModified = true;
                 }
             });
-            
+
             if (walletModified) {
                 wallet.balance += amountToRelease;
                 wallet.pendingBalance -= amountToRelease;
-                
+
                 await wallet.save();
-                
+
                 totalReleased += amountToRelease;
                 walletsUpdated++;
-                
+
                 console.log(`Released ₹${amountToRelease} for tutor ${wallet.tutor}`);
+
+                // Send notification to the tutor
+                await sendNotification({
+                    recipientId: wallet.tutor, // This is the tutor's ObjectId
+                    recipientType: 'tutor',
+                    title: 'Earnings Credited',
+                    message: `Pending funds of ₹${amountToRelease} have been successfully credited to your available balance.`,
+                    type: 'funds_released',
+                    relatedId: wallet._id
+                });
             }
+
         }
-        
+
         console.log(`Funds release completed: ${walletsUpdated} wallets updated, ₹${totalReleased} released`);
-        
+
         return {
             walletsUpdated,
             totalReleased
@@ -57,13 +69,13 @@ export const releasePendingFunds = async () => {
 };
 
 
- // Run every at 2:00 AM
+// Run every at 2:00 AM
 export const initCronJobs = () => {
-   
+
     cron.schedule('0 2 * * *', async () => {
         console.log('Starting scheduled pending funds release...');
         await releasePendingFunds();
     });
-    
+
     console.log('Cron jobs initialized: Pending funds release scheduled for 2:00 AM daily');
 };

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="en">
 
 <head>
@@ -6,7 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Course Management - Learnify</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = {
@@ -29,192 +30,260 @@
     </script>
 </head>
 
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex">
+<body
+    class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
 
     <%- include('../partials/admin-sidebar') %>
 
-    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-        <header class="flex justify-between items-center mb-8">
-            <div>
-                <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Course Management</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-1">Manage all courses on the platform</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
-                <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
-                </button>
-            </div>
-        </header>
+        <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 min-h-screen lg:h-screen lg:overflow-y-auto">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Course Management</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Manage all courses on the platform</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <button
+                        class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        onclick="document.documentElement.classList.toggle('dark')">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
+                    </button>
+                </div>
+            </header>
 
-        <!-- Filters and Search -->
-        <div class="flex flex-wrap gap-4 mb-6">
-            <div class="relative flex-1 min-w-[300px]">
-                <span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                <input type="text" id="searchInput" value="<%= search %>" placeholder="Search courses..." class="w-full pl-11 pr-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
-            </div>
-            
-            <select id="statusFilter" class="px-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary">
-                <option value="all" <%= status === 'all' ? 'selected' : '' %>>All Status</option>
-                <option value="published" <%= status === 'published' ? 'selected' : '' %>>Published</option>
-                <option value="draft" <%= status === 'draft' ? 'selected' : '' %>>Draft</option>
-                <option value="archived" <%= status === 'archived' ? 'selected' : '' %>>Archived</option>
-            </select>
+            <!-- Filters and Search -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <div class="relative flex-1 min-w-[300px]">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input type="text" id="searchInput" value="<%= search %>" placeholder="Search courses..."
+                        class="w-full pl-11 pr-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
+                </div>
 
-            <select id="categoryFilter" class="px-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary">
-                <option value="all" <%= category === 'all' ? 'selected' : '' %>>All Categories</option>
-                <% if (categories && categories.length > 0) { %>
-                    <% categories.forEach(cat => { %>
-                        <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
-                    <% }); %>
-                <% } %>
-            </select>
+                <select id="statusFilter"
+                    class="px-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+                    <option value="all" <%=status==='all' ? 'selected' : '' %>>All Status</option>
+                    <option value="published" <%=status==='published' ? 'selected' : '' %>>Published</option>
+                    <option value="draft" <%=status==='draft' ? 'selected' : '' %>>Draft</option>
+                    <option value="archived" <%=status==='archived' ? 'selected' : '' %>>Archived</option>
+                </select>
 
-            <button onclick="applyFilters()" class="px-5 py-2.5 bg-primary hover:bg-[#00c9a1] text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
-                <span class="material-icons-outlined text-xl">filter_list</span>
-                Apply
-            </button>
-        </div>
-
-        <!-- Courses Table -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Course</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Tutor</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Category</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Price</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Students</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-                        <% if (courses && courses.length > 0) { %>
-                            <% courses.forEach(course => { %>
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <img src="<%= course.thumbnail || 'https://via.placeholder.com/60x40?text=No+Image' %>" alt="<%= course.title %>" class="w-16 h-10 object-cover rounded-lg" />
-                                            <div class="max-w-xs">
-                                                <p class="font-semibold text-slate-800 dark:text-white truncate"><%= course.title %></p>
-                                                <p class="text-xs text-slate-500 dark:text-slate-400"><%= course.lessons.length %> lessons</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <img src="<%= course.tutor?.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(course.tutor?.fullName || 'Tutor') %>" alt="<%= course.tutor?.fullName %>" class="w-8 h-8 rounded-full" />
-                                            <span class="text-sm text-slate-700 dark:text-slate-300"><%= course.tutor?.fullName || 'Unknown' %></span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-sm text-slate-700 dark:text-slate-300"><%= course.category %></span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <% if (course.discountPrice) { %>
-                                            <div class="flex flex-col">
-                                                <span class="text-sm font-semibold text-slate-800 dark:text-white">₹<%= course.discountPrice %></span>
-                                                <span class="text-xs text-slate-400 line-through">₹<%= course.price %></span>
-                                            </div>
-                                        <% } else { %>
-                                            <span class="text-sm font-semibold text-slate-800 dark:text-white">₹<%= course.price %></span>
-                                        <% } %>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-sm text-slate-700 dark:text-slate-300"><%= course.enrolledStudents.length %></span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2.5 py-1 text-xs font-medium rounded-full <%= course.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : course.status === 'draft' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400' %>">
-                                            <%= course.status.charAt(0).toUpperCase() + course.status.slice(1) %>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <button onclick="window.location.href='/admin/course/<%= course._id %>'" class="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="View Details">
-                                                <span class="material-icons-outlined text-[18px]">visibility</span>
-                                            </button>
-                                            <button onclick="changeStatus('<%= course._id %>', '<%= course.status %>')" class="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors" title="Change Status">
-                                                <span class="material-icons-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="deleteCourse('<%= course._id %>', <%= course.enrolledStudents.length %>)" class="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Delete">
-                                                <span class="material-icons-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                <select id="categoryFilter"
+                    class="px-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+                    <option value="all" <%=category==='all' ? 'selected' : '' %>>All Categories</option>
+                    <% if (categories && categories.length> 0) { %>
+                        <% categories.forEach(cat=> { %>
+                            <option value="<%= cat %>" <%=category===cat ? 'selected' : '' %>><%= cat %>
+                            </option>
                             <% }); %>
-                        <% } else { %>
+                                <% } %>
+                </select>
+
+                <button onclick="applyFilters()"
+                    class="px-5 py-2.5 bg-primary hover:bg-[#00c9a1] text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                    <span class="material-icons-outlined text-xl">filter_list</span>
+                    Apply
+                </button>
+            </div>
+
+            <!-- Courses Table -->
+            <div
+                class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center">
-                                    <span class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4 block">menu_book</span>
-                                    <p class="text-slate-500 dark:text-slate-400 text-lg">No courses found</p>
-                                </td>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Course</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Tutor</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Category</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Price</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Students</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Actions</th>
                             </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                            <% if (courses && courses.length> 0) { %>
+                                <% courses.forEach(course=> { %>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <img src="<%= course.thumbnail || 'https://via.placeholder.com/60x40?text=No+Image' %>"
+                                                    alt="<%= course.title %>"
+                                                    class="w-16 h-10 object-cover rounded-lg" />
+                                                <div class="max-w-xs">
+                                                    <p class="font-semibold text-slate-800 dark:text-white truncate">
+                                                        <%= course.title %>
+                                                    </p>
+                                                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                                                        <%= course.lessons.length %> lessons
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <img src="<%= course.tutor?.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(course.tutor?.fullName || 'Tutor') %>"
+                                                    alt="<%= course.tutor?.fullName %>" class="w-8 h-8 rounded-full" />
+                                                <span class="text-sm text-slate-700 dark:text-slate-300">
+                                                    <%= course.tutor?.fullName || 'Unknown' %>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm text-slate-700 dark:text-slate-300">
+                                                <%= course.category %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <% if (course.discountPrice) { %>
+                                                <div class="flex flex-col">
+                                                    <span class="text-sm font-semibold text-slate-800 dark:text-white">₹
+                                                        <%= course.discountPrice %>
+                                                    </span>
+                                                    <span class="text-xs text-slate-400 line-through">₹<%= course.price
+                                                            %></span>
+                                                </div>
+                                                <% } else { %>
+                                                    <span class="text-sm font-semibold text-slate-800 dark:text-white">₹
+                                                        <%= course.price %>
+                                                    </span>
+                                                    <% } %>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm text-slate-700 dark:text-slate-300">
+                                                <%= course.enrolledStudents.length %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="px-2.5 py-1 text-xs font-medium rounded-full <%= course.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : course.status === 'draft' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400' %>">
+                                                <%= course.status.charAt(0).toUpperCase() + course.status.slice(1) %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <button onclick="window.location.href='/admin/course/<%= course._id %>'"
+                                                    class="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                                    title="View Details">
+                                                    <span class="material-icons-outlined text-[18px]">visibility</span>
+                                                </button>
+                                                <button
+                                                    onclick="changeStatus('<%= course._id %>', '<%= course.status %>')"
+                                                    class="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors"
+                                                    title="Change Status">
+                                                    <span class="material-icons-outlined text-[18px]">edit</span>
+                                                </button>
+                                                <button
+                                                    onclick="deleteCourse('<%= course._id %>', <%= course.enrolledStudents.length %>)"
+                                                    class="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                    title="Delete">
+                                                    <span class="material-icons-outlined text-[18px]">delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7" class="px-6 py-12 text-center">
+                                                    <span
+                                                        class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4 block">menu_book</span>
+                                                    <p class="text-slate-500 dark:text-slate-400 text-lg">No courses
+                                                        found</p>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
 
-        <!-- Pagination -->
-        <% if (pagination.totalPages > 1) { %>
-        <div class="flex justify-between items-center mt-6">
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-                Showing <%= ((pagination.currentPage - 1) * 10) + 1 %> to <%= Math.min(pagination.currentPage * 10, pagination.totalCourses) %> of <%= pagination.totalCourses %> courses
-            </p>
-            <div class="flex items-center gap-2">
-                <% if (pagination.hasPrev) { %>
-                    <a href="?page=<%= pagination.prevPage %>&search=<%= search %>&status=<%= status %>&category=<%= category %>" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_left</span>
-                    </a>
-                <% } %>
-                
-                <% for (let i = 1; i <= pagination.totalPages; i++) { %>
-                    <% if (i === pagination.currentPage) { %>
-                        <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white font-medium text-sm"><%= i %></span>
-                    <% } else if (i === 1 || i === pagination.totalPages || (i >= pagination.currentPage - 1 && i <= pagination.currentPage + 1)) { %>
-                        <a href="?page=<%= i %>&search=<%= search %>&status=<%= status %>&category=<%= category %>" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium"><%= i %></a>
-                    <% } else if (i === pagination.currentPage - 2 || i === pagination.currentPage + 2) { %>
-                        <span class="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
-                    <% } %>
-                <% } %>
-                
-                <% if (pagination.hasNext) { %>
-                    <a href="?page=<%= pagination.nextPage %>&search=<%= search %>&status=<%= status %>&category=<%= category %>" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_right</span>
-                    </a>
-                <% } %>
-            </div>
-        </div>
-        <% } %>
-    </main>
+            <!-- Pagination -->
+            <% if (pagination.totalPages> 1) { %>
+                <div class="flex justify-between items-center mt-6">
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Showing <%= ((pagination.currentPage - 1) * 10) + 1 %> to <%= Math.min(pagination.currentPage *
+                                10, pagination.totalCourses) %> of <%= pagination.totalCourses %> courses
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <% if (pagination.hasPrev) { %>
+                            <a href="?page=<%= pagination.prevPage %>&search=<%= search %>&status=<%= status %>&category=<%= category %>"
+                                class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                <span
+                                    class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_left</span>
+                            </a>
+                            <% } %>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function applyFilters() {
-            const search = document.getElementById('searchInput').value;
-            const status = document.getElementById('statusFilter').value;
-            const category = document.getElementById('categoryFilter').value;
-            window.location.href = `/admin/courses?search=${encodeURIComponent(search)}&status=${status}&category=${encodeURIComponent(category)}`;
-        }
+                                <% for (let i=1; i <=pagination.totalPages; i++) { %>
+                                    <% if (i===pagination.currentPage) { %>
+                                        <span
+                                            class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white font-medium text-sm">
+                                            <%= i %>
+                                        </span>
+                                        <% } else if (i===1 || i===pagination.totalPages || (i>= pagination.currentPage
+                                            - 1 && i <= pagination.currentPage + 1)) { %>
+                                                <a href="?page=<%= i %>&search=<%= search %>&status=<%= status %>&category=<%= category %>"
+                                                    class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium">
+                                                    <%= i %>
+                                                </a>
+                                                <% } else if (i===pagination.currentPage - 2 ||
+                                                    i===pagination.currentPage + 2) { %>
+                                                    <span
+                                                        class="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
+                                                    <% } %>
+                                                        <% } %>
 
-        // Enter key to search
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                applyFilters();
+                                                            <% if (pagination.hasNext) { %>
+                                                                <a href="?page=<%= pagination.nextPage %>&search=<%= search %>&status=<%= status %>&category=<%= category %>"
+                                                                    class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                                                    <span
+                                                                        class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_right</span>
+                                                                </a>
+                                                                <% } %>
+                    </div>
+                </div>
+                <% } %>
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function applyFilters() {
+                const search = document.getElementById('searchInput').value;
+                const status = document.getElementById('statusFilter').value;
+                const category = document.getElementById('categoryFilter').value;
+                window.location.href = `/admin/courses?search=${encodeURIComponent(search)}&status=${status}&category=${encodeURIComponent(category)}`;
             }
-        });
 
-        function changeStatus(courseId, currentStatus) {
-            Swal.fire({
-                title: 'Change Course Status',
-                html: `
+            // Enter key to search
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+
+            function changeStatus(courseId, currentStatus) {
+                Swal.fire({
+                    title: 'Change Course Status',
+                    html: `
                     <div class="text-left">
                         <label class="block text-sm font-medium text-slate-700 mb-2">Select Status</label>
                         <select id="newStatus" class="swal2-input w-full" style="margin: 0;">
@@ -224,108 +293,108 @@
                         </select>
                     </div>
                 `,
-                showCancelButton: true,
-                confirmButtonColor: '#00d9b1',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Update Status',
-                cancelButtonText: 'Cancel',
-                preConfirm: () => {
-                    return document.getElementById('newStatus').value;
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const response = await fetch(`/admin/course/${courseId}/toggle-status`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ status: result.value })
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: data.message,
-                                confirmButtonColor: '#00d9b1'
-                            }).then(() => location.reload());
-                        } else {
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9b1',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Update Status',
+                    cancelButtonText: 'Cancel',
+                    preConfirm: () => {
+                        return document.getElementById('newStatus').value;
+                    }
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch(`/admin/course/${courseId}/toggle-status`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ status: result.value })
+                            });
+                            const data = await response.json();
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: data.message,
+                                    confirmButtonColor: '#00d9b1'
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: data.message,
+                                    confirmButtonColor: '#00d9b1'
+                                });
+                            }
+                        } catch (error) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
-                                text: data.message,
+                                text: 'Something went wrong',
                                 confirmButtonColor: '#00d9b1'
                             });
                         }
-                    } catch (error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Something went wrong',
-                            confirmButtonColor: '#00d9b1'
-                        });
                     }
-                }
-            });
-        }
-
-        function deleteCourse(courseId, enrolledCount) {
-            if (enrolledCount > 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Cannot Delete',
-                    text: `This course has ${enrolledCount} enrolled students. Please archive it instead.`,
-                    confirmButtonColor: '#00d9b1'
                 });
-                return;
             }
 
-            Swal.fire({
-                title: 'Delete Course?',
-                text: 'This action cannot be undone!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, delete it',
-                cancelButtonText: 'Cancel'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const response = await fetch(`/admin/course/${courseId}/delete`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Deleted!',
-                                text: data.message,
-                                confirmButtonColor: '#00d9b1'
-                            }).then(() => location.reload());
-                        } else {
+            function deleteCourse(courseId, enrolledCount) {
+                if (enrolledCount > 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cannot Delete',
+                        text: `This course has ${enrolledCount} enrolled students. Please archive it instead.`,
+                        confirmButtonColor: '#00d9b1'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Delete Course?',
+                    text: 'This action cannot be undone!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, delete it',
+                    cancelButtonText: 'Cancel'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch(`/admin/course/${courseId}/delete`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                            const data = await response.json();
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: data.message,
+                                    confirmButtonColor: '#00d9b1'
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: data.message,
+                                    confirmButtonColor: '#00d9b1'
+                                });
+                            }
+                        } catch (error) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
-                                text: data.message,
+                                text: 'Something went wrong',
                                 confirmButtonColor: '#00d9b1'
                             });
                         }
-                    } catch (error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Something went wrong',
-                            confirmButtonColor: '#00d9b1'
-                        });
                     }
-                }
-            });
-        }
-    </script>
+                });
+            }
+        </script>
 
-    <!-- Admin Session Management Script -->
-    <script src="/js/admin-session.js"></script>
+        <!-- Admin Session Management Script -->
+        <script src="/js/admin-session.js"></script>
 </body>
 
 </html>

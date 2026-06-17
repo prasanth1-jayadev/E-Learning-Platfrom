@@ -15,8 +15,10 @@ const router = express.Router();
 router.use(async (req, res, next) => {
     try {
         res.locals.pendingCount = await Tutor.countDocuments({ approvalStatus: 'pending', isVerified: true });
+        res.locals.adminId = req.session.adminId;
     } catch (e) {
         res.locals.pendingCount = 0;
+        res.locals.adminId = null;
     }
     next();
 });

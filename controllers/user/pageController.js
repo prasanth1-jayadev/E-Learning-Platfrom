@@ -38,7 +38,7 @@ const getHome = async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
     const courses = await Course.find({
-      isPublished: true,
+      status: 'published',
       $nor: [
         { title: 'psychology', category: 'SCIENCE' }
       ]

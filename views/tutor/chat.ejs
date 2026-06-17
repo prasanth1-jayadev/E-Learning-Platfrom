@@ -42,18 +42,17 @@
 <body class="bg-gray-50">
     <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'chat' }) %>
 
-        <main class="ml-64 p-6">
+        <main class="tutor-main-content p-6">
             <div class="mb-6">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Messages</h1>
                 <p class="text-gray-600">Chat with your students</p>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-                style="height: calc(100vh - 240px);">
-                <div class="flex h-full">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-150px)] md:h-[calc(100vh-180px)] min-h-[450px]">
+                <div class="flex h-full w-full">
 
                     <!-- Conversations Sidebar -->
-                    <div class="w-80 border-r border-gray-100 flex flex-col min-h-0 overflow-hidden">
+                    <div id="conversations-panel" class="w-full md:w-80 border-r border-gray-100 flex flex-col min-h-0 overflow-hidden">
 
 
                         <div id="conversations-list" class="flex-1 overflow-y-auto chat-scroll">
@@ -67,7 +66,7 @@
                     </div>
 
                     <!-- Chat Main Area -->
-                    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <div id="chat-main-panel" class="flex-1 flex flex-col min-h-0 overflow-hidden">
                         <!-- No Chat Selected -->
                         <div id="no-chat-selected" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
@@ -86,6 +85,10 @@
                             <div class="p-4 border-b border-gray-100 bg-white">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-3">
+                                        <!-- Back Button on Mobile -->
+                                        <button id="chat-back-btn" class="md:hidden p-2 -ml-2 mr-1 text-gray-500 hover:text-gray-700 flex items-center justify-center">
+                                            <i class="fas fa-arrow-left"></i>
+                                        </button>
                                         <img id="chat-avatar" src="" alt="" class="w-12 h-12 rounded-full object-cover">
                                         <div>
                                             <h3 id="chat-name" class="font-bold text-gray-900"></h3>
@@ -220,6 +223,7 @@
                     if (data.success) {
                         allConversations = data.conversations;
                         renderConversations(allConversations);
+                        if (window.fetchUnreadMessageCount) window.fetchUnreadMessageCount();
                     }
                 } catch (error) {
                     console.error('Error loading conversations:', error);
@@ -306,6 +310,7 @@
                         document.getElementById('no-chat-selected').classList.add('hidden');
                         document.getElementById('chat-area').classList.remove('hidden');
                         loadConversations();
+                        updateMobileChatView();
                     }
                 } catch (error) {
                     console.error('Error loading messages:', error);
@@ -396,9 +401,44 @@
                 container.scrollTop = container.scrollHeight;
             }
 
+            // Mobile view toggling logic
+            function updateMobileChatView() {
+                const isMobile = window.innerWidth < 768;
+                const conversationsPanel = document.getElementById('conversations-panel');
+                const chatMainPanel = document.getElementById('chat-main-panel');
+                
+                if (isMobile) {
+                    if (currentConversationId) {
+                        conversationsPanel.classList.add('hidden');
+                        chatMainPanel.classList.remove('hidden');
+                        chatMainPanel.classList.add('flex');
+                    } else {
+                        conversationsPanel.classList.remove('hidden');
+                        conversationsPanel.classList.add('flex');
+                        chatMainPanel.classList.add('hidden');
+                        chatMainPanel.classList.remove('flex');
+                    }
+                } else {
+                    conversationsPanel.classList.remove('hidden');
+                    conversationsPanel.classList.add('flex');
+                    chatMainPanel.classList.remove('hidden');
+                    chatMainPanel.classList.add('flex');
+                }
+            }
+
+            // Back button listener
+            document.getElementById('chat-back-btn').addEventListener('click', () => {
+                currentConversationId = null;
+                updateMobileChatView();
+            });
+
+            // Window resize listener
+            window.addEventListener('resize', updateMobileChatView);
+
             // Initialize
             initSocket();
             loadConversations();
+            updateMobileChatView();
         </script>
 </body>
 

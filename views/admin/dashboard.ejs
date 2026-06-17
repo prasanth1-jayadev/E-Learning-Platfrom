@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,422 +31,470 @@
     }
   </style>
 </head>
+
 <body class="bg-background-light dark:bg-background-dark">
 
   <%- include('../partials/admin-sidebar') %>
 
-  <!-- Main Content -->
-  <main class="ml-64 p-6 bg-background-light dark:bg-background-dark min-h-screen">
-    <!-- Header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-      <p class="text-gray-600 mt-1">Welcome to your admin dashboard</p>
-    </div>
-
- 
-
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <!-- Total Students -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Total Students</p>
-            <h3 class="text-3xl font-bold text-gray-900 mt-1"><%= totalStudents %></h3>
-          </div>
-          <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-7 h-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-          </div>
-        </div>
-        <a href="/admin/students" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</a>
+    <!-- Main Content -->
+    <main class="ml-0 lg:ml-64 p-4 sm:p-6 lg:p-6 pt-20 lg:pt-6 bg-background-light dark:bg-background-dark min-h-screen">
+      <!-- Header -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p class="text-gray-600 mt-1">Welcome to your admin dashboard</p>
       </div>
 
-      <!-- Total Tutors -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
+
+
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Total Students -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Students</p>
+              <h3 class="text-3xl font-bold text-gray-900 mt-1">
+                <%= totalStudents %>
+              </h3>
+            </div>
+            <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+          </div>
+          <a href="/admin/students" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</a>
+        </div>
+
+        <!-- Total Tutors -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Tutors</p>
+              <h3 class="text-3xl font-bold text-gray-900 mt-1">
+                <%= totalTutors %>
+              </h3>
+              <% if (pendingCount> 0) { %>
+                <p class="text-xs text-orange-600 mt-1 font-medium">
+                  <%= pendingCount %> pending
+                </p>
+                <% } %>
+            </div>
+            <div class="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+          <a href="/admin/tutors" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium">View all →</a>
+        </div>
+
+        <!-- Total Courses -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Courses</p>
+              <h3 class="text-3xl font-bold text-gray-900 mt-1">
+                <%= totalCourses %>
+              </h3>
+            </div>
+            <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500">Active courses</p>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Revenue</p>
+              <h3 class="text-3xl font-bold text-gray-900 mt-1">₹<%= (totalRevenue / 100).toLocaleString('en-IN') %>
+              </h3>
+            </div>
+            <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500">Completed orders</p>
+        </div>
+      </div>
+
+      <!-- Analytics Section -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold text-gray-900">Analytics Overview</h2>
+          <div class="flex gap-2">
+            <a href="?range=7days"
+              class="px-4 py-2 text-sm font-medium rounded-lg <%= timeRange === '7days' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %> transition">7
+              Days</a>
+            <a href="?range=30days"
+              class="px-4 py-2 text-sm font-medium rounded-lg <%= timeRange === '30days' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %> transition">30
+              Days</a>
+            <a href="?range=1year"
+              class="px-4 py-2 text-sm font-medium rounded-lg <%= timeRange === '1year' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %> transition">1
+              Year</a>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Revenue Analytics -->
+          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Revenue Analytics</h3>
+            <div class="h-64">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+
+
+
+          <!-- Top Selling Courses -->
+          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Top Selling Courses</h3>
+            <div class="h-64">
+              <canvas id="topCoursesChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Category Distribution -->
+          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Course Category Distribution</h3>
+            <div class="h-64">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <a href="/admin/students"
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-gray-900">Manage Students</span>
+            </div>
+            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+
+          <a href="/admin/tutors"
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-gray-900">Manage Tutors</span>
+            </div>
+            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+
+          <a href="/admin/courses"
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-gray-900">Manage Courses</span>
+            </div>
+            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+
+          <a href="/admin/orders"
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-gray-900">Manage Orders</span>
+            </div>
+            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+
+          <a href="/admin/categories"
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-gray-900">Manage Categories</span>
+            </div>
+            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Total Tutors</p>
-            <h3 class="text-3xl font-bold text-gray-900 mt-1"><%= totalTutors %></h3>
-            <% if (pendingCount > 0) { %>
-              <p class="text-xs text-orange-600 mt-1 font-medium"><%= pendingCount %> pending</p>
+            <h2 class="text-lg font-bold text-gray-900">Recent Orders</h2>
+            <p class="text-sm text-gray-500 mt-1">Last 10 completed orders</p>
+          </div>
+          <a href="/admin/orders"
+            class="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1">
+            View All
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        <% if (recentOrders && recentOrders.length> 0) { %>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-100">
+                <% recentOrders.forEach(order=> { %>
+                  <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm font-mono text-gray-900">#<%= order.orderId.substring(0, 12) %>...</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          <span class="text-xs font-semibold text-blue-600">
+                            <%= order.user?.fullName?.charAt(0) || 'U' %>
+                          </span>
+                        </div>
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">
+                            <%= order.user?.fullName || 'Unknown' %>
+                          </div>
+                          <div class="text-xs text-gray-500">
+                            <%= order.user?.email || '' %>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-sm text-gray-900 max-w-xs truncate">
+                        <%= order.course?.title || 'Course Deleted' %>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm font-semibold text-gray-900">₹<%= (order.amount /
+                          100).toLocaleString('en-IN') %></span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm text-gray-500">
+                        <%= new Date(order.createdAt).toLocaleDateString('en-IN') %>
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                        Completed
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="/admin/order/<%= order._id %>"
+                        class="text-primary hover:text-primary/80 font-medium">View</a>
+                    </td>
+                  </tr>
+                  <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+            <div class="p-12 text-center">
+              <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
+              <p class="text-gray-500">Orders will appear here once students start purchasing courses.</p>
+            </div>
             <% } %>
-          </div>
-          <div class="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-          </div>
-        </div>
-        <a href="/admin/tutors" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium">View all →</a>
       </div>
+    </main>
 
-      <!-- Total Courses -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Total Courses</p>
-            <h3 class="text-3xl font-bold text-gray-900 mt-1"><%= totalCourses %></h3>
-          </div>
-          <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-7 h-7 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-            </svg>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500">Active courses</p>
-      </div>
+    <!-- Chart.js Configuration -->
+    <script>
+      // Chart colors
+      const primaryColor = '#00d9b1';
+      const secondaryColor = '#10b981';
+      const chartColors = [
+        '#00d9b1', '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b',
+        '#ef4444', '#ec4899', '#06b6d4', '#84cc16', '#f97316'
+      ];
 
-      <!-- Total Revenue -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-            <h3 class="text-3xl font-bold text-gray-900 mt-1">₹<%= (totalRevenue / 100).toLocaleString('en-IN') %></h3>
-          </div>
-          <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-7 h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500">Completed orders</p>
-      </div>
-    </div>
+      // Revenue Chart Data
+      const revenueData = <%- JSON.stringify(analytics.revenueData) %>;
+      const revenueLabels = revenueData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      const revenueValues = revenueData.map(d => d.revenue);
 
-    <!-- Analytics Section -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-900">Analytics Overview</h2>
-        <div class="flex gap-2">
-          <a href="?range=7days" class="px-4 py-2 text-sm font-medium rounded-lg <%= timeRange === '7days' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %> transition">7 Days</a>
-          <a href="?range=30days" class="px-4 py-2 text-sm font-medium rounded-lg <%= timeRange === '30days' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %> transition">30 Days</a>
-          <a href="?range=1year" class="px-4 py-2 text-sm font-medium rounded-lg <%= timeRange === '1year' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %> transition">1 Year</a>
-        </div>
-      </div>
-
-      <!-- Charts Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Revenue Analytics -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 class="text-base font-bold text-gray-900 mb-4">Revenue Analytics</h3>
-          <div class="h-64">
-            <canvas id="revenueChart"></canvas>
-          </div>
-        </div>
-
-        
-
-        <!-- Top Selling Courses -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 class="text-base font-bold text-gray-900 mb-4">Top Selling Courses</h3>
-          <div class="h-64">
-            <canvas id="topCoursesChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Category Distribution -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 class="text-base font-bold text-gray-900 mb-4">Course Category Distribution</h3>
-          <div class="h-64">
-            <canvas id="categoryChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-        <a href="/admin/students" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-medium text-gray-900">Manage Students</span>
-          </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a href="/admin/tutors" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-medium text-gray-900">Manage Tutors</span>
-          </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a href="/admin/courses" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-              </svg>
-            </div>
-            <span class="text-sm font-medium text-gray-900">Manage Courses</span>
-          </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a href="/admin/orders" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-medium text-gray-900">Manage Orders</span>
-          </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a href="/admin/categories" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-medium text-gray-900">Manage Categories</span>
-          </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Recent Orders -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-      <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-        <div>
-          <h2 class="text-lg font-bold text-gray-900">Recent Orders</h2>
-          <p class="text-sm text-gray-500 mt-1">Last 10 completed orders</p>
-        </div>
-        <a href="/admin/orders" class="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1">
-          View All
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-      </div>
-      
-      <% if (recentOrders && recentOrders.length > 0) { %>
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-100">
-            <% recentOrders.forEach(order => { %>
-            <tr class="hover:bg-gray-50 transition">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="text-sm font-mono text-gray-900">#<%= order.orderId.substring(0, 12) %>...</span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                    <span class="text-xs font-semibold text-blue-600"><%= order.user?.fullName?.charAt(0) || 'U' %></span>
-                  </div>
-                  <div>
-                    <div class="text-sm font-medium text-gray-900"><%= order.user?.fullName || 'Unknown' %></div>
-                    <div class="text-xs text-gray-500"><%= order.user?.email || '' %></div>
-                  </div>
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <div class="text-sm text-gray-900 max-w-xs truncate"><%= order.course?.title || 'Course Deleted' %></div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="text-sm font-semibold text-gray-900">₹<%= (order.amount / 100).toLocaleString('en-IN') %></span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="text-sm text-gray-500"><%= new Date(order.createdAt).toLocaleDateString('en-IN') %></span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                  Completed
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <a href="/admin/order/<%= order._id %>" class="text-primary hover:text-primary/80 font-medium">View</a>
-              </td>
-            </tr>
-            <% }); %>
-          </tbody>
-        </table>
-      </div>
-      <% } else { %>
-      <div class="p-12 text-center">
-        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-        </div>
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
-        <p class="text-gray-500">Orders will appear here once students start purchasing courses.</p>
-      </div>
-      <% } %>
-    </div>
-  </main>
-
-  <!-- Chart.js Configuration -->
-  <script>
-    // Chart colors
-    const primaryColor = '#00d9b1';
-    const secondaryColor = '#10b981';
-    const chartColors = [
-      '#00d9b1', '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', 
-      '#ef4444', '#ec4899', '#06b6d4', '#84cc16', '#f97316'
-    ];
-
-    // Revenue Chart Data
-    const revenueData = <%- JSON.stringify(analytics.revenueData) %>;
-    const revenueLabels = revenueData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-    const revenueValues = revenueData.map(d => d.revenue);
-
-    // Revenue Chart
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(revenueCtx, {
-      type: 'line',
-      data: {
-        labels: revenueLabels,
-        datasets: [{
-          label: 'Revenue (₹)',
-          data: revenueValues,
-          borderColor: primaryColor,
-          backgroundColor: primaryColor + '20',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
+      // Revenue Chart
+      const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+      new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels: revenueLabels,
+          datasets: [{
+            label: 'Revenue (₹)',
+            data: revenueValues,
+            borderColor: primaryColor,
+            backgroundColor: primaryColor + '20',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: function(value) {
-                return '₹' + value.toLocaleString('en-IN');
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function (value) {
+                  return '₹' + value.toLocaleString('en-IN');
+                }
               }
             }
           }
         }
-      }
-    });
+      });
 
-    // Student Growth Chart Data
-    const tutorData = <%- JSON.stringify(analytics.tutorGrowth) %>;
-    const tutorLabels = tutorData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-    const tutorValues = tutorData.map(d => d.newTutors);
+      // Student Growth Chart Data
+      const tutorData = <%- JSON.stringify(analytics.tutorGrowth) %>;
+      const tutorLabels = tutorData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      const tutorValues = tutorData.map(d => d.newTutors);
 
-   
-    // Top Courses Chart Data
-    const topCoursesData = <%- JSON.stringify(analytics.topCourses) %>;
-    const courseLabels = topCoursesData.map(d => d.courseTitle.length > 20 ? d.courseTitle.substring(0, 20) + '...' : d.courseTitle);
-    const courseValues = topCoursesData.map(d => d.enrollments);
 
-    // Top Courses Chart
-    const topCoursesCtx = document.getElementById('topCoursesChart').getContext('2d');
-    new Chart(topCoursesCtx, {
-      type: 'bar',
-      data: {
-        labels: courseLabels,
-        datasets: [{
-          label: 'Enrollments',
-          data: courseValues,
-          backgroundColor: primaryColor,
-          borderRadius: 8
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
+      // Top Courses Chart Data
+      const topCoursesData = <%- JSON.stringify(analytics.topCourses) %>;
+      const courseLabels = topCoursesData.map(d => d.courseTitle.length > 20 ? d.courseTitle.substring(0, 20) + '...' : d.courseTitle);
+      const courseValues = topCoursesData.map(d => d.enrollments);
+
+      // Top Courses Chart
+      const topCoursesCtx = document.getElementById('topCoursesChart').getContext('2d');
+      new Chart(topCoursesCtx, {
+        type: 'bar',
+        data: {
+          labels: courseLabels,
+          datasets: [{
+            label: 'Enrollments',
+            data: courseValues,
+            backgroundColor: primaryColor,
+            borderRadius: 8
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
             }
-          }
-        }
-      }
-    });
-
-    // Category Distribution Chart Data
-    const categoryData = <%- JSON.stringify(analytics.categoryDistribution) %>;
-    const categoryLabels = categoryData.map(d => d.category);
-    const categoryValues = categoryData.map(d => d.totalCourses);
-
-    // Category Distribution Chart
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(categoryCtx, {
-      type: 'doughnut',
-      data: {
-        labels: categoryLabels,
-        datasets: [{
-          data: categoryValues,
-          backgroundColor: chartColors,
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'right',
-            labels: {
-              boxWidth: 12,
-              padding: 10,
-              font: {
-                size: 11
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
               }
             }
           }
         }
-      }
-    });
-  </script>
+      });
 
-  <!-- Admin Session Management Script -->
-  <script src="/js/admin-session.js"></script>
+      // Category Distribution Chart Data
+      const categoryData = <%- JSON.stringify(analytics.categoryDistribution) %>;
+      const categoryLabels = categoryData.map(d => d.category);
+      const categoryValues = categoryData.map(d => d.totalCourses);
+
+      // Category Distribution Chart
+      const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+      new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+          labels: categoryLabels,
+          datasets: [{
+            data: categoryValues,
+            backgroundColor: chartColors,
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                boxWidth: 12,
+                padding: 10,
+                font: {
+                  size: 11
+                }
+              }
+            }
+          }
+        }
+      });
+    </script>
+
+    <!-- Admin Session Management Script -->
+    <script src="/js/admin-session.js"></script>
 </body>
+
 </html>

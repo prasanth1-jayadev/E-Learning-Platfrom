@@ -1,5 +1,24 @@
-<aside
-    class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-20 overflow-y-auto">
+﻿<!-- Mobile Header - only visible on screens below 1024px -->
+<div style="display:none" id="adminMobileHeader" class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-50 shadow-sm">
+    <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-[#00d9b1] rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+            </svg>
+        </div>
+        <span style="font-size:1rem;font-weight:700;color:#1e293b">Learn<span style="color:#00d9b1">ify</span></span>
+    </div>
+    <button id="adminHamburger" style="background:none;border:none;cursor:pointer;padding:8px">
+        <span class="material-icons-outlined" style="font-size:28px;color:#475569">menu</span>
+    </button>
+</div>
+
+<!-- Backdrop overlay -->
+<div id="adminBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:45"></div>
+
+<aside id="adminSidebar"
+    class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-50 overflow-y-auto"
+    style="transition: transform 0.3s ease">
     <div class="p-6">
         <!-- Logo -->
         <div class="flex items-center gap-2 mb-8">
@@ -19,13 +38,22 @@
         </div>
 
         <!-- Admin Profile Card -->
-        <div class="flex items-center gap-3 p-3 mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
-            <img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700"
-                src="https://ui-avatars.com/api/?name=Admin&background=00d9b1&color=fff&bold=true" />
-            <div class="overflow-hidden flex-1">
-                <p class="text-sm font-semibold truncate text-slate-800 dark:text-white">Admin</p>
-                  <!-- <a class="text-xs text-[#00d9b1] hover:underline" href="/admin/profile">View Profile</a> -->
+        <div class="flex items-center justify-between p-3 mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl relative">
+            <div class="flex items-center gap-3 overflow-hidden flex-1">
+                <img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700"
+                    src="https://ui-avatars.com/api/?name=Admin&background=00d9b1&color=fff&bold=true" />
+                <div class="overflow-hidden flex-1">
+                    <p class="text-sm font-semibold truncate text-slate-800 dark:text-white">Admin</p>
+                </div>
             </div>
+            <!-- Notifications Bell -->
+            <button id="adminSidebarNotifBtn"
+                class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 relative flex-shrink-0"
+                title="Notifications">
+                <span class="material-icons-outlined text-[20px]">notifications</span>
+                <span id="adminSidebarNotifBadge"
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+            </button>
         </div>
 
         <nav class="space-y-1">
@@ -122,7 +150,6 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Use the global logout function from admin-session.js
                 if (typeof adminLogout === 'function') {
                     adminLogout();
                 } else {
@@ -131,4 +158,266 @@
             }
         });
     }
+
+    // ---- Responsive sidebar logic ----
+    (function() {
+        function initResponsiveSidebar() {
+            var sidebar = document.getElementById('adminSidebar');
+            var mobileHeader = document.getElementById('adminMobileHeader');
+            var hamburger = document.getElementById('adminHamburger');
+            var backdrop = document.getElementById('adminBackdrop');
+
+            if (!sidebar || !mobileHeader || !hamburger || !backdrop) return;
+
+            function isMobile() { return window.innerWidth < 1024; }
+
+            function applyLayout() {
+                if (isMobile()) {
+                    mobileHeader.style.display = 'flex';
+                    sidebar.style.transform = 'translateX(-100%)';
+                } else {
+                    mobileHeader.style.display = 'none';
+                    sidebar.style.transform = 'translateX(0)';
+                    backdrop.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
+
+            function openSidebar() {
+                sidebar.style.transform = 'translateX(0)';
+                backdrop.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar() {
+                sidebar.style.transform = 'translateX(-100%)';
+                backdrop.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            applyLayout();
+            window.addEventListener('resize', applyLayout);
+
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)') {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            backdrop.addEventListener('click', closeSidebar);
+
+            var navLinks = sidebar.querySelectorAll('nav a');
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (isMobile()) closeSidebar();
+                });
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initResponsiveSidebar);
+        } else {
+            initResponsiveSidebar();
+        }
+    })();
+</script>
+
+<!-- Admin Notifications Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Get the sidebar notification button and badge
+        const sidebarNotifBtn = document.getElementById('adminSidebarNotifBtn');
+        const sidebarNotifBadge = document.getElementById('adminSidebarNotifBadge');
+
+        if (!sidebarNotifBtn) return; // safety check
+
+        // 2. Sync with any header notification buttons if present on the page
+        const headerNotifBtn = Array.from(document.querySelectorAll('button')).find(btn =>
+            btn !== sidebarNotifBtn && btn.textContent.includes('notifications')
+        );
+        let headerNotifBadge = null;
+        if (headerNotifBtn) {
+            headerNotifBadge = headerNotifBtn.querySelector('span.bg-red-500');
+        }
+
+        // 3. Create the dropdown panel HTML and append to body (avoids sidebar overflow clipping)
+        const dropdown = document.createElement('div');
+        dropdown.id = 'adminNotifDropdown';
+        dropdown.className = 'hidden fixed w-80 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-700 py-2 z-[9999] transition-all duration-200';
+        dropdown.innerHTML = `
+        <div class="px-4 py-2.5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 rounded-t-xl">
+            <span class="font-bold text-slate-800 dark:text-white text-sm">Notifications</span>
+            <button id="adminMarkAllRead" class="text-xs text-primary hover:underline font-semibold bg-transparent border-0 p-0 cursor-pointer">Mark all as read</button>
+        </div>
+        <div id="adminNotifList" class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700 text-xs">
+            <div class="p-4 text-center text-slate-400 dark:text-slate-500">No notifications</div>
+        </div>
+    `;
+        document.body.appendChild(dropdown);
+
+        // Position dropdown helper
+        function positionDropdown(triggerBtn) {
+            const rect = triggerBtn.getBoundingClientRect();
+            if (triggerBtn === sidebarNotifBtn) {
+                dropdown.style.left = `${rect.right + 10}px`;
+                dropdown.style.top = `${rect.top - 10}px`;
+            } else {
+                dropdown.style.left = `${rect.right - 320}px`;
+                dropdown.style.top = `${rect.bottom + 10}px`;
+            }
+        }
+
+        // 4. Dropdown Toggle Logic
+        let isNotifOpen = false;
+        let activeTrigger = null;
+
+        function toggleDropdown(e, triggerBtn) {
+            e.stopPropagation();
+            if (isNotifOpen && activeTrigger === triggerBtn) {
+                dropdown.classList.add('hidden');
+                isNotifOpen = false;
+                activeTrigger = null;
+            } else {
+                activeTrigger = triggerBtn;
+                positionDropdown(triggerBtn);
+                dropdown.classList.remove('hidden');
+                isNotifOpen = true;
+                fetchAdminNotifications();
+            }
+        }
+
+        sidebarNotifBtn.addEventListener('click', (e) => toggleDropdown(e, sidebarNotifBtn));
+
+        if (headerNotifBtn) {
+            headerNotifBtn.addEventListener('click', (e) => toggleDropdown(e, headerNotifBtn));
+        }
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target) && e.target !== sidebarNotifBtn && !sidebarNotifBtn.contains(e.target) && (!headerNotifBtn || (e.target !== headerNotifBtn && !headerNotifBtn.contains(e.target)))) {
+                dropdown.classList.add('hidden');
+                isNotifOpen = false;
+                activeTrigger = null;
+            }
+        });
+
+        // 5. Fetch and Render Notifications
+        async function fetchAdminNotifications() {
+            try {
+                const res = await fetch('/chat/notifications');
+                const data = await res.json();
+                if (data.success) {
+                    renderNotifications(data.notifications, data.unreadCount);
+                }
+            } catch (err) {
+                console.error('Error fetching admin notifications:', err);
+            }
+        }
+
+        function renderNotifications(notifications, unreadCount) {
+            if (unreadCount > 0) {
+                if (sidebarNotifBadge) sidebarNotifBadge.classList.remove('hidden');
+                if (headerNotifBadge) headerNotifBadge.classList.remove('hidden');
+            } else {
+                if (sidebarNotifBadge) sidebarNotifBadge.classList.add('hidden');
+                if (headerNotifBadge) headerNotifBadge.classList.add('hidden');
+            }
+
+            const list = document.getElementById('adminNotifList');
+            if (!list) return;
+
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = `<div class="p-4 text-center text-slate-400 dark:text-slate-500">No notifications yet</div>`;
+                return;
+            }
+
+            list.innerHTML = notifications.map(n => {
+                const isRead = n.isRead;
+                let redirectUrl = '#';
+                if (n.type === 'withdrawal_request') {
+                    redirectUrl = '/admin/wallet';
+                } else if (n.type === 'new_course' || n.type === 'course_purchased') {
+                    redirectUrl = '/admin/courses';
+                }
+
+                return `
+                <div onclick="markAdminNotificationRead(event, '${n._id}', '${redirectUrl}')" 
+                     class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition flex items-start gap-2 ${isRead ? '' : 'bg-primary/5 dark:bg-primary/10'}">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-slate-800 dark:text-white truncate ${isRead ? 'text-slate-500 dark:text-slate-400' : 'text-slate-800 dark:text-white'}">${n.title}</p>
+                        <p class="text-slate-600 dark:text-slate-300 mt-0.5 text-[11px] leading-relaxed break-words">${n.message}</p>
+                        <span class="text-[9px] text-slate-400 dark:text-slate-500 block mt-1">
+                            ${new Date(n.createdAt).toLocaleDateString()} ${new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                    </div>
+                    ${isRead ? '' : '<span class="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></span>'}
+                </div>
+            `;
+            }).join('');
+        }
+
+        // 6. Action functions
+        window.markAdminNotificationRead = async (e, id, redirectUrl) => {
+            e.stopPropagation();
+            try {
+                await fetch(`/chat/notifications/${id}/read`, { method: 'POST' });
+                if (redirectUrl && redirectUrl !== '#') {
+                    window.location.href = redirectUrl;
+                } else {
+                    fetchAdminNotifications();
+                }
+            } catch (err) {
+                console.error('Error marking read:', err);
+                if (redirectUrl && redirectUrl !== '#') {
+                    window.location.href = redirectUrl;
+                }
+            }
+        };
+
+        const markAllBtn = document.getElementById('adminMarkAllRead');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                try {
+                    await fetch('/chat/notifications/read-all', { method: 'POST' });
+                    fetchAdminNotifications();
+                } catch (err) {
+                    console.error('Error marking all read:', err);
+                }
+            });
+        }
+
+        // 7. Initialize Socket.io connection for real-time notifications
+        function initializeSocket() {
+            if (typeof io === 'undefined') {
+                const script = document.createElement('script');
+                script.src = '/socket.io/socket.io.js';
+                script.onload = connectSocket;
+                document.head.appendChild(script);
+            } else {
+                connectSocket();
+            }
+        }
+
+        function connectSocket() {
+        <% if (typeof adminId !== 'undefined' && adminId) { %>
+            const socket = io({
+            auth: {
+                userId: '<%= adminId %>',
+                userType: 'user'
+            }
+        });
+                socket.on('new_notification', () => {
+                    fetchAdminNotifications();
+                });
+        <% } %>
+    }
+
+        // Run initial fetch
+        fetchAdminNotifications();
+        initializeSocket();
+    });
 </script>

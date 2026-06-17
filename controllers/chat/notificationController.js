@@ -2,8 +2,8 @@ import Notification from '../../models/Notification.js';
 
 export const getNotifications = async (req, res) => {
     try {
-        const recipientId = req.session.userId || req.session.tutorId;
-        const recipientType = req.session.userId ? 'user' : 'tutor';
+        const recipientId = req.session.userId || req.session.tutorId || req.session.adminId;
+        const recipientType = (req.session.userId || req.session.adminId) ? 'user' : 'tutor';
 
         if (!recipientId) {
             return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -28,7 +28,7 @@ export const getNotifications = async (req, res) => {
 
 export const markAsRead = async (req, res) => {
     try {
-        const recipientId = req.session.userId || req.session.tutorId;
+        const recipientId = req.session.userId || req.session.tutorId || req.session.adminId;
         const { id } = req.params;
 
         if (!recipientId) {
@@ -48,8 +48,8 @@ export const markAsRead = async (req, res) => {
 
 export const markAllAsRead = async (req, res) => {
     try {
-        const recipientId = req.session.userId || req.session.tutorId;
-        const recipientType = req.session.userId ? 'user' : 'tutor';
+        const recipientId = req.session.userId || req.session.tutorId || req.session.adminId;
+        const recipientType = (req.session.userId || req.session.adminId) ? 'user' : 'tutor';
 
         if (!recipientId) {
             return res.status(401).json({ success: false, message: 'Unauthorized' });

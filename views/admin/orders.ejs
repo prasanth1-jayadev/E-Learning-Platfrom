@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="en">
 
 <head>
@@ -6,7 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Order Management - Learnify</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = {
@@ -29,165 +30,224 @@
     </script>
 </head>
 
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex">
+<body
+    class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
 
     <%- include('../partials/admin-sidebar') %>
 
-    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-        <header class="flex justify-between items-center mb-8">
-            <div>
-                <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Order Management</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-1">View and manage all orders and payments</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+        <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 min-h-screen lg:h-screen lg:overflow-y-auto">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Order Management</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">View and manage all orders and payments</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-300">notifications</span>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <button
+                        class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        onclick="document.documentElement.classList.toggle('dark')">
+                    </button>
+                </div>
+            </header>
+
+            <!-- Filters and Search -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <div class="relative flex-1 min-w-[300px]">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input type="text" id="searchInput" value="<%= search %>"
+                        placeholder="Search by Order ID, User name, Email..."
+                        class="w-full pl-11 pr-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
+                </div>
+
+                <select id="dateRangeFilter"
+                    class="px-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+                    <option value="all" <%=dateRange==='all' ? 'selected' : '' %>>All Time</option>
+                    <option value="7days" <%=dateRange==='7days' ? 'selected' : '' %>>Last 7 Days</option>
+                    <option value="30days" <%=dateRange==='30days' ? 'selected' : '' %>>Last 30 Days</option>
+                    <option value="3months" <%=dateRange==='3months' ? 'selected' : '' %>>Last 3 Months</option>
+                </select>
+
+                <button onclick="applyFilters()"
+                    class="px-5 py-2.5 bg-primary hover:bg-[#00c9a1] text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                    <span class="material-icons-outlined text-xl">filter_list</span>
+                    Apply
                 </button>
-                <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
-                </button>
-            </div>
-        </header>
-
-        <!-- Filters and Search -->
-        <div class="flex flex-wrap gap-4 mb-6">
-            <div class="relative flex-1 min-w-[300px]">
-                <span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                <input type="text" id="searchInput" value="<%= search %>" placeholder="Search by Order ID, User name, Email..." class="w-full pl-11 pr-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
             </div>
 
-            <select id="dateRangeFilter" class="px-4 py-2.5 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary">
-                <option value="all" <%= dateRange === 'all' ? 'selected' : '' %>>All Time</option>
-                <option value="7days" <%= dateRange === '7days' ? 'selected' : '' %>>Last 7 Days</option>
-                <option value="30days" <%= dateRange === '30days' ? 'selected' : '' %>>Last 30 Days</option>
-                <option value="3months" <%= dateRange === '3months' ? 'selected' : '' %>>Last 3 Months</option>
-            </select>
-
-            <button onclick="applyFilters()" class="px-5 py-2.5 bg-primary hover:bg-[#00c9a1] text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
-                <span class="material-icons-outlined text-xl">filter_list</span>
-                Apply
-            </button>
-        </div>
-
-        <!-- Orders Table -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Order ID</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">User</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Course</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-                        <% if (orders && orders.length > 0) { %>
-                            <% orders.forEach(order => { %>
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <span class="text-sm font-mono text-slate-700 dark:text-slate-300"><%= order.orderId %></span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(order.user?.fullName || 'User') %>&background=00d9b1&color=fff" alt="<%= order.user?.fullName %>" class="w-8 h-8 rounded-full" />
-                                            <div>
-                                                <p class="text-sm font-medium text-slate-800 dark:text-white"><%= order.user?.fullName || 'Unknown' %></p>
-                                                <p class="text-xs text-slate-500 dark:text-slate-400"><%= order.user?.email || 'N/A' %></p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <img src="<%= order.course?.thumbnail || 'https://via.placeholder.com/40' %>" alt="<%= order.course?.title %>" class="w-10 h-10 object-cover rounded" />
-                                            <span class="text-sm text-slate-700 dark:text-slate-300 max-w-xs truncate"><%= order.course?.title || 'N/A' %></span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-sm font-semibold text-slate-800 dark:text-white">₹<%= (order.amount / 100).toLocaleString('en-IN') %></span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2.5 py-1 text-xs font-medium rounded-full <%= order.status === 'completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : order.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' %>">
-                                            <%= order.status === 'completed' ? 'Success' : order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-sm text-slate-600 dark:text-slate-400"><%= new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <button onclick="window.location.href='/admin/order/<%= order._id %>'" class="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg flex items-center gap-1.5 transition-colors">
-                                            <span class="material-icons-outlined text-[18px]">visibility</span>
-                                            View
-                                        </button>
-                                    </td>
-                                </tr>
-                            <% }); %>
-                        <% } else { %>
+            <!-- Orders Table -->
+            <div
+                class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center">
-                                    <span class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4 block">receipt_long</span>
-                                    <p class="text-slate-500 dark:text-slate-400 text-lg">No orders found</p>
-                                </td>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Order ID</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    User</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Course</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Amount</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Date</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                                    Actions</th>
                             </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                            <% if (orders && orders.length> 0) { %>
+                                <% orders.forEach(order=> { %>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm font-mono text-slate-700 dark:text-slate-300">
+                                                <%= order.orderId %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(order.user?.fullName || 'User') %>&background=00d9b1&color=fff"
+                                                    alt="<%= order.user?.fullName %>" class="w-8 h-8 rounded-full" />
+                                                <div>
+                                                    <p class="text-sm font-medium text-slate-800 dark:text-white">
+                                                        <%= order.user?.fullName || 'Unknown' %>
+                                                    </p>
+                                                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                                                        <%= order.user?.email || 'N/A' %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <img src="<%= order.course?.thumbnail || 'https://via.placeholder.com/40' %>"
+                                                    alt="<%= order.course?.title %>"
+                                                    class="w-10 h-10 object-cover rounded" />
+                                                <span
+                                                    class="text-sm text-slate-700 dark:text-slate-300 max-w-xs truncate">
+                                                    <%= order.course?.title || 'N/A' %>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm font-semibold text-slate-800 dark:text-white">₹<%=
+                                                    (order.amount / 100).toLocaleString('en-IN') %></span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="px-2.5 py-1 text-xs font-medium rounded-full <%= order.status === 'completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : order.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' %>">
+                                                <%= order.status==='completed' ? 'Success' :
+                                                    order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm text-slate-600 dark:text-slate-400">
+                                                <%= new Date(order.createdAt).toLocaleDateString('en-US', {
+                                                    month: 'short' , day: 'numeric' , year: 'numeric' }) %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <button onclick="window.location.href='/admin/order/<%= order._id %>'"
+                                                class="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg flex items-center gap-1.5 transition-colors">
+                                                <span class="material-icons-outlined text-[18px]">visibility</span>
+                                                View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7" class="px-6 py-12 text-center">
+                                                    <span
+                                                        class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4 block">receipt_long</span>
+                                                    <p class="text-slate-500 dark:text-slate-400 text-lg">No orders
+                                                        found</p>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
 
-        <!-- Pagination -->
-        <% if (pagination.totalPages > 1) { %>
-        <div class="flex justify-between items-center mt-6">
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-                Showing <%= ((pagination.currentPage - 1) * 10) + 1 %> to <%= Math.min(pagination.currentPage * 10, pagination.totalOrders) %> of <%= pagination.totalOrders %> orders
-            </p>
-            <div class="flex items-center gap-2">
-                <% if (pagination.hasPrev) { %>
-                    <a href="?page=<%= pagination.prevPage %>&search=<%= search %>&status=<%= status %>&dateRange=<%= dateRange %>" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_left</span>
-                    </a>
-                <% } %>
-                
-                <% for (let i = 1; i <= pagination.totalPages; i++) { %>
-                    <% if (i === pagination.currentPage) { %>
-                        <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white font-medium text-sm"><%= i %></span>
-                    <% } else if (i === 1 || i === pagination.totalPages || (i >= pagination.currentPage - 1 && i <= pagination.currentPage + 1)) { %>
-                        <a href="?page=<%= i %>&search=<%= search %>&status=<%= status %>&dateRange=<%= dateRange %>" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium"><%= i %></a>
-                    <% } else if (i === pagination.currentPage - 2 || i === pagination.currentPage + 2) { %>
-                        <span class="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
-                    <% } %>
-                <% } %>
-                
-                <% if (pagination.hasNext) { %>
-                    <a href="?page=<%= pagination.nextPage %>&search=<%= search %>&status=<%= status %>&dateRange=<%= dateRange %>" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_right</span>
-                    </a>
-                <% } %>
-            </div>
-        </div>
-        <% } %>
-    </main>
+            <!-- Pagination -->
+            <% if (pagination.totalPages> 1) { %>
+                <div class="flex justify-between items-center mt-6">
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Showing <%= ((pagination.currentPage - 1) * 10) + 1 %> to <%= Math.min(pagination.currentPage *
+                                10, pagination.totalOrders) %> of <%= pagination.totalOrders %> orders
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <% if (pagination.hasPrev) { %>
+                            <a href="?page=<%= pagination.prevPage %>&search=<%= search %>&status=<%= status %>&dateRange=<%= dateRange %>"
+                                class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                <span
+                                    class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_left</span>
+                            </a>
+                            <% } %>
 
-    <script>
-        function applyFilters() {
-            const search = document.getElementById('searchInput').value;
-            const dateRange = document.getElementById('dateRangeFilter').value;
-            window.location.href = `/admin/orders?search=${encodeURIComponent(search)}&dateRange=${dateRange}`;
-        }
+                                <% for (let i=1; i <=pagination.totalPages; i++) { %>
+                                    <% if (i===pagination.currentPage) { %>
+                                        <span
+                                            class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white font-medium text-sm">
+                                            <%= i %>
+                                        </span>
+                                        <% } else if (i===1 || i===pagination.totalPages || (i>= pagination.currentPage
+                                            - 1 && i <= pagination.currentPage + 1)) { %>
+                                                <a href="?page=<%= i %>&search=<%= search %>&status=<%= status %>&dateRange=<%= dateRange %>"
+                                                    class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium">
+                                                    <%= i %>
+                                                </a>
+                                                <% } else if (i===pagination.currentPage - 2 ||
+                                                    i===pagination.currentPage + 2) { %>
+                                                    <span
+                                                        class="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
+                                                    <% } %>
+                                                        <% } %>
 
-        // Enter key to search
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                applyFilters();
+                                                            <% if (pagination.hasNext) { %>
+                                                                <a href="?page=<%= pagination.nextPage %>&search=<%= search %>&status=<%= status %>&dateRange=<%= dateRange %>"
+                                                                    class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                                                    <span
+                                                                        class="material-icons-outlined text-slate-600 dark:text-slate-400">chevron_right</span>
+                                                                </a>
+                                                                <% } %>
+                    </div>
+                </div>
+                <% } %>
+        </main>
+
+        <script>
+            function applyFilters() {
+                const search = document.getElementById('searchInput').value;
+                const dateRange = document.getElementById('dateRangeFilter').value;
+                window.location.href = `/admin/orders?search=${encodeURIComponent(search)}&dateRange=${dateRange}`;
             }
-        });
-    </script>
 
-    <!-- Admin Session Management Script -->
-    <script src="/js/admin-session.js"></script>
+            // Enter key to search
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+        </script>
+
+        <!-- Admin Session Management Script -->
+        <script src="/js/admin-session.js"></script>
 </body>
 
 </html>

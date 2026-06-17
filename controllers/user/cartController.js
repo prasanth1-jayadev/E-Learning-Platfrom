@@ -9,6 +9,36 @@ export const getCart = async (req, res) => {
     
     const cart = await cartService.getCart(userId);
     const total = cartService.getCartTotal(cart);
+
+    // Validate and recalculate applied coupon dynamically
+    if (req.session.appliedCoupon) {
+      const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
+      if (coupon && 
+          (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
+          new Date(coupon.expiryDate) >= new Date() && 
+          coupon.usedCount < coupon.usageLimit && 
+          total >= coupon.minOrderValue) {
+        
+        let discount = 0;
+        if (coupon.discountType === 'percentage') {
+          discount = Math.floor((total * coupon.discountValue) / 100);
+        } else {
+          discount = coupon.discountValue;
+        }
+
+        if (coupon.maxDiscount) {
+          discount = Math.min(discount, coupon.maxDiscount);
+        }
+
+        discount = Math.min(discount, total); // Ensure total discount doesn't exceed cart total
+
+        req.session.appliedCoupon.discount = discount;
+        req.session.appliedCoupon.finalTotal = total - discount;
+      } else {
+        req.session.appliedCoupon = null;
+      }
+    }
+
     const appliedCoupon = req.session.appliedCoupon || null;
 
     res.render('user/cart', {
@@ -78,6 +108,10 @@ export const applyCoupon = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid or inactive coupon code' });
     }
 
+    if (coupon.startDate && new Date(coupon.startDate) > new Date()) {
+      return res.status(400).json({ success: false, message: 'Coupon has not started yet' });
+    }
+
     if (new Date(coupon.expiryDate) < new Date()) {
       return res.status(400).json({ success: false, message: 'Coupon has expired' });
     }
@@ -94,12 +128,15 @@ export const applyCoupon = async (req, res) => {
     let discount = 0;
     if (coupon.discountType === 'percentage') {
       discount = Math.floor((total * coupon.discountValue) / 100);
-      if (coupon.maxDiscount) {
-        discount = Math.min(discount, coupon.maxDiscount);
-      }
     } else {
       discount = coupon.discountValue;
     }
+
+    if (coupon.maxDiscount) {
+      discount = Math.min(discount, coupon.maxDiscount);
+    }
+
+    discount = Math.min(discount, total); 
 
     const finalTotal = total - discount;
 

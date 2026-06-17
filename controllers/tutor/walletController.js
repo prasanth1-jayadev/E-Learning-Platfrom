@@ -1,4 +1,6 @@
 import * as walletService from '../../service/walletService.js';
+import User from '../../models/User.js';
+import { sendNotification } from '../../service/notificationService.js';
 
 export const getWallet = async (req, res) => {
     try {
@@ -76,6 +78,20 @@ export const requestWithdrawal = async (req, res) => {
             withdrawAmount, 
             'Withdrawal request'
         );
+
+            const admins = await User.find({ role: 'admin' });
+      for (const admin of admins) {
+          await sendNotification({
+              recipientId: admin._id,
+              recipientType: 'user',
+              title: 'New Withdrawal Request',
+              message: `Tutor ${req.user.fullName} has requested a withdrawal of ₹${withdrawAmount}.`,
+              type: 'withdrawal_request',
+              relatedId: wallet._id
+          });
+      }
+
+
         
         res.json({ 
             success: true, 

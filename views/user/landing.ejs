@@ -43,6 +43,51 @@
 .fan-card[data-pos="2"] { transform: translateX(460px) translateZ(-220px) rotateY(-30deg) scale(0.78); z-index: 4; opacity: 0.75; }
 .fan-card[data-pos="-2"] { transform: translateX(-460px) translateZ(-220px) rotateY(30deg) scale(0.78); z-index: 4; opacity: 0.75; }
 .fan-card[data-pos="3"], .fan-card[data-pos="-3"] { transform: translateX(0) translateZ(-400px) scale(0.5); z-index: 1; opacity: 0; pointer-events: none; }
+
+@media (max-width: 639px) {
+  .fan-card {
+    width: 240px;
+    border-radius: 16px;
+  }
+  .fan-card[data-pos="0"] {
+    transform: translateX(0) translateZ(0) rotateY(0deg) scale(1);
+    z-index: 10;
+  }
+  .fan-card[data-pos="1"] {
+    transform: translateX(110px) translateZ(-80px) rotateY(-12deg) scale(0.9);
+    z-index: 7;
+  }
+  .fan-card[data-pos="-1"] {
+    transform: translateX(-110px) translateZ(-80px) rotateY(12deg) scale(0.9);
+    z-index: 7;
+  }
+  .fan-card[data-pos="2"] {
+    transform: translateX(190px) translateZ(-160px) rotateY(-20deg) scale(0.8);
+    z-index: 4;
+    opacity: 0.75;
+  }
+  .fan-card[data-pos="-2"] {
+    transform: translateX(-190px) translateZ(-160px) rotateY(20deg) scale(0.8);
+    z-index: 4;
+    opacity: 0.75;
+  }
+  .fan-stage {
+    perspective: 800px;
+  }
+  .fan-track {
+    height: 380px;
+  }
+  .nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+  .nav-btn.left {
+    left: 4px;
+  }
+  .nav-btn.right {
+    right: 4px;
+  }
+}
 .fan-card[data-pos="0"] .active-badge { display: flex; }
 .active-badge { display: none; }
 .fan-card[data-pos="0"] .card-cta { opacity: 1; transform: translateY(0); }
@@ -319,7 +364,7 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa]">
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa] overflow-x-hidden">
 
     <!-- Loading Screen -->
     <div id="loadingScreen"
@@ -437,7 +482,7 @@
                         <p class="text-sm font-medium opacity-60">Professional learners achieving mastery daily</p>
                     </div>
                 </div>
-                <div class="lg:col-span-5 relative flex justify-center items-center h-[500px]">
+                <div class="lg:col-span-5 relative flex justify-center items-center h-[300px] sm:h-[400px] lg:h-[500px]">
                     <div class="absolute w-[120%] h-[120%] abstract-mesh -z-10 rounded-[4rem] opacity-50 blur-3xl">
                     </div>
                     <div class="relative w-full aspect-square max-w-[450px]">

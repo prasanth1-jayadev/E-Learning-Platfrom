@@ -1,251 +1,446 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wallet - Learnify</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; }
-    
-    .main-content { 
-        margin-left: 260px; 
-        flex: 1; 
-        padding: 2rem; 
-        width: calc(100% - 260px);
-    }
-    
-    .page-header { margin-bottom: 2rem; }
-    .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .page-header p { color: #666; }
-    
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .stat-card .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .stat-card .icon.green { background: #d1fae5; color: #065f46; }
-    .stat-card .icon.blue { background: #dbeafe; color: #1e40af; }
-    .stat-card .icon.purple { background: #e9d5ff; color: #6b21a8; }
-    .stat-card .icon.orange { background: #fed7aa; color: #9a3412; }
-    .stat-card h3 { font-size: 0.875rem; color: #666; margin-bottom: 0.5rem; }
-    .stat-card .value { font-size: 1.75rem; font-weight: 700; }
-    
-    .content-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-    .content-card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
-    
-    .withdraw-section { display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 2rem; }
-    .withdraw-section .form-group { flex: 1; }
-    .withdraw-section label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: #374151; }
-    .withdraw-section input { width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 1rem; }
-    .withdraw-section button { padding: 0.75rem 2rem; background: #00d9b1; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .withdraw-section button:hover { background: #00b894; }
-    
-    table { width: 100%; border-collapse: collapse; }
-    table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 600; color: #666; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
-    table td { padding: 1rem; border-bottom: 1px solid #f3f4f6; }
-    
-    .badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
-    .badge.credit { background: #d1fae5; color: #065f46; }
-    .badge.debit { background: #fee2e2; color: #991b1b; }
-    
-    .empty-state { text-align: center; padding: 3rem; color: #9ca3af; }
-    .empty-state .material-icons { font-size: 64px; margin-bottom: 1rem; color: #d1d5db; }
-    
-    @media (max-width: 767px) {
-        .main-content { margin-left: 0; width: 100%; padding: 1rem; }
-        .stats-grid { grid-template-columns: 1fr; }
-        .withdraw-section { flex-direction: column; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet - Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            background: #f5f7f6;
+            color: #1a1a1a;
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            min-width: 0;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .icon.green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .stat-card .icon.blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .stat-card .icon.purple {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .stat-card .icon.orange {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .content-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .content-card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .withdraw-section {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+        }
+
+        .withdraw-section .form-group {
+            flex: 1;
+        }
+
+        .withdraw-section label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .withdraw-section input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .withdraw-section button {
+            padding: 0.75rem 2rem;
+            background: #00d9b1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .withdraw-section button:hover {
+            background: #00b894;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.credit {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.debit {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+
+        .empty-state .material-icons {
+            font-size: 64px;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+
+        .overflow-x-auto {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 767px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .withdraw-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .withdraw-section button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'wallet' }) %>
+    <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'wallet' }) %>
 
-<div class="main-content">
-    <div class="page-header">
-        <h1>Wallet & Earnings</h1>
-        <p>Manage your earnings and withdrawal requests</p>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="icon green">
-                <span class="material-icons">account_balance_wallet</span>
+        <div class="tutor-main-content main-content">
+            <div class="page-header">
+                <h1>Wallet & Earnings</h1>
+                <p>Manage your earnings and withdrawal requests</p>
             </div>
-            <h3>Available Balance</h3>
-            <div class="value">₹<%= wallet.balance.toLocaleString() %></div>
-        </div>
-        <div class="stat-card">
-            <div class="icon blue">
-                <span class="material-icons">trending_up</span>
-            </div>
-            <h3>Total Earnings</h3>
-            <div class="value">₹<%= wallet.totalEarnings.toLocaleString() %></div>
-        </div>
-        <div class="stat-card">
-            <div class="icon purple">
-                <span class="material-icons">payments</span>
-            </div>
-            <h3>Total Withdrawn</h3>
-            <div class="value">₹<%= wallet.totalWithdrawn.toLocaleString() %></div>
-        </div>
-        <div class="stat-card">
-            <div class="icon orange">
-                <span class="material-icons">school</span>
-            </div>
-            <h3>Revenue Sources</h3>
-            <div class="value"><%= courseRevenue.length %> Courses</div>
-        </div>
-    </div>
 
-    <!-- Withdrawal Section -->
-    <div class="content-card">
-        <h2>Request Withdrawal</h2>
-        <div class="withdraw-section">
-            <div class="form-group">
-                <label for="withdrawAmount">Amount (₹)</label>
-                <input type="number" id="withdrawAmount" placeholder="Enter amount" min="1" max="<%= wallet.balance %>">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon green">
+                        <span class="material-icons">account_balance_wallet</span>
+                    </div>
+                    <h3>Available Balance</h3>
+                    <div class="value">₹<%= wallet.balance.toLocaleString() %>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon blue">
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                    <h3>Total Earnings</h3>
+                    <div class="value">₹<%= wallet.totalEarnings.toLocaleString() %>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon purple">
+                        <span class="material-icons">payments</span>
+                    </div>
+                    <h3>Total Withdrawn</h3>
+                    <div class="value">₹<%= wallet.totalWithdrawn.toLocaleString() %>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon orange">
+                        <span class="material-icons">school</span>
+                    </div>
+                    <h3>Revenue Sources</h3>
+                    <div class="value">
+                        <%= courseRevenue.length %> Courses
+                    </div>
+                </div>
             </div>
-            <button onclick="requestWithdrawal()">Withdraw Funds</button>
-        </div>
-        <p style="font-size: 0.875rem; color: #666;">
-            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">info</span>
-            Withdrawals are processed within 3-5 business days
-        </p>
-    </div>
 
-    <!-- Course Revenue Breakdown -->
-    <div class="content-card">
-        <h2>Revenue by Course</h2>
-        <% if (courseRevenue && courseRevenue.length > 0) { %>
-        <table>
-            <thead>
-                <tr>
-                    <th>Course Title</th>
-                    <th>Students Enrolled</th>
-                    <th>Revenue</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% courseRevenue.forEach(course => { %>
-                <tr>
-                    <td><%= course.title %></td>
-                    <td><%= course.students %></td>
-                    <td style="font-weight: 600;">₹<%= course.revenue.toLocaleString() %></td>
-                </tr>
-                <% }); %>
-            </tbody>
-        </table>
-        <% } else { %>
-        <div class="empty-state">
-            <span class="material-icons">school</span>
-            <p>No course revenue yet</p>
-        </div>
-        <% } %>
-    </div>
+            <!-- Withdrawal Section -->
+            <div class="content-card">
+                <h2>Request Withdrawal</h2>
+                <div class="withdraw-section">
+                    <div class="form-group">
+                        <label for="withdrawAmount">Amount (₹)</label>
+                        <input type="number" id="withdrawAmount" placeholder="Enter amount" min="1"
+                            max="<%= wallet.balance %>">
+                    </div>
+                    <button onclick="requestWithdrawal()">Withdraw Funds</button>
+                </div>
+                <p style="font-size: 0.875rem; color: #666;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">info</span>
+                    Withdrawals are processed within 3-5 business days
+                </p>
+            </div>
 
-    <!-- Transaction History -->
-    <div class="content-card">
-        <h2>Transaction History</h2>
-        <% if (transactions && transactions.length > 0) { %>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% transactions.forEach(transaction => { %>
-                <tr>
-                    <td><%= new Date(transaction.createdAt).toLocaleDateString() %></td>
-                    <td>
-                        <span class="badge <%= transaction.type %>">
-                            <%= transaction.type.toUpperCase() %>
-                        </span>
-                    </td>
-                    <td><%= transaction.description %></td>
-                    <td style="font-weight: 600; color: <%= transaction.type === 'credit' ? '#065f46' : '#991b1b' %>;">
-                        <%= transaction.type === 'credit' ? '+' : '-' %>₹<%= transaction.amount.toLocaleString() %>
-                    </td>
-                    <td><%= transaction.status %></td>
-                </tr>
-                <% }); %>
-            </tbody>
-        </table>
-        <% } else { %>
-        <div class="empty-state">
-            <span class="material-icons">receipt_long</span>
-            <p>No transactions yet</p>
-        </div>
-        <% } %>
-    </div>
-</div>
+            <!-- Course Revenue Breakdown -->
+            <div class="content-card">
+                <h2>Revenue by Course</h2>
+                <% if (courseRevenue && courseRevenue.length> 0) { %>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Course Title</th>
+                                    <th>Students Enrolled</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% courseRevenue.forEach(course=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= course.title %>
+                                        </td>
+                                        <td>
+                                            <%= course.students %>
+                                        </td>
+                                        <td style="font-weight: 600;">₹<%= course.revenue.toLocaleString() %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <span class="material-icons">school</span>
+                            <p>No course revenue yet</p>
+                        </div>
+                        <% } %>
+            </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-async function requestWithdrawal() {
-    const amount = document.getElementById('withdrawAmount').value;
-    
-    if (!amount || amount <= 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Amount',
-            text: 'Please enter a valid withdrawal amount'
-        });
-        return;
-    }
-    
-    if (parseFloat(amount) > <%= wallet.balance %>) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Insufficient Balance',
-            text: 'Withdrawal amount exceeds available balance'
-        });
-        return;
-    }
-    
-    try {
-        const response = await fetch('/tutor/wallet/withdraw', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ amount: parseFloat(amount) })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: data.message
-            }).then(() => {
-                window.location.reload();
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Failed',
-                text: data.message
-            });
-        }
-    } catch (error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to process withdrawal request'
-        });
-    }
-}
-</script>
+            <!-- Transaction History -->
+            <div class="content-card">
+                <h2>Transaction History</h2>
+                <% if (transactions && transactions.length> 0) { %>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% transactions.forEach(transaction=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= new Date(transaction.createdAt).toLocaleDateString() %>
+                                        </td>
+                                        <td>
+                                            <span class="badge <%= transaction.type %>">
+                                                <%= transaction.type.toUpperCase() %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <%= transaction.description %>
+                                        </td>
+                                        <td
+                                            style="font-weight: 600; color: <%= transaction.type === 'credit' ? '#065f46' : '#991b1b' %>;">
+                                            <%= transaction.type==='credit' ? '+' : '-' %>₹<%=
+                                                    transaction.amount.toLocaleString() %>
+                                        </td>
+                                        <td>
+                                            <%= transaction.status %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <span class="material-icons">receipt_long</span>
+                            <p>No transactions yet</p>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            async function requestWithdrawal() {
+                const amount = document.getElementById('withdrawAmount').value;
+
+                if (!amount || amount <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Amount',
+                        text: 'Please enter a valid withdrawal amount'
+                    });
+                    return;
+                }
+
+                if (parseFloat(amount) > <%= wallet.balance %>) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Insufficient Balance',
+                        text: 'Withdrawal amount exceeds available balance'
+                    });
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/tutor/wallet/withdraw', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ amount: parseFloat(amount) })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed',
+                            text: data.message
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to process withdrawal request'
+                    });
+                }
+            }
+        </script>
 
 </body>
+
 </html>

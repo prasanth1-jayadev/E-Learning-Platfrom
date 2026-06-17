@@ -1,12 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title><%= course.title %> - Course Details</title>
+    <title>
+        <%= course.title %> - Course Details
+    </title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = {
@@ -29,166 +32,225 @@
     </script>
 </head>
 
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex">
+<body
+    class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
 
     <%- include('../partials/admin-sidebar') %>
 
-    <main class="flex-1 ml-64 p-8 h-screen overflow-y-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-4">
-                <button onclick="window.location.href='/admin/courses'" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-400">arrow_back</span>
-                </button>
-                <div>
-                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Course Details</h2>
-                    <p class="text-slate-500 dark:text-slate-400 mt-1">View and manage course information</p>
+        <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 min-h-screen lg:h-screen lg:overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <button onclick="window.location.href='/admin/courses'"
+                        class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-400">arrow_back</span>
+                    </button>
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Course Details</h2>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">View and manage course information</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        onclick="document.documentElement.classList.toggle('dark')">
+                        <span class="material-icons-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
+                    </button>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <button class="p-2 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
-                    <span class="material-icons-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
-                </button>
-            </div>
-        </div>
 
-        <!-- Course Overview -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <!-- Main Info -->
-            <div class="lg:col-span-2 bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
-                <div class="flex gap-6">
-                    <img src="<%= course.thumbnail || 'https://via.placeholder.com/300x200?text=No+Image' %>" alt="<%= course.title %>" class="w-48 h-32 object-cover rounded-lg flex-shrink-0" />
-                    <div class="flex-1">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-2"><%= course.title %></h3>
-                                <div class="flex items-center gap-3 mb-2">
-                                    <span class="px-2.5 py-1 text-xs font-medium rounded-full <%= course.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : course.status === 'draft' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400' %>">
-                                        <%= course.status.charAt(0).toUpperCase() + course.status.slice(1) %>
-                                    </span>
-                                    <span class="text-sm text-slate-500 dark:text-slate-400"><%= course.category %></span>
-                                    <span class="text-sm text-slate-500 dark:text-slate-400">•</span>
-                                    <span class="text-sm text-slate-500 dark:text-slate-400"><%= course.level %></span>
+            <!-- Course Overview -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Main Info -->
+                <div
+                    class="lg:col-span-2 bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                    <div class="flex gap-6">
+                        <img src="<%= course.thumbnail || 'https://via.placeholder.com/300x200?text=No+Image' %>"
+                            alt="<%= course.title %>" class="w-48 h-32 object-cover rounded-lg flex-shrink-0" />
+                        <div class="flex-1">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">
+                                        <%= course.title %>
+                                    </h3>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span
+                                            class="px-2.5 py-1 text-xs font-medium rounded-full <%= course.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : course.status === 'draft' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400' %>">
+                                            <%= course.status.charAt(0).toUpperCase() + course.status.slice(1) %>
+                                        </span>
+                                        <span class="text-sm text-slate-500 dark:text-slate-400">
+                                            <%= course.category %>
+                                        </span>
+                                        <span class="text-sm text-slate-500 dark:text-slate-400">•</span>
+                                        <span class="text-sm text-slate-500 dark:text-slate-400">
+                                            <%= course.level %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <% if (course.discountPrice) { %>
+                                        <p class="text-2xl font-bold text-primary">₹<%= course.discountPrice %>
+                                        </p>
+                                        <p class="text-sm text-slate-400 line-through">₹<%= course.price %>
+                                        </p>
+                                        <% } else { %>
+                                            <p class="text-2xl font-bold text-primary">₹<%= course.price %>
+                                            </p>
+                                            <% } %>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <% if (course.discountPrice) { %>
-                                    <p class="text-2xl font-bold text-primary">₹<%= course.discountPrice %></p>
-                                    <p class="text-sm text-slate-400 line-through">₹<%= course.price %></p>
-                                <% } else { %>
-                                    <p class="text-2xl font-bold text-primary">₹<%= course.price %></p>
-                                <% } %>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-3">
+                                <%= course.description %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="space-y-4">
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                                <span class="material-icons-outlined text-blue-600 dark:text-blue-400">people</span>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-slate-800 dark:text-white">
+                                    <%= course.enrolledStudents.length %>
+                                </p>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Enrolled Students</p>
                             </div>
                         </div>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-3"><%= course.description %></p>
+                    </div>
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                                <span
+                                    class="material-icons-outlined text-purple-600 dark:text-purple-400">play_circle</span>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-slate-800 dark:text-white">
+                                    <%= course.lessons.length %>
+                                </p>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Total Lessons</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats -->
-            <div class="space-y-4">
-                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                            <span class="material-icons-outlined text-blue-600 dark:text-blue-400">people</span>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-slate-800 dark:text-white"><%= course.enrolledStudents.length %></p>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">Enrolled Students</p>
-                        </div>
+            <!-- Tutor Info -->
+            <div
+                class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Instructor</h4>
+                <div class="flex items-center gap-4">
+                    <img src="<%= course.tutor?.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(course.tutor?.fullName || 'Tutor') %>"
+                        alt="<%= course.tutor?.fullName %>" class="w-16 h-16 rounded-full" />
+                    <div class="flex-1">
+                        <h5 class="font-semibold text-slate-800 dark:text-white">
+                            <%= course.tutor?.fullName || 'Unknown' %>
+                        </h5>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">
+                            <%= course.tutor?.email || 'N/A' %>
+                        </p>
+                        <% if (course.tutor?.bio) { %>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                                <%= course.tutor.bio %>
+                            </p>
+                            <% } %>
                     </div>
-                </div>
-                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-                            <span class="material-icons-outlined text-purple-600 dark:text-purple-400">play_circle</span>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-slate-800 dark:text-white"><%= course.lessons.length %></p>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">Total Lessons</p>
-                        </div>
-                    </div>
+                    <button onclick="window.location.href='/admin/tutor/<%= course.tutor?._id %>'"
+                        class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium transition-colors">
+                        View Profile
+                    </button>
                 </div>
             </div>
-        </div>
 
-        <!-- Tutor Info -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
-            <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Instructor</h4>
-            <div class="flex items-center gap-4">
-                <img src="<%= course.tutor?.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(course.tutor?.fullName || 'Tutor') %>" alt="<%= course.tutor?.fullName %>" class="w-16 h-16 rounded-full" />
-                <div class="flex-1">
-                    <h5 class="font-semibold text-slate-800 dark:text-white"><%= course.tutor?.fullName || 'Unknown' %></h5>
-                    <p class="text-sm text-slate-500 dark:text-slate-400"><%= course.tutor?.email || 'N/A' %></p>
-                    <% if (course.tutor?.bio) { %>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><%= course.tutor.bio %></p>
-                    <% } %>
-                </div>
-                <button onclick="window.location.href='/admin/tutor/<%= course.tutor?._id %>'" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium transition-colors">
-                    View Profile
-                </button>
+            <!-- Lessons -->
+            <div
+                class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Course Lessons (<%=
+                        course.lessons.length %>)</h4>
+                <% if (course.lessons && course.lessons.length> 0) { %>
+                    <div class="space-y-3">
+                        <% course.lessons.forEach((lesson, index)=> { %>
+                            <div
+                                class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                <div
+                                    class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-primary font-semibold">
+                                        <%= index + 1 %>
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-semibold text-slate-800 dark:text-white truncate">
+                                        <%= lesson.title %>
+                                    </h5>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400 truncate">
+                                        <%= lesson.description || 'No description' %>
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-4 flex-shrink-0">
+                                    <% if (lesson.duration) { %>
+                                        <span class="text-sm text-slate-500 dark:text-slate-400">
+                                            <%= Math.floor(lesson.duration / 60) %>:<%= (lesson.duration %
+                                                    60).toString().padStart(2, '0' ) %>
+                                        </span>
+                                        <% } %>
+                                            <% if (index===0) { %>
+                                                <span
+                                                    class="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded">FREE</span>
+                                                <% } %>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <div class="text-center py-8">
+                            <span
+                                class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2 block">video_library</span>
+                            <p class="text-slate-500 dark:text-slate-400">No lessons added yet</p>
+                        </div>
+                        <% } %>
             </div>
-        </div>
 
-        <!-- Lessons -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
-            <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Course Lessons (<%= course.lessons.length %>)</h4>
-            <% if (course.lessons && course.lessons.length > 0) { %>
-                <div class="space-y-3">
-                    <% course.lessons.forEach((lesson, index) => { %>
-                        <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-primary font-semibold"><%= index + 1 %></span>
+            <!-- Enrolled Students -->
+            <div
+                class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Enrolled Students (<%=
+                        course.enrolledStudents.length %>)</h4>
+                <% if (course.enrolledStudents && course.enrolledStudents.length> 0) { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <% course.enrolledStudents.forEach(student=> { %>
+                            <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                                <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(student.fullName) %>&background=00d9b1&color=fff"
+                                    alt="<%= student.fullName %>" class="w-10 h-10 rounded-full" />
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-800 dark:text-white truncate">
+                                        <%= student.fullName %>
+                                    </p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                        <%= student.email %>
+                                    </p>
+                                </div>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <h5 class="font-semibold text-slate-800 dark:text-white truncate"><%= lesson.title %></h5>
-                                <p class="text-sm text-slate-500 dark:text-slate-400 truncate"><%= lesson.description || 'No description' %></p>
-                            </div>
-                            <div class="flex items-center gap-4 flex-shrink-0">
-                                <% if (lesson.duration) { %>
-                                    <span class="text-sm text-slate-500 dark:text-slate-400"><%= Math.floor(lesson.duration / 60) %>:<%= (lesson.duration % 60).toString().padStart(2, '0') %></span>
-                                <% } %>
-                                <% if (index === 0) { %>
-                                    <span class="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded">FREE</span>
-                                <% } %>
-                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <div class="text-center py-8">
+                            <span
+                                class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2 block">people_outline</span>
+                            <p class="text-slate-500 dark:text-slate-400">No students enrolled yet</p>
                         </div>
-                    <% }); %>
-                </div>
-            <% } else { %>
-                <div class="text-center py-8">
-                    <span class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2 block">video_library</span>
-                    <p class="text-slate-500 dark:text-slate-400">No lessons added yet</p>
-                </div>
-            <% } %>
-        </div>
+                        <% } %>
+            </div>
+        </main>
 
-        <!-- Enrolled Students -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
-            <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Enrolled Students (<%= course.enrolledStudents.length %>)</h4>
-            <% if (course.enrolledStudents && course.enrolledStudents.length > 0) { %>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <% course.enrolledStudents.forEach(student => { %>
-                        <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                            <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(student.fullName) %>&background=00d9b1&color=fff" alt="<%= student.fullName %>" class="w-10 h-10 rounded-full" />
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-slate-800 dark:text-white truncate"><%= student.fullName %></p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 truncate"><%= student.email %></p>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            <% } else { %>
-                <div class="text-center py-8">
-                    <span class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2 block">people_outline</span>
-                    <p class="text-slate-500 dark:text-slate-400">No students enrolled yet</p>
-                </div>
-            <% } %>
-        </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/admin-session.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/js/admin-session.js"></script>
 </body>
 
 </html>

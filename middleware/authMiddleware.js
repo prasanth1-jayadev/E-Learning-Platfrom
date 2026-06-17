@@ -111,6 +111,10 @@ const isAdmin = (req, res, next) => {
         return next();
     }
 
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('json')) || req.headers['content-type'] === 'application/json') {
+        return res.status(401).json({ success: false, message: 'Session expired. Please login again.' });
+    }
+
     return res.redirect('/admin/login');
 };
 
@@ -142,6 +146,10 @@ const isAuthenticated = (req, res, next) => {
     }
     if (req.session && req.session.tutorId) {
         req.user = { _id: req.session.tutorId, role: 'tutor' };
+        return next();
+    }
+    if (req.session && req.session.adminId) {
+        req.user = { _id: req.session.adminId, role: 'admin' };
         return next();
     }
     return res.status(401).json({ success: false, message: 'Please login first' });

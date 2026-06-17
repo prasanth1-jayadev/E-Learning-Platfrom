@@ -15,10 +15,8 @@
         }
         
         .main-content { 
-            margin-left: 260px; 
             flex: 1; 
             padding: 2rem; 
-            width: calc(100% - 260px);
             min-height: 100vh;
         }
         
@@ -125,22 +123,13 @@
             transform: none;
         }
         
-        @media (max-width: 1439px) {
-            .main-content { margin-left: 240px; width: calc(100% - 240px); }
-        }
-        
-        @media (max-width: 1023px) {
-            .main-content { margin-left: 220px; width: calc(100% - 220px); }
-        }
-        
         @media (max-width: 899px) {
-            .main-content { margin-left: 200px; width: calc(100% - 200px); }
             .form-layout { grid-template-columns: 1fr; gap: 1.5rem; }
             .create-btn { grid-column: 1; }
         }
         
         @media (max-width: 767px) {
-            .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+            .main-content { padding: 1rem; }
             .form-card { padding: 1.5rem; }
             .form-title { font-size: 1.5rem; margin-bottom: 2rem; }
         }
@@ -150,7 +139,7 @@
 
 <%- include('../partials/tutor-sidebar', { tutor: tutor, currentPage: 'courses' }) %>
 
-<div class="main-content">
+<div class="tutor-main-content main-content">
     <div class="form-container">
         <div class="form-card">
             <h1 class="form-title">Add New Course</h1>

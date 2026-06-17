@@ -1,38 +1,49 @@
-import * as userService from '../../service/userService.js';
+
+import * as tutorService from '../../service/tutorService.js';
 import { uploadToCloudinary } from '../../config/cloudinary.js';
 import {
     validateEmail,
     validatePassword,
     validateFullName,
-    validatePhone,
+    validateIntlPhone,
     validateOTP,
+    validateBio,
 } from '../../helpers/validationHelper.js';
 
 const getProfile = async (req, res) => {
     try {
-        const user = await userService.getUserById(req.session.userId);
-        if (!user) return res.redirect('/user/login');
+        const tutor = await tutorService.getTutorById(req.session.tutorId);
+        if (!tutor) return res.redirect('/tutor/login');
 
-        res.render('user/profile', { user, currentPage: 'profile' });
+        res.render('tutor/profile', {
+            tutor,
+            isApproved: tutor.approvalStatus === 'approved',
+            currentPage: 'profile'
+        });
     } catch (error) {
-        console.error('Error loading profile:', error);
-        res.redirect('/user/home');
+        console.error('Profile error:', error);
+        res.redirect('/tutor/login');
     }
 };
 
 const postUpdateProfile = async (req, res) => {
     try {
-        const { fullName, phone } = req.body;
+        const { fullName, phone, subjects, bio } = req.body;
 
-        const nameCheck = validateFullName(fullName);
+        const nameCheck = validateFullName(fullName, { min: 2, max: 100 });
         if (!nameCheck.valid) return res.status(400).json({ message: nameCheck.message });
 
-        const phoneCheck = validatePhone(phone);
+        const bioCheck = validateBio(bio);
+        if (!bioCheck.valid) return res.status(400).json({ message: bioCheck.message });
+
+        const phoneCheck = validateIntlPhone(phone);
         if (!phoneCheck.valid) return res.status(400).json({ message: phoneCheck.message });
 
-        await userService.updateUserProfile(req.session.userId, {
+        await tutorService.updateTutorProfile(req.session.tutorId, {
             fullName: fullName.trim(),
-            phone:    phone ? phone.trim() : null
+            phone:    phone    ? phone.trim()    : null,
+            subjects: subjects ? subjects.trim() : null,
+            bio:      bio      ? bio.trim()      : null,
         });
 
         res.json({ success: true, message: 'Profile updated successfully' });
@@ -49,7 +60,7 @@ const postUploadAvatar = async (req, res) => {
         }
 
         const result = await uploadToCloudinary(req.file.buffer, 'avatars', 'image');
-        await userService.updateUserAvatar(req.session.userId, result.secure_url);
+        await tutorService.updateTutorAvatar(req.session.tutorId, result.secure_url);
 
         res.json({ success: true, message: 'Profile photo updated successfully', avatar: result.secure_url });
     } catch (error) {
@@ -66,7 +77,7 @@ const postSendEmailChangeOTP = async (req, res) => {
         if (!emailCheck.valid) return res.status(400).json({ message: emailCheck.message });
 
         const newEmailTrimmed = newEmail.trim().toLowerCase();
-        await userService.sendEmailChangeOTP(newEmailTrimmed);
+        await tutorService.sendEmailChangeOTP(newEmailTrimmed);
 
         res.json({ success: true, message: 'OTP sent to new email' });
     } catch (error) {
@@ -85,8 +96,8 @@ const postVerifyEmailChange = async (req, res) => {
         const emailCheck = validateEmail(newEmail);
         if (!emailCheck.valid) return res.status(400).json({ message: emailCheck.message });
 
-        await userService.verifyEmailChangeOTP(newEmail, otp);
-        await userService.updateUserEmail(req.session.userId, newEmail);
+        await tutorService.verifyEmailChangeOTP(newEmail, otp);
+        await tutorService.updateTutorEmail(req.session.tutorId, newEmail);
 
         res.json({ success: true, message: 'Email updated successfully' });
     } catch (error) {
@@ -102,29 +113,11 @@ const postResendEmailOTP = async (req, res) => {
         const emailCheck = validateEmail(email);
         if (!emailCheck.valid) return res.status(400).json({ message: emailCheck.message });
 
-        await userService.sendEmailChangeOTP(email);
+        await tutorService.sendEmailChangeOTP(email);
         res.json({ success: true, message: 'OTP resent successfully' });
     } catch (error) {
         console.error('Resend OTP error:', error);
         res.status(400).json({ message: error.message });
-    }
-};
-
-const getMyCourses = async (req, res) => {
-    try {
-        const userId = req.session.userId;
-        if (!userId) return res.redirect('/user/login');
-
-        const { user, courses } = await userService.getEnrolledCourses(userId);
-
-        res.render('user/my-courses', {
-            user,
-            courses,
-            currentPage: 'my-courses'
-        });
-    } catch (error) {
-        console.error('Error fetching my courses:', error);
-        res.redirect('/user/profile');
     }
 };
 
@@ -139,14 +132,14 @@ const postChangePassword = async (req, res) => {
         const pwCheck = validatePassword(newPassword);
         if (!pwCheck.valid) return res.status(400).json({ message: pwCheck.message });
 
-        const user = await userService.getUserById(req.session.userId);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        const tutor = await tutorService.getTutorById(req.session.tutorId);
+        if (!tutor) return res.status(404).json({ message: 'Tutor not found' });
 
-        const isMatch = await userService.comparePassword(currentPassword, user.password);
+        const isMatch = await tutorService.comparePassword(currentPassword, tutor.password);
         if (!isMatch) return res.status(400).json({ message: 'Current password is incorrect' });
 
-        const hashedPassword = await userService.hashPassword(newPassword);
-        await userService.updateUserPassword(req.session.userId, hashedPassword);
+        const hashedPassword = await tutorService.hashPassword(newPassword);
+        await tutorService.updateTutorPassword(req.session.tutorId, hashedPassword);
 
         res.json({ success: true, message: 'Password changed successfully' });
     } catch (error) {
@@ -154,6 +147,33 @@ const postChangePassword = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+  export const resubmitApplication = async(req,res)=>{
+    try{
+        const tutorId = req.session.tutorId;
+        const certificateFile =req.file;
+
+
+        if(!certificateFile){
+            return res.status(400).json({success:false, message:'please Upload a certificate File'});
+        }
+        const formattedPath = '/' + certificateFile.path.replace(/\\/g, '/');
+        const tutorModel = (await import('../../models/Tutor.js')).default;
+
+
+        await tutorModel.findByIdAndUpdate(tutorId, {
+            certificatePath: formattedPath,
+            certificatePublicId: certificateFile.filename,
+            approvalStatus: 'pending',
+            isApproved: false
+        });
+        res.json({ success: true, message: 'Application Resubmitted successfully' });
+    } catch (error) {
+        console.error('Resubmit application error:', error);
+        res.status(500).json({ success: false, message: 'Failed to resubmit application' });
+    }
+  }
+
 
 export {
     getProfile,
@@ -163,5 +183,4 @@ export {
     postVerifyEmailChange,
     postResendEmailOTP,
     postChangePassword,
-    getMyCourses,
 };
