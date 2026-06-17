@@ -136,7 +136,7 @@ export const applyCoupon = async (req, res) => {
       discount = Math.min(discount, coupon.maxDiscount);
     }
 
-    discount = Math.min(discount, total); // Ensure discount doesn't exceed order total
+    discount = Math.min(discount, total); 
 
     const finalTotal = total - discount;
 

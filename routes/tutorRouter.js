@@ -11,9 +11,9 @@ import { uploadCertificate, uploadVideo } from '../config/multer.js';
 
 const router = express.Router();
 
-// ---------------------------------------------------------------------------
+
 // Auth
-// ---------------------------------------------------------------------------
+
 router.get('/signup',  redirectIfTutor, tutorController.getSignup);
 router.post('/signup', uploadCertificate.single('certificateFile'), tutorController.postSignup);
 router.get('/login',   redirectIfTutor, tutorController.getLogin);
@@ -29,16 +29,13 @@ router.post('/forgot-password', tutorController.postForgotPassword);
 router.get('/reset-password',   tutorController.getResetPassword);
 router.post('/reset-password',  tutorController.postResetPassword);
 
-// ---------------------------------------------------------------------------
 // Dashboard
-// ---------------------------------------------------------------------------
 router.get('/dashboard', isTutor, tutorController.getDashboard);
 
-// ---------------------------------------------------------------------------
-// Profile management
-// ---------------------------------------------------------------------------
 router.get('/profile',  isTutor, profileController.getProfile);
 router.post('/update-profile', isTutor, profileController.postUpdateProfile);
+router.post('/resubmit-application', isTutor, uploadCertificate.single('certificateFile'), profileController.resubmitApplication);
+
 router.post('/upload-avatar',  isTutor, (req, res, next) => {
     upload.single('avatar')(req, res, (err) => {
         if (err) {
@@ -53,14 +50,12 @@ router.post('/verify-email-change',   isTutor, profileController.postVerifyEmail
 router.post('/resend-email-otp',      isTutor, profileController.postResendEmailOTP);
 router.post('/change-password',       isTutor, profileController.postChangePassword);
 
-// ---------------------------------------------------------------------------
 // Orders
-// ---------------------------------------------------------------------------
 router.get('/orders', isTutor, isTutorApproved, lessonController.getOrders);
 
-// ---------------------------------------------------------------------------
+
 // Lessons
-// ---------------------------------------------------------------------------
+
 router.get('/course/:id/add-lesson',  isTutor, isTutorApproved, lessonController.getAddLessonPage);
 router.post('/course/:id/add-lesson', isTutor, isTutorApproved, (req, res, next) => {
     uploadVideo.single('video')(req, res, (err) => {
@@ -85,9 +80,9 @@ router.post('/course/:id/lesson/:lessonId/edit', isTutor, isTutorApproved, (req,
 
 router.delete('/course/:id/lesson/:lessonId', isTutor, isTutorApproved, lessonController.deleteLesson);
 
-// ---------------------------------------------------------------------------
+
 // Courses
-// ---------------------------------------------------------------------------
+
 router.get('/courses',         isTutor, courseController.getCourses);
 router.get('/courses/create',  isTutor, isTutorApproved, courseController.getCreateCourse);
 router.post('/courses/create', isTutor, isTutorApproved, (req, res, next) => {
@@ -113,16 +108,16 @@ router.delete('/courses/:id',                   isTutor, courseController.delete
 router.post('/courses/:id/toggle-publish',      isTutor, courseController.togglePublish);
 router.get('/courses/:id/details',              isTutor, courseController.getCourseDetails);
 
-// ---------------------------------------------------------------------------
+
 // Wallet
-// ---------------------------------------------------------------------------
+
 router.get('/wallet',          isTutor, walletController.getWallet);
 router.post('/wallet/withdraw', isTutor, walletController.requestWithdrawal);
 router.get('/chat', isTutor, (req, res) => res.redirect('/chat/tutor'));
 
-// ---------------------------------------------------------------------------
+
 // Google OAuth
-// ---------------------------------------------------------------------------
+
 router.get('/auth/google', passport.authenticate('google-tutor'));
 
 router.get('/auth/google/callback',

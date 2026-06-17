@@ -34,7 +34,6 @@ export const generateInvoice = (payments, user, courses) => {
 
       doc.moveTo(50, 140).lineTo(550, 140).stroke();
 
-      // Bill To section
       doc.fontSize(12).font('Helvetica-Bold').text('Bill To:', 50, 160);
       doc.fontSize(10).font('Helvetica')
          .text(user.fullName, 50, 180)
@@ -60,7 +59,7 @@ export const generateInvoice = (payments, user, courses) => {
 
         const totalPaid = pay.amount;
         const basePrice = totalPaid / 1.18; // 18% inclusive tax base price
-        const taxAmount = totalPaid - basePrice; // 18% inclusive tax amount
+        const taxAmount = totalPaid - basePrice; 
 
         // Course title
         doc.text(course.title, 50, yPosition, { width: 210 });
@@ -68,7 +67,6 @@ export const generateInvoice = (payments, user, courses) => {
         const tutorName = course.tutor?.fullName || 'N/A';
         doc.text(tutorName, 280, yPosition, { width: 150 });
         
-        // Print base price
         doc.text(`₹${basePrice.toFixed(2)}`, 450, yPosition);
         
         subtotal += basePrice;
@@ -79,23 +77,19 @@ export const generateInvoice = (payments, user, courses) => {
 
       doc.moveTo(50, yPosition + 10).lineTo(550, yPosition + 10).stroke();
 
-      // Subtotal display
       doc.fontSize(10).font('Helvetica-Bold')
          .text('Subtotal:', 350, yPosition + 25)
          .text(`₹${subtotal.toFixed(2)}`, 450, yPosition + 25);
 
-      // 18% GST display
       doc.fontSize(10).font('Helvetica-Bold')
          .text('GST (18%):', 350, yPosition + 40)
          .text(`₹${taxTotal.toFixed(2)}`, 450, yPosition + 40);
 
-      // Grand Total display
       doc.fontSize(12).font('Helvetica-Bold')
          .text('Total Amount:', 350, yPosition + 60)
          .text(`₹${grandTotal.toFixed(2)}`, 450, yPosition + 60);
 
-      // PAID status tag
-      doc.fontSize(10).font('Helvetica')
+       doc.fontSize(10).font('Helvetica')
          .fillColor('green').text('PAID', 450, yPosition + 80)
          .fillColor('black');
 

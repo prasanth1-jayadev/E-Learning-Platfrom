@@ -1,16 +1,10 @@
-/**
- * controllers/tutor/lessonController.js
- * Handles lesson CRUD and the tutor orders page.
- * All DB operations go through tutorService / courseService.
- */
+
+
 import * as tutorService  from '../../service/tutorService.js';
 import { uploadToCloudinary } from '../../config/cloudinary.js';
 import { sendNotification }   from '../../service/notificationService.js';
 import Course from '../../models/Course.js';
 
-// ---------------------------------------------------------------------------
-// Lesson management
-// ---------------------------------------------------------------------------
 
 const getAddLessonPage = async (req, res) => {
     try {
@@ -68,7 +62,6 @@ const addLesson = async (req, res) => {
         });
         await course.save();
 
-        // Notify enrolled students
         if (course.enrolledStudents && course.enrolledStudents.length > 0) {
             const tutor = await tutorService.getTutorById(req.session.tutorId);
             for (const studentId of course.enrolledStudents) {
@@ -173,9 +166,6 @@ const deleteLesson = async (req, res) => {
     }
 };
 
-// ---------------------------------------------------------------------------
-// Orders
-// ---------------------------------------------------------------------------
 
 const getOrders = async (req, res) => {
     try {

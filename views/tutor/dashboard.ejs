@@ -32,16 +32,41 @@
 <main class="tutor-main-content p-6 min-h-screen">
   
   <% if (!isApproved) { %>
-  <!-- Approval Pending Banner -->
-  <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-lg mb-6 flex items-start gap-4">
-    <div class="flex-shrink-0">
-      <span class="material-icons-outlined text-amber-600 text-3xl">warning</span>
-    </div>
-    <div>
-      <h3 class="text-lg font-bold text-amber-900 mb-2">Account Under Review</h3>
-      <p class="text-amber-800 leading-relaxed">Your tutor application is currently being reviewed by our admin team. Once approved, you'll have access to all tutor features including course creation, student management, and earnings tracking.</p>
-    </div>
-  </div>
+    <% if (tutor.approvalStatus === 'rejected') { %>
+      <!-- Rejection & Re-upload Form Banner -->
+      <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg mb-6">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="flex-shrink-0">
+            <span class="material-icons-outlined text-red-600 text-3xl">cancel</span>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-red-900 mb-1">Application Rejected</h3>
+            <p class="text-red-800 leading-relaxed">Unfortunately, your tutor application was not approved. Please re-upload a clear certificate to resubmit your application for review.</p>
+          </div>
+        </div>
+        
+        <!-- Re-upload Form -->
+        <form id="resubmitForm" class="mt-4 max-w-md bg-white p-4 rounded-lg border border-red-200">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Upload Professional Certificate (PDF, PNG, JPG)</label>
+          <input type="file" id="newCertificateFile" accept=".pdf,.png,.jpg,.jpeg" required
+                 class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 mb-3"/>
+          <button type="submit" class="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition">
+            Resubmit Application
+          </button>
+        </form>
+      </div>
+    <% } else { %>
+      <!-- Approval Pending Banner -->
+      <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-lg mb-6 flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <span class="material-icons-outlined text-amber-600 text-3xl">warning</span>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-amber-900 mb-2">Account Under Review</h3>
+          <p class="text-amber-800 leading-relaxed">Your tutor application is currently being reviewed by our admin team. Once approved, you'll have access to all tutor features including course creation, student management, and earnings tracking.</p>
+        </div>
+      </div>
+    <% } %>
   <% } else { %>
 
   <!-- Dashboard Header -->
@@ -400,6 +425,54 @@
   });
   <% } %>
 </script>
+
+<script>
+  const resubmitForm = document.getElementById('resubmitForm');
+  if (resubmitForm) {
+      resubmitForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const fileInput = document.getElementById('newCertificateFile');
+          if (!fileInput || !fileInput.files[0]) {
+              showToast('Please select a certificate file', 'error');
+              return;
+          }
+
+          const formData = new FormData();
+          formData.append('certificateFile', fileInput.files[0]);
+
+          try {
+              const button = resubmitForm.querySelector('button');
+              button.disabled = true;
+              button.textContent = 'Submitting...';
+
+              const response = await fetch('/tutor/resubmit-application', {
+                  method: 'POST',
+                  body: formData
+              });
+              const data = await response.json();
+
+              if (data.success) {
+                  showToast(data.message || 'Application resubmitted successfully!', 'success');
+                  setTimeout(() => {
+                      window.location.reload();
+                  }, 1500);
+              } else {
+                  showToast(data.message || 'Resubmission failed', 'error');
+                  button.disabled = false;
+                  button.textContent = 'Resubmit Application';
+              }
+          } catch (error) {
+              console.error(error);
+              showToast('An error occurred during submission.', 'error');
+              const button = resubmitForm.querySelector('button');
+              button.disabled = false;
+              button.textContent = 'Resubmit Application';
+          }
+      });
+  }
+</script>
+
+<%- include('../partials/toast') %>
 
 </body>
 </html>

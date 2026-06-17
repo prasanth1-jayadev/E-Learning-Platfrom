@@ -135,12 +135,10 @@ const getCourseDetail = async (req, res) => {
         isInCart = cart.items.some(item => item.course.toString() === id);
       }
 
-      // Check if user has already left a review
       const existingReview = await Review.findOne({ course: id, user: userId });
       hasReviewed = !!existingReview;
     }
 
-    // Fetch all reviews for this course, populating the reviewer's details
     const reviews = await Review.find({ course: id })
       .populate('user', 'fullName avatar')
       .sort({ createdAt: -1 });
@@ -181,13 +179,11 @@ const addReview = async (req, res) => {
       return res.status(400).json({ success: false, message: "Comment cannot be empty" });
     }
 
-    // 2. Check if course exists
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ success: false, message: "Course not found" });
     }
 
-    // 3. Verify enrollment (User must have bought the course to review it)
     const user = await User.findById(userId);
     const isEnrolled = user.enrolledCourses?.some(
       cId => cId.toString() === courseId
@@ -196,13 +192,11 @@ const addReview = async (req, res) => {
       return res.status(403).json({ success: false, message: "You can only review courses you have purchased" });
     }
 
-    // 4. Prevent duplicate reviews
     const existingReview = await Review.findOne({ course: courseId, user: userId });
     if (existingReview) {
       return res.status(400).json({ success: false, message: "You have already reviewed this course" });
     }
 
-    // 5. Save the new review
     const review = new Review({
       user: userId,
       course: courseId,
@@ -211,7 +205,6 @@ const addReview = async (req, res) => {
     });
     await review.save();
 
-    // 6. Recalculate average rating & review count for the course
     const reviews = await Review.find({ course: courseId });
     const reviewCount = reviews.length;
     const averageRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount;
@@ -234,13 +227,11 @@ const addReview = async (req, res) => {
 };
 
 
-// Keep the blockuser function so userRouter.js doesn't crash:
 const blockuser = async (req, res) => {
   const reqblock = await User.find({ role: "user" });
   res.json(reqblock);
 };
 
-// Export all the functions:
 export {
   getCourses,
   getCourseDetail,

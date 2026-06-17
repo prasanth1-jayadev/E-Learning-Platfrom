@@ -1,9 +1,3 @@
-/**
- * validationHelper.js
- * Centralised input-validation utilities.
- * All functions return { valid: true } on success,
- * or { valid: false, message: '...' } on failure.
- */
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const NAME_REGEX  = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;

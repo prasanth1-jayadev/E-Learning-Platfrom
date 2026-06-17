@@ -1,12 +1,4 @@
-/**
- * controllers/tutor/tutorController.js
- * Handles: authentication (signup/login/OTP/forgot-password/reset-password)
- *          and the main dashboard view.
- *
- * Profile management  → controllers/tutor/profileController.js
- * Lesson & orders     → controllers/tutor/lessonController.js
- * Course CRUD         → controllers/tutor/courseController.js
- */
+
 import * as tutorService  from '../../service/tutorService.js';
 import * as courseService from '../../service/courseService.js';
 import {
@@ -16,18 +8,16 @@ import {
 } from '../../helpers/validationHelper.js';
 import { uploadToCloudinary } from '../../config/cloudinary.js';
 
-// ---------------------------------------------------------------------------
-// Page renderers
-// ---------------------------------------------------------------------------
+
+
 const getSignup         = (req, res) => res.render('tutor/signup');
 const getLogin          = (req, res) => res.render('tutor/login');
 const getOtp            = (req, res) => res.render('tutor/otp');
 const getForgotPassword = (req, res) => res.render('tutor/forgot-password');
 const getResetPassword  = (req, res) => res.render('tutor/reset-password');
 
-// ---------------------------------------------------------------------------
-// Dashboard
-// ---------------------------------------------------------------------------
+
+
 const getDashboard = async (req, res) => {
     try {
         const tutor = await tutorService.getTutorById(req.session.tutorId);
@@ -69,9 +59,8 @@ const getDashboard = async (req, res) => {
     }
 };
 
-// ---------------------------------------------------------------------------
-// Auth — Signup
-// ---------------------------------------------------------------------------
+
+
 const postSignup = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
@@ -123,9 +112,8 @@ const postSignup = async (req, res) => {
     }
 };
 
-// ---------------------------------------------------------------------------
-// Auth — OTP
-// ---------------------------------------------------------------------------
+
+
 const postOtp = async (req, res) => {
     try {
         const { otp } = req.body;
@@ -166,9 +154,7 @@ const resendOtp = async (req, res) => {
     }
 };
 
-// ---------------------------------------------------------------------------
-// Auth — Login / Logout
-// ---------------------------------------------------------------------------
+
 const postLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -188,9 +174,7 @@ const logout = (req, res) => {
     });
 };
 
-// ---------------------------------------------------------------------------
-// Auth — Forgot / Reset Password
-// ---------------------------------------------------------------------------
+
 const postForgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -229,12 +213,10 @@ const postResetPassword = async (req, res) => {
 };
 
 export {
-    // Page renderers
+    
     getSignup, getLogin, getOtp, getForgotPassword, getResetPassword,
-    // Auth actions
     postSignup, postLogin, logout,
     postOtp, resendOtp,
     postForgotPassword, postResetPassword,
-    // Dashboard
     getDashboard,
 };

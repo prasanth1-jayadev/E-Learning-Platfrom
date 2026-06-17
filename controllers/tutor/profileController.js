@@ -1,8 +1,4 @@
-/**
- * controllers/tutor/profileController.js
- * Handles tutor profile management: view/update profile, avatar upload,
- * email change (OTP flow), and password change.
- */
+
 import * as tutorService from '../../service/tutorService.js';
 import { uploadToCloudinary } from '../../config/cloudinary.js';
 import {
@@ -151,6 +147,33 @@ const postChangePassword = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+  export const resubmitApplication = async(req,res)=>{
+    try{
+        const tutorId = req.session.tutorId;
+        const certificateFile =req.file;
+
+
+        if(!certificateFile){
+            return res.status(400).json({success:false, message:'please Upload a certificate File'});
+        }
+        const formattedPath = '/' + certificateFile.path.replace(/\\/g, '/');
+        const tutorModel = (await import('../../models/Tutor.js')).default;
+
+
+        await tutorModel.findByIdAndUpdate(tutorId, {
+            certificatePath: formattedPath,
+            certificatePublicId: certificateFile.filename,
+            approvalStatus: 'pending',
+            isApproved: false
+        });
+        res.json({ success: true, message: 'Application Resubmitted successfully' });
+    } catch (error) {
+        console.error('Resubmit application error:', error);
+        res.status(500).json({ success: false, message: 'Failed to resubmit application' });
+    }
+  }
+
 
 export {
     getProfile,
