@@ -15,7 +15,10 @@ cloudinary.config({
 
 // Use memory storage
 const memoryStorage = multer.memoryStorage();
-const upload = multer({ storage: memoryStorage });
+const upload = multer({ 
+  storage: memoryStorage,
+  limits: { fileSize: 5* 1024 * 1024 } // 10MB
+});
 
 // Helper: upload a Buffer to Cloudinary
 const uploadToCloudinary = (buffer, folder = 'uploads', resourceType = 'auto') => {

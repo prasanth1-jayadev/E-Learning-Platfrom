@@ -20,7 +20,13 @@ const certificateStorage = multer.diskStorage({
 
 const memoryStorage = multer.memoryStorage();
 
-const uploadCertificate = multer({ storage: certificateStorage });
-const uploadVideo = multer({ storage: memoryStorage });
+const uploadCertificate = multer({ 
+  storage: certificateStorage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 10MB
+});
+const uploadVideo = multer({ 
+  storage: memoryStorage,
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB
+});
 
 export { uploadCertificate, uploadVideo };
