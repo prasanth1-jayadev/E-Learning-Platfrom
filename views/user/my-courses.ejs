@@ -378,7 +378,7 @@
         <div class="page-header">
             <div class="header-top">
                 <h1 class="page-title">My Courses</h1>
-                <span class="course-count"><%= courses.length %> courses</span>
+                <span class="course-count"><%= totalCourses %> courses</span>
             </div>
             <p class="page-subtitle">Continue learning and track your progress</p>
         </div>
@@ -426,6 +426,37 @@
                     </div>
                 <% }); %>
             </div>
+
+            <!-- Pagination Controls -->
+            <% if (totalPages > 1) { %>
+                <div class="flex items-center justify-between mt-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="text-sm text-gray-600">
+                        Showing page <span class="font-bold text-gray-900"><%= page %></span> of <span class="font-bold text-gray-900"><%= totalPages %></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <% if (page > 1) { %>
+                            <a href="?page=<%= page - 1 %>"
+                                class="px-4 py-2 text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
+                                Previous
+                            </a>
+                        <% } %>
+
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="?page=<%= i %>"
+                                class="px-3 py-2 text-xs font-semibold rounded-lg transition <%= i === page ? 'bg-primary text-white font-bold' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' %>">
+                                <%= i %>
+                            </a>
+                        <% } %>
+
+                        <% if (page < totalPages) { %>
+                            <a href="?page=<%= page + 1 %>"
+                                class="px-4 py-2 text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
+                                Next
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
         <% } else { %>
             <!-- Minimal Empty State -->
             <div class="empty-state">

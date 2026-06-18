@@ -13,10 +13,12 @@ export const getCart = async (req, res) => {
     // Validate and recalculate applied coupon dynamically
     if (req.session.appliedCoupon) {
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
+      const userUsage = coupon ? coupon.usedBy.find(u => u.userId.toString() === userId.toString()) : null;
+      const userUsedCount = userUsage ? userUsage.usedCount : 0;
       if (coupon && 
           (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
           new Date(coupon.expiryDate) >= new Date() && 
-          coupon.usedCount < coupon.usageLimit && 
+          userUsedCount < coupon.usageLimit && 
           total >= coupon.minOrderValue) {
         
         let discount = 0;
@@ -41,12 +43,24 @@ export const getCart = async (req, res) => {
 
     const appliedCoupon = req.session.appliedCoupon || null;
 
+    // Fetch active available coupons
+    const rawCoupons = await Coupon.find({
+      isActive: true,
+      expiryDate: { $gte: new Date() }
+    });
+    const coupons = rawCoupons.filter(c => {
+      const userUsage = c.usedBy.find(u => u.userId.toString() === userId.toString());
+      const userUsedCount = userUsage ? userUsage.usedCount : 0;
+      return userUsedCount < c.usageLimit;
+    });
+
     res.render('user/cart', {
       cart,
       total,
       user,
       currentPage: 'cart',
-      appliedCoupon
+      appliedCoupon,
+      coupons
     });
   } catch (error) {
     console.error('Get cart error:', error);
@@ -116,8 +130,10 @@ export const applyCoupon = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Coupon has expired' });
     }
 
-    if (coupon.usedCount >= coupon.usageLimit) {
-      return res.status(400).json({ success: false, message: 'Coupon usage limit reached' });
+    const userUsage = coupon.usedBy.find(u => u.userId.toString() === userId.toString());
+    const userUsedCount = userUsage ? userUsage.usedCount : 0;
+    if (userUsedCount >= coupon.usageLimit) {
+      return res.status(400).json({ success: false, message: 'You have already reached the usage limit for this coupon' });
     }
 
     if (total < coupon.minOrderValue) {

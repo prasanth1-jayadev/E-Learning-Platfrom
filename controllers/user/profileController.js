@@ -117,10 +117,21 @@ const getMyCourses = async (req, res) => {
 
         const { user, courses } = await userService.getEnrolledCourses(userId);
 
+        const page = parseInt(req.query.page) || 1;
+        const limit = 4;
+        const skip = (page - 1) * limit;
+
+        const totalCourses = courses.length;
+        const paginatedCourses = courses.slice(skip, skip + limit);
+        const totalPages = Math.ceil(totalCourses / limit) || 1;
+
         res.render('user/my-courses', {
             user,
-            courses,
-            currentPage: 'my-courses'
+            courses: paginatedCourses,
+            currentPage: 'my-courses',
+            page,
+            totalPages,
+            totalCourses
         });
     } catch (error) {
         console.error('Error fetching my courses:', error);
