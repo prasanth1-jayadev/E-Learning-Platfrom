@@ -46,33 +46,41 @@
 
 @media (max-width: 639px) {
   .fan-card {
-    width: 240px;
+    width: 230px;
     border-radius: 16px;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Optimize transition for mobile performance by removing box-shadow transition */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   }
   .fan-card[data-pos="0"] {
     transform: translateX(0) translateZ(0) rotateY(0deg) scale(1);
     z-index: 10;
+    box-shadow: 0 16px 36px rgba(43,238,173,0.15), 0 4px 16px rgba(0,0,0,0.08);
   }
   .fan-card[data-pos="1"] {
-    transform: translateX(110px) translateZ(-80px) rotateY(-12deg) scale(0.9);
+    transform: translateX(28vw) translateZ(-40px) rotateY(-6deg) scale(0.88);
     z-index: 7;
+    opacity: 0.9;
   }
   .fan-card[data-pos="-1"] {
-    transform: translateX(-110px) translateZ(-80px) rotateY(12deg) scale(0.9);
+    transform: translateX(-28vw) translateZ(-40px) rotateY(6deg) scale(0.88);
     z-index: 7;
+    opacity: 0.9;
   }
-  .fan-card[data-pos="2"] {
-    transform: translateX(190px) translateZ(-160px) rotateY(-20deg) scale(0.8);
-    z-index: 4;
-    opacity: 0.75;
-  }
+  /* Hide off-stage cards on mobile to eliminate overlap, horizontal scrolling, and rendering lag */
+  .fan-card[data-pos="2"],
   .fan-card[data-pos="-2"] {
-    transform: translateX(-190px) translateZ(-160px) rotateY(20deg) scale(0.8);
-    z-index: 4;
-    opacity: 0.75;
+    transform: translateX(0) translateZ(-200px) scale(0.5);
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
   }
   .fan-stage {
     perspective: 800px;
+    overflow: hidden; /* Prevent 3D cards from breaking out of viewport bounds */
   }
   .fan-track {
     height: 380px;
@@ -364,7 +372,8 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa] overflow-x-hidden">
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-[#0d1b17] dark:text-[#f8fcfa] overflow-x-hidden">
 
     <!-- Loading Screen -->
     <div id="loadingScreen"
@@ -454,17 +463,11 @@
                         </p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-4 max-w-2xl">
-                        <div
-                            class="flex-1 flex items-center bg-white dark:bg-[#1a3a30] rounded-2xl border border-[#e7f3ef] dark:border-[#1a3a30] px-6 h-16 shadow-sm">
-                            <span class="material-symbols-outlined text-[#4c9a80]">search</span>
-                            <input
-                                class="bg-transparent border-none focus:ring-0 w-full text-base placeholder:text-[#4c9a80] ml-2"
-                                placeholder="Explore advanced learning paths..." type="text" />
-                        </div>
-                        <button
-                            class="bg-primary text-[#0d1b17] px-10 py-4 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
+                       
+                        <a href="/user/login"
+                            class="bg-primary text-[#0d1b17] px-10 py-4 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center">
                             Start Learning
-                        </button>
+                        </a>
                         <!-- <button><a href="/user/blocked">click</a></button> -->
                     </div>
                     <div class="flex items-center gap-8 pt-4 border-t border-[#e7f3ef] dark:border-[#1a3a30]">
@@ -482,7 +485,8 @@
                         <p class="text-sm font-medium opacity-60">Professional learners achieving mastery daily</p>
                     </div>
                 </div>
-                <div class="lg:col-span-5 relative flex justify-center items-center h-[300px] sm:h-[400px] lg:h-[500px]">
+                <div
+                    class="lg:col-span-5 relative flex justify-center items-center h-[300px] sm:h-[400px] lg:h-[500px]">
                     <div class="absolute w-[120%] h-[120%] abstract-mesh -z-10 rounded-[4rem] opacity-50 blur-3xl">
                     </div>
                     <div class="relative w-full aspect-square max-w-[450px]">
@@ -964,9 +968,8 @@
                 <div class="flex flex-col gap-6">
                     <h4 class="font-bold">Ready to teach?</h4>
                     <button class="bg-primary text-[#0d1b17] w-full py-3 rounded-xl font-bold text-sm">
-                        <a href="/tutor/signup"
-              >Apply
-              as Master Mentor</a>
+                        <a href="/tutor/signup">Apply
+                            as Master Mentor</a>
                     </button>
                     <div class="flex gap-4">
                         <div
@@ -1038,17 +1041,19 @@
                         current = ((index % total) + total) % total;
                         updatePositions();
 
-                        setTimeout(function () {
-                            const center = track.querySelector('.fan-card[data-pos="0"]');
-                            if (center) {
-                                center.classList.remove('just-centered');
-                                void center.offsetWidth;
-                                center.classList.add('just-centered');
-                                setTimeout(function () {
+                        if (window.innerWidth >= 640) {
+                            setTimeout(function () {
+                                const center = track.querySelector('.fan-card[data-pos="0"]');
+                                if (center) {
                                     center.classList.remove('just-centered');
-                                }, 500);
-                            }
-                        }, 50);
+                                    void center.offsetWidth;
+                                    center.classList.add('just-centered');
+                                    setTimeout(function () {
+                                        center.classList.remove('just-centered');
+                                    }, 500);
+                                }
+                            }, 50);
+                        }
                     }
 
                     cards.forEach(function (card, index) {
