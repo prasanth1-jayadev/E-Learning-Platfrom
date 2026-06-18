@@ -35,10 +35,12 @@ export const createOrder = async (req, res) => {
     if (req.session.appliedCoupon) {
       const Coupon = (await import('../../models/coupon.js')).default;
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
+      const userUsage = coupon ? coupon.usedBy.find(u => u.userId.toString() === userId.toString()) : null;
+      const userUsedCount = userUsage ? userUsage.usedCount : 0;
       if (coupon && 
           (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
           new Date(coupon.expiryDate) >= new Date() && 
-          coupon.usedCount < coupon.usageLimit && 
+          userUsedCount < coupon.usageLimit && 
           totalAmount >= coupon.minOrderValue) {
         
         if (coupon.discountType === 'percentage') {
@@ -129,10 +131,12 @@ export const verifyPayment = async (req, res) => {
     if (req.session.appliedCoupon) {
       const Coupon = (await import('../../models/coupon.js')).default;
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
+      const userUsage = coupon ? coupon.usedBy.find(u => u.userId.toString() === userId.toString()) : null;
+      const userUsedCount = userUsage ? userUsage.usedCount : 0;
       if (coupon && 
           (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
           new Date(coupon.expiryDate) >= new Date() && 
-          coupon.usedCount < coupon.usageLimit && 
+          userUsedCount < coupon.usageLimit && 
           originalTotal >= coupon.minOrderValue) {
         
         if (coupon.discountType === 'percentage') {
@@ -147,10 +151,14 @@ export const verifyPayment = async (req, res) => {
 
         discount = Math.min(discount, originalTotal);
 
-        // Increment coupon usedCount
-        await Coupon.findByIdAndUpdate(coupon._id, {
-          $inc: { usedCount: 1 }
-        });
+        // Increment user usage inside usedBy array
+        const usageIndex = coupon.usedBy.findIndex(u => u.userId.toString() === userId.toString());
+        if (usageIndex > -1) {
+          coupon.usedBy[usageIndex].usedCount += 1;
+        } else {
+          coupon.usedBy.push({ userId, usedCount: 1 });
+        }
+        await coupon.save();
       }
     }
 

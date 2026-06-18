@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -116,7 +116,7 @@
           <div class="flex items-center justify-between mb-3">
             <div>
               <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-              <h3 class="text-3xl font-bold text-gray-900 mt-1">₹<%= (totalRevenue / 100).toLocaleString('en-IN') %>
+              <h3 class="text-3xl font-bold text-gray-900 mt-1">₹<%= (totalRevenue).toLocaleString('en-IN') %>
               </h3>
             </div>
             <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -324,8 +324,7 @@
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="text-sm font-semibold text-gray-900">₹<%= (order.amount /
-                          100).toLocaleString('en-IN') %></span>
+                      <span class="text-sm font-semibold text-gray-900">₹<%= (order.amount).toLocaleString('en-IN') %></span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span class="text-sm text-gray-500">

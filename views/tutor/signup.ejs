@@ -343,11 +343,17 @@ form.addEventListener('submit', async function(e) {
     if (!valid) return;
 
     try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const source = urlParams.get('source');
+
         const formData = new FormData();
         formData.append('fullName', fullName.value.trim());
         formData.append('email', email.value.trim());
         formData.append('password', password.value);
         formData.append('certificateFile', file.files[0]);
+        if (source) {
+            formData.append('source', source);
+        }
 
         const response = await fetch('/tutor/signup', {
             method: 'POST',

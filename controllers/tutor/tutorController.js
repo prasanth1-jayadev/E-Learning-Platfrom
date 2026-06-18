@@ -63,7 +63,7 @@ const getDashboard = async (req, res) => {
 
 const postSignup = async (req, res) => {
     try {
-        const { fullName, email, password } = req.body;
+        const { fullName, email, password, source } = req.body;
         const certificateFile               = req.file;
 
         if (!fullName || !email || !password) {
@@ -99,7 +99,8 @@ const postSignup = async (req, res) => {
             email:               email.trim(),
             password,
             certificatePath:     formattedPath,
-            certificatePublicId: certificateFile.filename
+            certificatePublicId: certificateFile.filename,
+            source:              source
         });
 
         req.session.otpEmail   = email.trim();

@@ -304,7 +304,7 @@ const getDashboardAnalytics = async (timeRange = '7days') => {
                 $project: {
                     _id: 0,
                     date: '$_id',
-                    revenue: { $divide: ['$revenue', 100] } 
+                    revenue: '$revenue'
                 }
             }
         ]);

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="en">
 
 <head>
@@ -375,7 +375,7 @@
 
             async function toggleCertified(tutorId) {
                 const tutorRow = document.querySelector(`button[onclick="toggleCertified('${tutorId}')"]`);
-                const isCurrentlyCertified = tutorRow.textContent.trim() === 'Remove Certified';
+                const isCurrentlyCertified = tutorRow.textContent.trim() === 'Remove';
                 const action = isCurrentlyCertified ? 'remove certification from' : 'certify';
 
                 const result = await Swal.fire({
