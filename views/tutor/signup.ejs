@@ -202,9 +202,9 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-primary hover:bg-[#0E8A78] text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
-                            Create Account
-                            <span class="material-icons text-lg">arrow_forward</span>
+                        <button id="submitBtn" type="submit" class="w-full bg-primary hover:bg-[#0E8A78] text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                            <span id="btnText">Create Account</span>
+                            <span id="btnIcon" class="material-icons text-lg">arrow_forward</span>
                         </button>
                     </form>
 
@@ -343,17 +343,30 @@ form.addEventListener('submit', async function(e) {
     if (!valid) return;
 
     try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const source = urlParams.get('source');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+
+        // Set loading state
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+        const originalIcon = btnIcon.outerHTML;
+        const originalText = btnText.textContent;
+
+        btnIcon.outerHTML = `
+            <svg id="btnIcon" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        `;
+        btnText.textContent = 'Processing...';
 
         const formData = new FormData();
         formData.append('fullName', fullName.value.trim());
         formData.append('email', email.value.trim());
         formData.append('password', password.value);
         formData.append('certificateFile', file.files[0]);
-        if (source) {
-            formData.append('source', source);
-        }
 
         const response = await fetch('/tutor/signup', {
             method: 'POST',
@@ -368,12 +381,33 @@ form.addEventListener('submit', async function(e) {
                 window.location.href = data.redirect || '/tutor/verify-otp';
             }, 1500);
         } else {
+            // Restore button state
+            const spinnerIcon = document.getElementById('btnIcon');
+            spinnerIcon.outerHTML = originalIcon;
+            btnText.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+
             showToast(data.message || 'Signup failed', 'error');
             emailError.textContent = data.message || 'Error';
             emailError.classList.remove('hidden');
         }
 
     } catch (error) {
+        // Restore button state
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        if (submitBtn && submitBtn.disabled) {
+            const currentIcon = document.getElementById('btnIcon');
+            if (currentIcon) {
+                currentIcon.outerHTML = `<span id="btnIcon" class="material-icons text-lg">arrow_forward</span>`;
+            }
+            btnText.textContent = 'Create Account';
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+        }
+
         showToast('Something went wrong. Please try again.', 'error');
         fullNameError.textContent = 'Something went wrong';
         fullNameError.classList.remove('hidden');
