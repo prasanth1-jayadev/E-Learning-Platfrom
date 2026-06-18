@@ -6,7 +6,7 @@ import { hashPassword, comparePassword } from '../helpers/passwordHelper.js';
 import { generateOTP, otpExpiry, logOTP } from '../helpers/otpHelper.js';
 import { sendOTPEmail } from './emailService.js';
 
-const registerTutor = async ({ fullName, email, password, certificatePath, certificatePublicId }) => {
+const registerTutor = async ({ fullName, email, password, certificatePath, certificatePublicId, source }) => {
     email = email.toLowerCase().trim();
     const existing = await Tutor.findOne({ email });
 
@@ -19,13 +19,16 @@ const registerTutor = async ({ fullName, email, password, certificatePath, certi
     }
 
     const hashed = await hashPassword(password);
+    const isApproved = source !== 'user';
+    const approvalStatus = source === 'user' ? 'pending' : 'approved';
+
     const tutor = await Tutor.create({
         fullName,
         email,
         password: hashed,
         isVerified: false,
-        isApproved: false,
-        approvalStatus: 'pending',
+        isApproved,
+        approvalStatus,
         certificatePath: certificatePath || null,
         certificatePublicId: certificatePublicId || null
     });
