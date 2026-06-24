@@ -6,8 +6,7 @@ const INTL_PHONE_REGEX = /^[0-9+\-\s()]{8,20}$/;
 const OTP_REGEX   = /^\d{4}$/;
 
 /**
- * Validate email address.
- * @param {string} email
+ @param {string} email
  */
 const validateEmail = (email) => {
     if (!email || email.trim().length === 0) {
@@ -20,9 +19,7 @@ const validateEmail = (email) => {
 };
 
 /**
- * Validate password strength.
- * Rules: min 8 chars, at least one uppercase, one lowercase, one digit.
- * @param {string} password
+  @param {string} password
  */
 const validatePassword = (password) => {
     if (!password) {
@@ -44,10 +41,8 @@ const validatePassword = (password) => {
 };
 
 /**
- * Validate full name.
- * Rules: letters only with single spaces, length 2-50.
- * @param {string} name
- * @param {{ min?: number, max?: number }} [options]
+ @param {string} name
+ @param {{ min?: number, max?: number }} [options]
  */
 const validateFullName = (name, { min = 2, max = 50 } = {}) => {
     if (!name || name.trim().length === 0) {
@@ -64,12 +59,11 @@ const validateFullName = (name, { min = 2, max = 50 } = {}) => {
 };
 
 /**
- * Validate a 10-digit phone number (domestic format).
- * @param {string} phone
+  @param {string} phone
  */
 const validatePhone = (phone) => {
     if (!phone || phone.trim().length === 0) {
-        return { valid: true }; // Phone is optional in most places
+        return { valid: true }; 
     }
     if (!PHONE_REGEX.test(phone.trim())) {
         return { valid: false, message: 'Please enter a valid 10-digit phone number' };
@@ -78,12 +72,11 @@ const validatePhone = (phone) => {
 };
 
 /**
- * Validate international phone (broader format, 8–20 chars).
- * @param {string} phone
+  @param {string} phone
  */
 const validateIntlPhone = (phone) => {
     if (!phone || phone.trim().length === 0) {
-        return { valid: true }; // Optional
+        return { valid: true };
     }
     if (!INTL_PHONE_REGEX.test(phone.trim())) {
         return { valid: false, message: 'Please enter a valid phone number' };
@@ -92,8 +85,7 @@ const validateIntlPhone = (phone) => {
 };
 
 /**
- * Validate a 4-digit numeric OTP.
- * @param {string} otp
+ @param {string} otp
  */
 const validateOTP = (otp) => {
     if (!otp || otp.trim().length === 0) {
@@ -106,9 +98,9 @@ const validateOTP = (otp) => {
 };
 
 /**
- * Validate bio/description length.
- * @param {string} bio
- * @param {number} [maxLength=500]
+ 
+  @param {string} bio
+  @param {number} [maxLength=500]
  */
 const validateBio = (bio, maxLength = 500) => {
     if (bio && bio.trim().length > maxLength) {

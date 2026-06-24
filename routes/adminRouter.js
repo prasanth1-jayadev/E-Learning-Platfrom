@@ -11,7 +11,6 @@ import Tutor from '../models/Tutor.js';
 
 const router = express.Router();
 
-// Auto-attach pendingCount to every admin page
 router.use(async (req, res, next) => {
     try {
         res.locals.pendingCount = await Tutor.countDocuments({ approvalStatus: 'pending', isVerified: true });

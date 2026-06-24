@@ -168,7 +168,6 @@ export {
     verifyEmailChangeOTP,
     hashPassword,
     comparePassword,
-    // Profile helpers
     getUserById,
     updateUserProfile,
     updateUserEmail,

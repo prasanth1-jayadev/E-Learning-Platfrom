@@ -64,7 +64,6 @@ const getTutorApplications = async (page = 1, limit = 10, search = '') => {
 
 const getTutorRegistrationStats = async () => {
     try {
-        // Get last 30 days of tutor registrations
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
