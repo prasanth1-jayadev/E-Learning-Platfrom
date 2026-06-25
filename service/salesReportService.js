@@ -1,16 +1,11 @@
-/**
- * salesReportService.js
- * Handles all DB queries related to sales reporting.
- * Controllers (salesReportController) delegate data fetching here.
- */
+
 import Payment from '../models/Payment.js';
 
 /**
- * Build a MongoDB date-range filter object from a filter string / custom dates.
  * @param {'today'|'week'|'month'|'year'|'custom'} filter
  * @param {string} [startDate]
  * @param {string} [endDate]
- * @returns {object} Mongoose query fragment
+ * @returns {object} 
  */
 const buildDateFilter = (filter, startDate, endDate) => {
     const now = new Date();
@@ -48,8 +43,8 @@ const buildDateFilter = (filter, startDate, endDate) => {
 };
 
 /**
- * Fetch completed orders within the specified date filter.
- * @returns {Payment[]}
+ 
+  @returns {Payment[]}
  */
 const getSalesData = async (filter = 'month', startDate, endDate) => {
     const dateFilter = buildDateFilter(filter, startDate, endDate);
@@ -63,7 +58,6 @@ const getSalesData = async (filter = 'month', startDate, endDate) => {
 };
 
 /**
- * Fetch the 10 most recent completed orders (for the "Latest Orders" table).
  * @returns {Payment[]}
  */
 const getLatestOrders = async (limit = 10) => {
@@ -76,7 +70,6 @@ const getLatestOrders = async (limit = 10) => {
 };
 
 /**
- * Aggregate revenue by month for the last 6 months (used in the chart).
  * @returns {Array<{ _id: string, revenue: number, count: number }>}
  */
 const getMonthlySalesData = async () => {
@@ -97,7 +90,6 @@ const getMonthlySalesData = async () => {
 };
 
 /**
- * Compute high-level stats from an orders array.
  * @param {Payment[]} orders
  */
 const computeSalesStats = (orders) => {

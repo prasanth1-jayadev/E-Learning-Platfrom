@@ -22,11 +22,11 @@ const memoryStorage = multer.memoryStorage();
 
 const uploadCertificate = multer({ 
   storage: certificateStorage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 10MB
+  limits: { fileSize: 5 * 1024 * 1024 } 
 });
 const uploadVideo = multer({ 
   storage: memoryStorage,
-  limits: { fileSize: 100 * 1024 * 1024 } // 100MB
+  limits: { fileSize: 100 * 1024 * 1024 } 
 });
 
 export { uploadCertificate, uploadVideo };

@@ -60,7 +60,7 @@ export const setupChatHandlers = (io) => {
         
         socket.to(`conversation_${conversationId}`).emit('messages_read', { conversationId });
         
-        // Notify the reader's own room to update their unread message badge count in real-time
+        // Notify the reader's  to updatetheir unread message count in real-time
         io.to(`${socket.userType}_${socket.userId}`).emit('new_message_notification', {
           conversationId
         });
@@ -132,7 +132,6 @@ export const setupChatHandlers = (io) => {
           conversationId
         });
 
-        // Notify both sender and recipient personal rooms for real-time sidebar/badge updates
         const recipientType = socket.userType === 'user' ? 'tutor' : 'user';
         const recipientId = socket.userType === 'user' ? conversation.tutorId : conversation.userId;
 

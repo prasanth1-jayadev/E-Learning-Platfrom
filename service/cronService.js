@@ -45,7 +45,7 @@ export const releasePendingFunds = async () => {
 
                 // Send notification to the tutor
                 await sendNotification({
-                    recipientId: wallet.tutor, // This is the tutor's ObjectId
+                    recipientId: wallet.tutor, 
                     recipientType: 'tutor',
                     title: 'Earnings Credited',
                     message: `Pending funds of ₹${amountToRelease} have been successfully credited to your available balance.`,

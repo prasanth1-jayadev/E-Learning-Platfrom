@@ -151,7 +151,6 @@ export const verifyPayment = async (req, res) => {
 
         discount = Math.min(discount, originalTotal);
 
-        // Increment user usage inside usedBy array
         const usageIndex = coupon.usedBy.findIndex(u => u.userId.toString() === userId.toString());
         if (usageIndex > -1) {
           coupon.usedBy[usageIndex].usedCount += 1;

@@ -205,7 +205,6 @@ export const getConversations = async (req, res) => {
             .sort({ 'lastMessage.timestamp': -1 })
             .lean();
 
-        // Filter out conversations with missing or deleted users/tutors
         const validConversations = conversations.filter(conv => {
             if (userType === 'tutor') {
                 return conv.userId;

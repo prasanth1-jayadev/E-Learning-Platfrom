@@ -286,7 +286,7 @@ const togglePublish = async (req, res) => {
   const TutorModel = (await import('../../models/Tutor.js')).default;
   const tutorObj = await TutorModel.findById(tutorId);
   
-  // Find all unique students who have purchased any course from this tutor
+  // Find all unique students 
   const CourseModel = (await import('../../models/Course.js')).default;
   const tutorCourses = await CourseModel.find({ tutor: tutorId });
   const studentIds = new Set();

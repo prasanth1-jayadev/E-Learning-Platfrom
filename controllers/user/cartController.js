@@ -10,7 +10,6 @@ export const getCart = async (req, res) => {
     const cart = await cartService.getCart(userId);
     const total = cartService.getCartTotal(cart);
 
-    // Validate and recalculate applied coupon dynamically
     if (req.session.appliedCoupon) {
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
       const userUsage = coupon ? coupon.usedBy.find(u => u.userId.toString() === userId.toString()) : null;
@@ -43,7 +42,7 @@ export const getCart = async (req, res) => {
 
     const appliedCoupon = req.session.appliedCoupon || null;
 
-    // Fetch active available coupons
+    //  active available coupons
     const rawCoupons = await Coupon.find({
       isActive: true,
       expiryDate: { $gte: new Date() }
@@ -140,7 +139,7 @@ export const applyCoupon = async (req, res) => {
       return res.status(400).json({ success: false, message: `Minimum order value is ₹${coupon.minOrderValue}` });
     }
 
-    // Calculate discount
+    //  discount
     let discount = 0;
     if (coupon.discountType === 'percentage') {
       discount = Math.floor((total * coupon.discountValue) / 100);

@@ -37,7 +37,8 @@
         <!-- Wishlist Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <% wishlistCourses.forEach(course => { %>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+            <!-- Wishlist Item -->
+            <div id="wishlist-item-<%= course._id %>" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                 <!-- Course Image -->
                 <div class="relative h-48 bg-gray-200">
                     <% if (course.thumbnail) { %>
@@ -122,23 +123,23 @@
                     if (typeof window.updateWishlistCount === 'function') {
                         window.updateWishlistCount();
                     }
-                    location.reload();
+                    const itemEl = document.getElementById('wishlist-item-' + courseId);
+                    if (itemEl) {
+                        itemEl.remove();
+                    }
+                    showToast(data.message || 'Removed from wishlist', 'success');
+                    
+                    // Check if wishlist is empty
+                    const wishlistContainer = document.getElementById('wishlist-item-' + courseId)?.parentElement;
+                    if (document.querySelectorAll('[id^="wishlist-item-"]').length === 0) {
+                        location.reload(); // Reload to show empty state
+                    }
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: data.message || 'Failed to remove from wishlist',
-                        confirmButtonColor: '#00d9b1'
-                    });
+                    showToast(data.message || 'Failed to remove from wishlist', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Something went wrong',
-                    confirmButtonColor: '#00d9b1'
-                });
+                showToast('Something went wrong', 'error');
             }
         }
 
@@ -158,30 +159,12 @@
                         window.updateCartCount();
                     }
 
-                    // Show SweetAlert
-                    const result = await Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Cart!',
-                        text: 'Course has been added to your cart',
-                        showCancelButton: true,
-                        confirmButtonText: 'View Cart',
-                        cancelButtonText: 'Continue Shopping',
-                        confirmButtonColor: '#00d9b1',
-                        cancelButtonColor: '#6b7280'
-                    });
-
                     // Remove from wishlist after adding to cart
                     await removeFromWishlist(courseId);
 
-                    if (result.isConfirmed) {
-                        window.location.href = '/user/cart';
-                    }
+                    showToast('Course has been added to your cart', 'success');
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: data.message || 'Failed to add to cart'
-                    });
+                    showToast(data.message || 'Failed to add to cart', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);

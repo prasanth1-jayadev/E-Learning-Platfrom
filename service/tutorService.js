@@ -121,9 +121,6 @@ const verifyEmailChangeOTP = async (email, otp) => {
     await OTP.deleteMany({ email, purpose: 'email-change' });
 };
 
-// ---------------------------------------------------------------------------
-// Profile / account DB helpers — used by profileController & lessonController
-// ---------------------------------------------------------------------------
 
 const getTutorById = async (id) => {
     return await Tutor.findById(id);
@@ -163,10 +160,7 @@ const updateTutorAvatar = async (id, avatarUrl) => {
     return tutor;
 };
 
-/**
- * Fetch paginated orders + revenue stats for a tutor.
- * @returns {{ tutor, orders, totalRevenue, totalSales, activeMonthSales, page, totalPages }}
- */
+
 const getTutorOrders = async (tutorId, page = 1, limit = 6) => {
     const tutor = await Tutor.findById(tutorId);
     if (!tutor) throw new Error('Tutor not found');
@@ -221,7 +215,6 @@ export {
     verifyEmailChangeOTP,
     hashPassword,
     comparePassword,
-    // Profile / account helpers
     getTutorById,
     updateTutorProfile,
     updateTutorEmail,

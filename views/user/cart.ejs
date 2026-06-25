@@ -206,35 +206,23 @@
                     const data = await response.json();
 
                     if (data.success) {
-                        // 1. Update the cart count in the navbar immediately
                         if (typeof window.updateCartCount === 'function') {
                             window.updateCartCount();
                         }
 
-                        await Swal.fire({
-                            title: 'Removed!',
-                            text: 'Course has been removed from your cart.',
-                            icon: 'success',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                        window.location.reload();
+                        showToast('Course has been removed from your cart.', 'success');
+                        
+                        // Fetch updated cart page to refresh totals and list without blinking
+                        const res = await fetch('/user/cart');
+                        const html = await res.text();
+                        const doc = new DOMParser().parseFromString(html, 'text/html');
+                        document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: data.message || 'Failed to remove course from cart',
-                            confirmButtonColor: '#00d9b1'
-                        });
+                        showToast(data.message || 'Failed to remove course from cart', 'error');
                     }
                 } catch (error) {
                     console.error('Remove error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Something went wrong while removing the course',
-                        confirmButtonColor: '#00d9b1'
-                    });
+                    showToast('Something went wrong while removing the course', 'error');
                 }
             }
 
@@ -252,13 +240,16 @@
                     });
                     const data = await res.json();
                     if (data.success) {
-                        Swal.fire({ icon: 'success', title: 'Coupon Applied!', text: data.message, timer: 1500, showConfirmButton: false })
-                            .then(() => location.reload());
+                        showToast(data.message || 'Coupon Applied!', 'success');
+                        const res = await fetch('/user/cart');
+                        const html = await res.text();
+                        const doc = new DOMParser().parseFromString(html, 'text/html');
+                        document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
                     } else {
-                        Swal.fire({ icon: 'error', title: 'Invalid Coupon', text: data.message, confirmButtonColor: '#00d9b1' });
+                        showToast(data.message || 'Invalid Coupon', 'error');
                     }
                 } catch (err) {
-                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to apply coupon' });
+                    showToast('Failed to apply coupon', 'error');
                 }
             }
 
@@ -272,7 +263,11 @@
             async function removeCouponCode() {
                 try {
                     await fetch('/user/cart/remove-coupon', { method: 'POST' });
-                    location.reload();
+                    const res = await fetch('/user/cart');
+                    const html = await res.text();
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+                    showToast('Coupon removed', 'success');
                 } catch (err) {
                     console.error('Remove coupon error:', err);
                 }
@@ -382,6 +377,8 @@
                 }
             }
         </script>
-</body>
 
-</html>
+        <%- include('../partials/toast') %>
+    </body>
+
+    </html>
