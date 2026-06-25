@@ -24,7 +24,7 @@
 <body class="bg-gray-50">
     <%- include('../partials/user-navbar') %>
 
-        <div class="max-w-7xl mx-auto px-4 py-8">
+        <div id="cart-container" class="max-w-7xl mx-auto px-4 py-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
 
@@ -216,7 +216,7 @@
                         const res = await fetch('/user/cart');
                         const html = await res.text();
                         const doc = new DOMParser().parseFromString(html, 'text/html');
-                        document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+                        document.getElementById('cart-container').innerHTML = doc.getElementById('cart-container').innerHTML;
                     } else {
                         showToast(data.message || 'Failed to remove course from cart', 'error');
                     }
@@ -244,7 +244,7 @@
                         const res = await fetch('/user/cart');
                         const html = await res.text();
                         const doc = new DOMParser().parseFromString(html, 'text/html');
-                        document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+                        document.getElementById('cart-container').innerHTML = doc.getElementById('cart-container').innerHTML;
                     } else {
                         showToast(data.message || 'Invalid Coupon', 'error');
                     }
@@ -266,7 +266,7 @@
                     const res = await fetch('/user/cart');
                     const html = await res.text();
                     const doc = new DOMParser().parseFromString(html, 'text/html');
-                    document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+                    document.getElementById('cart-container').innerHTML = doc.getElementById('cart-container').innerHTML;
                     showToast('Coupon removed', 'success');
                 } catch (err) {
                     console.error('Remove coupon error:', err);

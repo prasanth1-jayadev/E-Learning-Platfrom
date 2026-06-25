@@ -3,7 +3,7 @@ import * as adminService from '../../service/adminService.js';
 const getLogin = (req, res) => {
     res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma':  'no-cache',
+        'Pragma': 'no-cache',
         'Expires': '0'
     });
     res.render('admin/login');
@@ -22,38 +22,38 @@ const getDashboard = async (req, res) => {
         ]);
 
         res.render('admin/dashboard', {
-            pendingCount:   pendingTutors.length,
-            totalTutors:    allTutors.length,
-            totalStudents:  platformStats.totalStudents,
-            totalCourses:   platformStats.totalCourses,
-            totalRevenue:   platformStats.totalRevenue,
+            pendingCount: pendingTutors.length,
+            totalTutors: allTutors.length,
+            totalStudents: platformStats.totalStudents,
+            totalCourses: platformStats.totalCourses,
+            totalRevenue: platformStats.totalRevenue,
             analytics,
             recentOrders,
             timeRange,
-            currentPage:    'dashboard'
+            currentPage: 'dashboard'
         });
     } catch (error) {
         console.error('Dashboard error:', error);
         res.render('admin/dashboard', {
-            pendingCount:  0,
-            totalTutors:   0,
+            pendingCount: 0,
+            totalTutors: 0,
             totalStudents: 0,
-            totalCourses:  0,
-            totalRevenue:  0,
+            totalCourses: 0,
+            totalRevenue: 0,
             analytics: { revenueData: [], tutorGrowth: [], topCourses: [], categoryDistribution: [] },
-            recentOrders:  [],
-            timeRange:     '7days',
-            currentPage:   'dashboard'
+            recentOrders: [],
+            timeRange: '7days',
+            currentPage: 'dashboard'
         });
     }
 };
 
 const getTutorApplications = async (req, res) => {
     try {
-        const page    = parseInt(req.query.page) || 1;
-        const search  = req.query.search || '';
+        const page = parseInt(req.query.page) || 1;
+        const search = req.query.search || '';
         const success = req.query.success;
-        const error   = req.query.error;
+        const error = req.query.error;
 
         const [result, pendingCount, registrationStats] = await Promise.all([
             adminService.getTutorApplications(page, 4, search),
@@ -62,21 +62,21 @@ const getTutorApplications = async (req, res) => {
         ]);
 
         res.render('admin/tutor-applications', {
-            tutors:  result.tutors,
+            tutors: result.tutors,
             search,
             success,
             error,
-            currentPage:     'tutor-applications',
+            currentPage: 'tutor-applications',
             pendingCount,
             registrationStats,
             pagination: {
-                currentPage:        result.page,
-                totalPages:         result.pages,
-                totalApplications:  result.total,
-                hasNext:            result.hasNext,
-                hasPrev:            result.hasPrev,
-                nextPage:           result.page + 1,
-                prevPage:           result.page - 1
+                currentPage: result.page,
+                totalPages: result.pages,
+                totalApplications: result.total,
+                hasNext: result.hasNext,
+                hasPrev: result.hasPrev,
+                nextPage: result.page + 1,
+                prevPage: result.page - 1
             }
         });
     } catch (error) {
@@ -87,8 +87,8 @@ const getTutorApplications = async (req, res) => {
 
 const getTutors = async (req, res) => {
     try {
-        const page    = parseInt(req.query.page) || 1;
-        const search  = req.query.search || '';
+        const page = parseInt(req.query.page) || 1;
+        const search = req.query.search || '';
         const blocked = req.query.blocked || 'all';
 
         const [result, pendingCount] = await Promise.all([
@@ -211,7 +211,7 @@ const postLogin = async (req, res) => {
 const logout = (req, res) => {
     res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma':  'no-cache',
+        'Pragma': 'no-cache',
         'Expires': '0'
     });
     req.session.destroy((err) => {
@@ -223,8 +223,8 @@ const logout = (req, res) => {
 
 const getStudents = async (req, res) => {
     try {
-        const page    = parseInt(req.query.page) || 1;
-        const search  = req.query.search || '';
+        const page = parseInt(req.query.page) || 1;
+        const search = req.query.search || '';
         const blocked = req.query.blocked || 'all';
 
         const [data, pendingCount] = await Promise.all([
@@ -233,19 +233,19 @@ const getStudents = async (req, res) => {
         ]);
 
         res.render('admin/students', {
-            students:    data.students,
+            students: data.students,
             search,
             blocked,
             currentPage: 'students',
             pendingCount,
             pagination: {
-                currentPage:    data.page,
-                totalPages:     data.totalPages,
-                totalStudents:  data.totalStudents,
-                hasNext:        data.hasNext,
-                hasPrev:        data.hasPrev,
-                nextPage:       data.nextPage,
-                prevPage:       data.prevPage
+                currentPage: data.page,
+                totalPages: data.totalPages,
+                totalStudents: data.totalStudents,
+                hasNext: data.hasNext,
+                hasPrev: data.hasPrev,
+                nextPage: data.nextPage,
+                prevPage: data.prevPage
             }
         });
     } catch (err) {
@@ -266,8 +266,8 @@ const toggleStudentBlock = async (req, res) => {
 
         if (req.headers['content-type']?.includes('application/json')) {
             return res.json({
-                success:   true,
-                message:   `Student ${action} successfully`,
+                success: true,
+                message: `Student ${action} successfully`,
                 isBlocked: student.isBlocked
             });
         }
@@ -283,12 +283,12 @@ const toggleStudentBlock = async (req, res) => {
 
 const getTutorDetail = async (req, res) => {
     try {
-        const result       = await adminService.getTutorDetail(req.params.tutorId);
+        const result = await adminService.getTutorDetail(req.params.tutorId);
         const pendingCount = await adminService.getPendingTutorApplications().then(t => t.length);
 
         res.render('admin/tutor-detail', {
-            tutor:       result.tutor,
-            courses:     result.courses,
+            tutor: result.tutor,
+            courses: result.courses,
             currentPage: 'tutors',
             pendingCount
         });
