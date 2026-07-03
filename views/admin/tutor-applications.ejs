@@ -99,7 +99,7 @@
                             <% tutors.forEach((tutor, index)=> { %>
                                 <tr class="hover:bg-slate-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                                        <%= index + 1 %>
+                                        <%= (pagination.currentPage - 1) * 4 + index + 1 %>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">

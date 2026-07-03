@@ -1,4 +1,32 @@
 <!-- Mobile Header -->
+<style>
+    /* Critical CSS - loaded before Tailwind to prevent sidebar flash/blink */
+    .sidebar {
+        width: 260px;
+        background: white;
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid #e5e7eb;
+        left: 0;
+        top: 0;
+        z-index: 100;
+    }
+    .tutor-main-content {
+        margin-left: 260px;
+    }
+    @media (max-width: 1439px) { .sidebar { width: 240px; } .tutor-main-content { margin-left: 240px; } }
+    @media (max-width: 1023px) { .sidebar { width: 220px; } .tutor-main-content { margin-left: 220px; } }
+    @media (max-width: 899px)  { .sidebar { width: 200px; } .tutor-main-content { margin-left: 200px; } }
+    @media (max-width: 767px) {
+        .sidebar { left: -260px; width: 260px; transition: left 0.3s ease; }
+        .tutor-main-content { margin-left: 0 !important; padding-top: 80px !important; }
+    }
+</style>
 <div class="mobile-tutor-header">
     <button id="tutorSidebarToggle" class="mobile-toggle-btn" aria-label="Toggle Menu">
         <div class="tutor-hamburger-icon">
@@ -298,6 +326,17 @@
         position: relative;
     }
 
+    /* Prevent sidebar flash/blink on navigation */
+    .sidebar {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Hide body content until styles load to prevent flash */
+    body.loading .tutor-main-content {
+        visibility: hidden;
+    }
+
     /* Tutor Hamburger Icon Styles */
     .tutor-hamburger-icon {
         position: relative;
@@ -443,6 +482,9 @@
         left: 0;
         top: 0;
         z-index: 100;
+        /* Prevent sidebar flash on page load */
+        will-change: transform;
+        backface-visibility: hidden;
     }
 
     .logo {
@@ -606,60 +648,26 @@
     /* Main Content Responsive Layout */
     .tutor-main-content {
         margin-left: 260px;
-        transition: margin-left 0.3s ease, padding-top 0.3s ease;
     }
 
     /* Responsive Breakpoints */
     @media (max-width: 1439px) {
-        .sidebar {
-            width: 240px;
-        }
-
-        .tutor-main-content {
-            margin-left: 240px;
-        }
+        .sidebar { width: 240px; }
+        .tutor-main-content { margin-left: 240px; }
     }
 
     @media (max-width: 1023px) {
-        .sidebar {
-            width: 220px;
-            padding: 1.25rem 0.85rem;
-        }
-
-        .tutor-main-content {
-            margin-left: 220px;
-        }
+        .sidebar { width: 220px; padding: 1.25rem 0.85rem; }
+        .tutor-main-content { margin-left: 220px; }
     }
 
     @media (max-width: 899px) {
-        .sidebar {
-            width: 200px;
-            padding: 1rem 0.75rem;
-            gap: 1.25rem;
-        }
-
-        .tutor-main-content {
-            margin-left: 200px;
-        }
-
-        .logo-text {
-            font-size: 0.95rem;
-        }
-
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
-        }
-
-        .profile-name {
-            font-size: 0.85rem;
-        }
-
-        .nav-link {
-            padding: 0.6rem 0.75rem;
-            font-size: 0.85rem;
-        }
+        .sidebar { width: 200px; padding: 1rem 0.75rem; gap: 1.25rem; }
+        .tutor-main-content { margin-left: 200px; }
+        .logo-text { font-size: 0.95rem; }
+        .profile-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
+        .profile-name { font-size: 0.85rem; }
+        .nav-link { padding: 0.6rem 0.75rem; font-size: 0.85rem; }
     }
 
     @media (max-width: 767px) {
@@ -671,15 +679,8 @@
             width: 260px;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .tutor-main-content {
-            margin-left: 0 !important;
-            padding-top: 80px !important;
-        }
+        .sidebar.open { left: 0; }
+        .tutor-main-content { margin-left: 0 !important; padding-top: 80px !important; }
     }
 
     /* Notification Drawer & Badge Fallback Styles (for pages without Tailwind) */

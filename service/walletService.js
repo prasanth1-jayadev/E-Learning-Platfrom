@@ -148,7 +148,8 @@ export const getAllWallets = async () => {
             .populate('tutor', 'fullName email')
             .sort({ totalEarnings: -1 });
         
-        return wallets;
+        // Filter out wallets where tutor no longer exists
+        return wallets.filter(w => w.tutor !== null);
     } catch (error) {
         console.error('Error getting all wallets:', error);
         throw error;

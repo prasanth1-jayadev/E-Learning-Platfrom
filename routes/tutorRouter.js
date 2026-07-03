@@ -15,7 +15,17 @@ const router = express.Router();
 // Auth
 
 router.get('/signup',  redirectIfTutor, tutorController.getSignup);
-router.post('/signup', uploadCertificate.single('certificateFile'), tutorController.postSignup);
+router.post('/signup', (req, res, next) => {
+    uploadCertificate.single('certificateFile')(req, res, (err) => {
+        if (err) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'File too large. Maximum allowed size is 5MB.' });
+            }
+            return res.status(400).json({ message: err.message || 'File upload failed' });
+        }
+        next();
+    });
+}, tutorController.postSignup);
 router.get('/login',   redirectIfTutor, tutorController.getLogin);
 router.post('/login',  tutorController.postLogin);
 router.get('/logout',  tutorController.logout);
