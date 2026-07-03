@@ -17,14 +17,19 @@ cloudinary.config({
 const memoryStorage = multer.memoryStorage();
 const upload = multer({ 
   storage: memoryStorage,
-  limits: { fileSize: 5* 1024 * 1024 } // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB for images
 });
 
 // Helper: upload a Buffer to Cloudinary
 const uploadToCloudinary = (buffer, folder = 'uploads', resourceType = 'auto') => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: resourceType },
+      { 
+        folder, 
+        resource_type: resourceType,
+        chunk_size: 6000000,        // 6MB chunks for large files
+        timeout: 120000             // 2 min timeout for video uploads
+      },
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
