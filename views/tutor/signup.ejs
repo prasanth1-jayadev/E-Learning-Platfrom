@@ -430,14 +430,16 @@ file.addEventListener('change', function() {
             error.textContent = 'Please upload a valid file (PDF, PNG, JPG only)';
             error.classList.remove('hidden');
             this.value = ''; // Clear the input
+            showToast('Invalid file type. Only PDF, PNG, JPG files are allowed.', 'error');
             return;
         }
         
         // Validate file size
         if (selectedFile.size > maxSize) {
-            error.textContent = 'File size must be less than 5MB';
+            error.textContent = 'File size must be less than 5MB. Please choose a smaller file.';
             error.classList.remove('hidden');
             this.value = ''; // Clear the input
+            showToast('File too large! Maximum allowed size is 5MB.', 'error');
             return;
         }
         
