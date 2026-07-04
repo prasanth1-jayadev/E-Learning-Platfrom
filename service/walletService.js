@@ -1,6 +1,8 @@
 import Wallet from '../models/Wallet.js';
 import Payment from '../models/Payment.js';
 import Course from '../models/Course.js';
+import { sendNotification } from './notificationService.js';
+
 
 export const getOrCreateWallet = async (tutorId) => {
     try {
@@ -183,3 +185,120 @@ export const getPlatformStats = async () => {
         throw error;
     }
 };
+
+export const requestWithdrawal = async (tutorId, amount) => {
+    try {
+        const wallet = await getOrCreateWallet(tutorId);
+        
+        if (wallet.balance < amount) {
+            throw new Error('Insufficient balance');
+        }
+        
+        wallet.balance -= amount;
+        
+        wallet.transactions.push({
+            type: 'debit',
+            amount,
+            description: 'Withdrawal request',
+            status: 'pending'
+        });
+        
+        await wallet.save();
+        return wallet;
+    } catch (error) {
+        console.error('Error requesting withdrawal:', error);
+        throw error;
+    }
+};
+
+export const getPendingWithdrawals = async () => {
+    try {
+        const wallets = await Wallet.find({ 
+            'transactions.type': 'debit', 
+            'transactions.status': 'pending' 
+        }).populate('tutor', 'fullName email');
+        
+        const pending = [];
+        for (const wallet of wallets) {
+            if (!wallet.tutor) continue;
+            for (const t of wallet.transactions) {
+                if (t.type === 'debit' && t.status === 'pending') {
+                    pending.push({
+                        walletId: wallet._id,
+                        transactionId: t._id,
+                        tutor: wallet.tutor,
+                        amount: t.amount,
+                        createdAt: t.createdAt
+                    });
+                }
+            }
+        }
+        return pending.sort((a, b) => b.createdAt - a.createdAt);
+    } catch (error) {
+        console.error('Error getting pending withdrawals:', error);
+        throw error;
+    }
+};
+
+export const approveWithdrawRequest = async (walletId, transactionId) => {
+    try {
+        const wallet = await Wallet.findById(walletId);
+        if (!wallet) throw new Error('Wallet not found');
+
+        const transaction = wallet.transactions.id(transactionId);
+        if (!transaction) throw new Error('Transaction not found');
+        if (transaction.status !== 'pending') throw new Error('Transaction is not pending');
+
+        transaction.status = 'completed';
+        wallet.totalWithdrawn += transaction.amount;
+
+        await wallet.save();
+
+        // Notify tutor
+        await sendNotification({
+            recipientId: wallet.tutor,
+            recipientType: 'tutor',
+            title: 'Withdrawal Approved',
+            message: `Your withdrawal request of ₹${transaction.amount} has been approved and processed.`,
+            type: 'funds_released',
+            relatedId: wallet._id
+        });
+
+        return wallet;
+    } catch (error) {
+        console.error('Error approving withdrawal request:', error);
+        throw error;
+    }
+};
+
+export const rejectWithdrawRequest = async (walletId, transactionId) => {
+    try {
+        const wallet = await Wallet.findById(walletId);
+        if (!wallet) throw new Error('Wallet not found');
+
+        const transaction = wallet.transactions.id(transactionId);
+        if (!transaction) throw new Error('Transaction not found');
+        if (transaction.status !== 'pending') throw new Error('Transaction is not pending');
+
+        transaction.status = 'failed';
+        wallet.balance += transaction.amount; // Refund balance
+
+        await wallet.save();
+
+        // Notify tutor
+        await sendNotification({
+            recipientId: wallet.tutor,
+            recipientType: 'tutor',
+            title: 'Withdrawal Rejected',
+            message: `Your withdrawal request of ₹${transaction.amount} was rejected, and the funds have been returned to your wallet.`,
+            type: 'funds_released',
+            relatedId: wallet._id
+        });
+
+        return wallet;
+    } catch (error) {
+        console.error('Error rejecting withdrawal request:', error);
+        throw error;
+    }
+};
+

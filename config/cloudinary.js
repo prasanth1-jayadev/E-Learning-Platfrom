@@ -27,8 +27,8 @@ const uploadToCloudinary = (buffer, folder = 'uploads', resourceType = 'auto') =
       { 
         folder, 
         resource_type: resourceType,
-        chunk_size: 6000000,        // 6MB chunks for large files
-        timeout: 120000             // 2 min timeout for video uploads
+        chunk_size: 6000000,        // 6Mb
+        timeout: 120000             // 2 min timeout
       },
       (error, result) => {
         if (error) return reject(error);
