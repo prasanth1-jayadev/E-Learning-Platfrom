@@ -58,6 +58,8 @@ router.post('/order/:id/update-status', isAdmin, orderController.updateOrderStat
 // Wallet routes
 router.get('/wallet', isAdmin, walletController.getWalletOverview);
 router.get('/wallet/tutor/:tutorId', isAdmin, walletController.getTutorWalletDetail);
+router.post('/wallet/approve-withdrawal', isAdmin, walletController.approveWithdrawal);
+router.post('/wallet/reject-withdrawal', isAdmin, walletController.rejectWithdrawal);
 
 // Coupon routes
 router.get('/coupons', isAdmin, couponController.getCouponsPage);
