@@ -8,6 +8,8 @@ import * as couponController from '../controllers/admin/couponController.js';
 import * as salesReportController from '../controllers/admin/salesReportController.js';
 import { isAdmin, redirectIfAdmin } from '../middleware/authMiddleware.js';
 import Tutor from '../models/Tutor.js';
+import * as reportController from '../controllers/admin/reportController.js';
+  
 
 const router = express.Router();
 
@@ -49,6 +51,9 @@ router.get('/course/:id', isAdmin, courseController.getCourseDetail);
 router.post('/course/:id/toggle-status', isAdmin, courseController.toggleCourseStatus);
 router.post('/course/:id/delete', isAdmin, courseController.deleteCourse);
 
+
+router.get('/reports', isAdmin, reportController.getReportsDashboard);
+router.post('/course/:id/moderation', isAdmin, reportController.updateCourseModerationStatus);
 
 
 router.get('/orders', isAdmin, orderController.getOrders);

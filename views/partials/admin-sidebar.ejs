@@ -1,4 +1,4 @@
-﻿<!-- Mobile Header - only visible on screens below 1024px -->
+<!-- Mobile Header - only visible on screens below 1024px -->
 <div style="display:none" id="adminMobileHeader" class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-50 shadow-sm">
     <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-[#00d9b1] rounded-lg flex items-center justify-center">
@@ -96,6 +96,12 @@
                 href="/admin/courses">
                 <span class="material-icons-outlined text-[20px]">menu_book</span>
                 <span class="font-medium">Courses</span>
+            </a>
+
+            <a class="flex items-center gap-3 px-4 py-3 <%= currentPage === 'reports' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' %> rounded-xl transition-all"
+                href="/admin/reports">
+                <span class="material-icons-outlined text-[20px]">gavel</span>
+                <span class="font-medium">Reports & Moderation</span>
             </a>
 
 

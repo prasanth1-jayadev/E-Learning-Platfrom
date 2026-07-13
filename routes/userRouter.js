@@ -10,6 +10,9 @@ import { isUser, redirectIfUser } from '../middleware/authMiddleware.js';
 import passport from '../config/passport.js';
 import { upload } from '../config/cloudinary.js';
 import * as paymentController from '../controllers/user/paymentController.js';
+import Report from '../models/Report.js';
+
+
 
 const router = express.Router();
 
@@ -96,6 +99,7 @@ router.get('/chat', isUser, (req, res) => res.redirect('/chat/user'));
 router.get('/courses', courseController.getCourses);
 router.get('/course/:id', courseController.getCourseDetail);
 router.post('/course/:id/review', isUser, courseController.addReview);
+router.post('/course/:id/report', isUser, courseController.reportCourse);
 
 // Tutor Routes
 router.get('/tutors', tutorController.getTutors);

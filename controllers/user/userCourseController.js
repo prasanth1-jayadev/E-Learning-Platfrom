@@ -3,7 +3,8 @@ import Course from '../../models/Course.js';
 import User from '../../models/User.js';
 import Cart from '../../models/Cart.js';
 import Review from '../../models/Review.js';
-
+import Report from '../../models/Report.js';
+import { response } from 'express';
 
 const getCourses = async (req, res) => {
   try {
@@ -25,6 +26,7 @@ const getCourses = async (req, res) => {
 
     const filter = {
       isPublished: true,
+      isListed: { $ne: false },
       $nor: [
         { title: 'psychology', category: 'SCIENCE' }
       ]
@@ -139,6 +141,11 @@ const getCourseDetail = async (req, res) => {
       hasReviewed = !!existingReview;
     }
 
+    if (course.isListed === false && !isPurchased) {
+      return res.redirect('/user/courses?error=' + encodeURIComponent('This course is currently unavailable.'));
+    }
+
+
     const reviews = await Review.find({ course: id })
       .populate('user', 'fullName avatar')
       .sort({ createdAt: -1 });
@@ -158,6 +165,8 @@ const getCourseDetail = async (req, res) => {
     res.redirect('/user/courses');
   }
 };
+
+
 
 
 const addReview = async (req, res) => {
@@ -232,9 +241,51 @@ const blockuser = async (req, res) => {
   res.json(reqblock);
 };
 
+const reportCourse = async (req, res) => {
+  try {
+    const { id: courseId } = req.params;
+    const userId = req.session.userId;
+    const { reasonType, customReason } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Please log in first" });
+    }
+
+    if (!reasonType) {
+      return res.status(400).json({ success: false, message: "Reason type is required" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ success: false, message: "Course not found" });
+    }
+
+    const existingReport = await Report.findOne({ userId, courseId });
+    if (existingReport) {
+      return res.status(400).json({ success: false, message: "You have already reported this course." });
+    }
+
+    const report = new Report({
+      userId,
+      courseId,
+      reasonType,
+      customReason: reasonType === 'Other' ? customReason : ''
+    });
+    await report.save();
+
+    course.reportCount = (course.reportCount || 0) + 1;
+    await course.save();
+
+    res.json({ success: true, message: "Course reported successfully. Thank you for your feedback!" });
+  } catch (error) {
+    console.error("Report course error:", error);
+    res.status(500).json({ success: false, message: "Failed to submit report. Please try again." });
+  }
+};
+
 export {
   getCourses,
   getCourseDetail,
   addReview,
-  blockuser
+  blockuser,reportCourse
 };
