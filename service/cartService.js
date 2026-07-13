@@ -85,3 +85,5 @@ export const getCartCount = async (userId) => {
   const cart = await Cart.findOne({ user: userId });
   return cart ? cart.items.length : 0;
 };
+
+

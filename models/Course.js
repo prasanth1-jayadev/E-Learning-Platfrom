@@ -106,6 +106,18 @@ const courseSchema = new mongoose.Schema({
     type: String,
     enum: ['draft', 'published', 'archived'],
     default: 'draft'
+  },
+  reportCount:{
+    type:Number,
+    default:0
+  },
+  isListed:{
+    type:Boolean,
+    default:true
+  },
+  unlistingReason:{
+    type:String,
+    default:null
   }
 
 }, {

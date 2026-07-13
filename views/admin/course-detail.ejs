@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="en">
 
 <head>
@@ -169,6 +169,21 @@
                 </div>
             </div>
 
+            <!-- Admin Audit Video Player -->
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                <h4 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Admin Video Audit Player</h4>
+                <div class="bg-black rounded-lg overflow-hidden flex items-center justify-center">
+                    <% if (course.lessons && course.lessons.length > 0 && course.lessons[0].videoUrl) { %>
+                        <video id="auditVideo" controls controlsList="nodownload" oncontextmenu="return false;" class="w-full max-h-[400px] object-contain">
+                            <source src="<%= course.lessons[0].videoUrl %>">
+                            Your browser does not support the video tag.
+                        </video>
+                    <% } else { %>
+                        <div class="text-slate-400 py-12 text-center">No video lessons uploaded or preview available.</div>
+                    <% } %>
+                </div>
+            </div>
+
             <!-- Lessons -->
             <div
                 class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
@@ -177,8 +192,8 @@
                 <% if (course.lessons && course.lessons.length> 0) { %>
                     <div class="space-y-3">
                         <% course.lessons.forEach((lesson, index)=> { %>
-                            <div
-                                class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <div onclick="playAuditVideo('<%= lesson.videoUrl || '' %>')"
+                                class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-primary/45">
                                 <div
                                     class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
                                     <span class="text-primary font-semibold">
@@ -251,6 +266,29 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="/js/admin-session.js"></script>
+        <script>
+            function playAuditVideo(url) {
+                const video = document.getElementById('auditVideo');
+                if (!video || !url) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Audit Player',
+                        text: 'No video URL is available for this lesson.',
+                        confirmButtonColor: '#00d9b1'
+                    });
+                    return;
+                }
+                const source = video.querySelector('source');
+                source.src = url;
+                video.load();
+                video.play();
+                
+                video.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        </script>
 </body>
 
 </html>
