@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= tutor.fullName %> - Learnify</title>
+    <title>
+        <%= tutor.fullName %> - Learnify
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,12 +21,25 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a1a1a; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+        }
+
         /* Container */
-        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
-        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
         /* Tutor Header */
         .tutor-header {
             background: white;
@@ -34,6 +50,7 @@
             gap: 2rem;
             align-items: flex-start;
         }
+
         .tutor-avatar {
             width: 150px;
             height: 150px;
@@ -48,20 +65,56 @@
             overflow: hidden;
             flex-shrink: 0;
         }
-        .tutor-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .tutor-info { flex: 1; }
-        .tutor-name { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .tutor-title { color: #666; font-size: 1rem; margin-bottom: 1rem; }
+
+        .tutor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tutor-info {
+            flex: 1;
+        }
+
+        .tutor-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .tutor-title {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
         .tutor-rating {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
-        .rating-star { color: #fbbf24; font-size: 1.25rem; }
-        .rating-value { font-weight: 600; font-size: 1.1rem; }
-        .rating-count { color: #666; font-size: 0.9rem; }
-        .action-buttons { display: flex; gap: 1rem; }
+
+        .rating-star {
+            color: #fbbf24;
+            font-size: 1.25rem;
+        }
+
+        .rating-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .rating-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
         .btn-primary {
             background: #00d9b1;
             color: white;
@@ -72,7 +125,11 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        .btn-primary:hover { background: #00c29d; }
+
+        .btn-primary:hover {
+            background: #00c29d;
+        }
+
         .btn-secondary {
             background: white;
             color: #666;
@@ -83,17 +140,25 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        .btn-secondary:hover { background: #f9fafb; }
-        
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+
         /* Content Grid */
-        .content-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
-        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
         /* About Section */
         .about-section {
             background: white;
             border-radius: 16px;
             padding: 2rem;
         }
+
         .section-title {
             font-size: 1.25rem;
             font-weight: 700;
@@ -102,13 +167,21 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .section-icon { color: #00d9b1; }
+
+        .section-icon {
+            color: #00d9b1;
+        }
+
         .about-text {
             color: #666;
             line-height: 1.8;
             margin-bottom: 1.5rem;
         }
-        .expertise-section { margin-top: 2rem; }
+
+        .expertise-section {
+            margin-top: 2rem;
+        }
+
         .expertise-title {
             font-size: 1rem;
             font-weight: 600;
@@ -117,11 +190,13 @@
             letter-spacing: 0.5px;
             margin-bottom: 1rem;
         }
+
         .expertise-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
         }
+
         .expertise-tag {
             background: #f3f4f6;
             color: #666;
@@ -130,31 +205,38 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
-        
+
         /* Courses Section */
         .courses-section {
             background: white;
             border-radius: 16px;
             padding: 2rem;
         }
+
         .courses-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
         }
+
         .view-all-link {
             color: #00d9b1;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
         }
-        .view-all-link:hover { text-decoration: underline; }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
         }
+
         .course-card {
             border: 1px solid #e5e7eb;
             border-radius: 12px;
@@ -164,10 +246,12 @@
             color: inherit;
             display: block;
         }
+
         .course-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
+
         .course-thumbnail {
             width: 100%;
             height: 180px;
@@ -177,8 +261,17 @@
             justify-content: center;
             overflow: hidden;
         }
-        .course-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
-        .course-content { padding: 1.25rem; }
+
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-content {
+            padding: 1.25rem;
+        }
+
         .course-title {
             font-size: 1rem;
             font-weight: 600;
@@ -188,6 +281,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
         .course-meta {
             display: flex;
             align-items: center;
@@ -196,21 +290,25 @@
             font-size: 0.85rem;
             margin-bottom: 1rem;
         }
+
         .course-meta-item {
             display: flex;
             align-items: center;
             gap: 0.25rem;
         }
+
         .course-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
         .course-price {
             font-size: 1.25rem;
             font-weight: 700;
             color: #1a1a1a;
         }
+
         .enroll-btn {
             background: #00d9b1;
             color: white;
@@ -222,14 +320,17 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        .enroll-btn:hover { background: #00c29d; }
-        
+
+        .enroll-btn:hover {
+            background: #00c29d;
+        }
+
         .no-courses {
             text-align: center;
             padding: 3rem;
             color: #999;
         }
-        
+
         /* Footer */
         .footer {
             text-align: center;
@@ -237,76 +338,104 @@
             color: #999;
             font-size: 0.85rem;
         }
-        
+
         /* Responsive */
         @media (max-width: 968px) {
-            .content-grid { grid-template-columns: 1fr; }
-            .courses-grid { grid-template-columns: 1fr; }
-            .tutor-header { flex-direction: column; align-items: center; text-align: center; }
-            .action-buttons { justify-content: center; }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tutor-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
         }
     </style>
 </head>
+
 <body>
     <%- include('../partials/user-navbar') %>
 
-<!-- Main Container -->
-<div class="container">
-    <!-- Tutor Header -->
-    <div class="tutor-header">
-        <div class="tutor-avatar">
-            <% if (tutor.avatar) { %>
-                <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>">
-            <% } else { %>
-                <%= tutor.fullName.charAt(0).toUpperCase() %>
-            <% } %>
-        </div>
-        <div class="tutor-info">
-            <h1 class="tutor-name"><%= tutor.fullName %></h1>
-            <p class="tutor-title"><%= tutor.subjects || 'Professional Instructor' %></p>
-            <div class="tutor-rating">
-                <span class="rating-star">★</span>
-                <span class="rating-value"><%= tutor.rating || 4.5 %></span>
-                <span class="rating-count">(<%= tutor.reviewCount || 0 %> reviews)</span>
-            </div>
-            <div class="action-buttons">
-                <!-- <button class="btn-primary px-2  text-sm"> <%= tutor.fullName.split(' ')[0] %></button> -->
-             
-                                <button class="btn-secondary">Message</button>
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Tutor Header -->
+            <div class="tutor-header">
+                <div class="tutor-avatar">
+                    <% if (tutor.avatar) { %>
+                        <img src="<%= tutor.avatar %>" alt="<%= tutor.fullName %>">
+                        <% } else { %>
+                            <%= tutor.fullName.charAt(0).toUpperCase() %>
+                                <% } %>
+                </div>
+                <div class="tutor-info">
+                    <h1 class="tutor-name">
+                        <%= tutor.fullName %>
+                    </h1>
+                    <p class="tutor-title">
+                        <%= tutor.subjects || 'Professional Instructor' %>
+                    </p>
+                    <div class="tutor-rating">
+                        <span class="rating-star">★</span>
 
-             
-            </div>
-        </div>
-    </div>
- 
-    <!-- Content Grid -->
-    <div class="content-grid">
-        <!-- About Section -->
-        <div class="about-section">
-            <h2 class="section-title">
-                <span class="section-icon">👨‍🏫</span>
-                About the Instructor
-            </h2>
-            <div class="about-text">
-                <%= tutor.bio || 'Experienced instructor dedicated to helping students achieve their learning goals.' %>
-            </div>
-            
-            <% if (tutor.subjects) { %>
-            <div class="expertise-section">
-                <h3 class="expertise-title">Top Expertise</h3>
-                <div class="expertise-tags">
-                    <% tutor.subjects.split(',').forEach(subject => { %>
-                        <span class="expertise-tag"><%= subject.trim() %></span>
-                    <% }); %>
+                        <% if (tutor.reviewCount> 0) { %>
+                            <span class="rating-value">
+                                <%= tutor.rating.toFixed(1) %>
+                            </span>
+                            <span class="rating-count">(<%= tutor.reviewCount %> reviews)</span>
+                            <% } else { %>
+                                <span class="rating-value">No ratings yet</span>
+                                <% } %>
+                    </div>
+                    <div class="action-buttons">
+                        <!-- <button class="btn-primary px-2  text-sm"> <%= tutor.fullName.split(' ')[0] %></button> -->
+
+                        <button class="btn-secondary">Message</button>
+
+
+                    </div>
                 </div>
             </div>
-            <% } %>
-        </div>
 
-        <!-- Courses Section -->
-        <div class="courses-section">
-            <div class="courses-header">
-                <h2 class="section-title">Courses by <%= tutor.fullName.split(' ')[0] %></h2>
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- About Section -->
+                <div class="about-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">👨‍🏫</span>
+                        About the Instructor
+                    </h2>
+                    <div class="about-text">
+                        <%= tutor.bio
+                            || 'Experienced instructor dedicated to helping students achieve their learning goals.' %>
+                    </div>
+
+                    <% if (tutor.subjects) { %>
+                        <div class="expertise-section">
+                            <h3 class="expertise-title">Top Expertise</h3>
+                            <div class="expertise-tags">
+                                <% tutor.subjects.split(',').forEach(subject=> { %>
+                                    <span class="expertise-tag">
+                                        <%= subject.trim() %>
+                                    </span>
+                                    <% }); %>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+
+                <!-- Courses Section -->
+                <div class="courses-section">
+                    <div class="courses-header">
+                        <h2 class="section-title">Courses by <%= tutor.fullName.split(' ')[0] %></h2>
                 <% if (courses.length > 0) { %>
                     <a href="/user/courses" class="view-all-link">View All</a>
                 <% } %>
