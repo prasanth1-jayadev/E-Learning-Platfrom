@@ -10,14 +10,13 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#00d9b1'
-                    }
+                    colors: { primary: '#00d9b1' },
+                    fontFamily: { display: ['Be Vietnam Pro', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
         * {
             margin: 0;
@@ -26,74 +25,10 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Be Vietnam Pro', sans-serif;
             background: #f0f4f3;
             color: #1a1a1a;
             min-height: 100vh;
-        }
-
-        /* Fixed Sidebar Layout */
-        .page-container {
-            display: flex;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-            gap: 2rem;
-            align-items: flex-start;
-        }
-
-        @media (min-width: 768px) {
-            .page-container {
-                padding: 2rem 2rem;
-            }
-        }
-
-        /* Sidebar - Sticky/Fixed on Left */
-        aside {
-            width: 280px;
-            flex-shrink: 0;
-            position: sticky;
-            top: 2rem;
-            align-self: flex-start;
-            max-height: calc(100vh - 4rem);
-            overflow-y: auto;
-        }
-
-        /* Hide scrollbar for sidebar */
-        aside::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        aside::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        aside::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 4px;
-        }
-
-        aside::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        @media (max-width: 767px) {
-            .page-container {
-                flex-direction: column;
-            }
-            
-            aside {
-                width: 100%;
-                position: relative;
-                top: 0;
-                max-height: none;
-            }
         }
 
         /* Minimal Header */
@@ -368,12 +303,12 @@
     <%- include('../partials/user-navbar') %>
 
     <!-- Page Container with Fixed Sidebar -->
-    <div class="page-container">
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col md:flex-row gap-6 md:gap-8 items-start">
         <!-- Fixed Sidebar on Left -->
         <%- include('../partials/user-profile-sidebar', { user: user, currentPage: 'my-courses' }) %>
 
         <!-- Main Content Area -->
-        <main class="main-content">
+        <main class="flex-1 w-full min-w-0">
         <!-- Minimal Header -->
         <div class="page-header">
             <div class="header-top">

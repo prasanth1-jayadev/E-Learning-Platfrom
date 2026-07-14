@@ -3,28 +3,78 @@
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
-<aside class="w-full md:w-64 flex-shrink-0 bg-white rounded-2xl shadow-sm p-5">
+<aside class="w-full md:w-64 flex-shrink-0 bg-white rounded-2xl shadow-sm p-5 md:sticky md:top-24">
   <!-- Avatar + Name -->
-  <div class="flex flex-col items-center mb-5">
+  <!-- Avatar + Name -->
+<div class="flex flex-col items-center mb-5">
+
+    <!-- Hidden File Input -->
+    <input
+        type="file"
+        id="userAvatarInput"
+        accept="image/*"
+        class="hidden">
+
     <div class="relative mb-3">
-      <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-        <% if (user.avatar) { %>
-          <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="w-full h-full object-cover">
-        <% } else { %>
-          <svg class="w-9 h-9 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-          </svg>
-        <% } %>
-      </div>
-      <div class="absolute bottom-0 right-0 w-5 h-5 bg-primary rounded-full border-2 border-white flex items-center justify-center">
-        <svg class="w-2.5 h-2.5 text-gray-900" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/>
-        </svg>
-      </div>
+
+        <!-- Avatar -->
+        <div
+            class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
+
+            <% if (user.avatar) { %>
+                <img
+                    id="sidebarAvatar"
+                    src="<%= user.avatar %>"
+                    alt="<%= user.fullName %>"
+                    class="w-full h-full object-cover">
+            <% } else { %>
+                <svg
+                    class="w-9 h-9 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                        d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+                </svg>
+            <% } %>
+
+        </div>
+
+        <!-- Camera Button -->
+        <label
+            for="userAvatarInput"
+            class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary border-2 border-white shadow cursor-pointer flex items-center justify-center hover:scale-105 transition">
+
+            <svg
+                class="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24">
+
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+
+                <circle
+                    cx="12"
+                    cy="13"
+                    r="3"/>
+            </svg>
+
+        </label>
+
     </div>
-    <p class="font-bold text-gray-900 text-sm text-center"><%= user.fullName %></p>
-    <p class="text-xs text-gray-500 text-center mt-1"><%= user.email %></p>
-  </div>
+
+    <p class="font-bold text-gray-900 text-sm text-center">
+        <%= user.fullName %>
+    </p>
+
+    <p class="text-xs text-gray-500 text-center mt-1">
+        <%= user.email %>
+    </p>
+
+</div>
 
   <!-- Nav -->
   <nav class="flex flex-row overflow-x-auto gap-2 md:flex-col md:space-y-1 pb-2 md:pb-0 whitespace-nowrap scrollbar-none">
@@ -91,3 +141,91 @@ function confirmLogout(logoutUrl) {
     });
 }
 </script>
+
+
+
+
+<script>
+document.getElementById("userAvatarInput")?.addEventListener("change", async function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid file type',
+            text: 'Please upload a valid image (JPG, PNG, or WEBP)'
+        });
+        this.value = '';
+        return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        Swal.fire({
+            icon: 'error',
+            title: 'File too large',
+            text: 'Image size must be less than 5MB'
+        });
+        this.value = '';
+        return;
+    }
+
+    // Show loading state
+    Swal.fire({
+        title: 'Uploading photo...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+        const response = await fetch('/user/upload-avatar', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Uploaded!',
+                text: 'Profile photo updated successfully!',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            // Update all avatars on the page
+            const img = document.getElementById("sidebarAvatar");
+            if (img) {
+                img.src = data.avatar;
+            }
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload failed',
+                text: data.message || 'Failed to upload photo'
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong'
+        });
+    }
+});
+</script>
+
+
+
+
+
