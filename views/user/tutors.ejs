@@ -701,12 +701,20 @@
                                         </div>
                                         <% } %>
                                 </div>
-                                <div class="tutor-rating">
-                                    <span class="star-icon">★</span>
-                                    <span class="rating-text"><strong>
-                                            <%= tutor.rating || 4.5 %>
-                                        </strong> (<%= tutor.reviewCount || 0 %> REVIEWS)</span>
-                                </div>
+                               <div class="tutor-rating">
+    <span class="star-icon">★</span>
+
+    <% if (tutor.reviewCount > 0) { %>
+        <span class="rating-text">
+            <strong><%= tutor.rating.toFixed(1) %></strong>
+            (<%= tutor.reviewCount %> REVIEWS)
+        </span>
+    <% } else { %>
+        <span class="rating-text">
+            <strong>No ratings yet</strong>
+        </span>
+    <% } %>
+</div>
                                 <p class="tutor-bio">
                                     <%= tutor.bio
                                         || 'Experienced tutor specializing in various subjects. Passionate about helping students achieve their learning goals.'

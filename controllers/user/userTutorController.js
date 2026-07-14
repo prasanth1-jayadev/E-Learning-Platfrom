@@ -4,141 +4,170 @@ import User from '../../models/User.js';
 
 const getTutors = async (req, res) => {
   try {
-    const user = req.session.userId ? await User.findById(req.session.userId) : null;
-    const search = req.query.search || '';
-    const sort = req.query.sort || 'newest';
+    const user = req.session.userId
+      ? await User.findById(req.session.userId)
+      : null;
+
+    const search = req.query.search || "";
+    const sort = req.query.sort || "newest";
 
     const filter = {
-      approvalStatus: 'approved'
+      approvalStatus: "approved",
     };
 
     if (search) {
       filter.$or = [
-        { fullName: { $regex: search, $options: 'i' } },
-        { bio: { $regex: search, $options: 'i' } },
-        { subjects: { $regex: search, $options: 'i' } }
+        { fullName: { $regex: search, $options: "i" } },
+        { bio: { $regex: search, $options: "i" } },
+        { subjects: { $regex: search, $options: "i" } },
       ];
     }
 
     let sortQuery = {};
+
     switch (sort) {
-      case 'name-az':
+      case "name-az":
         sortQuery = { fullName: 1 };
         break;
-      case 'name-za':
+      case "name-za":
         sortQuery = { fullName: -1 };
         break;
-      case 'newest':
       default:
         sortQuery = { createdAt: -1 };
-        break;
     }
 
     const tutors = await Tutor.find(filter)
-      .select('fullName email bio subjects phone avatar')
+      .select("fullName email bio subjects phone avatar")
       .sort(sortQuery)
       .lean();
 
-    const tutorsWithData = await Promise.all(tutors.map(async (tutor, index) => {
-      const ratings = [5.0, 4.9, 4.8, 4.7, 4.6, 4.5];
-      const rating = ratings[index % ratings.length];
-      const reviewCount = 50 - (index * 2);
+    const tutorsWithData = await Promise.all(
+      tutors.map(async (tutor) => {
+        const courses = await Course.find({
+          tutor: tutor._id,
+          isPublished: true,
+        })
+          .select("rating reviewCount")
+          .lean();
 
-      const courseCount = await Course.countDocuments({
-        tutor: tutor._id,
-        isPublished: true
-      });
+        let totalReviews = 0;
+        let totalRatingPoints = 0;
 
-      const hourlyRate = 250 - (index * 15);
+        courses.forEach((course) => {
+          const reviewCount = course.reviewCount || 0;
+          const rating = course.rating || 0;
 
-      return {
-        ...tutor,
-        rating: rating,
-        reviewCount: reviewCount > 10 ? reviewCount : 15,
-        courseCount: courseCount,
-        hourlyRate: hourlyRate > 100 ? hourlyRate : 150,
-        profileImage: tutor.avatar,
-        bio: tutor.bio || 'Experienced tutor specializing in various subjects.'
-      };
-    }));
+          totalReviews += reviewCount;
+          totalRatingPoints += rating * reviewCount;
+        });
 
-    if (sort === 'rating-high') {
+        const overallRating =
+          totalReviews > 0
+            ? parseFloat((totalRatingPoints / totalReviews).toFixed(1))
+            : 0;
+
+        return {
+          ...tutor,
+          rating: overallRating,
+          reviewCount: totalReviews,
+          courseCount: courses.length,
+          profileImage: tutor.avatar,
+          bio:
+            tutor.bio ||
+            "Experienced tutor specializing in various subjects.",
+        };
+      })
+    );
+
+    if (sort === "rating-high") {
       tutorsWithData.sort((a, b) => b.rating - a.rating);
-    } else if (sort === 'rating-low') {
+    } else if (sort === "rating-low") {
       tutorsWithData.sort((a, b) => a.rating - b.rating);
-    } else if (sort === 'price-high') {
-      tutorsWithData.sort((a, b) => b.hourlyRate - a.hourlyRate);
-    } else if (sort === 'price-low') {
-      tutorsWithData.sort((a, b) => a.hourlyRate - b.hourlyRate);
     }
 
-    res.render('user/tutors', {
+    res.render("user/tutors", {
       tutors: tutorsWithData,
       search,
       sort,
       user,
-      currentPage: 'tutors'
+      currentPage: "tutors",
     });
   } catch (error) {
-    console.error('Get tutors error:', error);
-    res.render('user/tutors', {
+    console.error(error);
+    res.render("user/tutors", {
       tutors: [],
-      search: '',
-      sort: 'newest',
+      search: "",
+      sort: "newest",
       user: null,
-      currentPage: 'tutors'
+      currentPage: "tutors",
     });
   }
 };
 
 const getTutorDetail = async (req, res) => {
   try {
-    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    const user = req.session.userId
+      ? await User.findById(req.session.userId)
+      : null;
+
     const tutor = await Tutor.findById(req.params.id).lean();
 
     if (!tutor) {
-      return res.redirect('/user/tutors');
+      return res.redirect("/user/tutors");
     }
 
     const courses = await Course.find({
       tutor: req.params.id,
-      isPublished: true
+      isPublished: true,
     })
-      .select('title description price thumbnail lessons')
+      .select(
+        "title description price thumbnail lessons rating reviewCount"
+      )
       .lean();
 
-    const coursesWithStatus = courses.map(course => {
-      const isPurchased = user && user.enrolledCourses && user.enrolledCourses.some(
-        cId => cId.toString() === course._id.toString()
-      );
+    let totalReviews = 0;
+    let totalRatingPoints = 0;
+
+    courses.forEach((course) => {
+      const reviewCount = course.reviewCount || 0;
+      const rating = course.rating || 0;
+
+      totalReviews += reviewCount;
+      totalRatingPoints += rating * reviewCount;
+    });
+
+    const overallRating =
+      totalReviews > 0
+        ? parseFloat((totalRatingPoints / totalReviews).toFixed(1))
+        : 0;
+
+    const coursesWithStatus = courses.map((course) => {
+      const isPurchased =
+        user &&
+        user.enrolledCourses &&
+        user.enrolledCourses.some(
+          (cId) => cId.toString() === course._id.toString()
+        );
+
       return {
         ...course,
-        isPurchased: !!isPurchased
+        isPurchased: !!isPurchased,
       };
     });
 
-    const tutorDataMap = {
-      'riveratutor': { rating: 5.0, reviewCount: 48 },
-      'alextutor': { rating: 4.9, reviewCount: 42 },
-      'davidtutor': { rating: 4.8, reviewCount: 38 },
-      'elna rodrigues': { rating: 4.7, reviewCount: 35 }
-    };
-
-    const tutorKey = tutor.fullName.toLowerCase();
-    const ratingData = tutorDataMap[tutorKey] || { rating: 4.5, reviewCount: 20 };
-
-    res.render('user/tutor-detail', {
+    res.render("user/tutor-detail", {
       tutor: {
         ...tutor,
-        ...ratingData
+        rating: overallRating,
+        reviewCount: totalReviews,
       },
       courses: coursesWithStatus,
       user,
-      currentPage: 'tutors'
+      currentPage: "tutors",
     });
   } catch (error) {
-    console.error('Get tutor detail error:', error);
-    res.redirect('/user/tutors');
+    console.error("Get tutor detail error:", error);
+    res.redirect("/user/tutors");
   }
 };
 
