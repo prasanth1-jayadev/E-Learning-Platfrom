@@ -1,4 +1,5 @@
 import * as userService from '../../service/userService.js';
+import Payment from '../../models/Payment.js';
 import { uploadToCloudinary } from '../../config/cloudinary.js';
 import {
     validateEmail,
@@ -118,16 +119,32 @@ const getMyCourses = async (req, res) => {
         const { user, courses } = await userService.getEnrolledCourses(userId);
 
         const page = parseInt(req.query.page) || 1;
-        const limit = 4;
+        const limit = 3;
         const skip = (page - 1) * limit;
 
         const totalCourses = courses.length;
         const paginatedCourses = courses.slice(skip, skip + limit);
         const totalPages = Math.ceil(totalCourses / limit) || 1;
 
+        // Fetch payments for the user to map orderId to each course for invoice download
+        const payments = await Payment.find({ user: userId });
+        const courseOrderMap = {};
+        payments.forEach(payment => {
+            if (payment.course && payment.orderId) {
+                courseOrderMap[payment.course.toString()] = payment.orderId;
+            }
+        });
+
+        // Attach orderId to paginated courses
+        const coursesWithOrderIds = paginatedCourses.map(course => {
+            const courseObj = course.toObject ? course.toObject() : course;
+            courseObj.orderId = courseOrderMap[course._id.toString()];
+            return courseObj;
+        });
+
         res.render('user/my-courses', {
             user,
-            courses: paginatedCourses,
+            courses: coursesWithOrderIds,
             currentPage: 'my-courses',
             page,
             totalPages,

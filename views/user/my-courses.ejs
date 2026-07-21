@@ -316,6 +316,7 @@
                 <span class="course-count"><%= totalCourses %> courses</span>
             </div>
             <p class="page-subtitle">Continue learning and track your progress</p>
+
         </div>
 
         <% if (courses && courses.length > 0) { %>
@@ -356,7 +357,10 @@
                                     <%= course.lessons ? course.lessons.length : 0 %> lessons
                                 </span>
                             </div>
-                            <button class="continue-btn">Continue Learning</button>
+                            <button class="continue-btn" onclick="event.stopPropagation(); window.location.href='/user/course/<%= course._id %>'">Continue Learning</button>
+                            <% if (course.orderId) { %>
+                                <a href="/user/invoice/<%= course.orderId %>" onclick="event.stopPropagation();" style="display: block; text-align: center; width: 100%; padding: 0.4rem; margin-top: 0.5rem; background-color: #f3f4f6; color: #374151; border-radius: 6px; font-weight: 600; font-size: 0.75rem; text-decoration: none; transition: background-color 0.2s ease;" onmouseover="this.style.backgroundColor='#e5e7eb'" onmouseout="this.style.backgroundColor='#f3f4f6'">Download Invoice</a>
+                            <% } %>
                         </div>
                     </div>
                 <% }); %>
