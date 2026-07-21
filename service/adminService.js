@@ -413,9 +413,6 @@ const getRecentOrders = async (limit = 10) => {
     }
 };
 
-// ---------------------------------------------------------------------------
-// Student management
-// ---------------------------------------------------------------------------
 
 /**
  * Paginated student list with optional search and blocked-status filter.
@@ -465,7 +462,7 @@ const toggleStudentBlock = async (studentId, adminId) => {
     if (!student || student.role !== 'user') {
         throw new Error('Student not found');
     }
-
+   
     student.isBlocked = !student.isBlocked;
     student.blockedBy = student.isBlocked ? adminId : null;
     student.blockedAt = student.isBlocked ? new Date() : null;
@@ -474,13 +471,7 @@ const toggleStudentBlock = async (studentId, adminId) => {
     return { student, action: student.isBlocked ? 'blocked' : 'unblocked' };
 };
 
-// ---------------------------------------------------------------------------
-// Platform-wide stats (used on the admin dashboard)
-// ---------------------------------------------------------------------------
 
-/**
- * Count total students, courses and compute total completed revenue.
- */
 const getPlatformStats = async () => {
     const [students, courses, revenueResult] = await Promise.all([
         User.countDocuments({ role: 'user' }),
