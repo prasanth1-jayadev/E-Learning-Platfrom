@@ -39,9 +39,12 @@ const addToWishlist = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        const course = await Course.findById(courseId);
+        const course = await Course.findById(courseId).populate('tutor')
         if (!course) {
             return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+         if (course.tutor && course.tutor.email === user.email) {
+            return res.json({ success: false, message: 'You cannot add your own course to your wishlist' });
         }
 
         // Check if already in

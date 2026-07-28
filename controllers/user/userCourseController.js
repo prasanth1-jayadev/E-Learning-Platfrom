@@ -73,7 +73,17 @@ const getCourses = async (req, res) => {
       .sort(sortQuery)
       .skip(skip)
       .limit(limit);
-
+     
+   
+courses.forEach(course => {
+  if (!course.tutor) {
+    console.log("❌ BROKEN COURSE FOUND");
+    console.log("Course ID:", course._id);
+    console.log("Title:", course.title);
+  } else {
+    console.log("✅", course.title, "->", course.tutor.fullName);
+  }
+});
     const totalPages = Math.ceil(totalCourses / limit);
 
     res.render('user/courses', {

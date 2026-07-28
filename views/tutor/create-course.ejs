@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Course - Learnify</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Inter, sans-serif; background: #f5f7f6; color: #1a1a1a; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
@@ -133,6 +134,36 @@
             .form-card { padding: 1.5rem; }
             .form-title { font-size: 1.5rem; margin-bottom: 2rem; }
         }
+
+        /* Cropper Modal Styles */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .crop-modal.active { display: flex; }
+        .crop-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .crop-image-wrapper { max-height: 60vh; overflow: hidden; }
+        .crop-actions { display: flex; justify-content: flex-end; gap: 1rem; }
+        .btn-cancel { background: #f3f4f6; color: #4b5563; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-save { background: #00d9b1; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -230,24 +261,39 @@
     </div>
 </div>
 
+<!-- Cropper Modal -->
+<div class="crop-modal" id="cropModal">
+    <div class="crop-container">
+        <h3 style="font-size: 1.25rem; font-weight: 600; color: #1a1a1a;">Crop Thumbnail</h3>
+        <div class="crop-image-wrapper">
+            <img id="imageToCrop" style="max-width: 100%;">
+        </div>
+        <div class="crop-actions">
+            <button class="btn-cancel" onclick="closeCropModal()">Cancel</button>
+            <button class="btn-save" id="btnCrop" type="button">Crop & Save</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
 // Character counter for description
 document.getElementById('description').addEventListener('input', function(e) {
     document.getElementById('descCount').textContent = e.target.value.length;
 });
 
-// Thumbnail preview with validation
+// Cropper JS Logic
+let cropper;
+let croppedImageBlob = null;
+
 document.getElementById('thumbnailInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
-        // Validate file size (5MB max)
         if (file.size > 5 * 1024 * 1024) {
             showToast('Image size must be less than 5MB', 'error');
             this.value = '';
             return;
         }
-        
-        // Validate file type
         if (!file.type.startsWith('image/')) {
             showToast('Please upload a valid image file', 'error');
             this.value = '';
@@ -256,12 +302,48 @@ document.getElementById('thumbnailInput').addEventListener('change', function(e)
         
         const reader = new FileReader();
         reader.onload = function(e) {
-            const preview = document.getElementById('thumbnailPreview');
-            preview.src = e.target.result;
-            preview.style.display = 'block';
+            const imageToCrop = document.getElementById('imageToCrop');
+            imageToCrop.src = e.target.result;
+            document.getElementById('cropModal').classList.add('active');
+            
+            if (cropper) cropper.destroy();
+            
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: 16 / 9,
+                viewMode: 1,
+                autoCropArea: 1,
+            });
         };
         reader.readAsDataURL(file);
     }
+});
+
+function closeCropModal() {
+    document.getElementById('cropModal').classList.remove('active');
+    if (cropper) cropper.destroy();
+    if (!croppedImageBlob) {
+        document.getElementById('thumbnailInput').value = '';
+    }
+}
+
+document.getElementById('btnCrop').addEventListener('click', function(e) {
+    e.preventDefault(); // prevent form submit just in case
+    if (!cropper) return;
+    
+    cropper.getCroppedCanvas({
+        width: 1280,
+        height: 720,
+    }).toBlob((blob) => {
+        croppedImageBlob = blob;
+        
+        const previewUrl = URL.createObjectURL(blob);
+        const preview = document.getElementById('thumbnailPreview');
+        preview.src = previewUrl;
+        preview.style.display = 'block';
+        
+        setErr('thumbnailErr', '');
+        closeCropModal();
+    }, 'image/jpeg', 0.9);
 });
 
 // Simple helper: show/clear inline error
@@ -293,7 +375,6 @@ document.getElementById('createCourseForm').addEventListener('submit', async fun
     const level        = document.getElementById('level').value;
     const price        = document.getElementById('price').value;
     const discountPrice = document.getElementById('discountPrice').value;
-    const thumbnailFile = document.getElementById('thumbnailInput').files[0];
 
     let hasError = false;
 
@@ -324,8 +405,8 @@ document.getElementById('createCourseForm').addEventListener('submit', async fun
     }
 
     // Thumbnail
-    if (!thumbnailFile) {
-        setErr('thumbnailErr', 'Please upload a course thumbnail.'); hasError = true;
+    if (!croppedImageBlob) {
+        setErr('thumbnailErr', 'Please upload and crop a course thumbnail.'); hasError = true;
     } else { setErr('thumbnailErr', ''); }
 
     // Description
@@ -349,7 +430,9 @@ document.getElementById('createCourseForm').addEventListener('submit', async fun
     formData.append('level', level);
     formData.append('price', price);
     if (discountPrice) formData.append('discountPrice', discountPrice);
-    formData.append('thumbnail', thumbnailFile);
+    if (croppedImageBlob) {
+        formData.append('thumbnail', croppedImageBlob, 'thumbnail.jpg');
+    }
 
     try {
         const response = await fetch('/tutor/courses/create', { method: 'POST', body: formData });

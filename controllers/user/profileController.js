@@ -33,7 +33,7 @@ const postUpdateProfile = async (req, res) => {
 
         await userService.updateUserProfile(req.session.userId, {
             fullName: fullName.trim(),
-            phone:    phone ? phone.trim() : null
+            phone: phone ? phone.trim() : null
         });
 
         res.json({ success: true, message: 'Profile updated successfully' });
@@ -67,6 +67,19 @@ const postSendEmailChangeOTP = async (req, res) => {
         if (!emailCheck.valid) return res.status(400).json({ message: emailCheck.message });
 
         const newEmailTrimmed = newEmail.trim().toLowerCase();
+        const user = await userService.getUserById(req.session.userId);
+
+        console.log("Current email:", user.email);
+        console.log("New email:", newEmailTrimmed);
+        console.log("Equal:", user.email.trim().toLowerCase() === newEmailTrimmed);
+
+        if (user.email.trim().toLowerCase() === newEmailTrimmed) {
+            return res.status(400).json({
+                message: " The new email   must be different from your current email"
+            })
+        }
+
+
         await userService.sendEmailChangeOTP(newEmailTrimmed);
 
         res.json({ success: true, message: 'OTP sent to new email' });

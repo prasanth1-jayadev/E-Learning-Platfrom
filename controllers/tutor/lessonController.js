@@ -50,7 +50,7 @@ const addLesson = async (req, res) => {
         if (req.file) {
             const result = await uploadToCloudinary(req.file.buffer, 'course-videos', 'video');
             videoUrl = result.secure_url;
-            if (result.duration) videoDuration = Math.round(result.duration);
+            if (result.duration) videoDuration = Math.ceil(result.duration / 60);
         }
 
         course.lessons.push({
@@ -135,7 +135,7 @@ const updateLesson = async (req, res) => {
         if (req.file) {
             const result = await uploadToCloudinary(req.file.buffer, 'course-videos', 'video');
             lesson.videoUrl = result.secure_url;
-            if (result.duration) lesson.duration = Math.round(result.duration);
+            if (result.duration) lesson.duration = Math.ceil(result.duration / 60);
         } else {
             lesson.duration = duration;
         }

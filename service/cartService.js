@@ -30,13 +30,18 @@ export const addToCart = async (userId, courseId) => {
     throw new Error('You are already enrolled in this course');
   }
 
-  const course = await Course.findById(courseId);
+  const course = await Course.findById(courseId).populate('tutor');
   if (!course) {
     throw new Error('Course not found');
   }
   if (!course.isPublished) {
     throw new Error('Course is not available');
   }
+
+  if(course.tutor && course.tutor.email === user.email) {
+    throw new Error('You cannot purchase your own course');
+  }
+
 
   let cart = await Cart.findOne({ user: userId });
   if (!cart) {

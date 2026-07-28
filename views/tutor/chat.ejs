@@ -265,6 +265,7 @@
 
                     const displayName = conv.userId?.fullName || 'Student';
                     const placeholder = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=00d9b1&color=fff&bold=true`;
+                    console.log(conv);
                     div.innerHTML = `
                     <div class="flex items-start gap-3">
                         <img src="${conv.userId?.avatar || placeholder}" 
