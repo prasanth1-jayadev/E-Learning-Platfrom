@@ -257,7 +257,7 @@ const postUpdateCourse = async (req, res) => {
   }
 };
 
-const deleteCourse = async (req, res) => {
+const  deleteCourse = async (req, res) => {
   try {
     const tutorId = req.session.tutorId;
     const courseId = req.params.id;

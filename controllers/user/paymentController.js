@@ -10,20 +10,30 @@ import { generateInvoice } from '../../helpers/invoiceHelper.js';
 
 export const createOrder = async (req, res) => {
   try {
-    const { courseIds } = req.body; 
+    const { courseIds } = req.body;
     const userId = req.session.userId;
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Please login first" });
     }
 
+
+
+    const user = await User.findById(userId);
+
+
     let totalAmount = 0;
-    const courses = await Course.find({ _id: { $in: courseIds } });
-    
+    const courses = await Course.find({ _id: { $in: courseIds } }).populate('tutor')
+
     for (const course of courses) {
       if (!course.isPublished) {
         return res.status(400).json({ success: false, message: `${course.title} is not available` });
       }
+
+      if (course.tutor && course.tutor.email === user.email) {
+        return res.status(400).json({ success: false, message: `You cannot purchase your own course: ${course.title}` });
+      }
+
       totalAmount += course.price;
     }
 
@@ -37,25 +47,25 @@ export const createOrder = async (req, res) => {
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
       const userUsage = coupon ? coupon.usedBy.find(u => u.userId.toString() === userId.toString()) : null;
       const userUsedCount = userUsage ? userUsage.usedCount : 0;
-      if (coupon && 
-          (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
-          new Date(coupon.expiryDate) >= new Date() && 
-          userUsedCount < coupon.usageLimit && 
-          totalAmount >= coupon.minOrderValue) {
-        
+      if (coupon &&
+        (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
+        new Date(coupon.expiryDate) >= new Date() &&
+        userUsedCount < coupon.usageLimit &&
+        totalAmount >= coupon.minOrderValue) {
+
         if (coupon.discountType === 'percentage') {
           discount = Math.floor((totalAmount * coupon.discountValue) / 100);
         } else {
           discount = coupon.discountValue;
         }
-        
+
         if (coupon.maxDiscount) {
           discount = Math.min(discount, coupon.maxDiscount);
         }
-        
+
         discount = Math.min(discount, totalAmount);
         totalAmount = Math.max(0, totalAmount - discount);
-        
+
         req.session.appliedCoupon.discount = discount;
         req.session.appliedCoupon.finalTotal = totalAmount;
       } else {
@@ -93,7 +103,7 @@ export const verifyPayment = async (req, res) => {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      courseIds 
+      courseIds
     } = req.body;
 
     const userId = req.session.userId;
@@ -133,12 +143,12 @@ export const verifyPayment = async (req, res) => {
       const coupon = await Coupon.findOne({ code: req.session.appliedCoupon.code.toUpperCase(), isActive: true });
       const userUsage = coupon ? coupon.usedBy.find(u => u.userId.toString() === userId.toString()) : null;
       const userUsedCount = userUsage ? userUsage.usedCount : 0;
-      if (coupon && 
-          (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
-          new Date(coupon.expiryDate) >= new Date() && 
-          userUsedCount < coupon.usageLimit && 
-          originalTotal >= coupon.minOrderValue) {
-        
+      if (coupon &&
+        (!coupon.startDate || new Date(coupon.startDate) <= new Date()) &&
+        new Date(coupon.expiryDate) >= new Date() &&
+        userUsedCount < coupon.usageLimit &&
+        originalTotal >= coupon.minOrderValue) {
+
         if (coupon.discountType === 'percentage') {
           discount = Math.floor((originalTotal * coupon.discountValue) / 100);
         } else {
@@ -218,9 +228,16 @@ export const enrollFree = async (req, res) => {
       return res.status(401).json({ success: false, message: "Please login first" });
     }
 
-    const course = await Course.findById(courseId);
+    const user = await User.findById(userId);
+
+
+    const course = await Course.findById(courseId).populate('tutor')
     if (!course) {
       return res.status(404).json({ success: false, message: "Course not found" });
+    }
+
+    if (course.tutor && course.tutor.email === user.email) {
+      return res.status(400).json({ success: false, message: "You cannot enroll in your own course" });
     }
 
     if (course.price !== 0) {
@@ -267,12 +284,12 @@ export const getPaymentSuccess = async (req, res) => {
 
     const payments = await Payment.find({ orderId }).populate('course');
     console.log('Payments found:', payments.length);
-    
+
     const courses = payments.map(p => p.course).filter(c => c);
     console.log('Courses extracted:', courses.length);
 
     console.log('Attempting to render payment-success view...');
-    
+
     res.render('user/payment-success', {
       user: user,
       currentPage: 'payment',
@@ -296,7 +313,7 @@ export const getPaymentSuccess = async (req, res) => {
 
 export const getPaymentFailure = async (req, res) => {
   try {
-    const { orderId, error,courseIds } = req.query;
+    const { orderId, error, courseIds } = req.query;
     const userId = req.session.userId;
 
     if (!userId) {
@@ -304,8 +321,8 @@ export const getPaymentFailure = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-      
-     let courses = [];
+
+    let courses = [];
     if (courseIds) {
       const ids = courseIds.split(',');
       courses = await Course.find({ _id: { $in: ids } });
@@ -313,7 +330,7 @@ export const getPaymentFailure = async (req, res) => {
       const cart = await cartService.getCart(userId);
       courses = cart.items.map(item => item.course).filter(c => c);
     }
-  
+
     res.render('user/payment-failure', {
       user: user,
       currentPage: 'payment',
