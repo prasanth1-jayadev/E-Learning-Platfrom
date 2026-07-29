@@ -77,9 +77,14 @@
 
                                         <!-- Price and Remove -->
                                         <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-3 sm:pt-0 mt-2 sm:mt-0">
-                                            <p class="text-xl font-bold text-teal-600">₹<%=
-                                                    item.course.price.toLocaleString() %>
-                                            </p>
+                                            <% if (item.course.discountPrice && item.course.discountPrice < item.course.price) { %>
+                                                <div class="flex flex-col sm:items-end">
+                                                    <p class="text-xl font-bold text-teal-600">₹<%= item.course.discountPrice.toLocaleString() %></p>
+                                                    <p class="text-sm text-gray-500 line-through">₹<%= item.course.price.toLocaleString() %></p>
+                                                </div>
+                                            <% } else { %>
+                                                <p class="text-xl font-bold text-teal-600">₹<%= item.course.price.toLocaleString() %></p>
+                                            <% } %>
                                             <button type="button"
                                                 onclick="removeFromCart('<%= item.course._id.toString() %>')"
                                                 class="text-red-600 hover:text-red-700 text-sm flex items-center gap-1 cursor-pointer">

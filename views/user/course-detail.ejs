@@ -509,10 +509,12 @@
                                         <div class="mb-4">
                                             <% if (course.price===0) { %>
                                                 <span class="text-3xl font-bold text-teal-600">Free</span>
-                                                <% } else { %>
-                                                    <span class="text-3xl font-bold text-teal-600">₹<%=
-                                                            course.price.toLocaleString() %></span>
-                                                    <% } %>
+                                            <% } else if (course.discountPrice && course.discountPrice < course.price) { %>
+                                                <span class="text-3xl font-bold text-teal-600">₹<%= course.discountPrice.toLocaleString() %></span>
+                                                <span class="text-lg text-gray-500 line-through ml-2">₹<%= course.price.toLocaleString() %></span>
+                                            <% } else { %>
+                                                <span class="text-3xl font-bold text-teal-600">₹<%= course.price.toLocaleString() %></span>
+                                            <% } %>
                                         </div>
 
                                         <!-- Buttons based on purchase status -->
@@ -561,7 +563,7 @@
                                                             <% } else { %>
                                                                 <!-- Paid Course - Enroll Now as main button -->
                                                                 <button
-                                                                    onclick="enrollNowDirect('<%= course._id %>', '<%= course.price %>', '<%= course.title %>')"
+                                                                    onclick="enrollNowDirect('<%= course._id %>', '<%= (course.discountPrice && course.discountPrice < course.price) ? course.discountPrice : course.price %>', '<%= course.title %>')"
                                                                     class="w-full bg-teal-600 text-white font-bold py-2 rounded-xl hover:bg-teal-700 transition mb-3 text-lg shadow-lg">
                                                                     <i class="fas fa-graduation-cap mr-2"></i>Enroll Now
                                                                 </button>

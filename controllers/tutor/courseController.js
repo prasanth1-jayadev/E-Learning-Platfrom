@@ -219,6 +219,18 @@ const postUpdateCourse = async (req, res) => {
       });
     }
 
+    if (title.trim().length < 5) {
+      return res.status(400).json({ 
+        message: 'Title must be at least 5 characters long' 
+      });
+    }
+
+    if (description.trim().length < 20) {
+      return res.status(400).json({ 
+        message: 'Description must be at least 20 characters long' 
+      });
+    }
+
     const updateData = {
       title: title.trim(),
       description: description.trim(),
