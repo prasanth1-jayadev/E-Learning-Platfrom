@@ -156,6 +156,7 @@
       <label>Lesson Description</label>
       <textarea name="description" id="lessonDescription" placeholder="Enter detailed lesson description" maxlength="500"></textarea>
       <small><span id="descCount">0</span>/500 characters</small>
+      <span id="descError" style="display:none; color:#ef4444; font-size:0.8rem; margin-top:0.25rem;"></span>
     </div>
 
     <div class="form-group">
@@ -332,6 +333,7 @@
 
   // Clear error on input
   document.getElementById('lessonTitle').addEventListener('input', () => setFieldError('lessonTitle', 'titleError', ''));
+  document.getElementById('lessonDescription').addEventListener('input', () => setFieldError('lessonDescription', 'descError', ''));
   document.getElementById('videoInput').addEventListener('change', () => setFieldError('videoInput', 'videoError', ''));
 
   document.getElementById('addLessonForm').addEventListener('submit', async (e) => {
@@ -352,6 +354,17 @@
       hasError = true;
     } else {
       setFieldError('lessonTitle', 'titleError', '');
+    }
+
+    const description = document.getElementById('lessonDescription').value.trim();
+    if (!description) {
+      setFieldError('lessonDescription', 'descError', 'Lesson description is required.');
+      hasError = true;
+    } else if (description.length < 10) {
+      setFieldError('lessonDescription', 'descError', 'Description must be at least 10 characters.');
+      hasError = true;
+    } else {
+      setFieldError('lessonDescription', 'descError', '');
     }
 
     if (videoInput.files.length === 0) {

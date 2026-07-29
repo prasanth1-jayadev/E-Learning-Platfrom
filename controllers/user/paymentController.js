@@ -34,7 +34,8 @@ export const createOrder = async (req, res) => {
         return res.status(400).json({ success: false, message: `You cannot purchase your own course: ${course.title}` });
       }
 
-      totalAmount += course.price;
+      const effectivePrice = (course.discountPrice && course.discountPrice < course.price) ? course.discountPrice : course.price;
+      totalAmount += effectivePrice;
     }
 
     if (totalAmount === 0) {
@@ -132,7 +133,8 @@ export const verifyPayment = async (req, res) => {
     for (const courseId of courseIds) {
       const course = await Course.findById(courseId);
       if (course) {
-        originalTotal += course.price;
+        const effectivePrice = (course.discountPrice && course.discountPrice < course.price) ? course.discountPrice : course.price;
+        originalTotal += effectivePrice;
         courses.push(course);
       }
     }
@@ -176,15 +178,16 @@ export const verifyPayment = async (req, res) => {
     for (let i = 0; i < courses.length; i++) {
       const course = courses[i];
       let courseDiscount = 0;
+      const effectivePrice = (course.discountPrice && course.discountPrice < course.price) ? course.discountPrice : course.price;
       if (discount > 0 && originalTotal > 0) {
         if (i === courses.length - 1) {
           courseDiscount = remainingDiscount;
         } else {
-          courseDiscount = Math.round((course.price / originalTotal) * discount);
+          courseDiscount = Math.round((effectivePrice / originalTotal) * discount);
           remainingDiscount -= courseDiscount;
         }
       }
-      const finalCoursePrice = Math.max(0, course.price - courseDiscount);
+      const finalCoursePrice = Math.max(0, effectivePrice - courseDiscount);
       totalAmount += finalCoursePrice;
 
       await enrollUserInCourse(userId, course._id, {
@@ -240,7 +243,8 @@ export const enrollFree = async (req, res) => {
       return res.status(400).json({ success: false, message: "You cannot enroll in your own course" });
     }
 
-    if (course.price !== 0) {
+    const effectivePrice = (course.discountPrice && course.discountPrice < course.price) ? course.discountPrice : course.price;
+    if (effectivePrice !== 0) {
       return res.status(400).json({ success: false, message: "This is not a free course" });
     }
 

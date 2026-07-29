@@ -6,7 +6,7 @@ export const getCart = async (userId) => {
   let cart = await Cart.findOne({ user: userId })
     .populate({
       path: 'items.course',
-      select: 'title price thumbnail category tutor isPublished',
+      select: 'title price discountPrice thumbnail category tutor isPublished',
       populate: {
         path: 'tutor',
         select: 'fullName'
@@ -82,7 +82,7 @@ export const clearCart = async (userId) => {
 
 export const getCartTotal = (cart) => {
   return cart.items.reduce((total, item) => {
-    return total + (item.course?.price || 0);
+    return total + (item.course?.discountPrice || item.course?.price || 0);
   }, 0);
 };
 

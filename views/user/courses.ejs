@@ -872,7 +872,12 @@
                                         </div>
 
                                         <div class="course-price">
-                                            <span class="current-price">₹<%= course.price.toLocaleString() %></span>
+                                            <% if (course.discountPrice && course.discountPrice < course.price) { %>
+                                                <span class="current-price">₹<%= course.discountPrice.toLocaleString() %></span>
+                                                <span class="original-price" style="text-decoration: line-through; color: #6b7280; margin-left: 0.25rem; font-size: 0.875rem;">₹<%= course.price.toLocaleString() %></span>
+                                            <% } else { %>
+                                                <span class="current-price">₹<%= course.price.toLocaleString() %></span>
+                                            <% } %>
                                         </div>
                             </div>
                         </a>
