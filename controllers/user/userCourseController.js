@@ -52,10 +52,10 @@ const getCourses = async (req, res) => {
         sortQuery = { createdAt: 1 };
         break;
       case 'price-low':
-        sortQuery = { price: 1 };
+        sortQuery = { sellingPrice: 1 };
         break;
       case 'price-high':
-        sortQuery = { price: -1 };
+        sortQuery = { sellingPrice: -1 };
         break;
       case 'title-az':
         sortQuery = { title: 1 };
