@@ -136,13 +136,12 @@ courseSchema.virtual('studentCount').get(function() {
   return this.enrolledStudents.length;
 });
 
-courseSchema.pre('save', function(next) {
+courseSchema.pre('save', function() {
   if (this.discountPrice != null && this.discountPrice < this.price) {
     this.sellingPrice = this.discountPrice;
   } else {
     this.sellingPrice = this.price;
   }
-  next();
 });
 
 courseSchema.virtual('lessonCount').get(function() {
