@@ -56,6 +56,7 @@ const verifyOtp = async (email, otp, purpose = "signup") => {
 }
 
 const resendOtp = async (email, purpose = "signup") => {
+    email = email.toLowerCase().trim();
     const tutor = await Tutor.findOne({ email });
     if (!tutor) throw new Error('Email not found');
 
@@ -82,6 +83,7 @@ const loginTutor = async (email, password) => {
 }
 
 const forgotPassword = async (email) => {
+    email = email.toLowerCase().trim();
     const tutor = await Tutor.findOne({ email });
     if (!tutor) throw new Error('No Account found');
 

@@ -147,6 +147,13 @@ const postCreateCourse = async (req, res) => {
       });
     }
 
+
+    if(courseData.price &&  courseData.price<= courseData.discountPrice){
+      return res.status(400).json({
+        message:"selling  price"
+      })
+    }
+
     const course = await courseService.createCourse(courseData, tutorId);
 
     console.log('Course created successfully:', course._id);

@@ -40,6 +40,11 @@ const courseSchema = new mongoose.Schema({
     default: null
   },
 
+  sellingPrice: {
+    type: Number,
+    default: 0
+  },
+
   thumbnail: {
     type: String,
     default: null
@@ -129,6 +134,15 @@ courseSchema.index({ category: 1, isPublished: 1 });
 
 courseSchema.virtual('studentCount').get(function() {
   return this.enrolledStudents.length;
+});
+
+courseSchema.pre('save', function(next) {
+  if (this.discountPrice != null && this.discountPrice < this.price) {
+    this.sellingPrice = this.discountPrice;
+  } else {
+    this.sellingPrice = this.price;
+  }
+  next();
 });
 
 courseSchema.virtual('lessonCount').get(function() {
